@@ -65,6 +65,9 @@ endforeach
 
 fox_include = include_directories('include')
 
+thread_dep = dependency('threads')
+
 subdir('include')
 subdir('utils')
 subdir('src')
+subdir('adie')
