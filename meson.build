@@ -1,4 +1,4 @@
-project('fox', 'cpp', version : '1.6.57', default_options : 'cpp_std=c++03')
+project('fox', 'cpp', version : '1.6.57', default_options : 'cpp_std=c++11')
 
 fox_version = meson.project_version()
 ver_arr = fox_version.split('.')
@@ -12,11 +12,44 @@ else
     fox_byteorder = 0
 endif
 
+use_x_window = host_machine.system() != 'windows'
+
 fox_deps = []
 if host_machine.system() != 'windows'
     fox_deps += dependency('x11')
     fox_deps += dependency('xext')
-    add_project_arguments('-DTIME_WITH_SYS_TIME', '-DHAVE_STRTOLL', '-DHAVE_STRTOULL', '-DHAVE_VSSCANF', language : 'cpp')
+    add_project_arguments(
+        '-DTIME_WITH_SYS_TIME',
+        '-DHAVE_STRTOLL',
+        '-DHAVE_STRTOULL',
+        '-DHAVE_VSSCANF',
+        '-DHAVE_VSNPRINTF',
+
+#        '-DSTDC_HEADERS',
+#        '-DHAVE_SYS_TYPES_H',
+#        '-DHAVE_SYS_STAT_H',
+#        '-DHAVE_STDLIB_H',
+#        '-DHAVE_STRING_H',
+#        '-DHAVE_MEMORY_H',
+#        '-DHAVE_STRINGS_H',
+#        '-DHAVE_INTTYPES_H',
+#        '-DHAVE_STDINT_H',
+#        '-D__EXTENSIONS__',
+#        '-D_ALL_SOURCE',
+#        '-D_GNU_SOURCE',
+#        '-D_POSIX_PTHREAD_SEMANTICS',
+#        '-D_TANDEM_SOURCE',
+#        '-DHAVE_DLFCN_H',
+
+# TODO: X11 extentions should be detected.
+        '-DHAVE_X11_EXTENSIONS_XSHM_H',
+        '-DHAVE_X11_EXTENSIONS_SHAPE_H',
+        '-DHAVE_X11_XCURSOR_XCURSOR_H',
+        '-DHAVE_X11_EXTENSIONS_XRENDER_H',
+        '-DHAVE_X11_EXTENSIONS_XRANDR_H',
+        '-DHAVE_X11_EXTENSIONS_XFIXES_H',
+        '-DHAVE_X11_EXTENSIONS_XINPUT_H',
+        language : 'cpp')
 else
     add_global_arguments('-DWIN32', '-DDLL_EXPORT', language : 'cpp')
 endif
@@ -39,6 +72,13 @@ add_project_arguments(
 if get_option('opengl')
     fox_deps += dependency('gl')
     fox_deps += dependency('glu')
+endif
+
+if use_x_window and get_option('xft')
+    fox_deps += dependency('freetype2')
+    fox_deps += dependency('fontconfig')
+    fox_deps += dependency('xft')
+    add_project_arguments('-DHAVE_XFT_H', language : 'cpp')
 endif
 
 conf = configuration_data()
@@ -65,7 +105,7 @@ endforeach
 
 fox_include = include_directories('include')
 
-thread_dep = dependency('threads')
+fox_deps += dependency('threads')
 
 subdir('include')
 subdir('utils')
