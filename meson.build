@@ -36,7 +36,7 @@ add_project_arguments(
     language : 'cpp'
 )
 
-if get_option('enable-opengl')
+if get_option('opengl')
     fox_deps += dependency('gl')
     fox_deps += dependency('glu')
 endif

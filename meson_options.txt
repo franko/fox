@@ -1,1 +1,1 @@
-option('enable-opengl', type : 'boolean', value : false, description: 'Enable OpenGL')
+option('opengl', type : 'boolean', value : false, description: 'Enable OpenGL')
