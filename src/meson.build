@@ -309,4 +309,4 @@ fox_src = fox_src_codecs + [
 'vsscanf.cpp'
 ]
 
-libfox = static_library('libFOX-1.6', fox_src, include_directories: fox_include, dependencies: fox_deps)
+libfox = static_library('FOX-1.6', fox_src, include_directories: fox_include, dependencies: fox_deps)
