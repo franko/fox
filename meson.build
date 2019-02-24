@@ -17,7 +17,7 @@ if host_machine.system() != 'windows'
     fox_deps += dependency('x11')
     fox_deps += dependency('xext')
 else
-    add_global_arguments('-DWIN32', language : 'cpp')
+    add_global_arguments('-DWIN32', '-DDLL_EXPORT', language : 'cpp')
 endif
 
 fox_package_name = meson.project_name()
@@ -44,9 +44,10 @@ conf = configuration_data()
 # Surround the version in quotes to make it a C string
 conf.set_quoted('FOX_MAJOR_VERSION', fox_major)
 conf.set_quoted('FOX_MINOR_VERSION', fox_minor)
-conf.set_quoted('FOX_LEVEL_VERSION', fox_level)
-conf.set_quoted('FOX_BYTEORDER', fox_byteorder)
+conf.set_quoted('FOX_PATCH_LEVEL', fox_level)
+conf.set('FOX_BYTEORDER', fox_byteorder)
 
-configure_file(input: 'include/fxver.h.in', output : 'include/fxver.h', configuration : conf)
+fox_include = include_directories('include')
 
+subdir('include')
 subdir('src')
