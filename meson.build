@@ -63,6 +63,28 @@ foreach h : check_headers
     endif
 endforeach
 
+strtoll_code = '''#include<stdlib.h>
+long long int func() {
+    char *s = "1";
+    char *tail;
+    return strtoll(s, &tail, 10);
+}'''
+
+if compiler.compiles(strtoll_code)
+    add_project_arguments('-DHAVE_STRTOLL', language: 'cpp')
+endif
+
+strtoull_code = '''#include<stdlib.h>
+unsigned long long int func() {
+    char *s = "1";
+    char *tail;
+    return strtoull(s, &tail, 10);
+}'''
+
+if compiler.compiles(strtoull_code)
+    add_project_arguments('-DHAVE_STRTOULL', language: 'cpp')
+endif
+
 fox_include = include_directories('include')
 
 subdir('include')
