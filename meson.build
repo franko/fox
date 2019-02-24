@@ -16,7 +16,7 @@ fox_deps = []
 if host_machine.system() != 'windows'
     fox_deps += dependency('x11')
     fox_deps += dependency('xext')
-    add_project_arguments('-DTIME_WITH_SYS_TIME', language : 'cpp')
+    add_project_arguments('-DTIME_WITH_SYS_TIME', '-DHAVE_STRTOLL', '-DHAVE_STRTOULL', '-DHAVE_VSSCANF', language : 'cpp')
 else
     add_global_arguments('-DWIN32', '-DDLL_EXPORT', language : 'cpp')
 endif
