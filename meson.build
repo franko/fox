@@ -16,6 +16,7 @@ fox_deps = []
 if host_machine.system() != 'windows'
     fox_deps += dependency('x11')
     fox_deps += dependency('xext')
+    add_project_arguments('-DTIME_WITH_SYS_TIME', language : 'cpp')
 else
     add_global_arguments('-DWIN32', '-DDLL_EXPORT', language : 'cpp')
 endif
@@ -42,10 +43,25 @@ endif
 
 conf = configuration_data()
 # Surround the version in quotes to make it a C string
-conf.set_quoted('FOX_MAJOR_VERSION', fox_major)
-conf.set_quoted('FOX_MINOR_VERSION', fox_minor)
-conf.set_quoted('FOX_PATCH_LEVEL', fox_level)
+conf.set('FOX_MAJOR_VERSION', fox_major)
+conf.set('FOX_MINOR_VERSION', fox_minor)
+conf.set('FOX_PATCH_LEVEL', fox_level)
 conf.set('FOX_BYTEORDER', fox_byteorder)
+
+compiler = meson.get_compiler('cpp')
+
+check_headers = [
+  ['HAVE_UNISTD_H', 'unistd.h'],
+  ['HAVE_DIRENT_H', 'dirent.h'],
+  ['HAVE_SYS_WAIT_H', 'sys/wait.h'],
+  ['HAVE_MMAP', 'sys/mman.h'],
+]
+
+foreach h : check_headers
+    if compiler.has_header(h.get(1))
+        add_project_arguments('-D@0@'.format(h.get(0)), language: 'cpp')
+    endif
+endforeach
 
 fox_include = include_directories('include')
 
