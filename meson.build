@@ -15,10 +15,11 @@ endif
 use_x_window = host_machine.system() != 'windows'
 
 fox_deps = []
+fox_defines = []
 if host_machine.system() != 'windows'
     fox_deps += dependency('x11')
     fox_deps += dependency('xext')
-    add_project_arguments(
+    fox_defines += [
         '-DTIME_WITH_SYS_TIME',
         '-DHAVE_STRTOLL',
         '-DHAVE_STRTOULL',
@@ -48,16 +49,16 @@ if host_machine.system() != 'windows'
         '-DHAVE_X11_EXTENSIONS_XRENDER_H',
         '-DHAVE_X11_EXTENSIONS_XRANDR_H',
         '-DHAVE_X11_EXTENSIONS_XFIXES_H',
-        '-DHAVE_X11_EXTENSIONS_XINPUT_H',
-        language : 'cpp')
+        '-DHAVE_X11_EXTENSIONS_XINPUT_H'
+    ]
 else
-    add_global_arguments('-DWIN32', '-DDLL_EXPORT', language : 'cpp')
+    fox_defines += ['-DWIN32', '-DDLL_EXPORT']
 endif
 
 fox_package_name = meson.project_name()
 fox_bugreport = 'jeroen@fox-toolkit.com'
 
-add_project_arguments(
+fox_defines += [
     '-DPACKAGE_NAME="@0@"'.format(fox_package_name),
     '-DPACKAGE_TARNAME="@0@"'.format(fox_package_name),
     '-DPACKAGE_VERSION="@0@"'.format(fox_version),
@@ -65,9 +66,8 @@ add_project_arguments(
     '-DPACKAGE_BUGREPORT="@0@"'.format(fox_bugreport),
     '-DPACKAGE_URL=""',
     '-DPACKAGE="@0@"'.format(fox_package_name),
-    '-DVERSION="@0@"'.format(fox_version),
-    language : 'cpp'
-)
+    '-DVERSION="@0@"'.format(fox_version)
+]
 
 if get_option('opengl')
     fox_deps += dependency('gl')
@@ -78,11 +78,10 @@ if use_x_window and get_option('xft')
     fox_deps += dependency('freetype2')
     fox_deps += dependency('fontconfig')
     fox_deps += dependency('xft')
-    add_project_arguments('-DHAVE_XFT_H', language : 'cpp')
+    fox_defines += '-DHAVE_XFT_H'
 endif
 
 conf = configuration_data()
-# Surround the version in quotes to make it a C string
 conf.set('FOX_MAJOR_VERSION', fox_major)
 conf.set('FOX_MINOR_VERSION', fox_minor)
 conf.set('FOX_PATCH_LEVEL', fox_level)
@@ -98,14 +97,14 @@ check_headers = [
 ]
 
 foreach h : check_headers
-    if compiler.has_header(h.get(1))
-        add_project_arguments('-D@0@'.format(h.get(0)), language: 'cpp')
+    if compiler.has_header(h[1])
+        fox_defines += '-D@0@'.format(h[0])
     endif
 endforeach
 
 fox_include = include_directories('include')
-
 fox_deps += dependency('threads')
+fox_app_deps = dependency('threads')
 
 subdir('include')
 subdir('utils')

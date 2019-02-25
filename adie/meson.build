@@ -14,6 +14,6 @@ adie_sources = [
 
 executable('adie', adie_sources,
     include_directories: fox_include,
-    dependencies: fox_deps,
+    dependencies: fox_app_deps,
     link_with: libfox,
     gui_app: true)
