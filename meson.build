@@ -102,9 +102,10 @@ foreach h : check_headers
     endif
 endforeach
 
+threads_dep = dependency('threads')
+
 fox_include = include_directories('include')
-fox_deps += dependency('threads')
-fox_app_deps = dependency('threads')
+fox_deps += threads_dep
 
 subdir('include')
 subdir('utils')
