@@ -59,6 +59,14 @@ if get_option('opengl')
     fox_deps += dependency('glu')
 endif
 
+if get_option('jpeg')
+    libjpeg = dependency('libjpeg', required : false)
+    if libjpeg.found()
+        fox_defines += '-DHAVE_JPEG_H'
+        fox_deps += libjpeg
+    endif
+endif
+
 if use_x_window and get_option('xft')
     fox_deps += dependency('freetype2')
     fox_deps += dependency('fontconfig')

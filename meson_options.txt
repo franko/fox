@@ -1,2 +1,3 @@
 option('opengl', type : 'boolean', value : false, description: 'Enable OpenGL')
+option('jpeg', type : 'boolean', value : false, description: 'Enable JPEG support')
 option('xft', type : 'boolean', value : true, description: 'Enable Xft for font rendering')
