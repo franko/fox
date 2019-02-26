@@ -51,7 +51,8 @@ if host_machine.system() != 'windows'
         '-DHAVE_X11_EXTENSIONS_XINPUT_H'
     ]
 else
-    fox_defines += ['-DWIN32', '-DDLL_EXPORT']
+    fox_defines += ['-DDLL_EXPORT']
+    add_project_arguments('-DWIN32', language: 'cpp')
 endif
 
 fox_package_name = meson.project_name()
