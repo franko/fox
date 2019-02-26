@@ -23,7 +23,6 @@ if host_machine.system() != 'windows'
         '-DTIME_WITH_SYS_TIME',
         '-DHAVE_STRTOLL',
         '-DHAVE_STRTOULL',
-        '-DHAVE_VSSCANF',
         '-DHAVE_VSNPRINTF',
 
 #        '-DSTDC_HEADERS',
@@ -101,6 +100,16 @@ foreach h : check_headers
         fox_defines += '-D@0@'.format(h[0])
     endif
 endforeach
+
+vsscanf_code = '''#include<stdio.h>
+#include<stdarg.h>
+int func(const char *s, va_list ap) {
+    return vsscanf(s, "%d", ap);
+}'''
+
+if compiler.compiles(vsscanf_code)
+    fox_defines += '-DHAVE_VSSCANF'
+endif
 
 threads_dep = dependency('threads')
 
