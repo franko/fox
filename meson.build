@@ -53,6 +53,7 @@ if host_machine.system() != 'windows'
 else
     fox_defines += ['-DDLL_EXPORT']
     add_project_arguments('-DWIN32', language: 'cpp')
+    add_project_link_arguments('-lcomctl32', '-lwsock32', '-lwinspool', '-lmpr', '-lgdi32', '-limm32', language: 'cpp')
 endif
 
 fox_package_name = meson.project_name()
