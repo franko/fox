@@ -24,23 +24,6 @@ if host_machine.system() != 'windows'
         '-DHAVE_STRTOLL',
         '-DHAVE_STRTOULL',
         '-DHAVE_VSNPRINTF',
-
-#        '-DSTDC_HEADERS',
-#        '-DHAVE_SYS_TYPES_H',
-#        '-DHAVE_SYS_STAT_H',
-#        '-DHAVE_STDLIB_H',
-#        '-DHAVE_STRING_H',
-#        '-DHAVE_MEMORY_H',
-#        '-DHAVE_STRINGS_H',
-#        '-DHAVE_INTTYPES_H',
-#        '-DHAVE_STDINT_H',
-#        '-D__EXTENSIONS__',
-#        '-D_ALL_SOURCE',
-#        '-D_GNU_SOURCE',
-#        '-D_POSIX_PTHREAD_SEMANTICS',
-#        '-D_TANDEM_SOURCE',
-#        '-DHAVE_DLFCN_H',
-
 # TODO: X11 extentions should be detected.
         '-DHAVE_X11_EXTENSIONS_XSHM_H',
         '-DHAVE_X11_EXTENSIONS_SHAPE_H',
@@ -54,6 +37,10 @@ else
     fox_defines += ['-DDLL_EXPORT']
     add_project_arguments('-DWIN32', language: 'cpp')
     add_project_link_arguments('-lcomctl32', '-lwsock32', '-lwinspool', '-lmpr', '-lgdi32', '-limm32', language: 'cpp')
+endif
+
+if host_machine.system() == 'linux'
+    fox_defines += ['-D_GNU_SOURCE', '-D_POSIX_PTHREAD_SEMANTICS']
 endif
 
 fox_package_name = meson.project_name()
