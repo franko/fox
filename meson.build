@@ -1,11 +1,8 @@
 project('fox', 'cpp', version : '1.6.57', default_options : 'cpp_std=c++11')
 
 fox_version = meson.project_version()
-ver_arr = fox_version.split('.')
+fox_version_array = fox_version.split('.')
 
-fox_major = ver_arr[0]
-fox_minor = ver_arr[1]
-fox_level = ver_arr[2]
 if build_machine.endian() == 'big'
     fox_byteorder = 1
 else
@@ -70,9 +67,9 @@ if use_x_window and get_option('xft')
 endif
 
 conf = configuration_data()
-conf.set('FOX_MAJOR_VERSION', fox_major)
-conf.set('FOX_MINOR_VERSION', fox_minor)
-conf.set('FOX_PATCH_LEVEL', fox_level)
+conf.set('FOX_MAJOR_VERSION', fox_version_array[0])
+conf.set('FOX_MINOR_VERSION', fox_version_array[1])
+conf.set('FOX_PATCH_LEVEL', fox_version_array[2])
 conf.set('FOX_BYTEORDER', fox_byteorder)
 
 compiler = meson.get_compiler('cpp')
