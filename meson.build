@@ -55,8 +55,16 @@ fox_defines += [
 ]
 
 if get_option('opengl')
-    fox_deps += dependency('gl')
-    fox_deps += dependency('glu')
+    gl = dependency('gl', required: false)
+    glu = dependency('glu', required: false)
+    if gl.found()
+        add_project_arguments('-DHAVE_GL_H', language: 'cpp')
+        fox_deps += gl
+    endif
+    if glu.found()
+        add_project_arguments('-DHAVE_GLU_H', language: 'cpp')
+        fox_deps += glu
+    endif
 endif
 
 if get_option('jpeg')
@@ -113,4 +121,5 @@ fox_deps += threads_dep
 subdir('include')
 subdir('utils')
 subdir('src')
+subdir('tests')
 subdir('adie')
