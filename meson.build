@@ -9,11 +9,20 @@ else
     fox_byteorder = 0
 endif
 
-use_x_window = host_machine.system() != 'windows'
+cc = meson.get_compiler('cpp')
+host_system = host_machine.system()
 
+use_x_window = host_system != 'windows'
+
+# public, external dependencies and defines
+fox_ext_deps = []
+fox_ext_defines = []
+
+# private FOX library's dependencies and defines
 fox_deps = []
 fox_defines = []
-if host_machine.system() != 'windows'
+
+if host_system != 'windows'
     fox_deps += dependency('x11')
     fox_deps += dependency('xext')
     fox_defines += [
@@ -32,11 +41,13 @@ if host_machine.system() != 'windows'
     ]
 else
     fox_defines += ['-DDLL_EXPORT']
-    add_project_arguments('-DWIN32', language: 'cpp')
-    add_project_link_arguments('-lcomctl32', '-lwsock32', '-lwinspool', '-lmpr', '-lgdi32', '-limm32', language: 'cpp')
+    fox_ext_defines += '-DWIN32'
+    foreach lib : ['comctl32', 'wsock32', 'winspool', 'mpr', 'gdi32', 'imm32']
+        fox_ext_deps += cc.find_library(lib, required : true)
+    endforeach
 endif
 
-if host_machine.system() == 'linux'
+if host_system == 'linux'
     fox_defines += ['-D_GNU_SOURCE', '-D_POSIX_PTHREAD_SEMANTICS']
 endif
 
@@ -55,15 +66,21 @@ fox_defines += [
 ]
 
 if get_option('opengl')
-    gl = dependency('gl', required: false)
-    glu = dependency('glu', required: false)
-    if gl.found()
-        add_project_arguments('-DHAVE_GL_H', language: 'cpp')
-        fox_deps += gl
-    endif
-    if glu.found()
-        add_project_arguments('-DHAVE_GLU_H', language: 'cpp')
-        fox_deps += glu
+    gl = dependency('gl', required : true)
+    fox_ext_defines += '-DHAVE_GL_H'
+    fox_ext_deps += gl
+
+    if host_system == 'windows'
+        if cc.has_header('GL/glu.h')
+            fox_ext_defines += '-DHAVE_GLU_H'
+            fox_ext_deps += cc.find_library('glu32', required : true)
+        endif
+    else
+        glu = dependency('glu', required : false)
+        if glu.found()
+            fox_ext_defines += '-DHAVE_GLU_H'
+            fox_ext_deps += glu
+        endif
     endif
 endif
 
@@ -88,8 +105,6 @@ conf.set('FOX_MINOR_VERSION', fox_version_array[1])
 conf.set('FOX_PATCH_LEVEL', fox_version_array[2])
 conf.set('FOX_BYTEORDER', fox_byteorder)
 
-compiler = meson.get_compiler('cpp')
-
 check_headers = [
   ['HAVE_UNISTD_H', 'unistd.h'],
   ['HAVE_DIRENT_H', 'dirent.h'],
@@ -98,7 +113,7 @@ check_headers = [
 ]
 
 foreach h : check_headers
-    if compiler.has_header(h[1])
+    if cc.has_header(h[1])
         fox_defines += '-D@0@'.format(h[0])
     endif
 endforeach
@@ -109,14 +124,16 @@ int func(const char *s, va_list ap) {
     return vsscanf(s, "%d", ap);
 }'''
 
-if compiler.compiles(vsscanf_code)
+if cc.compiles(vsscanf_code)
     fox_defines += '-DHAVE_VSSCANF'
 endif
 
-threads_dep = dependency('threads')
+fox_ext_deps += dependency('threads')
 
 fox_include = include_directories('include')
-fox_deps += threads_dep
+
+fox_defines += fox_ext_defines
+fox_deps += fox_ext_deps
 
 subdir('include')
 subdir('utils')

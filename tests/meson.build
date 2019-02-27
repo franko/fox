@@ -1,5 +1,5 @@
 
-if gl.found()
+if get_option('opengl')
     executable('gltest', 'gltest.cpp', dependencies: libfox_dep, gui_app: true)
 endif
 executable('ControlPanel', 'ControlPanel.cpp', dependencies: libfox_dep, gui_app: true)

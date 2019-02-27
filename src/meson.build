@@ -316,7 +316,8 @@ libfox = static_library('FOX-1.6', fox_src,
 )
 
 libfox_dep = declare_dependency(
-    dependencies: [threads_dep],
+    dependencies : fox_ext_deps,
+    compile_args : fox_ext_defines,
     include_directories : fox_include,
     link_with : libfox
 )
