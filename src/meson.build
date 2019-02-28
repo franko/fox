@@ -312,7 +312,8 @@ fox_src = fox_src_codecs + [
 libfox = static_library('FOX-1.6', fox_src,
     include_directories: fox_include,
     dependencies: fox_deps,
-    cpp_args: fox_defines
+    cpp_args : fox_defines,
+    install : true,
 )
 
 libfox_dep = declare_dependency(
@@ -320,4 +321,11 @@ libfox_dep = declare_dependency(
     compile_args : fox_ext_defines,
     include_directories : fox_include,
     link_with : libfox
+)
+
+pkg.generate(libfox,
+    filebase : 'fox',
+    name : 'FOX',
+    description : 'The FOX Toolkit',
+    url : 'www.fox-toolkit.org',
 )

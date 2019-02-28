@@ -1,5 +1,7 @@
 project('fox', 'cpp', version : '1.6.57', default_options : 'cpp_std=c++11')
 
+pkg = import('pkgconfig')
+
 fox_version = meson.project_version()
 fox_version_array = fox_version.split('.')
 
@@ -131,6 +133,7 @@ endif
 fox_ext_deps += dependency('threads')
 
 fox_include = include_directories('include')
+install_subdir('include', install_dir : '', exclude_files : 'meson.build')
 
 fox_defines += fox_ext_defines
 fox_deps += fox_ext_deps
