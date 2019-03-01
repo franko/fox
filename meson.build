@@ -50,6 +50,7 @@ else
 endif
 
 if host_system == 'linux'
+    fox_ext_deps += cc.find_library('dl', required : false)
     fox_defines += ['-D_GNU_SOURCE', '-D_POSIX_PTHREAD_SEMANTICS']
 endif
 
