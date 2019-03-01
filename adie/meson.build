@@ -14,5 +14,9 @@ adie_sources = [
 
 executable('adie', adie_sources,
     dependencies: libfox_dep,
+    install : true,
     gui_app: true
 )
+
+install_man('adie.1')
+install_data('Adie.stx', install_dir : join_paths(get_option('bindir')))
