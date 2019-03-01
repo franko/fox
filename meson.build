@@ -94,6 +94,22 @@ if get_option('jpeg')
     endif
 endif
 
+if get_option('png')
+    libpng = dependency('libpng', required : false)
+    if libpng.found()
+        fox_defines += '-DHAVE_PNG_H'
+        fox_deps += libpng
+    endif
+endif
+
+if get_option('zlib')
+    zlib = dependency('zlib', required : false)
+    if zlib.found()
+        fox_defines += '-DHAVE_ZLIB_H'
+        fox_deps += zlib
+    endif
+endif
+
 if use_x_window and get_option('xft')
     fox_deps += dependency('freetype2')
     fox_deps += dependency('fontconfig')
