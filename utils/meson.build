@@ -1,1 +1,1 @@
-executable('reswrap', 'reswrap.cpp')
+reswrap = executable('reswrap', 'reswrap.cpp')
