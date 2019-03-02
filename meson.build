@@ -29,9 +29,6 @@ if host_system != 'windows'
     fox_deps += dependency('xext')
     fox_defines += [
         '-DTIME_WITH_SYS_TIME',
-        '-DHAVE_STRTOLL',
-        '-DHAVE_STRTOULL',
-        '-DHAVE_VSNPRINTF',
 # TODO: X11 extentions should be detected.
         '-DHAVE_X11_EXTENSIONS_XSHM_H',
         '-DHAVE_X11_EXTENSIONS_SHAPE_H',
@@ -137,11 +134,31 @@ foreach h : check_headers
     endif
 endforeach
 
+strtoll_code = '''#include<stdlib.h>
+long long int func() { char s[2] = {'1', '\0'}, *tail; return strtoll(s, &tail, 10); }'''
+
+if cc.compiles(strtoll_code)
+    fox_defines += '-DHAVE_STRTOLL'
+endif
+
+strtoull_code = '''#include<stdlib.h>
+unsigned long long int func() { char s[2] = {'1', '\0'}, *tail; return strtoull(s, &tail, 10); }'''
+
+if cc.compiles(strtoull_code)
+    fox_defines += '-DHAVE_STRTOULL'
+endif
+
+vsnprintf_code = '''#include<stdio.h>
+#include<stdarg.h>
+int func(va_list ap) { char b[8]; return vsnprintf(b, 8, "%d", ap); }'''
+
+if cc.compiles(vsnprintf_code)
+    fox_defines += '-DHAVE_VSNPRINTF'
+endif
+
 vsscanf_code = '''#include<stdio.h>
 #include<stdarg.h>
-int func(const char *s, va_list ap) {
-    return vsscanf(s, "%d", ap);
-}'''
+int func(const char *s, va_list ap) { return vsscanf(s, "%d", ap); }'''
 
 if cc.compiles(vsscanf_code)
     fox_defines += '-DHAVE_VSSCANF'
