@@ -11,7 +11,7 @@ adie_sources = [
 'TextWindow.cpp'
 ]
 
-icons = [
+adie_icons = [
 'adie_gif.gif',
 'big_gif.gif',
 'bookdel_gif.gif',
@@ -52,24 +52,22 @@ icons = [
 'undo_gif.gif'
 ]
 
-icons_h = custom_target('icons.h',
-    input : icons,
+adie_icons_h = custom_target('adie-icons-h',
+    input : adie_icons,
     output : 'icons.h',
     command : [reswrap, '-i', '-o', '@OUTPUT@', '@INPUT@']
 )
 
-icons_cpp = custom_target('icons.cpp',
-    input : icons,
+adie_icons_cpp = custom_target('adie-icons-cpp',
+    input : adie_icons,
     output : 'icons.cpp',
     command : [reswrap, '-e', '-o', '@OUTPUT@', '@INPUT@']
 )
 
-adie_sources += icons_cpp
+adie_sources += adie_icons_cpp
 
 executable('adie', adie_sources,
-    dependencies: libfox_dep,
-    install : true,
-    gui_app: true
+    dependencies: libfox_dep, install : true, gui_app : true
 )
 
 install_man('adie.1')
