@@ -14,9 +14,14 @@ In addition the Meson configuration is much easier than the equivalent one based
 From the source directory:
 
 ```sh
-meson builddir && cd builddir
-ninja
-ninja install
+# configure
+meson build
+
+# build the library and applications
+ninja -C build
+
+# install
+ninja -C build install
 ```
 more information from the [Meson Quick guide](https://mesonbuild.com/Quick-guide.html).
 
