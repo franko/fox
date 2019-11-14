@@ -14,7 +14,14 @@ endif
 cc = meson.get_compiler('cpp')
 host_system = host_machine.system()
 
-use_x_window = host_system != 'windows'
+supported_host_systems = ['windows', 'cygwin', 'linux', 'netbsd', 'freebsd', 'gnu']
+
+if host_system not in supported_host_systems
+    error('Host system \'' + host_system + '\' is not supported.')
+endif
+
+host_is_window = (host_system == 'windows') or (host_system == 'cygwin')
+use_x_window = not host_is_window
 
 # public, external dependencies and defines
 fox_ext_deps = []
@@ -24,7 +31,7 @@ fox_ext_defines = []
 fox_deps = []
 fox_defines = []
 
-if host_system != 'windows'
+if not host_is_window
     fox_deps += dependency('x11')
     fox_deps += dependency('xext')
     fox_defines += [
