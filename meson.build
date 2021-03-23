@@ -121,7 +121,7 @@ xft_dep        = dependency('xft', required: false)
 
 has_xft_deps = freetype_dep.found() and fontconfig_dep.found() and xft_dep.found()
 
-if use_x_window and get_option('xft') and has_xfs_deps
+if use_x_window and get_option('xft') and has_xft_deps
     fox_deps += [freetype_dep, fontconfig_dep, xft_dep]
     fox_defines += '-DHAVE_XFT_H'
 endif
