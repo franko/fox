@@ -3,11 +3,11 @@
 *                  F i l e   P r o p e r t i e s   D i a l o g                  *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 2000,2006 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 2000,2021 by Jeroen van der Zijp.   All Rights Reserved.        *
 *********************************************************************************
-* This program is free software; you can redistribute it and/or modify          *
+* This program is free software: you can redistribute it and/or modify          *
 * it under the terms of the GNU General Public License as published by          *
-* the Free Software Foundation; either version 2 of the License, or             *
+* the Free Software Foundation, either version 3 of the License, or             *
 * (at your option) any later version.                                           *
 *                                                                               *
 * This program is distributed in the hope that it will be useful,               *
@@ -16,10 +16,7 @@
 * GNU General Public License for more details.                                  *
 *                                                                               *
 * You should have received a copy of the GNU General Public License             *
-* along with this program; if not, write to the Free Software                   *
-* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA.    *
-*********************************************************************************
-* $Id: PropertyDialog.h,v 1.15 2006/01/22 17:58:15 fox Exp $                    *
+* along with this program.  If not, see <http://www.gnu.org/licenses/>.         *
 ********************************************************************************/
 #ifndef PROPERTYDIALOG_H
 #define PROPERTYDIALOG_H
@@ -36,13 +33,14 @@ protected:
   FXLabel       *createtime;
   FXLabel       *modifytime;
   FXLabel       *accesstime;
+  FXCheckButton *filemode[12];
   FXTextField   *fileowner;
   FXTextField   *filegroup;
 private:
   PropertyDialog(){}
   PropertyDialog(const PropertyDialog&);
 public:
-  PropertyDialog(FXWindow *owner);
+  PropertyDialog(FXWindow *own);
   virtual ~PropertyDialog();
   };
 

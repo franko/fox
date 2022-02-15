@@ -3,9 +3,7 @@
 *                                 Test Dialog Box                               *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 1997,2006 by Jeroen van der Zijp.   All Rights Reserved.        *
-*********************************************************************************
-* $Id: dialog.cpp,v 1.45 2006/01/22 17:58:59 fox Exp $                          *
+* Copyright (C) 1997,2021 by Jeroen van der Zijp.   All Rights Reserved.        *
 ********************************************************************************/
 #include "fx.h"
 #include <stdio.h>
@@ -27,7 +25,7 @@ protected:
 private:
   FXTestDialog(){}
 public:
-  FXTestDialog(FXWindow* owner);
+  FXTestDialog(FXWindow* own);
   virtual ~FXTestDialog();
   };
 
@@ -78,8 +76,7 @@ FXIMPLEMENT(FXTestDialog,FXDialogBox,NULL,0)
 
 
 // Construct a dialog box
-FXTestDialog::FXTestDialog(FXWindow* owner):
-  FXDialogBox(owner,"Test of Dialog Box",DECOR_TITLE|DECOR_BORDER){
+FXTestDialog::FXTestDialog(FXWindow* own):FXDialogBox(own,"Test of Dialog Box",DECOR_TITLE|DECOR_BORDER){
 
   // Bottom buttons
   buttons=new FXHorizontalFrame(this,LAYOUT_SIDE_BOTTOM|FRAME_NONE|LAYOUT_FILL_X|PACK_UNIFORM_WIDTH,0,0,0,0,40,40,20,20);

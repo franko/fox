@@ -85,12 +85,18 @@ Anatomy of Regular Expressions
   The special form "a{n}"
   is equivalent to "a{n,n}".
   <p>
-  Repetitions may be <em>greedy</em> or <em>lazy</em>.  Greedy repetitions are
-  the default; greedy repetitions will try to match as many characters as possible,
-  whereas lazy repetitions will try to match as few as possible.
+  Repetitions may be <em>greedy</em>, <em>lazy</em>, or <em>possessive</em>.
+  Greedy repetitions are the default; greedy repetitions will try to match as
+  many characters as possible, whereas lazy repetitions will try to match as
+  few as possible.  Finally, possessive repetitions behave like greedy ones
+  except that there is no attempt to match fewer occurrences: if the pattern
+  doesn't match after the maximum number of occurrences, no further attempts
+  will be tried with fewer ones.
+  <p>
   You can indicate a lazy repetition by appending a "?".  So "a*?" is the lazy
   equivalent of "a*", "a??" the lazy equivalent of "a?", and "a{2,5}?" that of
-  "a{2,5}".
+  "a{2,5}".  A possessive repetition is performed by suffixing the "+" after
+  the end.  For example, the pattern "a*+" is the possessive version of "a*".
   <p>
   A sequence of pieces makes up one branch.  Several branches may be separated
   by a "|", and these become alternatives.  For example, the pattern "ac|dc"
@@ -124,7 +130,8 @@ Anatomy of Regular Expressions
   and word interior, respectively.
   Note that the backspace character may be entered as <b>\cH</b> or <b>\x8</b>.
   <p>
-  The ultimate in assertions is the so-called positive or negative look-ahead.
+  The ultimate in assertions is the so-called positive or negative look-ahead,
+  and positive or negative look-behind.
   Lookahead effectively provides for arbitrarily complex positive or
   negative assertions.
   Unless you're familiar with PERL, you may not have seen certain features before.
@@ -136,6 +143,10 @@ Anatomy of Regular Expressions
   respectively.  For example "fred(?!erick)" will match "fred" and "freddy", but
   not "frederick".
   <p>
+  The look-behind assertions are specified with the syntax "(?&lt;= ...)" for positive
+  look-behind, and "(?&lt;! ...)" for negative look-behind.  Unlike look-ahead, the
+  look-behind string can not be totally arbitrary: it needs to be a fixed length only.
+  This limitation may be removed in future versions of FXRex.
 
   <p>
   Jeffrey Friedl wrote what is now the standard work on regular expressions, see
@@ -289,6 +300,8 @@ FXRex supports the following matching operators:
 <TR><TD><font size=1>\Z</font></TD><TD><font size=1>Match only and end of string.</font></TD></TR>
 <TR><TD><font size=1>(?= ... )</font></TD><TD><font size=1>Positive lookahead.</font></TD></TR>
 <TR><TD><font size=1>(?! ... )</font></TD><TD><font size=1>Negative lookahead.</font></TD></TR>
+<TR><TD><font size=1>(?&lt;= ... )</font></TD><TD><font size=1>Positive lookbehind.</font></TD></TR>
+<TR><TD><font size=1>(?&lt;! ... )</font></TD><TD><font size=1>Negative lookbehind.</font></TD></TR>
 
 <TR><TD colspan=2><font size=1><p><center>Other<hr></center></font></TD></TR>
 <TR><TD><font size=1>\1 ... \9</font></TD><TD><font size=1>Back reference.</font></TD></TR>
@@ -329,7 +342,7 @@ The default constructor initializes FXRex to the fallback or empty
 pattern.
 </BLOCKQUOTE>
 <p>
-<P><BR><B>FXRex</B>(const FXRex& <B><I>orig</I></B>)
+<P><BR><B>FXRex</B>(const FXRex&amp; <B><I>orig</I></B>)
 <BLOCKQUOTE>
 The copy constructor initializes FXRex to the a copy of the original
 pattern.
@@ -342,12 +355,12 @@ of the parse will be assigned to its contents; this code will be set to REGERR_O
 or some error code if it failed.
 </BLOCKQUOTE>
 <p>
-<P><BR><B>FXRex</B>(const FXString& <B><I>pattern</I></B>,FXint <B><I>mode</I></B>=REX_NORMAL,FXRexError* <B><I>error</I></B>=NULL)
+<P><BR><B>FXRex</B>(const FXString&amp; <B><I>pattern</I></B>,FXint <B><I>mode</I></B>=REX_NORMAL,FXRexError* <B><I>error</I></B>=NULL)
 <BLOCKQUOTE>
 Same as above, only taking an FXString as argument.
 </BLOCKQUOTE>
 <p>
-<P><BR>FXRex&<B></B> operator=(const FXRex& <B><I>orig</I></B>)
+<P><BR>FXRex&amp;<B></B> operator=(const FXRex&amp; <B><I>orig</I></B>)
 <BLOCKQUOTE>
 Assigns the compiled pattern of orig into this FXRex.
 </BLOCKQUOTE>
@@ -391,7 +404,7 @@ initialized to the fallback program; in other words, the regular expression will
 be <em>empty</em>.  All matches attempted with the empty pattern will fail.
 </BLOCKQUOTE>
 <p>
-<P><BR>FXRexError<B> parse</B>(const FXString& <B><I>pattern</I></B>,FXint <B><I>mode</I></B>=REX_NORMAL)
+<P><BR>FXRexError<B> parse</B>(const FXString&amp; <B><I>pattern</I></B>,FXint <B><I>mode</I></B>=REX_NORMAL)
 <BLOCKQUOTE>
 Same as above, only taking an FXString as argument.
 </BLOCKQUOTE>
@@ -442,20 +455,24 @@ This is usually what people expect to happen.
 </ul>
 
 <p>
-The parameter <B><I>npar</I></B> controls the length of the beg/end arrays.  It should
-be set to at least 1.
+The parameter <B><I>npar</I></B> controls the length of the <B><I>beg</I></B> and <B><I>end</I></B> arrays.
+It should be set to at least 1.
 If the pattern has been compiled with REX_CAPTURE, any capturing sub-expressions at a level
-greater than <B><I>npar</I></B> will operate as if they were non-capturing subexpressions.
-Thus, backreferences greater than <B><I>npar</I></B> will fail.<br>
-Hence it is important to pass a value for <B><I>npar</I></B> which is at least as large
-as the expected number of capturing subexpressions.
+less than <B><I>npar</I></B> will be returned into the arrays <B><I>beg</I></B> and <B><I>end</I></B>.
+Backreferences only work if capturing parentheses are enabled with REX_CAPTURE, although
+it is OK to pass npar=1 if you're not actually interested in the values of the captured
+parentheses: the backreferences and capturing parentheses use independent arrays.<br>
+
+To capture sub-expressions, is important to pass a value for <B><I>npar</I></B> which is at
+least as large as the expected number of capturing subexpressions, but the value of npar
+does not affect the matching process itself due to the use of independent arrays.
 <p>
 The parameters <B><I>fm</I></B> and <B><I>to</I></B> furnish the matcher with the range of the
 text to be searched.  Making <B><I>fm</I></B> and <B><I>to</I></B> equal will force the
-matcher to perform a single matching attemt at the given offset.
+matcher to perform a single matching attempt at the given offset.
 </BLOCKQUOTE>
 <p>
-<P><BR>FXbool<B> match</B>(const FXString& <B><I>string</I></B>,FXint* <B><I>beg</I></B>=NULL,FXint* <B><I>end</I></B>=NULL,FXint <B><I>mode</I></B>=REX_FORWARD,FXint <B><I>npar</I></B>=1,FXint <B><I>fm</I></B>=0,FXint <B><I>to</I></B>=2147483647)
+<P><BR>FXbool<B> match</B>(const FXString&amp; <B><I>string</I></B>,FXint* <B><I>beg</I></B>=NULL,FXint* <B><I>end</I></B>=NULL,FXint <B><I>mode</I></B>=REX_FORWARD,FXint <B><I>npar</I></B>=1,FXint <B><I>fm</I></B>=0,FXint <B><I>to</I></B>=2147483647)
 <BLOCKQUOTE>
 Same as above, only taking an FXString parameter.
 </BLOCKQUOTE>
@@ -467,15 +484,15 @@ Returns a pointer to a string containing a human-readable error message for the 
 <B><I>error</I></B> code.
 </BLOCKQUOTE>
 <p>
-<P><BR>FXbool<B> operator==</B>(const FXRex& <B><I>r1</I></B>,const FXRex& <B><I>r2</I></B>)
-<P>FXbool<B> operator!=</B>(const FXRex& <B><I>r1</I></B>,const FXRex& <B><I>r2</I></B>)
+<P><BR>FXbool<B> operator==</B>(const FXRex&amp; <B><I>r1</I></B>,const FXRex&amp; <B><I>r2</I></B>)
+<P>FXbool<B> operator!=</B>(const FXRex&amp; <B><I>r1</I></B>,const FXRex&amp; <B><I>r2</I></B>)
 <BLOCKQUOTE>
 Compares regular expression <B><I>r1</I></B> and <B><I>r2</I></B>.
 <B><I>error</I></B> code.
 </BLOCKQUOTE>
 <p>
-<P><BR>FXStream&<B> operator<<</B>(FXStream& <B><I>store</I></B>,const FXRex& <B><I>s</I></B>)
-<P>FXStream&<B> operator>></B>(FXStream& <B><I>store</I></B>,FXRex& <B><I>s</I></B>)
+<P><BR>FXStream&amp;<B> operator<<</B>(FXStream&amp; <B><I>store</I></B>,const FXRex&amp; <B><I>s</I></B>)
+<P>FXStream&amp;<B> operator>></B>(FXStream&amp; <B><I>store</I></B>,FXRex&amp; <B><I>s</I></B>)
 <BLOCKQUOTE>
 Serialize and deserialize regular expression <B><I>s</I></B> to/from stream <B><I>store</I></B>.
 </BLOCKQUOTE>
@@ -609,9 +626,10 @@ that this also means we can make do with one less entry in the beg and end array
 as we're getting one fewer return value.
 <p>
 If the npar parameter is too small, then any capturing parentheses level greater
-than npar will behave as a non-capturing parenthesis (however, if back references
-are also used, a back reference to a capturing parenthesis greater than npar
-will cause the match to fail!).
+than npar will behave as before, but will simply not be returned.
+If back references are used, a back reference to a capturing parenthesis
+will work simply referencing the internal capturing arrays which are enabled
+by passing REX_CAPTURE when parsing the pattern.
 <p>
 The example below determines if there is a floating point number at
 offset pos in the string:
@@ -645,9 +663,11 @@ the whole subject string.
 <!--- COPYRIGHT -->
 <p>
 <table width=100% cellpadding=0 cellspacing=0><tr><td width=100% valign=top id=HEADLINE align=right>
-<img src='art/line.gif' width=100% height=1><font size=-1>
-Copyright &copy; 1997-2005 Jeroen van der Zijp</font>
-</td></tr></table>
+<img src='art/line.gif' width=100% height=1>
+<font size=-1>Copyright &copy; 1997-2020 Jeroen van der Zijp</font>
+</td>
+</tr>
+</table>
 </p>
 <!--- COPYRIGHT -->
 

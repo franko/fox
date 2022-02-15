@@ -90,7 +90,7 @@ PRE_UNINSTALL = :
 POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
-noinst_PROGRAMS = chart$(EXEEXT)
+noinst_PROGRAMS = charttest$(EXEEXT)
 subdir = chart
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/configure.ac
@@ -130,26 +130,24 @@ am__uninstall_files_from_dir = { \
   }
 am__installdirs = "$(DESTDIR)$(libdir)" "$(DESTDIR)$(chartincludedir)"
 LTLIBRARIES = $(lib_LTLIBRARIES)
-am__DEPENDENCIES_1 =
-libCHART_1_6_la_DEPENDENCIES = $(am__DEPENDENCIES_1) \
-	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
-	$(top_builddir)/src/libFOX-1.6.la
-am_libCHART_1_6_la_OBJECTS = FXChart.lo
-libCHART_1_6_la_OBJECTS = $(am_libCHART_1_6_la_OBJECTS)
+libCHART_1_7_la_DEPENDENCIES = $(top_builddir)/lib/libFOX-1.7.la
+am_libCHART_1_7_la_OBJECTS = FX2DChart.lo FX2DPlot.lo FXAxis.lo \
+	FXChart.lo FXCurve.lo chartutils.lo
+libCHART_1_7_la_OBJECTS = $(am_libCHART_1_7_la_OBJECTS)
 AM_V_lt = $(am__v_lt_@AM_V@)
 am__v_lt_ = $(am__v_lt_@AM_DEFAULT_V@)
 am__v_lt_0 = --silent
 am__v_lt_1 = 
-libCHART_1_6_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CXX \
+libCHART_1_7_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CXX \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CXXLD) \
-	$(AM_CXXFLAGS) $(CXXFLAGS) $(libCHART_1_6_la_LDFLAGS) \
+	$(AM_CXXFLAGS) $(CXXFLAGS) $(libCHART_1_7_la_LDFLAGS) \
 	$(LDFLAGS) -o $@
 PROGRAMS = $(noinst_PROGRAMS)
-am__objects_1 =
-am_chart_OBJECTS = chart.$(OBJEXT) icons.$(OBJEXT) $(am__objects_1)
-chart_OBJECTS = $(am_chart_OBJECTS)
-chart_LDADD = $(LDADD)
-chart_DEPENDENCIES = libCHART-1.6.la $(top_builddir)/src/libFOX-1.6.la
+am_charttest_OBJECTS = charttest.$(OBJEXT) icons.$(OBJEXT)
+charttest_OBJECTS = $(am_charttest_OBJECTS)
+charttest_LDADD = $(LDADD)
+charttest_DEPENDENCIES = libCHART-1.7.la \
+	$(top_builddir)/lib/libFOX-1.7.la
 AM_V_P = $(am__v_P_@AM_V@)
 am__v_P_ = $(am__v_P_@AM_DEFAULT_V@)
 am__v_P_0 = false
@@ -202,8 +200,8 @@ AM_V_CCLD = $(am__v_CCLD_@AM_V@)
 am__v_CCLD_ = $(am__v_CCLD_@AM_DEFAULT_V@)
 am__v_CCLD_0 = @echo "  CCLD    " $@;
 am__v_CCLD_1 = 
-SOURCES = $(libCHART_1_6_la_SOURCES) $(chart_SOURCES)
-DIST_SOURCES = $(libCHART_1_6_la_SOURCES) $(chart_SOURCES)
+SOURCES = $(libCHART_1_7_la_SOURCES) $(charttest_SOURCES)
+DIST_SOURCES = $(libCHART_1_7_la_SOURCES) $(charttest_SOURCES)
 am__can_run_installinfo = \
   case $$AM_UPDATE_INFO_DIR in \
     n|no|NO) false;; \
@@ -235,6 +233,7 @@ ACLOCAL = @ACLOCAL@
 AMTAR = @AMTAR@
 AM_DEFAULT_VERBOSITY = @AM_DEFAULT_VERBOSITY@
 AR = @AR@
+AS = @AS@
 AUTOCONF = @AUTOCONF@
 AUTOHEADER = @AUTOHEADER@
 AUTOMAKE = @AUTOMAKE@
@@ -247,7 +246,7 @@ CPPFLAGS = @CPPFLAGS@
 CXX = @CXX@
 CXXCPP = @CXXCPP@
 CXXDEPMODE = @CXXDEPMODE@
-CXXFLAGS = @CXXFLAGS@ @X_CFLAGS@
+CXXFLAGS = @CXXFLAGS@
 CYGPATH_W = @CYGPATH_W@
 DEFS = @DEFS@
 DEPDIR = @DEPDIR@
@@ -260,10 +259,10 @@ ECHO_T = @ECHO_T@
 EGREP = @EGREP@
 EXEEXT = @EXEEXT@
 FGREP = @FGREP@
-FOX_BYTEORDER = @FOX_BYTEORDER@
 FOX_MAJOR_VERSION = @FOX_MAJOR_VERSION@
 FOX_MINOR_VERSION = @FOX_MINOR_VERSION@
 FOX_PATCH_LEVEL = @FOX_PATCH_LEVEL@
+GLU_LIBS = @GLU_LIBS@
 GL_LIBS = @GL_LIBS@
 GREP = @GREP@
 INSTALL = @INSTALL@
@@ -366,29 +365,42 @@ target_alias = @target_alias@
 top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
+AM_CXXFLAGS = @X_CFLAGS@
 INCLUDES = -I$(top_srcdir)/include -I$(top_builddir)/include
 RESWRAP = $(top_builddir)/utils/reswrap
 SUFFIXES = .gif .bmp
-LDADD = libCHART-1.6.la $(top_builddir)/src/libFOX-1.6.la -lm
-lib_LTLIBRARIES = libCHART-1.6.la
-libCHART_1_6_la_LIBADD = $(X_LIBS) $(X_BASE_LIBS) $(X_EXTRA_LIBS) $(top_builddir)/src/libFOX-1.6.la
-libCHART_1_6_la_LDFLAGS = \
-        -version-info $(LT_CURRENT):$(LT_REVISION):$(LT_AGE)    \
-	-export-dynamic \
-	-no-undefined
+LDADD = libCHART-1.7.la $(top_builddir)/lib/libFOX-1.7.la -lm
+lib_LTLIBRARIES = libCHART-1.7.la
 
-chartincludedir = $(includedir)/fox-1.6/chart
+#libCHART_1_7_la_LIBADD  = $(X_LIBS) $(X_BASE_LIBS) $(X_EXTRA_LIBS)
+libCHART_1_7_la_LIBADD = $(top_builddir)/lib/libFOX-1.7.la
+libCHART_1_7_la_LDFLAGS = -version-info $(LT_CURRENT):$(LT_REVISION):$(LT_AGE) -export-dynamic
+chartincludedir = $(includedir)/fox-1.7/chart
 chartinclude_HEADERS = \
-FXChart.h
+FX2DChart.h \
+FX2DPlot.h \
+FXAxis.h \
+FXChart.h \
+FXCurve.h \
+chartdefs.h \
+chart.h
 
-libCHART_1_6_la_SOURCES = \
-FXChart.cpp
+libCHART_1_7_la_SOURCES = \
+FX2DChart.cpp \
+FX2DPlot.cpp \
+FXAxis.cpp \
+FXChart.cpp \
+FXCurve.cpp \
+chartutils.h \
+chartutils.cpp
 
-ICONS = marble.bmp
-chart_SOURCES = chart.cpp icons.h icons.cpp $(ICONS)
+ICONS = $(top_srcdir)/chart/marble.bmp
+charttest_SOURCES = charttest.cpp icons.h icons.cpp
+BUILT_SOURCES = icons.h icons.cpp
 CLEANFILES = icons.h icons.cpp
-EXTRA_DIST = Makefile.bc
-all: all-am
+EXTRA_DIST = $(ICONS)
+all: $(BUILT_SOURCES)
+	$(MAKE) $(AM_MAKEFLAGS) all-am
 
 .SUFFIXES:
 .SUFFIXES: .gif .bmp .cpp .lo .o .obj
@@ -457,8 +469,8 @@ clean-libLTLIBRARIES:
 	  rm -f $${locs}; \
 	}
 
-libCHART-1.6.la: $(libCHART_1_6_la_OBJECTS) $(libCHART_1_6_la_DEPENDENCIES) $(EXTRA_libCHART_1_6_la_DEPENDENCIES) 
-	$(AM_V_CXXLD)$(libCHART_1_6_la_LINK) -rpath $(libdir) $(libCHART_1_6_la_OBJECTS) $(libCHART_1_6_la_LIBADD) $(LIBS)
+libCHART-1.7.la: $(libCHART_1_7_la_OBJECTS) $(libCHART_1_7_la_DEPENDENCIES) $(EXTRA_libCHART_1_7_la_DEPENDENCIES) 
+	$(AM_V_CXXLD)$(libCHART_1_7_la_LINK) -rpath $(libdir) $(libCHART_1_7_la_OBJECTS) $(libCHART_1_7_la_LIBADD) $(LIBS)
 
 clean-noinstPROGRAMS:
 	@list='$(noinst_PROGRAMS)'; test -n "$$list" || exit 0; \
@@ -469,9 +481,9 @@ clean-noinstPROGRAMS:
 	echo " rm -f" $$list; \
 	rm -f $$list
 
-chart$(EXEEXT): $(chart_OBJECTS) $(chart_DEPENDENCIES) $(EXTRA_chart_DEPENDENCIES) 
-	@rm -f chart$(EXEEXT)
-	$(AM_V_CXXLD)$(CXXLINK) $(chart_OBJECTS) $(chart_LDADD) $(LIBS)
+charttest$(EXEEXT): $(charttest_OBJECTS) $(charttest_DEPENDENCIES) $(EXTRA_charttest_DEPENDENCIES) 
+	@rm -f charttest$(EXEEXT)
+	$(AM_V_CXXLD)$(CXXLINK) $(charttest_OBJECTS) $(charttest_LDADD) $(LIBS)
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
@@ -479,8 +491,13 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/FX2DChart.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/FX2DPlot.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/FXAxis.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/FXChart.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/chart.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/FXCurve.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/charttest.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/chartutils.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/icons.Po@am__quote@
 
 .cpp.o:
@@ -614,13 +631,15 @@ distdir: $(DISTFILES)
 	  fi; \
 	done
 check-am: all-am
-check: check-am
+check: $(BUILT_SOURCES)
+	$(MAKE) $(AM_MAKEFLAGS) check-am
 all-am: Makefile $(LTLIBRARIES) $(PROGRAMS) $(HEADERS)
 installdirs:
 	for dir in "$(DESTDIR)$(libdir)" "$(DESTDIR)$(chartincludedir)"; do \
 	  test -z "$$dir" || $(MKDIR_P) "$$dir"; \
 	done
-install: install-am
+install: $(BUILT_SOURCES)
+	$(MAKE) $(AM_MAKEFLAGS) install-am
 install-exec: install-exec-am
 install-data: install-data-am
 uninstall: uninstall-am
@@ -651,6 +670,7 @@ distclean-generic:
 maintainer-clean-generic:
 	@echo "This command is intended for maintainers to use"
 	@echo "it deletes files that may require special tools to rebuild."
+	-test -z "$(BUILT_SOURCES)" || rm -f $(BUILT_SOURCES)
 clean: clean-am
 
 clean-am: clean-generic clean-libLTLIBRARIES clean-libtool \
@@ -722,7 +742,7 @@ ps-am:
 
 uninstall-am: uninstall-chartincludeHEADERS uninstall-libLTLIBRARIES
 
-.MAKE: install-am install-strip
+.MAKE: all check install install-am install-strip
 
 .PHONY: CTAGS GTAGS TAGS all all-am check check-am clean clean-generic \
 	clean-libLTLIBRARIES clean-libtool clean-noinstPROGRAMS \
@@ -743,13 +763,11 @@ uninstall-am: uninstall-chartincludeHEADERS uninstall-libLTLIBRARIES
 .PRECIOUS: Makefile
 
 
-chart.cpp: icons.h icons.cpp
-
 icons.h: $(ICONS)
-	$(RESWRAP) -i -o icons.h $^
+	$(RESWRAP) -h -o $@ $^
 
 icons.cpp: $(ICONS)
-	$(RESWRAP) -e -o icons.cpp $^
+	$(RESWRAP) -i icons.h -o $@ $^
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

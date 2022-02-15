@@ -3,23 +3,20 @@
 *                  S w i t c h   C o n t a i n e r   W i d g e t                *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 1997,2006 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 1997,2021 by Jeroen van der Zijp.   All Rights Reserved.        *
 *********************************************************************************
-* This library is free software; you can redistribute it and/or                 *
-* modify it under the terms of the GNU Lesser General Public                    *
-* License as published by the Free Software Foundation; either                  *
-* version 2.1 of the License, or (at your option) any later version.            *
+* This library is free software; you can redistribute it and/or modify          *
+* it under the terms of the GNU Lesser General Public License as published by   *
+* the Free Software Foundation; either version 3 of the License, or             *
+* (at your option) any later version.                                           *
 *                                                                               *
 * This library is distributed in the hope that it will be useful,               *
 * but WITHOUT ANY WARRANTY; without even the implied warranty of                *
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU             *
-* Lesser General Public License for more details.                               *
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the                 *
+* GNU Lesser General Public License for more details.                           *
 *                                                                               *
-* You should have received a copy of the GNU Lesser General Public              *
-* License along with this library; if not, write to the Free Software           *
-* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA.    *
-*********************************************************************************
-* $Id: FXSwitcher.h,v 1.17 2006/01/22 17:58:10 fox Exp $                        *
+* You should have received a copy of the GNU Lesser General Public License      *
+* along with this program.  If not, see <http://www.gnu.org/licenses/>          *
 ********************************************************************************/
 #ifndef FXSWITCHER_H
 #define FXSWITCHER_H
@@ -57,7 +54,7 @@ class FXAPI FXSwitcher : public FXPacker {
 protected:
   FXint  current;
 protected:
-  FXSwitcher(){}
+  FXSwitcher();
 private:
   FXSwitcher(const FXSwitcher&);
   FXSwitcher& operator=(const FXSwitcher&);
@@ -98,7 +95,7 @@ public:
   virtual void layout();
 
   /// Bring the child window at index to the top
-  void setCurrent(FXint index,FXbool notify=FALSE);
+  void setCurrent(FXint index,FXbool notify=false);
 
   /// Return the index of the child window currently on top
   FXint getCurrent() const { return current; }

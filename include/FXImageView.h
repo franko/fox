@@ -3,23 +3,20 @@
 *                       I m a g e   V i e w   W i d g e t                       *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 2000,2006 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 2000,2021 by Jeroen van der Zijp.   All Rights Reserved.        *
 *********************************************************************************
-* This library is free software; you can redistribute it and/or                 *
-* modify it under the terms of the GNU Lesser General Public                    *
-* License as published by the Free Software Foundation; either                  *
-* version 2.1 of the License, or (at your option) any later version.            *
+* This library is free software; you can redistribute it and/or modify          *
+* it under the terms of the GNU Lesser General Public License as published by   *
+* the Free Software Foundation; either version 3 of the License, or             *
+* (at your option) any later version.                                           *
 *                                                                               *
 * This library is distributed in the hope that it will be useful,               *
 * but WITHOUT ANY WARRANTY; without even the implied warranty of                *
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU             *
-* Lesser General Public License for more details.                               *
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the                 *
+* GNU Lesser General Public License for more details.                           *
 *                                                                               *
-* You should have received a copy of the GNU Lesser General Public              *
-* License along with this library; if not, write to the Free Software           *
-* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA.    *
-*********************************************************************************
-* $Id: FXImageView.h,v 1.16 2006/01/22 17:58:05 fox Exp $                       *
+* You should have received a copy of the GNU Lesser General Public License      *
+* along with this program.  If not, see <http://www.gnu.org/licenses/>          *
 ********************************************************************************/
 #ifndef FXIMAGEVIEW_H
 #define FXIMAGEVIEW_H
@@ -85,7 +82,7 @@ public:
   virtual void layout();
 
   /// Image view widget can receive focus
-  virtual bool canFocus() const;
+  virtual FXbool canFocus() const;
 
   /// Return the width of the contents
   virtual FXint getContentWidth();

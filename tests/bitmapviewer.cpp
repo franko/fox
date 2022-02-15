@@ -3,9 +3,7 @@
 *                    B i t m a p   V i e w e r   D e m o                        *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 2000,2006 by Jeroen van der Zijp.   All Rights Reserved.        *
-*********************************************************************************
-* $Id: bitmapviewer.cpp,v 1.19 2006/01/22 17:58:58 fox Exp $                    *
+* Copyright (C) 2000,2021 by Jeroen van der Zijp.   All Rights Reserved.        *
 ********************************************************************************/
 #include "fx.h"
 #include <stdio.h>
@@ -235,7 +233,7 @@ FXIMPLEMENT(BitmapWindow,FXMainWindow,BitmapWindowMap,ARRAYNUMBER(BitmapWindowMa
 
 
 // Make some windows
-BitmapWindow::BitmapWindow(FXApp* a):FXMainWindow(a,"FOX Image Viewer: - untitled",NULL,NULL,DECOR_ALL,0,0,850,600,0,0){
+BitmapWindow::BitmapWindow(FXApp* a):FXMainWindow(a,"FOX Image Viewer: - untitled",NULL,NULL,DECOR_ALL,0,0,850,600,0,0),mrufiles(a){
   setTarget(this);
   setSelector(ID_TITLE);
 
@@ -332,9 +330,7 @@ BitmapWindow::BitmapWindow(FXApp* a):FXMainWindow(a,"FOX Image Viewer: - untitle
   new FXMenuCommand(filemenu,"Dump",NULL,getApp(),FXApp::ID_DUMP);
 
   // Recent file menu; this automatically hides if there are no files
-  FXMenuSeparator* sep1=new FXMenuSeparator(filemenu);
-  sep1->setTarget(&mrufiles);
-  sep1->setSelector(FXRecentFiles::ID_ANYFILES);
+  new FXMenuSeparator(filemenu,&mrufiles,FXRecentFiles::ID_ANYFILES);
   new FXMenuCommand(filemenu,FXString::null,NULL,&mrufiles,FXRecentFiles::ID_FILE_1);
   new FXMenuCommand(filemenu,FXString::null,NULL,&mrufiles,FXRecentFiles::ID_FILE_2);
   new FXMenuCommand(filemenu,FXString::null,NULL,&mrufiles,FXRecentFiles::ID_FILE_3);
@@ -346,9 +342,7 @@ BitmapWindow::BitmapWindow(FXApp* a):FXMainWindow(a,"FOX Image Viewer: - untitle
   new FXMenuCommand(filemenu,FXString::null,NULL,&mrufiles,FXRecentFiles::ID_FILE_9);
   new FXMenuCommand(filemenu,FXString::null,NULL,&mrufiles,FXRecentFiles::ID_FILE_10);
   new FXMenuCommand(filemenu,"&Clear Recent Files",NULL,&mrufiles,FXRecentFiles::ID_CLEAR);
-  FXMenuSeparator* sep2=new FXMenuSeparator(filemenu);
-  sep2->setTarget(&mrufiles);
-  sep2->setSelector(FXRecentFiles::ID_ANYFILES);
+  new FXMenuSeparator(filemenu,&mrufiles,FXRecentFiles::ID_ANYFILES);
   new FXMenuCommand(filemenu,"&Quit\tCtl-Q",NULL,this,ID_QUIT);
 
   // Edit Menu entries
@@ -370,20 +364,20 @@ BitmapWindow::BitmapWindow(FXApp* a):FXMainWindow(a,"FOX Image Viewer: - untitle
   new FXMenuCommand(manipmenu,"Crop...\t\tCrop image.",NULL,this,ID_CROP);
 
   // View Menu entries
-  new FXMenuCommand(viewmenu,"File list\t\tDisplay file list.",NULL,filebox,FXWindow::ID_TOGGLESHOWN);
+  new FXMenuCheck(viewmenu,"File list\t\tDisplay file list.",filebox,FXWindow::ID_TOGGLESHOWN);
   new FXMenuCommand(viewmenu,"Show hidden files\t\tShow hidden files and directories.",NULL,filelist,FXFileList::ID_TOGGLE_HIDDEN);
   new FXMenuCommand(viewmenu,"Show small icons\t\tDisplay directory with small icons.",NULL,filelist,FXFileList::ID_SHOW_MINI_ICONS);
   new FXMenuCommand(viewmenu,"Show big icons\t\tDisplay directory with big icons.",NULL,filelist,FXFileList::ID_SHOW_BIG_ICONS);
   new FXMenuCommand(viewmenu,"Show details view\t\tDisplay detailed directory listing.",NULL,filelist,FXFileList::ID_SHOW_DETAILS);
   new FXMenuCommand(viewmenu,"Rows of icons\t\tView row-wise.",NULL,filelist,FXFileList::ID_ARRANGE_BY_ROWS);
   new FXMenuCommand(viewmenu,"Columns of icons\t\tView column-wise.",NULL,filelist,FXFileList::ID_ARRANGE_BY_COLUMNS);
-  new FXMenuCommand(viewmenu,"Toolbar\t\tDisplay toolbar.",NULL,toolbar,FXWindow::ID_TOGGLESHOWN);
+  new FXMenuCheck(viewmenu,"Toolbar\t\tDisplay toolbar.",toolbar,FXWindow::ID_TOGGLESHOWN);
   new FXMenuCommand(viewmenu,"Float toolbar\t\tUndock the toolbar.",NULL,toolbar,FXToolBar::ID_DOCK_FLOAT);
   new FXMenuCommand(viewmenu,"Dock toolbar top\t\tDock the toolbar on the top.",NULL,toolbar,FXToolBar::ID_DOCK_TOP);
   new FXMenuCommand(viewmenu,"Dock toolbar left\t\tDock the toolbar on the left.",NULL,toolbar,FXToolBar::ID_DOCK_LEFT);
   new FXMenuCommand(viewmenu,"Dock toolbar right\t\tDock the toolbar on the right.",NULL,toolbar,FXToolBar::ID_DOCK_RIGHT);
   new FXMenuCommand(viewmenu,"Dock toolbar bottom\t\tDock the toolbar on the bottom.",NULL,toolbar,FXToolBar::ID_DOCK_BOTTOM);
-  new FXMenuCommand(viewmenu,"Status line\t\tDisplay status line.",NULL,statusbar,FXWindow::ID_TOGGLESHOWN);
+  new FXMenuCheck(viewmenu,"Status line\t\tDisplay status line.",statusbar,FXWindow::ID_TOGGLESHOWN);
 
   // Help Menu entries
   new FXMenuCommand(helpmenu,"&About FOX...",NULL,this,ID_ABOUT,0);
@@ -419,7 +413,7 @@ BitmapWindow::~BitmapWindow(){
 
 // About box
 long BitmapWindow::onCmdAbout(FXObject*,FXSelector,void*){
-  FXMessageBox about(this,"About Bitmap Viewer","Bitmap Viewer demonstrates the FOX Bitmapview widget.\n\nUsing the FOX C++ GUI Library (http://www.fox-toolkit.org)\n\nCopyright (C) 2003,2004 Jeroen van der Zijp (jeroen@fox-toolkit.org)",NULL,MBOX_OK|DECOR_TITLE|DECOR_BORDER);
+  FXMessageBox about(this,"About Bitmap Viewer","Bitmap Viewer demonstrates the FOX Bitmapview widget.\n\nUsing the FOX C++ GUI Library (http://www.fox-toolkit.org)\n\nCopyright (C) 2003,2015 Jeroen van der Zijp (jeroen@fox-toolkit.com)",NULL,MBOX_OK|DECOR_TITLE|DECOR_BORDER);
   about.execute();
   return 1;
   }
@@ -432,17 +426,17 @@ FXbool BitmapWindow::loadimage(const FXString& file){
   FXBitmap *img=NULL;
   FXBitmap *old;
   TIFF *tif;
-  FXint width,height,size,scanline,i;
+  FXint iwidth,iheight,size,scanline,i;
   FXshort spp, bps, order;
-  FXuchar *data,*pa;
+  FXuchar *pixels,*pa;
 
   tif=TIFFOpen(file.text(),"r");
   if(tif==NULL){
     FXMessageBox::error(this,MBOX_OK,"Error Loading Bitmap","Not a tiff file");
-    return FALSE;
+    return false;
     }
-  TIFFGetFieldDefaulted(tif,TIFFTAG_IMAGELENGTH,&height);
-  TIFFGetFieldDefaulted(tif,TIFFTAG_IMAGEWIDTH,&width);
+  TIFFGetFieldDefaulted(tif,TIFFTAG_IMAGELENGTH,&iheight);
+  TIFFGetFieldDefaulted(tif,TIFFTAG_IMAGEWIDTH,&iwidth);
   TIFFGetFieldDefaulted(tif,TIFFTAG_BITSPERSAMPLE,&bps);
   TIFFGetFieldDefaulted(tif,TIFFTAG_SAMPLESPERPIXEL,&spp);
   TIFFGetFieldDefaulted(tif,TIFFTAG_FILLORDER,&order);
@@ -450,27 +444,27 @@ FXbool BitmapWindow::loadimage(const FXString& file){
   if(bps!=1 || spp!=1){
     TIFFClose(tif);
     FXMessageBox::error(this,MBOX_OK,"Error Loading Bitmap","SPP = %hd, BPS = %hd",spp,bps);
-    return FALSE;
+    return false;
     }
   scanline=TIFFScanlineSize(tif);
-  size=height*scanline;
-  FXMALLOC(&data,FXuchar,size);
-  pa=data;
-  for(i=0; i<height; i++){
+  size=iheight*scanline;
+  allocElms(pixels,size);
+  pa=pixels;
+  for(i=0; i<iheight; i++){
     TIFFReadScanline(tif,pa,i,0);
     pa+=scanline;
     }
   for(i=0; i<size; i++){
-    data[i]=FXBITREVERSE(data[i]);
+    pixels[i]=reverse8(pixels[i]);
     }
   TIFFClose(tif);
 
-  img=new FXBitmap(getApp(),data,BITMAP_KEEP|BITMAP_OWNED,width,height);
+  img=new FXBitmap(getApp(),pixels,BITMAP_KEEP|BITMAP_OWNED,iwidth,iheight);
 
   // Perhaps failed
   if(img==NULL){
     FXMessageBox::error(this,MBOX_OK,"Error Loading Bitmap","Unsupported type: %s",FXPath::extension(file).text());
-    return FALSE;
+    return false;
     }
 
   img->create();
@@ -478,7 +472,7 @@ FXbool BitmapWindow::loadimage(const FXString& file){
   bitmapview->setBitmap(img);
   delete old;
 #endif
-  return TRUE;
+  return true;
   }
 
 
@@ -487,38 +481,38 @@ FXbool BitmapWindow::saveimage(const FXString& file){
   bitmapview->getBitmap()->restore();
 #ifdef HAVE_TIFF_H
   FXBitmap *img;
-  FXint width,height,size,scanline,i;
-  FXuchar *data,*pa;
+  FXint iwidth,iheight,size,scanline,i;
+  FXuchar *pixels,*pa;
   TIFF *tif;
 
   img=bitmapview->getBitmap();
-  width=img->getWidth();
-  height=img->getHeight();
-  scanline=(width+7)>>3;
-  size=height*scanline;
+  iwidth=img->getWidth();
+  iheight=img->getHeight();
+  scanline=(iwidth+7)>>3;
+  size=iheight*scanline;
 
-  FXMALLOC(&data,FXuchar,size);
-  memcpy(data,img->getData(),size);
+  allocElms(pixels,size);
+  memcpy(pixels,img->getData(),size);
   for(i=0; i<size; i++){
-    data[i]=FXBITREVERSE(data[i]);
+    pixels[i]=reverse8(pixels[i]);
     }
 
   tif=TIFFOpen(file.text(),"w");
-  TIFFSetField(tif,TIFFTAG_IMAGELENGTH,height);
-  TIFFSetField(tif,TIFFTAG_IMAGEWIDTH,width);
+  TIFFSetField(tif,TIFFTAG_IMAGELENGTH,iheight);
+  TIFFSetField(tif,TIFFTAG_IMAGEWIDTH,iwidth);
   TIFFSetField(tif,TIFFTAG_BITSPERSAMPLE,1);
   TIFFSetField(tif,TIFFTAG_SAMPLESPERPIXEL,1);
   TIFFSetField(tif,TIFFTAG_PLANARCONFIG,1);
 
-  pa=data;
-  for(i=0; i<height; i++) {
+  pa=pixels;
+  for(i=0; i<iheight; i++) {
     TIFFWriteScanline(tif,(tdata_t)pa,i,0);
     pa+=scanline;
     }
   TIFFClose(tif);
-  FXFREE(&data);
+  freeElms(pixels);
 #endif
-  return TRUE;
+  return true;
   }
 
 
@@ -581,9 +575,11 @@ long BitmapWindow::onCmdQuit(FXObject*,FXSelector,void*){
 
 // Update title
 long BitmapWindow::onUpdTitle(FXObject* sender,FXSelector,void*){
-  FXString caption="FOX Bitmap Viewer:- " + filename;
-  FXBitmap* image=bitmapview->getBitmap();
-  if(image){ caption+=" (" + FXStringVal(image->getWidth()) + " x " + FXStringVal(image->getHeight()) + ")"; }
+  FXString caption("FOX Image Viewer:- " + filename);
+  FXBitmap* bitmap=bitmapview->getBitmap();
+  if(bitmap){
+    caption.format("FOX Image Viewer:- %s (%d x %d)",filename.text(),bitmap->getWidth(),bitmap->getHeight());
+    }
   sender->handle(this,FXSEL(SEL_COMMAND,FXWindow::ID_SETSTRINGVALUE),(void*)&caption);
   return 1;
   }
@@ -644,9 +640,9 @@ long BitmapWindow::onCmdMirror(FXObject*,FXSelector sel,void*){
   FXBitmap* bitmap=bitmapview->getBitmap();
   FXASSERT(bitmap);
   switch(FXSELID(sel)){
-    case ID_MIRROR_HOR: bitmap->mirror(TRUE,FALSE); break;
-    case ID_MIRROR_VER: bitmap->mirror(FALSE,TRUE); break;
-    case ID_MIRROR_BOTH: bitmap->mirror(TRUE,TRUE); break;
+    case ID_MIRROR_HOR: bitmap->mirror(true,false); break;
+    case ID_MIRROR_VER: bitmap->mirror(false,true); break;
+    case ID_MIRROR_BOTH: bitmap->mirror(true,true); break;
     }
   bitmapview->setBitmap(bitmap);
   return 1;
@@ -721,7 +717,7 @@ void BitmapWindow::create(){
   hh=getApp()->reg().readIntEntry("SETTINGS","height",400);
 
   fh=getApp()->reg().readIntEntry("SETTINGS","fileheight",100);
-  fs=getApp()->reg().readIntEntry("SETTINGS","filesshown",TRUE);
+  fs=getApp()->reg().readIntEntry("SETTINGS","filesshown",true);
 
   dir=getApp()->reg().readStringEntry("SETTINGS","directory","~");
   filelist->setDirectory(dir);

@@ -3,11 +3,11 @@
 *                  F O X   D e s k t o p   C a l c u l a t o r                  *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 2001,2006 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 2001,2021 by Jeroen van der Zijp.   All Rights Reserved.        *
 *********************************************************************************
-* This program is free software; you can redistribute it and/or modify          *
+* This program is free software: you can redistribute it and/or modify          *
 * it under the terms of the GNU General Public License as published by          *
-* the Free Software Foundation; either version 2 of the License, or             *
+* the Free Software Foundation, either version 3 of the License, or             *
 * (at your option) any later version.                                           *
 *                                                                               *
 * This program is distributed in the hope that it will be useful,               *
@@ -16,10 +16,7 @@
 * GNU General Public License for more details.                                  *
 *                                                                               *
 * You should have received a copy of the GNU General Public License             *
-* along with this program; if not, write to the Free Software                   *
-* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA.    *
-*********************************************************************************
-* $Id: Calculator.h,v 1.27 2006/01/22 18:01:12 fox Exp $                        *
+* along with this program.  If not, see <http://www.gnu.org/licenses/>.         *
 ********************************************************************************/
 #ifndef CALCULATOR_H
 #define CALCULATOR_H
@@ -27,6 +24,13 @@
 
 /*******************************************************************************/
 
+
+// Show exponent
+enum {
+  EXPONENT_NEVER,
+  EXPONENT_ALWAYS,
+  EXPONENT_IFNEEDED
+  };
 
 
 // Mini application object
@@ -61,7 +65,7 @@ protected:
   FXint        base;                // Number base
   FXint        angles;              // Angle mode
   FXint        precision;	    // How many digits to show
-  FXbool       exponent;     	    // Exponential notation mode
+  FXuchar      exponent;     	    // Exponential notation mode
   FXbool       beep;		    // Beep on error
   FXint        parens;              // Count of ( and )
   FXuchar      modifiers;           // Invert, hyperbolic, entry modifiers
@@ -158,6 +162,8 @@ public:
   long onCmdFont(FXObject*,FXSelector,void*);
   long onCmdExponent(FXObject*,FXSelector,void*);
   long onUpdExponent(FXObject*,FXSelector,void*);
+  long onCmdEngineeringMode(FXObject*,FXSelector,void*);
+  long onUpdEngineeringMode(FXObject*,FXSelector,void*);
   long onCmdPrecision(FXObject*,FXSelector,void*);
   long onUpdPrecision(FXObject*,FXSelector,void*);
   long onCmdBeep(FXObject*,FXSelector,void*);
@@ -245,6 +251,7 @@ public:
     ID_COLOR_CLEAR,
     ID_EXPONENT_ALWAYS,
     ID_EXPONENT_NEVER,
+    ID_ENGINEERING_MODE,
     ID_PRECISION,
     ID_QUESTION,
     ID_BEEP,
@@ -321,7 +328,7 @@ public:
   Calculator(FXApp* a);
 
   // Close the window and save registry
-  virtual FXbool close(FXbool notify=FALSE);
+  virtual FXbool close(FXbool notify=false);
 
   /// Create
   virtual void create();
@@ -387,8 +394,12 @@ public:
   FXint getAngles() const { return angles; }
 
   /// Set exponent mode
-  void setExponentMode(FXbool expmode);
-  FXbool getExponentMode() const { return exponent; }
+  void setExponentMode(FXuchar expmode);
+  FXuchar getExponentMode() const { return (exponent&3); }
+
+  /// Set exponent mode
+  void setEngineeringMode(FXbool engmode);
+  FXbool getEngineeringMode() const { return !!(exponent&4); }
 
   /// Set precision
   void setPrecision(FXint prec);

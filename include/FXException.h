@@ -3,31 +3,32 @@
 *                          E x c e p t i o n  T y p e s                         *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 2000,2006 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 2000,2021 by Jeroen van der Zijp.   All Rights Reserved.        *
 *********************************************************************************
-* This library is free software; you can redistribute it and/or                 *
-* modify it under the terms of the GNU Lesser General Public                    *
-* License as published by the Free Software Foundation; either                  *
-* version 2.1 of the License, or (at your option) any later version.            *
+* This library is free software; you can redistribute it and/or modify          *
+* it under the terms of the GNU Lesser General Public License as published by   *
+* the Free Software Foundation; either version 3 of the License, or             *
+* (at your option) any later version.                                           *
 *                                                                               *
 * This library is distributed in the hope that it will be useful,               *
 * but WITHOUT ANY WARRANTY; without even the implied warranty of                *
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU             *
-* Lesser General Public License for more details.                               *
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the                 *
+* GNU Lesser General Public License for more details.                           *
 *                                                                               *
-* You should have received a copy of the GNU Lesser General Public              *
-* License along with this library; if not, write to the Free Software           *
-* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA.    *
-*********************************************************************************
-* $Id: FXException.h,v 1.14 2006/01/22 17:58:01 fox Exp $                       *
+* You should have received a copy of the GNU Lesser General Public License      *
+* along with this program.  If not, see <http://www.gnu.org/licenses/>          *
 ********************************************************************************/
 #ifndef FXEXCEPTION_H
 #define FXEXCEPTION_H
 
-
 namespace FX {
 
-/// Generic catch-all exception
+
+/**
+* Generic catch-all exception.
+* An optional message may be passed in the constructor, which must be a string
+* literal constant.
+*/
 class FXAPI FXException {
 private:
   const FXchar *message;
@@ -37,11 +38,25 @@ public:
   FXException():message(FXException::exceptionName){}
   FXException(const FXchar *msg):message(msg){}
   const FXchar *what() const { return message; }
-  ~FXException(){}
+ ~FXException(){}
   };
 
 
-/// Generic error exception
+/**
+* Fatal error exception.
+*/
+class FXAPI FXFatalException : public FXException {
+private:
+  static const FXchar exceptionName[];
+public:
+  FXFatalException():FXException(FXFatalException::exceptionName){}
+  FXFatalException(const FXchar *msg):FXException(msg){}
+  };
+
+
+/**
+* Generic error exception.
+*/
 class FXAPI FXErrorException : public FXException {
 private:
   static const FXchar exceptionName[];
@@ -51,7 +66,9 @@ public:
   };
 
 
-/// Index out of range
+/**
+* Index out of range.
+*/
 class FXAPI FXRangeException : public FXErrorException {
 private:
   static const FXchar exceptionName[];
@@ -61,7 +78,9 @@ public:
   };
 
 
-/// Invalid pointer
+/**
+* Invalid pointer.
+*/
 class FXAPI FXPointerException : public FXErrorException {
 private:
   static const FXchar exceptionName[];
@@ -71,7 +90,9 @@ public:
   };
 
 
-/// Generic resource exception
+/**
+* Generic resource exception.
+*/
 class FXAPI FXResourceException : public FXException {
 private:
   static const FXchar exceptionName[];
@@ -81,7 +102,9 @@ public:
   };
 
 
-/// Out of memory
+/**
+* Out of memory.
+*/
 class FXAPI FXMemoryException : public FXResourceException {
 private:
   static const FXchar exceptionName[];
@@ -91,7 +114,9 @@ public:
   };
 
 
-/// Window exception
+/**
+* Window exception.
+*/
 class FXAPI FXWindowException : public FXResourceException {
 private:
   static const FXchar exceptionName[];
@@ -101,7 +126,9 @@ public:
   };
 
 
-/// Image, cursor, bitmap exception
+/**
+* Image, cursor, bitmap exception.
+*/
 class FXAPI FXImageException : public FXResourceException {
 private:
   static const FXchar exceptionName[];
@@ -111,13 +138,32 @@ public:
   };
 
 
-/// Font exception
+/**
+* Font exception.
+*/
 class FXAPI FXFontException : public FXResourceException {
 private:
   static const FXchar exceptionName[];
 public:
   FXFontException():FXResourceException(FXFontException::exceptionName){}
   FXFontException(const FXchar *msg):FXResourceException(msg){}
+  };
+
+
+/**
+* Throw this exception to terminate the calling thread gracefully, and
+* pass the given return code back to a possible join() operation if one
+* is in effect.
+*/
+class FXAPI FXThreadException : public FXException {
+private:
+  FXint exitcode;
+private:
+  static const FXchar exceptionName[];
+public:
+  FXThreadException(FXint xc=-1):FXException(FXThreadException::exceptionName),exitcode(xc){}
+  FXThreadException(const FXchar *msg,FXint xc=-1):FXException(msg),exitcode(xc){}
+  FXint code() const { return exitcode; }
   };
 
 }

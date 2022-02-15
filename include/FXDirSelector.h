@@ -3,23 +3,20 @@
 *              D i r e c t o r y   S e l e c t i o n   W i d g e t              *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 2000,2006 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 2000,2021 by Jeroen van der Zijp.   All Rights Reserved.        *
 *********************************************************************************
-* This library is free software; you can redistribute it and/or                 *
-* modify it under the terms of the GNU Lesser General Public                    *
-* License as published by the Free Software Foundation; either                  *
-* version 2.1 of the License, or (at your option) any later version.            *
+* This library is free software; you can redistribute it and/or modify          *
+* it under the terms of the GNU Lesser General Public License as published by   *
+* the Free Software Foundation; either version 3 of the License, or             *
+* (at your option) any later version.                                           *
 *                                                                               *
 * This library is distributed in the hope that it will be useful,               *
 * but WITHOUT ANY WARRANTY; without even the implied warranty of                *
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU             *
-* Lesser General Public License for more details.                               *
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the                 *
+* GNU Lesser General Public License for more details.                           *
 *                                                                               *
-* You should have received a copy of the GNU Lesser General Public              *
-* License along with this library; if not, write to the Free Software           *
-* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA.    *
-*********************************************************************************
-* $Id: FXDirSelector.h,v 1.21 2006/01/22 17:58:00 fox Exp $                     *
+* You should have received a copy of the GNU Lesser General Public License      *
+* along with this program.  If not, see <http://www.gnu.org/licenses/>          *
 ********************************************************************************/
 #ifndef FXDIRSELECTOR_H
 #define FXDIRSELECTOR_H
@@ -31,9 +28,10 @@
 namespace FX {
 
 
+class FXButton;
 class FXDirList;
 class FXTextField;
-class FXButton;
+class FXFileAssociations;
 
 
 /**
@@ -53,8 +51,11 @@ protected:
   FXIcon        *updiricon;     // Up directory icon
   FXIcon        *homeicon;      // Go home icon
   FXIcon        *workicon;      // Go home icon
-  FXIcon        *markicon;      // Book mark icon
-  FXIcon        *clearicon;     // Book clear icon
+  FXIcon        *bookmarkicon;  // Book mark icon
+  FXIcon        *bookaddicon;   // Book add icon
+  FXIcon        *bookdelicon;   // Book delete icon
+  FXIcon        *bookclricon;   // Book clear icon
+  FXIcon        *sortingicon;   // Sorting icon
   FXIcon        *newicon;       // New directory icon
   FXIcon        *deleteicon;    // Delete file icon
   FXIcon        *moveicon;      // Rename file icon
@@ -74,13 +75,14 @@ public:
   long onCmdDirectoryUp(FXObject*,FXSelector,void*);
   long onPopupMenu(FXObject*,FXSelector,void*);
   long onCmdBookmark(FXObject*,FXSelector,void*);
+  long onCmdUnBookmark(FXObject*,FXSelector,void*);
   long onCmdVisit(FXObject*,FXSelector,void*);
   long onCmdNew(FXObject*,FXSelector,void*);
   long onUpdNew(FXObject*,FXSelector,void*);
   long onCmdMove(FXObject*,FXSelector,void*);
   long onCmdCopy(FXObject*,FXSelector,void*);
   long onCmdLink(FXObject*,FXSelector,void*);
-  long onCmdDelete(FXObject*,FXSelector,void*);
+  long onCmdRemove(FXObject*,FXSelector,void*);
   long onUpdSelected(FXObject*,FXSelector,void*);
 public:
   enum {
@@ -90,9 +92,10 @@ public:
     ID_WORK,
     ID_DIRECTORY_UP,
     ID_BOOKMARK,
+    ID_UNBOOKMARK,
     ID_VISIT,
     ID_NEW,
-    ID_DELETE,
+    ID_REMOVE,
     ID_MOVE,
     ID_COPY,
     ID_LINK,
@@ -115,29 +118,41 @@ public:
   /// Return directory
   FXString getDirectory() const;
 
-  /// Return TRUE if showing files as well as directories
+  /// Change wildcard matching pattern
+  void setPattern(const FXString& ptrn);
+
+  /// Return wildcard pattern
+  FXString getPattern() const;
+
+  /// Return wildcard matching mode
+  FXuint getMatchMode() const;
+
+  /// Change wildcard matching mode (see FXPath)
+  void setMatchMode(FXuint mode);
+
+  /// Return true if showing files as well as directories
   FXbool showFiles() const;
 
   /// Show or hide normal files
   void showFiles(FXbool showing);
 
-  /// Return TRUE if showing hidden directories
+  /// Return true if showing hidden directories
   FXbool showHiddenFiles() const;
 
   /// Show or hide hidden directories
   void showHiddenFiles(FXbool showing);
-
-  /// Return wildcard matching mode
-  FXuint getMatchMode() const;
-
-  /// Change wildcard matching mode
-  void setMatchMode(FXuint mode);
 
   /// Change Directory List style
   void setDirBoxStyle(FXuint style);
 
   /// Return Directory List style
   FXuint getDirBoxStyle() const;
+
+  /// Change file associations; delete old ones if owned
+  void setAssociations(FXFileAssociations* assoc,FXbool owned=false);
+
+  /// Return file associations
+  FXFileAssociations* getAssociations() const;
 
   /// Save to stream
   virtual void save(FXStream& store) const;

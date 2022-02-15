@@ -3,23 +3,20 @@
 *                7 - S e g m e n t   D i s p l a y   W i d g e t                *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 2004,2006 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 2004,2021 by Jeroen van der Zijp.   All Rights Reserved.        *
 *********************************************************************************
-* This library is free software; you can redistribute it and/or                 *
-* modify it under the terms of the GNU Lesser General Public                    *
-* License as published by the Free Software Foundation; either                  *
-* version 2.1 of the License, or (at your option) any later version.            *
+* This library is free software; you can redistribute it and/or modify          *
+* it under the terms of the GNU Lesser General Public License as published by   *
+* the Free Software Foundation; either version 3 of the License, or             *
+* (at your option) any later version.                                           *
 *                                                                               *
 * This library is distributed in the hope that it will be useful,               *
 * but WITHOUT ANY WARRANTY; without even the implied warranty of                *
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU             *
-* Lesser General Public License for more details.                               *
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the                 *
+* GNU Lesser General Public License for more details.                           *
 *                                                                               *
-* You should have received a copy of the GNU Lesser General Public              *
-* License along with this library; if not, write to the Free Software           *
-* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA.    *
-*********************************************************************************
-* $Id: FX7Segment.h,v 1.12 2006/03/01 02:13:21 fox Exp $                        *
+* You should have received a copy of the GNU Lesser General Public License      *
+* along with this program.  If not, see <http://www.gnu.org/licenses/>          *
 ********************************************************************************/
 #ifndef FX7SEGMENT_H
 #define FX7SEGMENT_H
@@ -28,8 +25,8 @@
 #include "FXFrame.h"
 #endif
 
-
 namespace FX {
+
 
 /// 7 Segment styles
 enum {
@@ -46,13 +43,13 @@ enum {
 class FXAPI FX7Segment : public FXFrame {
   FXDECLARE(FX7Segment)
 protected:
-  FXString label;       // Text being shown
-  FXColor  textColor;   // Text color
-  FXint    thickness;   // Segment thickness
-  FXint    cellwidth;   // Width of cell
-  FXint    cellheight;  // height of cell
-  FXString tip;         // Tooltip
-  FXString help;        // Help message
+  FXString   label;             // Text being shown
+  FXString   tip;               // Tooltip
+  FXString   help;              // Help message
+  FXColor    textColor;         // Text color
+  FXint      thickness;         // Segment thickness
+  FXint      cellwidth;         // Width of cell
+  FXint      cellheight;        // height of cell
 protected:
   FX7Segment();
 private:
@@ -64,10 +61,12 @@ public:
   long onPaint(FXObject*,FXSelector,void*);
   long onCmdSetValue(FXObject*,FXSelector,void*);
   long onCmdSetIntValue(FXObject*,FXSelector,void*);
-  long onCmdSetRealValue(FXObject*,FXSelector,void*);
-  long onCmdSetStringValue(FXObject*,FXSelector,void*);
   long onCmdGetIntValue(FXObject*,FXSelector,void*);
+  long onCmdSetLongValue(FXObject*,FXSelector,void*);
+  long onCmdGetLongValue(FXObject*,FXSelector,void*);
+  long onCmdSetRealValue(FXObject*,FXSelector,void*);
   long onCmdGetRealValue(FXObject*,FXSelector,void*);
+  long onCmdSetStringValue(FXObject*,FXSelector,void*);
   long onCmdGetStringValue(FXObject*,FXSelector,void*);
   long onCmdSetHelp(FXObject*,FXSelector,void*);
   long onCmdGetHelp(FXObject*,FXSelector,void*);
@@ -122,16 +121,16 @@ public:
   /// Get the current text-justification mode.
   FXuint getJustify() const;
 
-  /// Set the status line help text 
+  /// Set the status line help text
   void setHelpText(const FXString& text){ help=text; }
 
-  /// Get the status line help text 
+  /// Get the status line help text
   const FXString& getHelpText() const { return help; }
 
-  /// Set the tool tip message 
+  /// Set the tool tip message
   void setTipText(const FXString& text){ tip=text; }
 
-  /// Get the tool tip message 
+  /// Get the tool tip message
   const FXString& getTipText() const { return tip; }
 
   /// Save to a stream

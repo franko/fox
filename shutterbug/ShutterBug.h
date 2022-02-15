@@ -3,11 +3,11 @@
 *                S h u t t e r   B u g   A p p l i c a t i o n                  *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 2003,2006 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 2003,2021 by Jeroen van der Zijp.   All Rights Reserved.        *
 *********************************************************************************
-* This program is free software; you can redistribute it and/or modify          *
+* This program is free software: you can redistribute it and/or modify          *
 * it under the terms of the GNU General Public License as published by          *
-* the Free Software Foundation; either version 2 of the License, or             *
+* the Free Software Foundation, either version 3 of the License, or             *
 * (at your option) any later version.                                           *
 *                                                                               *
 * This program is distributed in the hope that it will be useful,               *
@@ -16,10 +16,7 @@
 * GNU General Public License for more details.                                  *
 *                                                                               *
 * You should have received a copy of the GNU General Public License             *
-* along with this program; if not, write to the Free Software                   *
-* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA.    *
-*********************************************************************************
-* $Id: ShutterBug.h,v 1.25 2006/01/22 17:58:15 fox Exp $                        *
+* along with this program.  If not, see <http://www.gnu.org/licenses/>.         *
 ********************************************************************************/
 #ifndef SHUTTERBUG_H
 #define SHUTTERBUG_H
@@ -47,8 +44,8 @@ protected:
   FXColor           color;           // Color of the snapshot lines
   FXint             weight;          // Weight of the snapshot lines
   FXint             size;            // Fixed size if not 0
-  FXuint            delay;           // Timer delay in ms
-  FXuint            rate;            // Record rate in ms per frame
+  FXTime            delay;           // Timer delay in nanoseconds
+  FXTime            rate;            // Record rate in nanoseconds per frame
   FXbool            inside;          // Lines are inside
   FXbool            quantize;        // Quantization mode
   FXint             spotx;           // Grab-spot of mouse on rectangle
@@ -68,7 +65,7 @@ protected:
   FXbool snapRectangle(FXColor*& data,const FXRectangle& r);
   FXbool grabRectangle(FXColor*& data,const FXRectangle& r);
   void readPixels(FXImage* image,const FXRectangle& rectangle);
-  virtual bool doesOverrideRedirect() const;
+  virtual FXbool doesOverrideRedirect() const;
 protected:
   enum {
     MODE_NONE        = 0,

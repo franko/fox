@@ -3,23 +3,20 @@
 *                       S t a t u s B a r   W i d g e t                         *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 1997,2006 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 1997,2021 by Jeroen van der Zijp.   All Rights Reserved.        *
 *********************************************************************************
-* This library is free software; you can redistribute it and/or                 *
-* modify it under the terms of the GNU Lesser General Public                    *
-* License as published by the Free Software Foundation; either                  *
-* version 2.1 of the License, or (at your option) any later version.            *
+* This library is free software; you can redistribute it and/or modify          *
+* it under the terms of the GNU Lesser General Public License as published by   *
+* the Free Software Foundation; either version 3 of the License, or             *
+* (at your option) any later version.                                           *
 *                                                                               *
 * This library is distributed in the hope that it will be useful,               *
 * but WITHOUT ANY WARRANTY; without even the implied warranty of                *
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU             *
-* Lesser General Public License for more details.                               *
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the                 *
+* GNU Lesser General Public License for more details.                           *
 *                                                                               *
-* You should have received a copy of the GNU Lesser General Public              *
-* License along with this library; if not, write to the Free Software           *
-* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA.    *
-*********************************************************************************
-* $Id: FXStatusBar.h,v 1.7 2006/01/22 17:58:10 fox Exp $                        *
+* You should have received a copy of the GNU Lesser General Public License      *
+* along with this program.  If not, see <http://www.gnu.org/licenses/>          *
 ********************************************************************************/
 #ifndef FXSTATUSBAR_H
 #define FXSTATUSBAR_H
@@ -67,9 +64,9 @@ public:
   virtual void layout();
 
   /// Show or hide the drag corner
-  void setCornerStyle(FXbool withcorner=TRUE);
+  void setCornerStyle(FXbool withcorner=true);
 
-  /// Return TRUE if drag corner shown
+  /// Return true if drag corner shown
   FXbool getCornerStyle() const;
 
   /// Acess the status line widget

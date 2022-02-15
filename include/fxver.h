@@ -2,17 +2,10 @@
 #define FXVER_H
 
 
-// FOX version
+/// FOX version
 #define FOX_MAJOR  1
-#define FOX_MINOR  6
-#define FOX_LEVEL  57
-
-
-
-// FOX byte order
-#ifndef FOX_BIGENDIAN
-#define FOX_BIGENDIAN 0
-#endif
+#define FOX_MINOR  7
+#define FOX_LEVEL  77
 
 
 #endif

@@ -1,44 +1,54 @@
 ## Process this file with automake to produce Makefile.in
 
-CXXFLAGS = @CXXFLAGS@ @X_CFLAGS@
+AM_CXXFLAGS = @X_CFLAGS@
 INCLUDES = -I$(top_srcdir)/include -I$(top_builddir)/include
 RESWRAP  = $(top_builddir)/utils/reswrap
 SUFFIXES = .gif .bmp
-LDADD	 =  libCHART-1.6.la $(top_builddir)/src/libFOX-1.6.la -lm
+LDADD	 =  libCHART-1.7.la $(top_builddir)/lib/libFOX-1.7.la -lm
 
-lib_LTLIBRARIES = libCHART-1.6.la
+lib_LTLIBRARIES = libCHART-1.7.la
 
-libCHART_1_6_la_LIBADD  = $(X_LIBS) $(X_BASE_LIBS) $(X_EXTRA_LIBS) $(top_builddir)/src/libFOX-1.6.la
+#libCHART_1_7_la_LIBADD  = $(X_LIBS) $(X_BASE_LIBS) $(X_EXTRA_LIBS)
+libCHART_1_7_la_LIBADD  = $(top_builddir)/lib/libFOX-1.7.la
 
-libCHART_1_6_la_LDFLAGS = \
-        -version-info $(LT_CURRENT):$(LT_REVISION):$(LT_AGE)    \
-	-export-dynamic \
-	-no-undefined
+libCHART_1_7_la_LDFLAGS = -version-info $(LT_CURRENT):$(LT_REVISION):$(LT_AGE) -export-dynamic
 
-chartincludedir=$(includedir)/fox-1.6/chart
+chartincludedir=$(includedir)/fox-1.7/chart
 
 chartinclude_HEADERS = \
-FXChart.h
+FX2DChart.h \
+FX2DPlot.h \
+FXAxis.h \
+FXChart.h \
+FXCurve.h \
+chartdefs.h \
+chart.h
 
-libCHART_1_6_la_SOURCES = \
-FXChart.cpp
+libCHART_1_7_la_SOURCES = \
+FX2DChart.cpp \
+FX2DPlot.cpp \
+FXAxis.cpp \
+FXChart.cpp \
+FXCurve.cpp \
+chartutils.h \
+chartutils.cpp
 
 
-noinst_PROGRAMS = chart
+noinst_PROGRAMS = charttest
 
-ICONS = marble.bmp
+ICONS = $(top_srcdir)/chart/marble.bmp
 
-chart_SOURCES = chart.cpp icons.h icons.cpp $(ICONS)
+charttest_SOURCES = charttest.cpp icons.h icons.cpp
 
-chart.cpp: icons.h icons.cpp
+BUILT_SOURCES = icons.h icons.cpp
 
 icons.h: $(ICONS)
-	$(RESWRAP) -i -o icons.h $^
+	$(RESWRAP) -h -o $@ $^
 
 icons.cpp: $(ICONS)
-	$(RESWRAP) -e -o icons.cpp $^
+	$(RESWRAP) -i icons.h -o $@ $^
 
 CLEANFILES = icons.h icons.cpp
 
 
-EXTRA_DIST = Makefile.bc
+EXTRA_DIST = $(ICONS)

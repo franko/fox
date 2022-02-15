@@ -100,12 +100,11 @@ CONFIG_CLEAN_FILES =
 CONFIG_CLEAN_VPATH_FILES =
 am__installdirs = "$(DESTDIR)$(bindir)" "$(DESTDIR)$(man1dir)"
 PROGRAMS = $(bin_PROGRAMS)
-am__objects_1 =
 am_shutterbug_OBJECTS = icons.$(OBJEXT) ShutterBug.$(OBJEXT) \
-	Snapper.$(OBJEXT) $(am__objects_1)
+	Snapper.$(OBJEXT)
 shutterbug_OBJECTS = $(am_shutterbug_OBJECTS)
 shutterbug_LDADD = $(LDADD)
-shutterbug_DEPENDENCIES = $(top_builddir)/src/libFOX-1.6.la
+shutterbug_DEPENDENCIES = $(top_builddir)/lib/libFOX-1.7.la
 AM_V_lt = $(am__v_lt_@AM_V@)
 am__v_lt_ = $(am__v_lt_@AM_DEFAULT_V@)
 am__v_lt_0 = --silent
@@ -224,6 +223,7 @@ ACLOCAL = @ACLOCAL@
 AMTAR = @AMTAR@
 AM_DEFAULT_VERBOSITY = @AM_DEFAULT_VERBOSITY@
 AR = @AR@
+AS = @AS@
 AUTOCONF = @AUTOCONF@
 AUTOHEADER = @AUTOHEADER@
 AUTOMAKE = @AUTOMAKE@
@@ -236,7 +236,7 @@ CPPFLAGS = @CPPFLAGS@
 CXX = @CXX@
 CXXCPP = @CXXCPP@
 CXXDEPMODE = @CXXDEPMODE@
-CXXFLAGS = @CXXFLAGS@ @X_CFLAGS@
+CXXFLAGS = @CXXFLAGS@
 CYGPATH_W = @CYGPATH_W@
 DEFS = @DEFS@
 DEPDIR = @DEPDIR@
@@ -249,10 +249,10 @@ ECHO_T = @ECHO_T@
 EGREP = @EGREP@
 EXEEXT = @EXEEXT@
 FGREP = @FGREP@
-FOX_BYTEORDER = @FOX_BYTEORDER@
 FOX_MAJOR_VERSION = @FOX_MAJOR_VERSION@
 FOX_MINOR_VERSION = @FOX_MINOR_VERSION@
 FOX_PATCH_LEVEL = @FOX_PATCH_LEVEL@
+GLU_LIBS = @GLU_LIBS@
 GL_LIBS = @GL_LIBS@
 GREP = @GREP@
 INSTALL = @INSTALL@
@@ -355,23 +355,24 @@ target_alias = @target_alias@
 top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
+AM_CXXFLAGS = @X_CFLAGS@
 INCLUDES = -I$(top_srcdir)/include -I$(top_builddir)/include
-RESWRAP = $(top_builddir)/utils/reswrap
+RESWRAP = $(top_builddir)/utils/reswrap$(EXEEXT)
 SUFFIXES = .gif .bmp
-LDADD = $(top_builddir)/src/libFOX-1.6.la -lm
+LDADD = $(top_builddir)/lib/libFOX-1.7.la -lm
 man_MANS = shutterbug.1
 ICONS = \
-line_0.gif \
-line_1.gif \
-line_2.gif \
-line_3.gif \
-line_4.gif \
-line_5.gif \
-line_6.gif \
-line_7.gif \
-line_8.gif \
-shutterbug.gif \
-tinyshutterbug.gif
+$(top_srcdir)/shutterbug/line_0.gif \
+$(top_srcdir)/shutterbug/line_1.gif \
+$(top_srcdir)/shutterbug/line_2.gif \
+$(top_srcdir)/shutterbug/line_3.gif \
+$(top_srcdir)/shutterbug/line_4.gif \
+$(top_srcdir)/shutterbug/line_5.gif \
+$(top_srcdir)/shutterbug/line_6.gif \
+$(top_srcdir)/shutterbug/line_7.gif \
+$(top_srcdir)/shutterbug/line_8.gif \
+$(top_srcdir)/shutterbug/shutterbug.gif \
+$(top_srcdir)/shutterbug/tinyshutterbug.gif
 
 shutterbug_SOURCES = \
 icons.h \
@@ -379,18 +380,17 @@ icons.cpp \
 ShutterBug.h \
 ShutterBug.cpp \
 Snapper.h \
-Snapper.cpp \
-LICENSE \
-$(ICONS)
+Snapper.cpp
 
+BUILT_SOURCES = icons.h icons.cpp
 CLEANFILES = icons.h icons.cpp
 EXTRA_DIST = \
 $(man_MANS) \
-Makefile.bc \
-Makefile.wc \
-Makefile.dmc
+LICENSE \
+$(ICONS)
 
-all: all-am
+all: $(BUILT_SOURCES)
+	$(MAKE) $(AM_MAKEFLAGS) all-am
 
 .SUFFIXES:
 .SUFFIXES: .gif .bmp .cpp .lo .o .obj
@@ -640,13 +640,15 @@ distdir: $(DISTFILES)
 	  fi; \
 	done
 check-am: all-am
-check: check-am
+check: $(BUILT_SOURCES)
+	$(MAKE) $(AM_MAKEFLAGS) check-am
 all-am: Makefile $(PROGRAMS) $(MANS)
 installdirs:
 	for dir in "$(DESTDIR)$(bindir)" "$(DESTDIR)$(man1dir)"; do \
 	  test -z "$$dir" || $(MKDIR_P) "$$dir"; \
 	done
-install: install-am
+install: $(BUILT_SOURCES)
+	$(MAKE) $(AM_MAKEFLAGS) install-am
 install-exec: install-exec-am
 install-data: install-data-am
 uninstall: uninstall-am
@@ -677,6 +679,7 @@ distclean-generic:
 maintainer-clean-generic:
 	@echo "This command is intended for maintainers to use"
 	@echo "it deletes files that may require special tools to rebuild."
+	-test -z "$(BUILT_SOURCES)" || rm -f $(BUILT_SOURCES)
 clean: clean-am
 
 clean-am: clean-binPROGRAMS clean-generic clean-libtool mostlyclean-am
@@ -749,7 +752,7 @@ uninstall-am: uninstall-binPROGRAMS uninstall-man
 
 uninstall-man: uninstall-man1
 
-.MAKE: install-am install-strip
+.MAKE: all check install install-am install-strip
 
 .PHONY: CTAGS GTAGS TAGS all all-am check check-am clean \
 	clean-binPROGRAMS clean-generic clean-libtool cscopelist-am \
@@ -769,13 +772,11 @@ uninstall-man: uninstall-man1
 .PRECIOUS: Makefile
 
 
-ShutterBug.cpp: icons.h icons.cpp
-
 icons.h: $(ICONS)
-	$(RESWRAP) -i -o icons.h $^
+	$(RESWRAP) -h -o $@ $^
 
 icons.cpp: $(ICONS)
-	$(RESWRAP) -e -o icons.cpp $^
+	$(RESWRAP) -i icons.h -o $@ $^
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

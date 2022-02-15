@@ -3,24 +3,9 @@
 *                      I m a g e   V i e w e r   D e m o                        *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 2000,2006 by Jeroen van der Zijp.   All Rights Reserved.        *
-*********************************************************************************
-* $Id: imageviewer.cpp,v 1.114 2006/01/22 17:59:01 fox Exp $                    *
+* Copyright (C) 2000,2021 by Jeroen van der Zijp.   All Rights Reserved.        *
 ********************************************************************************/
 #include "fx.h"
-#ifdef HAVE_PNG_H
-#include "FXPNGImage.h"
-#endif
-#ifdef HAVE_JPEG_H
-#include "FXJPGImage.h"
-#endif
-#ifdef HAVE_TIFF_H
-#include "FXTIFImage.h"
-#endif
-#include "FXICOImage.h"
-#include "FXTGAImage.h"
-#include "FXRGBImage.h"
-#include "FXPPMImage.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <sys/stat.h>
@@ -198,15 +183,14 @@ const FXchar patterns[]=
   "\nXBM Image  (*.xbm)"
   "\nTARGA Image  (*.tga)"
   "\nPPM Image  (*.ppm)"
-#ifdef HAVE_PNG_H
   "\nPNG Image  (*.png)"
-#endif
-#ifdef HAVE_JPEG_H
   "\nJPEG Image (*.jpg)"
-#endif
-#ifdef HAVE_TIFF_H
   "\nTIFF Image (*.tif)"
-#endif
+  "\nRAS Image (*.ras)"
+  "\nDDS Image (*.dds)"
+  "\nIFF Image (*.iff)"
+  "\nJP2 Image (*.jp2)"
+  "\nEXE Image (*.exe)"
   ;
 
 /*******************************************************************************/
@@ -246,7 +230,7 @@ FXIMPLEMENT(ImageWindow,FXMainWindow,ImageWindowMap,ARRAYNUMBER(ImageWindowMap))
 
 
 // Make some windows
-ImageWindow::ImageWindow(FXApp* a):FXMainWindow(a,"FOX Image Viewer: - untitled",NULL,NULL,DECOR_ALL,0,0,850,600,0,0){
+ImageWindow::ImageWindow(FXApp* a):FXMainWindow(a,"FOX Image Viewer: - untitled",NULL,NULL,DECOR_ALL,0,0,850,600,0,0),mrufiles(a){
   setTarget(this);
   setSelector(ID_TITLE);
 
@@ -334,9 +318,7 @@ ImageWindow::ImageWindow(FXApp* a):FXMainWindow(a,"FOX Image Viewer: - untitled"
   new FXMenuCommand(filemenu,"Dump",NULL,getApp(),FXApp::ID_DUMP);
 
   // Recent file menu; this automatically hides if there are no files
-  FXMenuSeparator* sep1=new FXMenuSeparator(filemenu);
-  sep1->setTarget(&mrufiles);
-  sep1->setSelector(FXRecentFiles::ID_ANYFILES);
+  new FXMenuSeparator(filemenu,&mrufiles,FXRecentFiles::ID_ANYFILES);
   new FXMenuCommand(filemenu,FXString::null,NULL,&mrufiles,FXRecentFiles::ID_FILE_1);
   new FXMenuCommand(filemenu,FXString::null,NULL,&mrufiles,FXRecentFiles::ID_FILE_2);
   new FXMenuCommand(filemenu,FXString::null,NULL,&mrufiles,FXRecentFiles::ID_FILE_3);
@@ -348,9 +330,7 @@ ImageWindow::ImageWindow(FXApp* a):FXMainWindow(a,"FOX Image Viewer: - untitled"
   new FXMenuCommand(filemenu,FXString::null,NULL,&mrufiles,FXRecentFiles::ID_FILE_9);
   new FXMenuCommand(filemenu,FXString::null,NULL,&mrufiles,FXRecentFiles::ID_FILE_10);
   new FXMenuCommand(filemenu,"&Clear Recent Files",NULL,&mrufiles,FXRecentFiles::ID_CLEAR);
-  FXMenuSeparator* sep2=new FXMenuSeparator(filemenu);
-  sep2->setTarget(&mrufiles);
-  sep2->setSelector(FXRecentFiles::ID_ANYFILES);
+  new FXMenuSeparator(filemenu,&mrufiles,FXRecentFiles::ID_ANYFILES);
   new FXMenuCommand(filemenu,"&Quit\tCtl-Q",NULL,this,ID_QUIT);
 
   // Edit Menu entries
@@ -372,20 +352,20 @@ ImageWindow::ImageWindow(FXApp* a):FXMainWindow(a,"FOX Image Viewer: - untitled"
   new FXMenuCommand(manipmenu,"Crop...\t\tCrop image.",NULL,this,ID_CROP);
 
   // View Menu entries
-  new FXMenuCommand(viewmenu,"File list\t\tDisplay file list.",NULL,filebox,FXWindow::ID_TOGGLESHOWN);
+  new FXMenuCheck(viewmenu,"File list\t\tDisplay file list.",filebox,FXWindow::ID_TOGGLESHOWN);
   new FXMenuCommand(viewmenu,"Show hidden files\t\tShow hidden files and directories.",NULL,filelist,FXFileList::ID_TOGGLE_HIDDEN);
   new FXMenuCommand(viewmenu,"Show small icons\t\tDisplay directory with small icons.",NULL,filelist,FXFileList::ID_SHOW_MINI_ICONS);
   new FXMenuCommand(viewmenu,"Show big icons\t\tDisplay directory with big icons.",NULL,filelist,FXFileList::ID_SHOW_BIG_ICONS);
   new FXMenuCommand(viewmenu,"Show details view\t\tDisplay detailed directory listing.",NULL,filelist,FXFileList::ID_SHOW_DETAILS);
   new FXMenuCommand(viewmenu,"Rows of icons\t\tView row-wise.",NULL,filelist,FXFileList::ID_ARRANGE_BY_ROWS);
   new FXMenuCommand(viewmenu,"Columns of icons\t\tView column-wise.",NULL,filelist,FXFileList::ID_ARRANGE_BY_COLUMNS);
-  new FXMenuCommand(viewmenu,"Toolbar\t\tDisplay toolbar.",NULL,toolbar,FXWindow::ID_TOGGLESHOWN);
+  new FXMenuCheck(viewmenu,"Toolbar\t\tDisplay toolbar.",toolbar,FXWindow::ID_TOGGLESHOWN);
   new FXMenuCommand(viewmenu,"Float toolbar\t\tUndock the toolbar.",NULL,toolbar,FXToolBar::ID_DOCK_FLOAT);
   new FXMenuCommand(viewmenu,"Dock toolbar top\t\tDock the toolbar on the top.",NULL,toolbar,FXToolBar::ID_DOCK_TOP);
   new FXMenuCommand(viewmenu,"Dock toolbar left\t\tDock the toolbar on the left.",NULL,toolbar,FXToolBar::ID_DOCK_LEFT);
   new FXMenuCommand(viewmenu,"Dock toolbar right\t\tDock the toolbar on the right.",NULL,toolbar,FXToolBar::ID_DOCK_RIGHT);
   new FXMenuCommand(viewmenu,"Dock toolbar bottom\t\tDock the toolbar on the bottom.",NULL,toolbar,FXToolBar::ID_DOCK_BOTTOM);
-  new FXMenuCommand(viewmenu,"Status line\t\tDisplay status line.",NULL,statusbar,FXWindow::ID_TOGGLESHOWN);
+  new FXMenuCheck(viewmenu,"Status line\t\tDisplay status line.",statusbar,FXWindow::ID_TOGGLESHOWN);
 
   // Help Menu entries
   new FXMenuCommand(helpmenu,"&About FOX...",NULL,this,ID_ABOUT,0);
@@ -421,7 +401,7 @@ ImageWindow::~ImageWindow(){
 
 // About box
 long ImageWindow::onCmdAbout(FXObject*,FXSelector,void*){
-  FXMessageBox about(this,"About Image Viewer","Image Viewer demonstrates the FOX ImageView widget.\n\nUsing the FOX C++ GUI Library (http://www.fox-toolkit.org)\n\nCopyright (C) 2000,2004 Jeroen van der Zijp (jeroen@fox-toolkit.org)",NULL,MBOX_OK|DECOR_TITLE|DECOR_BORDER);
+  FXMessageBox about(this,"About Image Viewer","Image Viewer demonstrates the FOX ImageView widget.\n\nUsing the FOX C++ GUI Library (http://www.fox-toolkit.org)\n\nCopyright (C) 2000,2015 Jeroen van der Zijp (jeroen@fox-toolkit.com)",NULL,MBOX_OK|DECOR_TITLE|DECOR_BORDER);
   about.execute();
   return 1;
   }
@@ -456,7 +436,7 @@ FXbool ImageWindow::loadimage(const FXString& file){
   else if(comparecase(ext,"xbm")==0){
     img=new FXXBMImage(getApp(),NULL,NULL,IMAGE_KEEP|IMAGE_SHMI|IMAGE_SHMP);
     }
-  else if(comparecase(ext,"ppm")==0){
+  else if(comparecase(ext,"ppm")==0 || comparecase(ext,"pbm")==0 || comparecase(ext,"pgm")==0 || comparecase(ext,"pnm")==0){
     img=new FXPPMImage(getApp(),NULL,IMAGE_KEEP|IMAGE_SHMI|IMAGE_SHMP);
     }
   else if(comparecase(ext,"iff")==0 || comparecase(ext,"lbm")==0){
@@ -465,26 +445,32 @@ FXbool ImageWindow::loadimage(const FXString& file){
   else if(comparecase(ext,"ras")==0){
     img=new FXRASImage(getApp(),NULL,IMAGE_KEEP|IMAGE_SHMI|IMAGE_SHMP);
     }
-#ifdef HAVE_PNG_H
   else if(comparecase(ext,"png")==0){
     img=new FXPNGImage(getApp(),NULL,IMAGE_KEEP|IMAGE_SHMI|IMAGE_SHMP);
     }
-#endif
-#ifdef HAVE_JPEG_H
-  else if(comparecase(ext,"jpg")==0){
+  else if(comparecase(ext,"jpg")==0 || comparecase(ext,"jpeg")==0){
     img=new FXJPGImage(getApp(),NULL,IMAGE_KEEP|IMAGE_SHMI|IMAGE_SHMP);
     }
-#endif
-#ifdef HAVE_TIFF_H
+  else if(comparecase(ext,"jp2")==0){
+    img=new FXJP2Image(getApp(),NULL,IMAGE_KEEP|IMAGE_SHMI|IMAGE_SHMP);
+    }
   else if(comparecase(ext,"tif")==0 || comparecase(ext,"tiff")==0){
     img=new FXTIFImage(getApp(),NULL,IMAGE_KEEP|IMAGE_SHMI|IMAGE_SHMP);
     }
-#endif
+  else if(comparecase(ext,"dds")==0){
+    img=new FXDDSImage(getApp(),NULL,IMAGE_KEEP|IMAGE_SHMI|IMAGE_SHMP);
+    }
+  else if(comparecase(ext,"webp")==0){
+    img=new FXWEBPImage(getApp(),NULL,IMAGE_KEEP|IMAGE_SHMI|IMAGE_SHMP);
+    }
+  else if(comparecase(ext,"exe")==0 || comparecase(ext,"dll")==0){
+    img=new FXEXEImage(getApp(),NULL,IMAGE_KEEP|IMAGE_SHMI|IMAGE_SHMP);
+    }
 
   // Perhaps failed
   if(img==NULL){
     FXMessageBox::error(this,MBOX_OK,"Error Loading Image","Unsupported type: %s",ext.text());
-    return FALSE;
+    return false;
     }
 
   // Load it
@@ -505,14 +491,13 @@ FXbool ImageWindow::loadimage(const FXString& file){
 //img->xshear(-30*256,FXRGB(0,255,128));
 //img->yshear(-50*256,FXRGB(0,255,128));
 
-
     img->create();
     old=imageview->getImage();
     imageview->setImage(img);
     delete old;
     getApp()->endWaitCursor();
     }
-  return TRUE;
+  return true;
   }
 
 
@@ -527,7 +512,7 @@ FXbool ImageWindow::saveimage(const FXString& file){
     stream.close();
     getApp()->endWaitCursor();
     }
-  return TRUE;
+  return true;
   }
 
 
@@ -590,9 +575,11 @@ long ImageWindow::onCmdQuit(FXObject*,FXSelector,void*){
 
 // Update title
 long ImageWindow::onUpdTitle(FXObject* sender,FXSelector,void*){
-  FXString caption="FOX Image Viewer:- " + filename;
+  FXString caption("FOX Image Viewer:- " + filename);
   FXImage* image=imageview->getImage();
-  if(image){ caption+=" (" + FXStringVal(image->getWidth()) + " x " + FXStringVal(image->getHeight()) + ")"; }
+  if(image){
+    caption.format("FOX Image Viewer:- %s (%d x %d)",filename.text(),image->getWidth(),image->getHeight());
+    }
   sender->handle(this,FXSEL(SEL_COMMAND,FXWindow::ID_SETSTRINGVALUE),(void*)&caption);
   return 1;
   }
@@ -653,9 +640,9 @@ long ImageWindow::onCmdMirror(FXObject*,FXSelector sel,void*){
   FXImage* image=imageview->getImage();
   FXASSERT(image);
   switch(FXSELID(sel)){
-    case ID_MIRROR_HOR: image->mirror(TRUE,FALSE); break;
-    case ID_MIRROR_VER: image->mirror(FALSE,TRUE); break;
-    case ID_MIRROR_BOTH: image->mirror(TRUE,TRUE); break;
+    case ID_MIRROR_HOR: image->mirror(true,false); break;
+    case ID_MIRROR_VER: image->mirror(false,true); break;
+    case ID_MIRROR_BOTH: image->mirror(true,true); break;
     }
   imageview->setImage(image);
   return 1;
@@ -736,7 +723,7 @@ void ImageWindow::create(){
   hh=getApp()->reg().readIntEntry("SETTINGS","height",400);
 
   fh=getApp()->reg().readIntEntry("SETTINGS","fileheight",100);
-  fs=getApp()->reg().readIntEntry("SETTINGS","filesshown",TRUE);
+  fs=getApp()->reg().readIntEntry("SETTINGS","filesshown",true);
 
   dir=getApp()->reg().readStringEntry("SETTINGS","directory","~");
   filelist->setDirectory(dir);

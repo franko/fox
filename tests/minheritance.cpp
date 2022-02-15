@@ -3,9 +3,7 @@
 *                           Multiple Inheritance Test                           *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 1998,2006 by Jeroen van der Zijp.   All Rights Reserved.        *
-*********************************************************************************
-* $Id: minheritance.cpp,v 1.15 2006/01/22 17:59:02 fox Exp $                    *
+* Copyright (C) 1998,2021 by Jeroen van der Zijp.   All Rights Reserved.        *
 ********************************************************************************/
 #include "fx.h"
 #include <stdio.h>
@@ -289,7 +287,7 @@ ThreeBase::~ThreeBase(){
 
 // Start the whole thing
 int main(int,char**){
-  fxTraceLevel=101;
+  setTraceLevel(100);
 
   {
   TwoBaseOne twobase1;

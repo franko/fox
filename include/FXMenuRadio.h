@@ -3,23 +3,20 @@
 *                         M e n u R a d i o   W i d g e t                       *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 2002,2006 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 2002,2021 by Jeroen van der Zijp.   All Rights Reserved.        *
 *********************************************************************************
-* This library is free software; you can redistribute it and/or                 *
-* modify it under the terms of the GNU Lesser General Public                    *
-* License as published by the Free Software Foundation; either                  *
-* version 2.1 of the License, or (at your option) any later version.            *
+* This library is free software; you can redistribute it and/or modify          *
+* it under the terms of the GNU Lesser General Public License as published by   *
+* the Free Software Foundation; either version 3 of the License, or             *
+* (at your option) any later version.                                           *
 *                                                                               *
 * This library is distributed in the hope that it will be useful,               *
 * but WITHOUT ANY WARRANTY; without even the implied warranty of                *
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU             *
-* Lesser General Public License for more details.                               *
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the                 *
+* GNU Lesser General Public License for more details.                           *
 *                                                                               *
-* You should have received a copy of the GNU Lesser General Public              *
-* License along with this library; if not, write to the Free Software           *
-* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA.    *
-*********************************************************************************
-* $Id: FXMenuRadio.h,v 1.13 2006/01/22 17:58:06 fox Exp $                       *
+* You should have received a copy of the GNU Lesser General Public License      *
+* along with this program.  If not, see <http://www.gnu.org/licenses/>          *
 ********************************************************************************/
 #ifndef FXMENURADIO_H
 #define FXMENURADIO_H
@@ -45,8 +42,8 @@ namespace FX {
 class FXAPI FXMenuRadio : public FXMenuCommand {
   FXDECLARE(FXMenuRadio)
 protected:
-  FXuchar check;        // State of menu
   FXColor radioColor;   // Color of the radio
+  FXuchar check;        // State of menu
 protected:
   FXMenuRadio();
 private:
@@ -78,11 +75,11 @@ public:
   /// Return default height
   virtual FXint getDefaultHeight();
 
-  /// Set radio button state (TRUE, FALSE or MAYBE)
-  void setCheck(FXbool s=TRUE);
+  /// Set radio button state (true, false or maybe)
+  void setCheck(FXuchar s=true);
 
-  /// Get radio button state (TRUE, FALSE or MAYBE)
-  FXbool getCheck() const { return check; }
+  /// Get radio button state (true, false or maybe)
+  FXuchar getCheck() const { return check; }
 
   /// Get the radio background color
   FXColor getRadioColor() const { return radioColor; }

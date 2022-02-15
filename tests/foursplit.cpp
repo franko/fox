@@ -3,9 +3,7 @@
 *                          Test 4-Way  Splitter  Widget                         *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 1999,2006 by Jeroen van der Zijp.   All Rights Reserved.        *
-*********************************************************************************
-* $Id: foursplit.cpp,v 1.21 2006/02/20 03:32:13 fox Exp $                       *
+* Copyright (C) 1999,2021 by Jeroen van der Zijp.   All Rights Reserved.        *
 ********************************************************************************/
 #include "fx.h"
 
@@ -52,7 +50,8 @@ FourSplitWindow::FourSplitWindow(FXApp *a):FXMainWindow(a,"4-Way Splitter Test",
 
   FXHorizontalFrame* hf=new FXHorizontalFrame(this,LAYOUT_SIDE_BOTTOM|LAYOUT_FILL_X);
 
-  splitter=new FX4Splitter(this,LAYOUT_SIDE_TOP|LAYOUT_FILL_X|LAYOUT_FILL_Y|FOURSPLITTER_TRACKING);
+  // Splitter with vertical preference
+  splitter=new FX4Splitter(this,LAYOUT_SIDE_TOP|LAYOUT_FILL_X|LAYOUT_FILL_Y|FOURSPLITTER_TRACKING|FOURSPLITTER_VERTICAL);
 
   // File menu
   filemenu=new FXMenuPane(this);
@@ -70,8 +69,8 @@ FourSplitWindow::FourSplitWindow(FXApp *a):FXMainWindow(a,"4-Way Splitter Test",
 
 
   // Four widgets in the four splitter
-  FXButton *tl=new FXButton(splitter,"Top &Left\tThis splitter tracks",NULL,NULL,0,FRAME_RAISED|FRAME_THICK);
-  FXButton *tr=new FXButton(splitter,"Top &Right\tThis splitter tracks",NULL,NULL,0,FRAME_RAISED|FRAME_THICK);
+  FXButton *tlf=new FXButton(splitter,"Top &Left\tThis splitter tracks",NULL,NULL,0,FRAME_RAISED|FRAME_THICK);
+  FXButton *trt=new FXButton(splitter,"Top &Right\tThis splitter tracks",NULL,NULL,0,FRAME_RAISED|FRAME_THICK);
 
   // To check bug from Tony <verant@hotpop.com>
   FXSplitter* spl2=new FXSplitter(splitter,SPLITTER_VERTICAL|SPLITTER_TRACKING|LAYOUT_FILL_X|LAYOUT_FILL_Y);
@@ -95,8 +94,8 @@ FourSplitWindow::FourSplitWindow(FXApp *a):FXMainWindow(a,"4-Way Splitter Test",
   temp->setTextColor(FXRGB(255,255,255));
 
   new FXLabel(hf,"Hide: ",NULL,LAYOUT_CENTER_Y|LAYOUT_LEFT);
-  new FXCheckButton(hf,"Top Left",tl,ID_TOGGLESHOWN,ICON_BEFORE_TEXT|LAYOUT_CENTER_Y|LAYOUT_LEFT);
-  new FXCheckButton(hf,"Top Right",tr,ID_TOGGLESHOWN,ICON_BEFORE_TEXT|LAYOUT_CENTER_Y|LAYOUT_LEFT);
+  new FXCheckButton(hf,"Top Left",tlf,ID_TOGGLESHOWN,ICON_BEFORE_TEXT|LAYOUT_CENTER_Y|LAYOUT_LEFT);
+  new FXCheckButton(hf,"Top Right",trt,ID_TOGGLESHOWN,ICON_BEFORE_TEXT|LAYOUT_CENTER_Y|LAYOUT_LEFT);
   new FXCheckButton(hf,"Bottom Left",spl2,ID_TOGGLESHOWN,ICON_BEFORE_TEXT|LAYOUT_CENTER_Y|LAYOUT_LEFT);
   new FXCheckButton(hf,"Bottom Right",subsplitter,ID_TOGGLESHOWN,ICON_BEFORE_TEXT|LAYOUT_CENTER_Y|LAYOUT_LEFT);
 

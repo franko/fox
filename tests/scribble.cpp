@@ -90,7 +90,6 @@ ScribbleWindow::ScribbleWindow(FXApp *a):FXMainWindow(a,"Scribble Application",N
     // Horizontal divider line
     new FXHorizontalSeparator(canvasFrame,SEPARATOR_GROOVE|LAYOUT_FILL_X);
 
-
     // Drawing canvas
     canvas=new FXCanvas(canvasFrame,this,ID_CANVAS,FRAME_SUNKEN|FRAME_THICK|LAYOUT_FILL_X|LAYOUT_FILL_Y|LAYOUT_FILL_ROW|LAYOUT_FILL_COLUMN);
 

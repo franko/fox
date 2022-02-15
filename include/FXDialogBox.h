@@ -3,23 +3,20 @@
 *                              D i a l o g   B o x                              *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 1998,2006 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 1998,2021 by Jeroen van der Zijp.   All Rights Reserved.        *
 *********************************************************************************
-* This library is free software; you can redistribute it and/or                 *
-* modify it under the terms of the GNU Lesser General Public                    *
-* License as published by the Free Software Foundation; either                  *
-* version 2.1 of the License, or (at your option) any later version.            *
+* This library is free software; you can redistribute it and/or modify          *
+* it under the terms of the GNU Lesser General Public License as published by   *
+* the Free Software Foundation; either version 3 of the License, or             *
+* (at your option) any later version.                                           *
 *                                                                               *
 * This library is distributed in the hope that it will be useful,               *
 * but WITHOUT ANY WARRANTY; without even the implied warranty of                *
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU             *
-* Lesser General Public License for more details.                               *
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the                 *
+* GNU Lesser General Public License for more details.                           *
 *                                                                               *
-* You should have received a copy of the GNU Lesser General Public              *
-* License along with this library; if not, write to the Free Software           *
-* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA.    *
-*********************************************************************************
-* $Id: FXDialogBox.h,v 1.23 2006/01/22 17:58:00 fox Exp $                       *
+* You should have received a copy of the GNU Lesser General Public License      *
+* along with this program.  If not, see <http://www.gnu.org/licenses/>          *
 ********************************************************************************/
 #ifndef FXDIALOGBOX_H
 #define FXDIALOGBOX_H
@@ -34,7 +31,7 @@ namespace FX {
 /**
 * DialogBox window.
 * When receiving ID_CANCEL or ID_ACCEPT, the DialogBox breaks out of the
-* modal loop and returns FALSE or TRUE, respectively.
+* modal loop and returns false or true, respectively.
 * To close the DialogBox when not running modally, simply send it ID_HIDE.
 */
 class FXAPI FXDialogBox : public FXTopWindow {
@@ -45,8 +42,6 @@ private:
   FXDialogBox(const FXDialogBox&);
   FXDialogBox &operator=(const FXDialogBox&);
 public:
-  long onKeyPress(FXObject*,FXSelector,void*);
-  long onKeyRelease(FXObject*,FXSelector,void*);
   long onCmdAccept(FXObject*,FXSelector,void*);
   long onCmdCancel(FXObject*,FXSelector,void*);
 public:
@@ -63,7 +58,11 @@ public:
   /// Construct dialog which will always float over the owner window
   FXDialogBox(FXWindow* owner,const FXString& name,FXuint opts=DECOR_TITLE|DECOR_BORDER,FXint x=0,FXint y=0,FXint w=0,FXint h=0,FXint pl=10,FXint pr=10,FXint pt=10,FXint pb=10,FXint hs=4,FXint vs=4);
 
-  /// Run modal invocation of the dialog
+  /**
+  * Run modal invocation of the dialog.
+  * The dialog is placed according to the placement parameter,
+  * which may be any of the FXTopWindow placement options.
+  */
   virtual FXuint execute(FXuint placement=PLACEMENT_CURSOR);
   };
 

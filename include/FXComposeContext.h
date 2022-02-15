@@ -3,23 +3,20 @@
 *                         C o m p o s e - C o n t e x t                         *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 2005,2006 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 2005,2021 by Jeroen van der Zijp.   All Rights Reserved.        *
 *********************************************************************************
-* This library is free software; you can redistribute it and/or                 *
-* modify it under the terms of the GNU Lesser General Public                    *
-* License as published by the Free Software Foundation; either                  *
-* version 2.1 of the License, or (at your option) any later version.            *
+* This library is free software; you can redistribute it and/or modify          *
+* it under the terms of the GNU Lesser General Public License as published by   *
+* the Free Software Foundation; either version 3 of the License, or             *
+* (at your option) any later version.                                           *
 *                                                                               *
 * This library is distributed in the hope that it will be useful,               *
 * but WITHOUT ANY WARRANTY; without even the implied warranty of                *
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU             *
-* Lesser General Public License for more details.                               *
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the                 *
+* GNU Lesser General Public License for more details.                           *
 *                                                                               *
-* You should have received a copy of the GNU Lesser General Public              *
-* License along with this library; if not, write to the Free Software           *
-* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA.    *
-*********************************************************************************
-* $Id: FXComposeContext.h,v 1.8 2006/01/22 17:57:59 fox Exp $                   *
+* You should have received a copy of the GNU Lesser General Public License      *
+* along with this program.  If not, see <http://www.gnu.org/licenses/>          *
 ********************************************************************************/
 #ifndef FXCOMPOSECONTEXT_H
 #define FXCOMPOSECONTEXT_H
@@ -33,7 +30,7 @@ namespace FX {
 
 class FXApp;
 class FXWindow;
-
+class FXFont;
 
 /**
 * Compose Context manages the state of an input method
@@ -46,6 +43,7 @@ protected:
   FXSelector message;           // Message to send it
 private:
 #ifndef WIN32
+  void* fontset;
   static int  editStartCallback(void*,FXComposeContext*,void*);
   static void editDoneCallback(void*,FXComposeContext*,void*);
   static void editDrawCallback(void*,FXComposeContext*,void*);
@@ -75,6 +73,9 @@ public:
 
   /// Focus out
   void focusOut();
+
+  /// Set the font
+  void setFont(FXFont* fnt);
 
   /// Set the spot
   void setSpot(FXint x,FXint y);

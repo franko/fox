@@ -3,23 +3,20 @@
 *                     P o p u p   W i n d o w   W i d g e t                     *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 1998,2006 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 1998,2021 by Jeroen van der Zijp.   All Rights Reserved.        *
 *********************************************************************************
-* This library is free software; you can redistribute it and/or                 *
-* modify it under the terms of the GNU Lesser General Public                    *
-* License as published by the Free Software Foundation; either                  *
-* version 2.1 of the License, or (at your option) any later version.            *
+* This library is free software; you can redistribute it and/or modify          *
+* it under the terms of the GNU Lesser General Public License as published by   *
+* the Free Software Foundation; either version 3 of the License, or             *
+* (at your option) any later version.                                           *
 *                                                                               *
 * This library is distributed in the hope that it will be useful,               *
 * but WITHOUT ANY WARRANTY; without even the implied warranty of                *
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU             *
-* Lesser General Public License for more details.                               *
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the                 *
+* GNU Lesser General Public License for more details.                           *
 *                                                                               *
-* You should have received a copy of the GNU Lesser General Public              *
-* License along with this library; if not, write to the Free Software           *
-* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA.    *
-*********************************************************************************
-* $Id: FXPopup.h,v 1.35 2006/01/22 17:58:07 fox Exp $                           *
+* You should have received a copy of the GNU Lesser General Public License      *
+* along with this program.  If not, see <http://www.gnu.org/licenses/>          *
 ********************************************************************************/
 #ifndef FXPOPUP_H
 #define FXPOPUP_H
@@ -39,8 +36,18 @@ enum {
   };
 
 
-
-/// Popup window
+/**
+* Popup window is used as a container for transitional controls
+* such as menu panes and other ephemeral windows.  One of its
+* principal characteristics is that no other controls, except the
+* ones inside the popup are capable of interaction.  Any click outside
+* of a popup will cause the popup to be closed.
+* Contents of popups may be arranged vertically (POPUP_VERTICAL) or
+* horizontally (POPUP_HORIZONTAL).
+* The special POPUP_SHRINKWRAP option causes the application to recompute
+* the size of the popup window based on its contents at the time it is
+* shown, thus permitting dynamically changing content.
+*/
 class FXAPI FXPopup : public FXShell {
   FXDECLARE(FXPopup)
 private:
@@ -55,7 +62,7 @@ protected:
   FXint     border;
 protected:
   FXPopup();
-  virtual bool doesOverrideRedirect() const;
+  virtual FXbool doesOverrideRedirect() const;
   void drawBorderRectangle(FXDCWindow& dc,FXint x,FXint y,FXint w,FXint h);
   void drawRaisedRectangle(FXDCWindow& dc,FXint x,FXint y,FXint w,FXint h);
   void drawSunkenRectangle(FXDCWindow& dc,FXint x,FXint y,FXint w,FXint h);
@@ -68,7 +75,7 @@ private:
   FXPopup(const FXPopup&);
   FXPopup &operator=(const FXPopup&);
 #ifdef WIN32
-  virtual const char* GetClass() const;
+  virtual const void* GetClass() const;
 #endif
 public:
   long onPaint(FXObject*,FXSelector,void*);
@@ -82,6 +89,7 @@ public:
   long onLeave(FXObject*,FXSelector,void*);
   long onMotion(FXObject*,FXSelector,void*);
   long onMap(FXObject*,FXSelector,void*);
+  long onLayout(FXObject*,FXSelector,void*);
   long onButtonPress(FXObject*,FXSelector,void*);
   long onButtonRelease(FXObject*,FXSelector,void*);
   long onUngrabbed(FXObject*,FXSelector,void*);
@@ -174,19 +182,20 @@ public:
 //   /// Pop down the menu
 //   virtual void popdown(FXint value);
 
+  /// Change popup orientation
+  void setOrientation(FXuint orient);
+
   /// Return popup orientation
   FXuint getOrientation() const;
 
-  /// Change popup orientation
-  void setOrientation(FXuint orient);
+  /// Change shrinkwrap mode
+  void setShrinkWrap(FXbool flag);
 
   /// Return shrinkwrap mode
   FXbool getShrinkWrap() const;
 
-  /// Change shrinkwrap mode
-  void setShrinkWrap(FXbool sw);
-
-  virtual bool doesSaveUnder() const;
+  /// Does save-unders
+  virtual FXbool doesSaveUnder() const;
 
   /// Destructor
   virtual ~FXPopup();

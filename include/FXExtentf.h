@@ -3,27 +3,23 @@
 *          S i n g l e - P r e c i s i o n    E x t e n t    C l a s s          *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 2004,2006 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 2004,2021 by Jeroen van der Zijp.   All Rights Reserved.        *
 *********************************************************************************
-* This library is free software; you can redistribute it and/or                 *
-* modify it under the terms of the GNU Lesser General Public                    *
-* License as published by the Free Software Foundation; either                  *
-* version 2.1 of the License, or (at your option) any later version.            *
+* This library is free software; you can redistribute it and/or modify          *
+* it under the terms of the GNU Lesser General Public License as published by   *
+* the Free Software Foundation; either version 3 of the License, or             *
+* (at your option) any later version.                                           *
 *                                                                               *
 * This library is distributed in the hope that it will be useful,               *
 * but WITHOUT ANY WARRANTY; without even the implied warranty of                *
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU             *
-* Lesser General Public License for more details.                               *
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the                 *
+* GNU Lesser General Public License for more details.                           *
 *                                                                               *
-* You should have received a copy of the GNU Lesser General Public              *
-* License along with this library; if not, write to the Free Software           *
-* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA.    *
-*********************************************************************************
-* $Id: FXExtentf.h,v 1.8.2.1 2006/07/25 01:35:36 fox Exp $                          *
+* You should have received a copy of the GNU Lesser General Public License      *
+* along with this program.  If not, see <http://www.gnu.org/licenses/>          *
 ********************************************************************************/
 #ifndef FXEXTENTF_H
 #define FXEXTENTF_H
-
 
 namespace FX {
 
@@ -35,20 +31,41 @@ public:
   FXVec2f upper;
 public:
 
-  /// Default constructor
+  /// Default constructor; value is not initialized
   FXExtentf(){}
 
   /// Copy constructor
   FXExtentf(const FXExtentf& ext):lower(ext.lower),upper(ext.upper){}
 
-  /// Initialize from two vectors
+  /// Initialize with a single point
+  FXExtentf(const FXVec2f& p):lower(p),upper(p){}
+
+  /// Initialize from corner points
   FXExtentf(const FXVec2f& lo,const FXVec2f& hi):lower(lo),upper(hi){}
 
-  /// Initialize from six numbers
-  FXExtentf(FXfloat xlo,FXfloat xhi,FXfloat ylo,FXfloat yhi):lower(xlo,ylo),upper(xhi,yhi){}
+  /// Initialize with a single point
+  FXExtentf(FXfloat x,FXfloat y):lower(x,y),upper(x,y){}
+
+  /// Initialize with explicit values
+  FXExtentf(FXfloat xl,FXfloat xh,FXfloat yl,FXfloat yh):lower(xl,yl),upper(xh,yh){}
 
   /// Assignment
   FXExtentf& operator=(const FXExtentf& ext){ lower=ext.lower; upper=ext.upper; return *this; }
+
+  /// Set value from another range
+  FXExtentf& set(const FXExtentf& ext){ lower=ext.lower; upper=ext.upper; return *this; }
+
+  /// Set value from single point
+  FXExtentf& set(const FXVec2f& p){ lower=upper=p; return *this; }
+
+  /// Set value from corner points
+  FXExtentf& set(const FXVec2f& lo,const FXVec2f& hi){ lower=lo; upper=hi; return *this; }
+
+  /// Set value from single point
+  FXExtentf& set(FXfloat x,FXfloat y){ lower.x=upper.x=x; lower.y=upper.y=y; return *this; }
+
+  /// Set value from explicit values
+  FXExtentf& set(FXfloat xl,FXfloat xh,FXfloat yl,FXfloat yh){ lower.set(xl,yl); upper.set(xh,yh); return *this; }
 
   /// Indexing with 0..1
   FXVec2f& operator[](FXint i){ return (&lower)[i]; }
@@ -57,8 +74,8 @@ public:
   const FXVec2f& operator[](FXint i) const { return (&lower)[i]; }
 
   /// Comparison
-  bool operator==(const FXExtentf& ext) const { return lower==ext.lower && upper==ext.upper;}
-  bool operator!=(const FXExtentf& ext) const { return lower!=ext.lower || upper!=ext.upper;}
+  FXbool operator==(const FXExtentf& ext) const { return lower==ext.lower && upper==ext.upper;}
+  FXbool operator!=(const FXExtentf& ext) const { return lower!=ext.lower || upper!=ext.upper;}
 
   /// Width of box
   FXfloat width() const { return upper.x-lower.x; }
@@ -66,10 +83,13 @@ public:
   /// Height of box
   FXfloat height() const { return upper.y-lower.y; }
 
+  /// Area
+  FXfloat area() const { return width()*height(); }
+
   /// Longest side
   FXfloat longest() const;
 
-  /// shortest side
+  /// Shortest side
   FXfloat shortest() const;
 
   /// Length of diagonal
@@ -85,16 +105,16 @@ public:
   FXVec2f center() const;
 
   /// Test if empty
-  bool empty() const;
+  FXbool empty() const;
 
   /// Test if box contains point x,y
-  bool contains(FXfloat x,FXfloat y) const;
+  FXbool contains(FXfloat x,FXfloat y) const;
 
   /// Test if box contains point p
-  bool contains(const FXVec2f& p) const;
+  FXbool contains(const FXVec2f& p) const;
 
   /// Test if box properly contains another box
-  bool contains(const FXExtentf& ext) const;
+  FXbool contains(const FXExtentf& ext) const;
 
   /// Include point
   FXExtentf& include(FXfloat x,FXfloat y);
@@ -105,32 +125,33 @@ public:
   /// Include given range into extent
   FXExtentf& include(const FXExtentf& ext);
 
-  /// Test if bounds overlap
-  friend FXAPI bool overlap(const FXExtentf& a,const FXExtentf& b);
+  /// Intersect box with ray u-v
+  FXbool intersect(const FXVec2f& u,const FXVec2f& v) const;
+
+  /// Intersect box with ray pos+lambda*dir, returning true if hit
+  FXbool intersect(const FXVec2f& pos,const FXVec2f& dir,FXfloat hit[]) const;
 
   /// Get corner number 0..3
   FXVec2f corner(FXint c) const { return FXVec2f((&lower)[c&1].x, (&lower)[(c>>1)&1].y); }
 
-  /// Union of two boxes
-  friend FXAPI FXExtentf unite(const FXExtentf& a,const FXExtentf& b);
-
-  /// Intersection of two boxes
-  friend FXAPI FXExtentf intersect(const FXExtentf& a,const FXExtentf& b);
-
-  /// Save object to a stream
-  friend FXAPI FXStream& operator<<(FXStream& store,const FXExtentf& ext);
-
-  /// Load object from a stream
-  friend FXAPI FXStream& operator>>(FXStream& store,FXExtentf& ext);
+  /// Destructor
+ ~FXExtentf(){}
   };
 
 
-extern FXAPI bool overlap(const FXExtentf& a,const FXExtentf& b);
+/// Test if bounds overlap
+extern FXAPI FXbool overlap(const FXExtentf& a,const FXExtentf& b);
 
+/// Union of two boxes
 extern FXAPI FXExtentf unite(const FXExtentf& a,const FXExtentf& b);
+
+/// Intersection of two boxes
 extern FXAPI FXExtentf intersect(const FXExtentf& a,const FXExtentf& b);
 
+/// Save object to a stream
 extern FXAPI FXStream& operator<<(FXStream& store,const FXExtentf& ext);
+
+/// Load object from a stream
 extern FXAPI FXStream& operator>>(FXStream& store,FXExtentf& ext);
 
 }

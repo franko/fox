@@ -1,6 +1,5 @@
 #include "fx.h"
 
-
 /*
 
   This is a classical programming example.  Doing it graphically
@@ -31,7 +30,6 @@
 
 */
 
-#include "FXExpression.h"
 
 // The entry point where the program starts running
 int main(int argc,char **argv){

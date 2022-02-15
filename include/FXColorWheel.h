@@ -3,23 +3,20 @@
 *                        C o l o r W h e e l   W i d g e t                      *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 2001,2006 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 2001,2021 by Jeroen van der Zijp.   All Rights Reserved.        *
 *********************************************************************************
-* This library is free software; you can redistribute it and/or                 *
-* modify it under the terms of the GNU Lesser General Public                    *
-* License as published by the Free Software Foundation; either                  *
-* version 2.1 of the License, or (at your option) any later version.            *
+* This library is free software; you can redistribute it and/or modify          *
+* it under the terms of the GNU Lesser General Public License as published by   *
+* the Free Software Foundation; either version 3 of the License, or             *
+* (at your option) any later version.                                           *
 *                                                                               *
 * This library is distributed in the hope that it will be useful,               *
 * but WITHOUT ANY WARRANTY; without even the implied warranty of                *
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU             *
-* Lesser General Public License for more details.                               *
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the                 *
+* GNU Lesser General Public License for more details.                           *
 *                                                                               *
-* You should have received a copy of the GNU Lesser General Public              *
-* License along with this library; if not, write to the Free Software           *
-* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA.    *
-*********************************************************************************
-* $Id: FXColorWheel.h,v 1.31 2006/01/22 17:57:59 fox Exp $                      *
+* You should have received a copy of the GNU Lesser General Public License      *
+* along with this program.  If not, see <http://www.gnu.org/licenses/>          *
 ********************************************************************************/
 #ifndef FXCOLORWHEEL_H
 #define FXCOLORWHEEL_H
@@ -36,8 +33,10 @@ class FXImage;
 
 /**
 * A ColorWheel is a widget which controls the hue and saturation values of a
-* color.  It is most often used together with a Color Bar which controls the
+* color.  It is most often used together with a ColorBar which controls the
 * brighness.
+* ColorWheel supports justify options to allow control of the placement of
+* the wheel inside the rectangular space of the widget.
 */
 class FXAPI FXColorWheel : public FXFrame {
   FXDECLARE(FXColorWheel)
@@ -111,6 +110,12 @@ public:
 
   /// Set hue, saturation, value
   void setHueSatVal(FXfloat h,FXfloat s,FXfloat v);
+
+  /// Set the current justification mode
+  void setJustify(FXuint style);
+
+  /// Get the current justification mode
+  FXuint getJustify() const;
 
   /// Set status line help text for this color well
   void setHelpText(const FXString& text){ help=text; }

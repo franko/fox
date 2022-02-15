@@ -1,10 +1,10 @@
 ## Process this file with automake to produce Makefile.in
 
-CXXFLAGS = @CXXFLAGS@ @X_CFLAGS@
+AM_CXXFLAGS = @X_CFLAGS@
 INCLUDES = -I$(top_srcdir)/include -I$(top_builddir)/include
-RESWRAP  = $(top_builddir)/utils/reswrap
+RESWRAP  = $(top_builddir)/utils/reswrap$(EXEEXT)
 SUFFIXES = .gif .bmp
-LDADD = $(top_builddir)/src/libFOX-1.6.la -lm
+LDADD = $(top_builddir)/lib/libFOX-1.7.la -lm
 
 
 bin_PROGRAMS = calculator
@@ -12,12 +12,12 @@ bin_PROGRAMS = calculator
 man_MANS = calculator.1
 
 ICONS  = \
-colors.gif \
-information.gif \
-bigcalc.gif \
-constmem.bmp \
-question.gif \
-tinycalc.gif
+$(top_srcdir)/calculator/colors.gif \
+$(top_srcdir)/calculator/information.gif \
+$(top_srcdir)/calculator/bigcalc.gif \
+$(top_srcdir)/calculator/constmem.bmp \
+$(top_srcdir)/calculator/question.gif \
+$(top_srcdir)/calculator/tinycalc.gif
 
 
 calculator_SOURCES = \
@@ -30,27 +30,23 @@ HelpWindow.cpp \
 Preferences.h \
 Preferences.cpp \
 help.cpp \
-main.cpp \
-LICENSE \
-$(ICONS)
+main.cpp
 
 
-Calculator.cpp: icons.h icons.cpp
-
+BUILT_SOURCES = icons.h icons.cpp
 
 icons.h: $(ICONS)
-	$(RESWRAP) -i -o icons.h $^
+	$(RESWRAP) -h -o $@ $^
 
 
 icons.cpp: $(ICONS)
-	$(RESWRAP) -e -o icons.cpp $^
+	$(RESWRAP) -i icons.h -o $@ $^
 
 
 CLEANFILES = icons.h icons.cpp
 
 
-EXTRA_DIST = $(man_MANS) \
-             Makefile.bc \
-             Makefile.wc \
-             Makefile.dmc
-
+EXTRA_DIST = \
+$(man_MANS) \
+LICENSE \
+$(ICONS)

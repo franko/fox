@@ -3,23 +3,20 @@
 *                             O p t i o n   M e n u                             *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 1997,2006 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 1997,2021 by Jeroen van der Zijp.   All Rights Reserved.        *
 *********************************************************************************
-* This library is free software; you can redistribute it and/or                 *
-* modify it under the terms of the GNU Lesser General Public                    *
-* License as published by the Free Software Foundation; either                  *
-* version 2.1 of the License, or (at your option) any later version.            *
+* This library is free software; you can redistribute it and/or modify          *
+* it under the terms of the GNU Lesser General Public License as published by   *
+* the Free Software Foundation; either version 3 of the License, or             *
+* (at your option) any later version.                                           *
 *                                                                               *
 * This library is distributed in the hope that it will be useful,               *
 * but WITHOUT ANY WARRANTY; without even the implied warranty of                *
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU             *
-* Lesser General Public License for more details.                               *
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the                 *
+* GNU Lesser General Public License for more details.                           *
 *                                                                               *
-* You should have received a copy of the GNU Lesser General Public              *
-* License along with this library; if not, write to the Free Software           *
-* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA.    *
-*********************************************************************************
-* $Id: FXOptionMenu.h,v 1.28 2006/02/06 02:03:38 fox Exp $                      *
+* You should have received a copy of the GNU Lesser General Public License      *
+* along with this program.  If not, see <http://www.gnu.org/licenses/>          *
 ********************************************************************************/
 #ifndef FXOPTIONMENU_H
 #define FXOPTIONMENU_H
@@ -32,6 +29,13 @@ namespace FX {
 
 
 class FXPopup;
+
+
+/// Option Menu Button flags
+enum {
+  OPTIONMENU_TOOLBAR   = 0x00800000,  /// Toolbar style button [flat look]
+  OPTIONMENU_NOGLYPH   = 0x01000000,  /// Do not display a glyph
+  };
 
 
 /// Option Menu Button
@@ -67,7 +71,7 @@ public:
   virtual FXint getDefaultHeight();
 
   /// Returns true because a menu button can receive focus
-  virtual bool canFocus() const;
+  virtual FXbool canFocus() const;
 
   /// Set focus to this window
   virtual void setFocus();
@@ -108,6 +112,8 @@ public:
   long onPaint(FXObject*,FXSelector,void*);
   long onLeftBtnPress(FXObject*,FXSelector,void*);
   long onLeftBtnRelease(FXObject*,FXSelector,void*);
+  long onEnter(FXObject*,FXSelector,void*);
+  long onLeave(FXObject*,FXSelector,void*);
   long onFocusIn(FXObject*,FXSelector,void*);
   long onFocusOut(FXObject*,FXSelector,void*);
   long onMotion(FXObject*,FXSelector,void*);
@@ -147,17 +153,20 @@ public:
   /// Return default height
   virtual FXint getDefaultHeight();
 
-  /// Return TRUE if the position is logically in the pane
-  virtual bool contains(FXint parentx,FXint parenty) const;
+  /// Return true if the position is logically in the pane
+  virtual FXbool contains(FXint parentx,FXint parenty) const;
+
+  /// Return the option item at the given index
+  FXOption *getItem(FXint index) const;
 
   /// Set the current option
-  void setCurrent(FXOption *win,FXbool notify=FALSE);
+  void setCurrent(FXOption *win,FXbool notify=false);
 
   /// Return the current option
   FXOption* getCurrent() const { return current; }
 
   /// Set the current option number
-  void setCurrentNo(FXint no,FXbool notify=FALSE);
+  void setCurrentNo(FXint no,FXbool notify=false);
 
   /// Get the current option number
   FXint getCurrentNo() const;
@@ -172,9 +181,9 @@ public:
   FXPopup* getMenu() const { return pane; }
 
   /// Returns true because a option menu can receive focus
-  virtual bool canFocus() const;
+  virtual FXbool canFocus() const;
 
-  /// Return TRUE if popped up
+  /// Return true if popped up
   FXbool isPopped() const;
 
   /// Save option menu to a stream

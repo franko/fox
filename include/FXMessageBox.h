@@ -3,23 +3,20 @@
 *                         M e s s a g e   B o x e s                             *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 1997,2006 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 1997,2021 by Jeroen van der Zijp.   All Rights Reserved.        *
 *********************************************************************************
-* This library is free software; you can redistribute it and/or                 *
-* modify it under the terms of the GNU Lesser General Public                    *
-* License as published by the Free Software Foundation; either                  *
-* version 2.1 of the License, or (at your option) any later version.            *
+* This library is free software; you can redistribute it and/or modify          *
+* it under the terms of the GNU Lesser General Public License as published by   *
+* the Free Software Foundation; either version 3 of the License, or             *
+* (at your option) any later version.                                           *
 *                                                                               *
 * This library is distributed in the hope that it will be useful,               *
 * but WITHOUT ANY WARRANTY; without even the implied warranty of                *
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU             *
-* Lesser General Public License for more details.                               *
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the                 *
+* GNU Lesser General Public License for more details.                           *
 *                                                                               *
-* You should have received a copy of the GNU Lesser General Public              *
-* License along with this library; if not, write to the Free Software           *
-* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA.    *
-*********************************************************************************
-* $Id: FXMessageBox.h,v 1.28 2006/01/22 17:58:06 fox Exp $                      *
+* You should have received a copy of the GNU Lesser General Public License      *
+* along with this program.  If not, see <http://www.gnu.org/licenses/>          *
 ********************************************************************************/
 #ifndef FXMESSAGEBOX_H
 #define FXMESSAGEBOX_H
@@ -33,14 +30,15 @@ namespace FX {
 
 // Message box buttons
 enum {
-  MBOX_OK                   = 0x10000000, /// Message box has a only an OK button
-  MBOX_OK_CANCEL            = 0x20000000, /// Message box has OK and CANCEL buttons
-  MBOX_YES_NO               = 0x30000000, /// Message box has YES and NO buttons
-  MBOX_YES_NO_CANCEL        = 0x40000000, /// Message box has YES, NO, and CANCEL buttons
-  MBOX_QUIT_CANCEL          = 0x50000000, /// Message box has QUIT and CANCEL buttons
-  MBOX_QUIT_SAVE_CANCEL     = 0x60000000, /// Message box has QUIT, SAVE, and CANCEL buttons
-  MBOX_SKIP_SKIPALL_CANCEL  = 0x70000000, /// Message box has SKIP, SKIP ALL, and CANCEL buttons
-  MBOX_SAVE_CANCEL_DONTSAVE = 0x80000000  /// Message box has DON'T SAVE,CANCEL and SAVE buttons
+  MBOX_OK                         = 0x10000000, /// Message box has a only an OK button
+  MBOX_OK_CANCEL                  = 0x20000000, /// Message box has OK and CANCEL buttons
+  MBOX_YES_NO                     = 0x30000000, /// Message box has YES and NO buttons
+  MBOX_YES_NO_CANCEL              = 0x40000000, /// Message box has YES, NO, and CANCEL buttons
+  MBOX_QUIT_CANCEL                = 0x50000000, /// Message box has QUIT and CANCEL buttons
+  MBOX_QUIT_SAVE_CANCEL           = 0x60000000, /// Message box has QUIT, SAVE, and CANCEL buttons
+  MBOX_SKIP_SKIPALL_CANCEL        = 0x70000000, /// Message box has SKIP, SKIP ALL, and CANCEL buttons
+  MBOX_SAVE_CANCEL_DONTSAVE       = 0x80000000, /// Message box has DON'T SAVE,CANCEL and SAVE buttons
+  MBOX_YES_YESALL_NO_NOALL_CANCEL = 0xA0000000  /// Message box has YES, YES ALL, NO, NO ALL, and CANCEL buttons
   };
 
 
@@ -53,7 +51,9 @@ enum {
   MBOX_CLICKED_QUIT     = 5,            /// The QUIT button was clicked
   MBOX_CLICKED_SAVE     = 6,            /// The SAVE button was clicked
   MBOX_CLICKED_SKIP     = 7,            /// The SKIP button was clicked
-  MBOX_CLICKED_SKIPALL  = 8             /// The SKIP ALL button was clicked
+  MBOX_CLICKED_SKIPALL  = 8,            /// The SKIP ALL button was clicked
+  MBOX_CLICKED_YESALL   = 9,            /// The YES ALL button was clicked
+  MBOX_CLICKED_NOALL    = 10            /// The NO ALL button was clicked
   };
 
 
@@ -87,6 +87,8 @@ public:
     ID_CLICKED_SAVE,
     ID_CLICKED_SKIP,
     ID_CLICKED_SKIPALL,
+    ID_CLICKED_YESALL,
+    ID_CLICKED_NOALL,
     ID_LAST
     };
 public:

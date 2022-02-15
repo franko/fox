@@ -3,23 +3,20 @@
 *                       F o u r - W a y   S p l i t t e r                       *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 1999,2006 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 1999,2021 by Jeroen van der Zijp.   All Rights Reserved.        *
 *********************************************************************************
-* This library is free software; you can redistribute it and/or                 *
-* modify it under the terms of the GNU Lesser General Public                    *
-* License as published by the Free Software Foundation; either                  *
-* version 2.1 of the License, or (at your option) any later version.            *
+* This library is free software; you can redistribute it and/or modify          *
+* it under the terms of the GNU Lesser General Public License as published by   *
+* the Free Software Foundation; either version 3 of the License, or             *
+* (at your option) any later version.                                           *
 *                                                                               *
 * This library is distributed in the hope that it will be useful,               *
 * but WITHOUT ANY WARRANTY; without even the implied warranty of                *
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU             *
-* Lesser General Public License for more details.                               *
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the                 *
+* GNU Lesser General Public License for more details.                           *
 *                                                                               *
-* You should have received a copy of the GNU Lesser General Public              *
-* License along with this library; if not, write to the Free Software           *
-* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA.    *
-*********************************************************************************
-* $Id: FX4Splitter.h,v 1.30 2006/02/20 03:32:12 fox Exp $                       *
+* You should have received a copy of the GNU Lesser General Public License      *
+* along with this program.  If not, see <http://www.gnu.org/licenses/>          *
 ********************************************************************************/
 #ifndef FX4SPLITTER_H
 #define FX4SPLITTER_H
@@ -32,8 +29,10 @@ namespace FX {
 
 // Splitter options
 enum {
-  FOURSPLITTER_TRACKING = 0x00008000,	// Track continuously during split
-  FOURSPLITTER_NORMAL   = 0
+  FOURSPLITTER_TRACKING   = 0x00008000,	// Track continuously during split
+  FOURSPLITTER_VERTICAL   = 0x00010000, // Prefer vertial expansion of panels
+  FOURSPLITTER_HORIZONTAL = 0,          // Prefer horizontal expansion of panels (default)
+  FOURSPLITTER_NORMAL     = 0
   };
 
 
@@ -51,6 +50,16 @@ enum {
 * The four-way splitter widget sends a SEL_CHANGED to its target
 * during the resizing of the panes; at the end of the resize interaction,
 * it sends a SEL_COMMAND to signify that the resize operation is complete.
+* It is possible to expand or collapse one or more of the sub-panes of the
+* four-way splitter; by default, all four panes are expanded.
+* When a pane is collapsed, the remaining panes will fill the space left.
+* If the FOURSPLITTER_HORIZONTAL flag is in effect (default), the remaining
+* panels expand horizontally to fill the space; conversely, if FOURSPLITTER_VERTICAL
+* is passed then the remaining panels will expand vertically to accomodate the extra
+* space.
+* The flag FOURSPLITTER_TRACKING causes the contents to be redrawn interactively as
+* the split-division is adjusted; otherwise the contents will be redrawn only after
+* the resizing is finished.
 */
 class FXAPI FX4Splitter : public FXComposite {
   FXDECLARE(FX4Splitter)
@@ -93,6 +102,8 @@ public:
     ExpandBottom      = ExpandBottomLeft|ExpandBottomRight, /// Expand bottom children
     ExpandLeft        = ExpandTopLeft|ExpandBottomLeft,     /// Expand left children
     ExpandRight       = ExpandTopRight|ExpandBottomRight,   /// Expand right children
+    ExpandCriss       = ExpandTopRight|ExpandBottomLeft,    /// Expand diagonally opposing children
+    ExpandCross       = ExpandTopLeft|ExpandBottomRight,    /// Expand diagonally opposing children
     ExpandAll         = ExpandLeft|ExpandRight              /// Expand all children
     };
 public:

@@ -99,7 +99,7 @@ DIST_COMMON = $(srcdir)/Makefile.am $(top_srcdir)/configure \
 am__CONFIG_DISTCLEAN_FILES = config.status config.cache config.log \
  configure.lineno config.status.lineno
 mkinstalldirs = $(install_sh) -d
-CONFIG_CLEAN_FILES = fox.spec fox-config fox.pc
+CONFIG_CLEAN_FILES = fox-config fox.spec fox17.pc
 CONFIG_CLEAN_VPATH_FILES =
 am__vpath_adj_setup = srcdirstrip=`echo "$(srcdir)" | sed 's|.|.|g'`;
 am__vpath_adj = case $$p in \
@@ -188,7 +188,7 @@ CTAGS = ctags
 CSCOPE = cscope
 DIST_SUBDIRS = $(SUBDIRS)
 am__DIST_COMMON = $(srcdir)/Makefile.in $(srcdir)/fox-config.in \
-	$(srcdir)/fox.pc.in $(srcdir)/fox.spec.in AUTHORS INSTALL \
+	$(srcdir)/fox.spec.in $(srcdir)/fox17.pc.in AUTHORS INSTALL \
 	README compile config.guess config.sub depcomp install-sh \
 	ltmain.sh missing
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
@@ -237,6 +237,7 @@ ACLOCAL = @ACLOCAL@
 AMTAR = @AMTAR@
 AM_DEFAULT_VERBOSITY = @AM_DEFAULT_VERBOSITY@
 AR = @AR@
+AS = @AS@
 AUTOCONF = @AUTOCONF@
 AUTOHEADER = @AUTOHEADER@
 AUTOMAKE = @AUTOMAKE@
@@ -262,10 +263,10 @@ ECHO_T = @ECHO_T@
 EGREP = @EGREP@
 EXEEXT = @EXEEXT@
 FGREP = @FGREP@
-FOX_BYTEORDER = @FOX_BYTEORDER@
 FOX_MAJOR_VERSION = @FOX_MAJOR_VERSION@
 FOX_MINOR_VERSION = @FOX_MINOR_VERSION@
 FOX_PATCH_LEVEL = @FOX_PATCH_LEVEL@
+GLU_LIBS = @GLU_LIBS@
 GL_LIBS = @GL_LIBS@
 GREP = @GREP@
 INSTALL = @INSTALL@
@@ -371,12 +372,12 @@ top_srcdir = @top_srcdir@
 
 # For non-gcc compilers, change the options to "no-dependencies"
 AUTOMAKE_OPTIONS = foreign dist-zip
-SUBDIRS = utils include src chart doc tests shutterbug adie pathfinder calculator windows
-EXTRA_DIST = ADDITIONS AUTHORS INSTALL LICENSE LICENSE_ADDENDUM TRACING README fox.lsm index.html aclocal.m4
+SUBDIRS = utils include lib chart doc tests shutterbug adie pathfinder calculator controlpanel glviewer windows
+EXTRA_DIST = ADDITIONS AUTHORS INSTALL LICENSE LICENSE_ADDENDUM TRACING README fox.spec fox-config index.html aclocal.m4
 bin_SCRIPTS = fox-config
 pkgconfigdir = $(libdir)/pkgconfig
-pkgconfig_DATA = fox.pc
-CLEANFILES = fox.tar.gz
+pkgconfig_DATA = fox17.pc
+CLEANFILES = $(distdir).tar.gz $(distdir).zip
 all: all-recursive
 
 .SUFFIXES:
@@ -413,11 +414,11 @@ $(top_srcdir)/configure:  $(am__configure_deps)
 $(ACLOCAL_M4):  $(am__aclocal_m4_deps)
 	$(am__cd) $(srcdir) && $(ACLOCAL) $(ACLOCAL_AMFLAGS)
 $(am__aclocal_m4_deps):
-fox.spec: $(top_builddir)/config.status $(srcdir)/fox.spec.in
-	cd $(top_builddir) && $(SHELL) ./config.status $@
 fox-config: $(top_builddir)/config.status $(srcdir)/fox-config.in
 	cd $(top_builddir) && $(SHELL) ./config.status $@
-fox.pc: $(top_builddir)/config.status $(srcdir)/fox.pc.in
+fox.spec: $(top_builddir)/config.status $(srcdir)/fox.spec.in
+	cd $(top_builddir) && $(SHELL) ./config.status $@
+fox17.pc: $(top_builddir)/config.status $(srcdir)/fox17.pc.in
 	cd $(top_builddir) && $(SHELL) ./config.status $@
 install-binSCRIPTS: $(bin_SCRIPTS)
 	@$(NORMAL_INSTALL)
@@ -911,18 +912,23 @@ uninstall-am: uninstall-binSCRIPTS uninstall-pkgconfigDATA
 
 
 snapshot: dist-all
-	cp $(distdir).tar.gz /net/linkyftp/pub/fox-snapshot.tar.gz
-	cp $(distdir).zip /net/linkyftp/pub/fox-snapshot.zip
+	cp $(distdir).tar.gz /site/ftp/pub/fox-snapshot.tar.gz
+	cp $(distdir).zip /site/ftp/pub/fox-snapshot.zip
 
 web: distdir
 	cd $(distdir)/doc && doxygen doxygen.cfg
 	cp -r $(distdir)/doc/* /site/www
+
+#web: distdir
+#	cp -r $(distdir)/doc/* /net/webby/html
 
 drop: dist-all
 	cp $(distdir).tar.gz /site/ftp/pub
 	cp $(distdir).zip /site/ftp/pub
 	sha1sum $(distdir).tar.gz >/site/ftp/pub/$(distdir).tar.gz.sha1sum
 	sha1sum $(distdir).zip >/site/ftp/pub/$(distdir).zip.sha1sum
+	cd /site/ftp/pub && ln -sf $(distdir).tar.gz fox-latest.tar.gz
+	cd /site/ftp/pub && ln -sf $(distdir).zip fox-latest.zip
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

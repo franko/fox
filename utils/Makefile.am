@@ -1,6 +1,6 @@
 ## Process this file with automake to produce Makefile.in
 
-CXXFLAGS = @CXXFLAGS@ @X_CFLAGS@
+AM_CXXFLAGS = @X_CFLAGS@
 
 LIBS=
 
@@ -11,7 +11,4 @@ man_MANS        = reswrap.1
 reswrap_SOURCES	= reswrap.cpp
 
 EXTRA_DIST      = $(man_MANS) \
-                  maketree \
-                  Makefile.bc \
-                  Makefile.wc \
-                  Makefile.dmc
+                  maketree 

@@ -3,23 +3,20 @@
 *                      G r a d i e n t B a r   W i d g e t                      *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 2002,2006 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 2002,2021 by Jeroen van der Zijp.   All Rights Reserved.        *
 *********************************************************************************
-* This library is free software; you can redistribute it and/or                 *
-* modify it under the terms of the GNU Lesser General Public                    *
-* License as published by the Free Software Foundation; either                  *
-* version 2.1 of the License, or (at your option) any later version.            *
+* This library is free software; you can redistribute it and/or modify          *
+* it under the terms of the GNU Lesser General Public License as published by   *
+* the Free Software Foundation; either version 3 of the License, or             *
+* (at your option) any later version.                                           *
 *                                                                               *
 * This library is distributed in the hope that it will be useful,               *
 * but WITHOUT ANY WARRANTY; without even the implied warranty of                *
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU             *
-* Lesser General Public License for more details.                               *
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the                 *
+* GNU Lesser General Public License for more details.                           *
 *                                                                               *
-* You should have received a copy of the GNU Lesser General Public              *
-* License along with this library; if not, write to the Free Software           *
-* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA.    *
-*********************************************************************************
-* $Id: FXGradientBar.h,v 1.52 2006/01/22 17:58:04 fox Exp $                     *
+* You should have received a copy of the GNU Lesser General Public License      *
+* along with this program.  If not, see <http://www.gnu.org/licenses/>          *
 ********************************************************************************/
 #ifndef FXGRADIENTBAR_H
 #define FXGRADIENTBAR_H
@@ -28,9 +25,7 @@
 #include "FXFrame.h"
 #endif
 
-
 namespace FX {
-
 
 
 /// Gradient bar orientation
@@ -53,7 +48,6 @@ enum {
   GRADIENT_BLEND_INCREASING,            /// Quadratic increasing blend
   GRADIENT_BLEND_DECREASING             /// Quadratic decreasing blend
   };
-
 
 
 // Gradient segment
@@ -87,9 +81,11 @@ protected:
   FXint        anchor;                  // Anchor segment
   FXint        grip;                    // Grip being dragged, if any
   FXint        where;                   // Where dropped in segment
+  FXint        barsize;                 // Bar size
+  FXint        controlsize;             // Size of control
+  FXColor      selectColor;             // Select color
   FXString     tip;                     // Tooltip value
   FXString     help;                    // Help value
-  FXColor      selectColor;             // Select color
   FXint        offset;                  // Offset
 protected:
   FXGradientBar();
@@ -111,6 +107,7 @@ protected:
   static FXdouble blendsine(FXdouble middle,FXdouble pos);
   static FXdouble blendincreasing(FXdouble middle,FXdouble pos);
   static FXdouble blenddecreasing(FXdouble middle,FXdouble pos);
+  static const FXGradient defaultGradient[3];
 private:
   FXGradientBar(const FXGradientBar&);
   FXGradientBar &operator=(const FXGradientBar&);
@@ -125,9 +122,11 @@ public:
     };
 public:
   long onPaint(FXObject*,FXSelector,void*);
+  long onMotion(FXObject*,FXSelector,void*);
   long onLeftBtnPress(FXObject*,FXSelector,void*);
   long onLeftBtnRelease(FXObject*,FXSelector,void*);
-  long onMotion(FXObject*,FXSelector,void*);
+  long onRightBtnPress(FXObject*,FXSelector,void*);
+  long onRightBtnRelease(FXObject*,FXSelector,void*);
   long onDNDEnter(FXObject*,FXSelector,void*);
   long onDNDLeave(FXObject*,FXSelector,void*);
   long onDNDMotion(FXObject*,FXSelector,void*);
@@ -144,6 +143,7 @@ public:
   long onCmdMerge(FXObject*,FXSelector,void*);
   long onUpdUniform(FXObject*,FXSelector,void*);
   long onCmdUniform(FXObject*,FXSelector,void*);
+  long onCmdReset(FXObject*,FXSelector,void*);
   long onCmdSetHelp(FXObject*,FXSelector,void*);
   long onCmdGetHelp(FXObject*,FXSelector,void*);
   long onCmdSetTip(FXObject*,FXSelector,void*);
@@ -163,6 +163,7 @@ public:
     ID_SPLIT,
     ID_MERGE,
     ID_UNIFORM,
+    ID_RESET,
     ID_LAST
     };
 public:
@@ -199,20 +200,25 @@ public:
   FXint getNumSegments() const { return nsegs; }
 
   /**
+  * Reset gradients to default color ramp.
+  */
+  void resetGradients();
+
+  /**
    * Replace the current gradient segments.
    * The gradient bar makes a copy of the input segments array.
    */
   void setGradients(const FXGradient *segments,FXint nsegments);
 
   /**
-   * Return a copy of the gradient segments.
-   * The array of segments is allocated using FXMALLOC and should be freed
-   * by the caller using FXFREE.
-   */
+  * Return a copy of the gradient segments.
+  * The array of segments is allocated using allocElms() and should be freed
+  * by the caller using freeElms().
+  */
   void getGradients(FXGradient*& segments,FXint& nsegments) const;
 
   /// Change current segment
-  void setCurrentSegment(FXint index,FXbool notify=FALSE);
+  void setCurrentSegment(FXint index,FXbool notify=false);
 
   /// Return current segment, or -1 if there is no current segment
   FXint getCurrentSegment() const { return current; }
@@ -224,19 +230,19 @@ public:
   FXint getAnchorSegment() const { return anchor; }
 
   /// Select segment(s)
-  FXbool selectSegments(FXint fm,FXint to,FXbool notify=FALSE);
+  FXbool selectSegments(FXint fm,FXint to,FXbool notify=false);
 
   /// Deselect all segments
-  FXbool deselectSegments(FXbool notify);
+  FXbool deselectSegments(FXbool notify=false);
 
-  /// Returns TRUE if the specified segment is selected
+  /// Returns true if the specified segment is selected
   FXbool isSegmentSelected(FXint s) const;
 
   /// Set lower color of a segment
-  void setSegmentLowerColor(FXint s,FXColor clr,FXbool notify=FALSE);
+  void setSegmentLowerColor(FXint s,FXColor clr,FXbool notify=false);
 
   /// Set upper color of a segment
-  void setSegmentUpperColor(FXint s,FXColor clr,FXbool notify=FALSE);
+  void setSegmentUpperColor(FXint s,FXColor clr,FXbool notify=false);
 
   /// Get lower color of a segment
   FXColor getSegmentLowerColor(FXint s) const;
@@ -245,16 +251,16 @@ public:
   FXColor getSegmentUpperColor(FXint s) const;
 
   /// Move lower point of segment sg
-  void moveSegmentLower(FXint sg,FXdouble val,FXbool notify=FALSE);
+  void moveSegmentLower(FXint sg,FXdouble val,FXbool notify=false);
 
   /// Move middle point of segment sg
-  void moveSegmentMiddle(FXint sg,FXdouble val,FXbool notify=FALSE);
+  void moveSegmentMiddle(FXint sg,FXdouble val,FXbool notify=false);
 
   /// Move upper point of segment sg
-  void moveSegmentUpper(FXint sg,FXdouble val,FXbool notify=FALSE);
+  void moveSegmentUpper(FXint sg,FXdouble val,FXbool notify=false);
 
   /// Move segments sglo to sghi to new position val
-  void moveSegments(FXint sglo,FXint sghi,FXdouble val,FXbool notify=FALSE);
+  void moveSegments(FXint sglo,FXint sghi,FXdouble val,FXbool notify=false);
 
   /// Get lower value of segment sg
   FXdouble getSegmentLower(FXint sg) const;
@@ -270,7 +276,7 @@ public:
    * The ramp argument should be an array of size nramp, which will be
    * filled with the appropriate color values.
    */
-  void gradient(FXColor *ramp,FXint nramp);
+  void gradient(FXColor *ramp,FXint nramp) const;
 
   /**
    * Get blend mode of segment, one of GRADIENT_BLEND_LINEAR,
@@ -280,16 +286,28 @@ public:
   FXuint getSegmentBlend(FXint s) const;
 
   /// Split segment at the midpoint
-  void splitSegments(FXint sglo,FXint sghi,FXbool notify=FALSE);
+  void splitSegments(FXint sglo,FXint sghi,FXbool notify=false);
 
   /// Merge segments
-  void mergeSegments(FXint sglo,FXint sghi,FXbool notify=FALSE);
+  void mergeSegments(FXint sglo,FXint sghi,FXbool notify=false);
 
   /// Make segments uniformly distributed
-  void uniformSegments(FXint sglo,FXint sghi,FXbool notify=FALSE);
+  void uniformSegments(FXint sglo,FXint sghi,FXbool notify=false);
 
   /// Change blend mode of segment
-  void blendSegments(FXint sglo,FXint sghi,FXuint blend=GRADIENT_BLEND_LINEAR,FXbool notify=FALSE);
+  void blendSegments(FXint sglo,FXint sghi,FXuint blend=GRADIENT_BLEND_LINEAR,FXbool notify=false);
+
+  /// Change control size
+  void setControlSize(FXint cs);
+
+  /// Get control size
+  FXint getControlSize() const { return controlsize; }
+
+  /// Change bar size
+  void setBarSize(FXint bs);
+
+  /// Get bar size
+  FXint getBarSize() const { return barsize; }
 
   /// Get the gradient bar style
   FXuint getBarStyle() const;

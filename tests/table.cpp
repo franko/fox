@@ -3,9 +3,7 @@
 *                                 Test Table Widget                             *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 1997,2006 by Jeroen van der Zijp.   All Rights Reserved.        *
-*********************************************************************************
-* $Id: table.cpp,v 1.69 2006/01/27 02:07:45 fox Exp $                           *
+* Copyright (C) 1997,2021 by Jeroen van der Zijp.   All Rights Reserved.        *
 ********************************************************************************/
 #include "fx.h"
 #include <stdio.h>
@@ -117,6 +115,8 @@ TableWindow::TableWindow(FXApp* a):FXMainWindow(a,"Table Widget Test",NULL,NULL,
   // Menubar
   menubar=new FXMenuBar(this,LAYOUT_SIDE_TOP|LAYOUT_FILL_X);
 
+  new FXStatusBar(this,LAYOUT_SIDE_BOTTOM|LAYOUT_FILL_X|STATUSBAR_WITH_DRAGCORNER);
+
   // Separator
   new FXHorizontalSeparator(this,LAYOUT_SIDE_TOP|LAYOUT_FILL_X|SEPARATOR_GROOVE);
 
@@ -132,15 +132,19 @@ TableWindow::TableWindow(FXApp* a):FXMainWindow(a,"Table Widget Test",NULL,NULL,
 //  table->setRowHeaderMode(0);
   table->setTableSize(50,14);
   table->setBackColor(FXRGB(255,255,255));
-  table->setCellColor(0,0,FXRGB(255,255,255));
-  table->setCellColor(0,1,FXRGB(255,240,240));
-  table->setCellColor(1,0,FXRGB(240,255,240));
-  table->setCellColor(1,1,FXRGB(240,240,255));
+  table->setCellColor(0,0,FXColors::WhiteSmoke);
+  table->setCellColor(0,1,FXColors::WhiteSmoke);
+  table->setCellColor(1,0,FXColors::MistyRose2);
+  table->setCellColor(1,1,FXColors::MistyRose2);
+  table->setHelpText("Editable table.");
+
+  table->setRowRenumbering(FXHeader::decimalNumbering);
+  table->setColumnRenumbering(FXHeader::alphaNumbering);
 
   // Initialize scrollable part of table
   for(r=0; r<50; r++){
     for(c=0; c<14; c++){
-      table->setItemText(r,c,"r:"+FXStringVal(r)+" c:"+FXStringVal(c));
+      table->setItemText(r,c,"r:"+FXString::value(r)+" c:"+FXString::value(c));
       }
     }
 
@@ -151,8 +155,9 @@ TableWindow::TableWindow(FXApp* a):FXMainWindow(a,"Table Widget Test",NULL,NULL,
 
   // Initialize row headers
   for(r=0; r<50; r++){
-    table->setRowText(r,"Row"+FXStringVal(r));
+    table->setRowText(r,"Row"+FXString::value(r));
     }
+
 /*
   table->setLeadingRows(1);
   table->setLeadingColumns(1);
@@ -168,19 +173,19 @@ TableWindow::TableWindow(FXApp* a):FXMainWindow(a,"Table Widget Test",NULL,NULL,
   for(c=1; c<=12; c++){
     table->setItemText(0,c,months[c-1]);
     table->setItemText(49,c,months[c-1]);
-    table->setItemButton(0,c,TRUE);
+    table->setItemButton(0,c,true);
     table->setItemJustify(0,c,FXTableItem::LEFT|FXTableItem::CENTER_Y);
     }
-  table->setItemButton(0,0,TRUE);
-  table->setItemButton(0,13,TRUE);
+  table->setItemButton(0,0,true);
+  table->setItemButton(0,13,true);
 
   // Initialize first/last fixed columns
   for(r=1; r<=48; r++){
     table->setItemText(r,0,FXStringVal(r));
     table->setItemText(r,13,FXStringVal(r));
-    table->setItemButton(r,0,TRUE);
+    table->setItemButton(r,0,true);
     }
-  table->setItemButton(49,0,TRUE);
+  table->setItemButton(49,0,true);
 */
   table->setItemText(10,10,"This is multi-\nline text");
 //  table->setRowHeight(10,35);
@@ -209,6 +214,9 @@ TableWindow::TableWindow(FXApp* a):FXMainWindow(a,"Table Widget Test",NULL,NULL,
 
   table->setItem(10,2,new FXComboTableItem("One\nTwo\nThree\nFour"));
 
+  table->setItemText(10,3,"Disabled");
+  table->disableItem(10,3);
+
   // File Menu
   filemenu=new FXMenuPane(this);
   new FXMenuCommand(filemenu,"&Quit\tCtl-Q",NULL,getApp(),FXApp::ID_QUIT);
@@ -228,6 +236,7 @@ TableWindow::TableWindow(FXApp* a):FXMainWindow(a,"Table Widget Test",NULL,NULL,
   new FXMenuCommand(manipmenu,"Insert Column",NULL,table,FXTable::ID_INSERT_COLUMN);
   new FXMenuCommand(manipmenu,"Insert Row",NULL,table,FXTable::ID_INSERT_ROW);
   new FXMenuCommand(manipmenu,"Resize table...",NULL,this,TableWindow::ID_RESIZETABLE);
+  new FXMenuCommand(manipmenu,"Test",NULL,this,TableWindow::ID_TEST);
   new FXMenuTitle(menubar,"&Manipulations",NULL,manipmenu);
 
   selectmenu=new FXMenuPane(this);
@@ -255,6 +264,9 @@ TableWindow::~TableWindow(){
 
 // Test
 long TableWindow::onCmdTest(FXObject*,FXSelector,void*){
+  FXint cr=table->getCurrentRow();
+  FXint cc=table->getCurrentColumn();
+  table->setSpanningRange(cr,cc,FXMAX(cr-1,0),FXMIN(cr+1,table->getNumRows()),FXMAX(cc-1,0),FXMIN(cc+1,table->getNumColumns()-1));
   return 1;
   }
 
@@ -262,28 +274,28 @@ long TableWindow::onCmdTest(FXObject*,FXSelector,void*){
 // Resize table
 long TableWindow::onCmdResizeTable(FXObject*,FXSelector,void*){
   FXDialogBox dlg(this,"Resize Table");
-  FXHorizontalFrame *frame=new FXHorizontalFrame(&dlg,LAYOUT_FILL_X|LAYOUT_FILL_Y);
-  new FXLabel(frame,"Rows:",NULL,LAYOUT_SIDE_LEFT|LAYOUT_CENTER_Y);
-  FXTextField* rows=new FXTextField(frame,5,NULL,0,JUSTIFY_RIGHT|FRAME_SUNKEN|FRAME_THICK|LAYOUT_SIDE_LEFT|LAYOUT_CENTER_Y);
-  new FXLabel(frame,"Columns:",NULL,LAYOUT_SIDE_LEFT|LAYOUT_CENTER_Y);
-  FXTextField* cols=new FXTextField(frame,5,NULL,0,JUSTIFY_RIGHT|FRAME_SUNKEN|FRAME_THICK|LAYOUT_SIDE_LEFT|LAYOUT_CENTER_Y);
-  new FXButton(frame,"Cancel",NULL,&dlg,FXDialogBox::ID_CANCEL,FRAME_RAISED|FRAME_THICK|LAYOUT_SIDE_LEFT|LAYOUT_CENTER_Y);
-  new FXButton(frame,"  OK  ",NULL,&dlg,FXDialogBox::ID_ACCEPT,FRAME_RAISED|FRAME_THICK|LAYOUT_SIDE_LEFT|LAYOUT_CENTER_Y);
+  FXint nr,nc,r,c;
+  FXHorizontalFrame *hframe=new FXHorizontalFrame(&dlg,LAYOUT_FILL_X|LAYOUT_FILL_Y);
+  new FXLabel(hframe,"Rows:",NULL,LAYOUT_SIDE_LEFT|LAYOUT_CENTER_Y);
+  FXTextField* rows=new FXTextField(hframe,5,NULL,0,JUSTIFY_RIGHT|FRAME_SUNKEN|FRAME_THICK|LAYOUT_SIDE_LEFT|LAYOUT_CENTER_Y);
+  new FXLabel(hframe,"Columns:",NULL,LAYOUT_SIDE_LEFT|LAYOUT_CENTER_Y);
+  FXTextField* cols=new FXTextField(hframe,5,NULL,0,JUSTIFY_RIGHT|FRAME_SUNKEN|FRAME_THICK|LAYOUT_SIDE_LEFT|LAYOUT_CENTER_Y);
+  new FXButton(hframe,"Cancel",NULL,&dlg,FXDialogBox::ID_CANCEL,FRAME_RAISED|FRAME_THICK|LAYOUT_SIDE_LEFT|LAYOUT_CENTER_Y);
+  new FXButton(hframe,"  OK  ",NULL,&dlg,FXDialogBox::ID_ACCEPT,FRAME_RAISED|FRAME_THICK|LAYOUT_SIDE_LEFT|LAYOUT_CENTER_Y);
   FXint oldnr,oldnc;
   oldnr=table->getNumRows();
   oldnc=table->getNumColumns();
-  rows->setText(FXStringVal(oldnr));
-  cols->setText(FXStringVal(oldnc));
+  rows->setText(FXString::value(oldnr));
+  cols->setText(FXString::value(oldnc));
   if(dlg.execute()){
-    FXint nr,nc,r,c;
-    nr=FXIntVal(rows->getText());
-    nc=FXIntVal(cols->getText());
+    nr=rows->getText().toInt();
+    nc=cols->getText().toInt();
     if(nr<0) nr=0;
     if(nc<0) nc=0;
     table->setTableSize(nr,nc);
     for(r=0; r<nr; r++){
       for(c=0; c<nc; c++){
-        //table->setItemText(r,c,"r:"+FXStringVal(r+1)+" c:"+FXStringVal(c+1));
+        table->setItemText(r,c,"r:"+FXString::value(r+1)+" c:"+FXString::value(c+1));
         }
       }
     }
@@ -306,15 +318,15 @@ long TableWindow::onTableDeselected(FXObject*,FXSelector,void* ptr){
 
 // Inserted
 long TableWindow::onTableInserted(FXObject*,FXSelector,void* ptr){
-  FXTableRange *tr=(FXTableRange*)ptr;
-  FXTRACE((10,"SEL_INSERTED fm.row=%d, fm.col=%d to.row=%d, to.col=%d\n",tr->fm.row,tr->fm.col,tr->to.row,tr->to.col));
+  FXTableRange *range=(FXTableRange*)ptr;
+  FXTRACE((10,"SEL_INSERTED fm.row=%d, fm.col=%d to.row=%d, to.col=%d\n",range->fm.row,range->fm.col,range->to.row,range->to.col));
   return 1;
   }
 
 // Deleted
 long TableWindow::onTableDeleted(FXObject*,FXSelector,void* ptr){
-  FXTableRange *tr=(FXTableRange*)ptr;
-  FXTRACE((10,"SEL_DELETED fm.row=%d, fm.col=%d to.row=%d, to.col=%d\n",tr->fm.row,tr->fm.col,tr->to.row,tr->to.col));
+  FXTableRange *range=(FXTableRange*)ptr;
+  FXTRACE((10,"SEL_DELETED fm.row=%d, fm.col=%d to.row=%d, to.col=%d\n",range->fm.row,range->fm.col,range->to.row,range->to.col));
   return 1;
   }
 
@@ -328,8 +340,8 @@ long TableWindow::onTableChanged(FXObject*,FXSelector,void* ptr){
 
 // Replaced
 long TableWindow::onTableReplaced(FXObject*,FXSelector,void* ptr){
-  FXTableRange *tr=(FXTableRange*)ptr;
-  FXTRACE((10,"SEL_REPLACED fm.row=%d, fm.col=%d to.row=%d, to.col=%d\n",tr->fm.row,tr->fm.col,tr->to.row,tr->to.col));
+  FXTableRange *range=(FXTableRange*)ptr;
+  FXTRACE((10,"SEL_REPLACED fm.row=%d, fm.col=%d to.row=%d, to.col=%d\n",range->fm.row,range->fm.col,range->to.row,range->to.col));
   return 1;
   }
 

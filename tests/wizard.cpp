@@ -3,17 +3,12 @@
 *                                 Test Wizard                                   *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 2002,2006 by Jeroen van der Zijp.   All Rights Reserved.        *
-*********************************************************************************
-* $Id: wizard.cpp,v 1.13 2006/01/22 17:59:02 fox Exp $                          *
+* Copyright (C) 2002,2021 by Jeroen van der Zijp.   All Rights Reserved.        *
 ********************************************************************************/
 #include "fx.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#ifdef HAVE_PNG_H
-#include "FXPNGImage.h"
-#endif
 
 /*******************************************************************************/
 

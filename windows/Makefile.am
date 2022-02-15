@@ -2,67 +2,50 @@
 
 htmldir = $(prefix)/@PACKAGE@/html
 
-
-# Windows files
-BCPP_FILES = \
-borland/Makefile
-
-# IBM Visual Age C++
-VAGE_FILES = \
-vacpp/Makefile
-
 # Microsoft Visual C++
 VCPP_FILES = \
-vcpp/adie/adie.dsp \
-vcpp/bitmapviewer/bitmapviewer.dsp \
-vcpp/button/button.dsp \
-vcpp/calculator/calculator.dsp \
-vcpp/chart/chart.dsp \
-vcpp/chartdll/chartdll.dsp \
-vcpp/datatarget/datatarget.dsp \
-vcpp/dctest/dctest.dsp \
-vcpp/dialog/dialog.dsp \
-vcpp/dirlist/dirlist.dsp \
-vcpp/expression/expression.dsp \
-vcpp/foursplit/foursplit.dsp \
-vcpp/fox/fox.dsp \
-vcpp/foxdll/foxdll.dsp \
-vcpp/gltest/gltest.dsp \
-vcpp/glviewer/glviewer.dsp \
-vcpp/groupbox/groupbox.dsp \
-vcpp/header/header.dsp \
-vcpp/hello/hello.dsp \
-vcpp/hello2/hello2.dsp \
-vcpp/iconlist/iconlist.dsp \
-vcpp/image/image.dsp \
-vcpp/imageviewer/imageviewer.dsp \
-vcpp/layout/layout.dsp \
-vcpp/mditest/mditest.dsp \
-vcpp/memmap/memmap.dsp \
-vcpp/minheritance/minheritance.dsp \
-vcpp/pathfinder/pathfinder.dsp \
-vcpp/ratio/ratio.dsp \
-vcpp/reswrap/reswrap.dsp \
-vcpp/scribble/scribble.dsp \
-vcpp/shutter/shutter.dsp \
-vcpp/shutterbug/shutterbug.dsp \
-vcpp/splitter/splitter.dsp \
-vcpp/switcher/switcher.dsp \
-vcpp/tabbook/tabbook.dsp \
-vcpp/table/table.dsp \
-vcpp/wizard/wizard.dsp \
-vcpp/win32.dsw
-
-# Digital Mars C++
-DMC_FILES = \
-dmc/Makefile
-
-# Open Watcom C++
-WATCOM_FILES = \
-watcom/Makefile
+vcpp/adie/adie.vcproj \
+vcpp/bitmapviewer/bitmapviewer.vcproj \
+vcpp/button/button.vcproj \
+vcpp/calculator/calculator.vcproj \
+vcpp/chart/chart.vcproj \
+vcpp/datatarget/datatarget.vcproj \
+vcpp/dctest/dctest.vcproj \
+vcpp/dialog/dialog.vcproj \
+vcpp/dirlist/dirlist.vcproj \
+vcpp/expression/expression.vcproj \
+vcpp/format/format.vcproj \
+vcpp/foursplit/foursplit.vcproj \
+vcpp/fox/fox.vcproj \
+vcpp/foxdll/foxdll.vcproj \
+vcpp/gltest/gltest.vcproj \
+vcpp/glviewer/glviewer.vcproj \
+vcpp/groupbox/groupbox.vcproj \
+vcpp/header/header.vcproj \
+vcpp/hello/hello.vcproj \
+vcpp/hello2/hello2.vcproj \
+vcpp/iconlist/iconlist.vcproj \
+vcpp/image/image.vcproj \
+vcpp/imageviewer/imageviewer.vcproj \
+vcpp/layout/layout.vcproj \
+vcpp/mditest/mditest.vcproj \
+vcpp/memmap/memmap.vcproj \
+vcpp/minheritance/minheritance.vcproj \
+vcpp/pathfinder/pathfinder.vcproj \
+vcpp/ratio/ratio.vcproj \
+vcpp/reswrap/reswrap.vcproj \
+vcpp/scribble/scribble.vcproj \
+vcpp/shutter/shutter.vcproj \
+vcpp/shutterbug/shutterbug.vcproj \
+vcpp/splitter/splitter.vcproj \
+vcpp/switcher/switcher.vcproj \
+vcpp/tabbook/tabbook.vcproj \
+vcpp/table/table.vcproj \
+vcpp/wizard/wizard.vcproj \
+vcpp/win32.sln
 
 
-EXTRA_DIST = $(BCPP_FILES) $(VAGE_FILES) $(VCPP_FILES) $(DMC_FILES) $(WATCOM_FILES)
+EXTRA_DIST = $(VCPP_FILES)
 
 
 

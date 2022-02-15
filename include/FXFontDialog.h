@@ -3,23 +3,20 @@
 *                    F o n t   S e l e c t i o n   D i a l o g                  *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 1999,2006 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 1999,2021 by Jeroen van der Zijp.   All Rights Reserved.        *
 *********************************************************************************
-* This library is free software; you can redistribute it and/or                 *
-* modify it under the terms of the GNU Lesser General Public                    *
-* License as published by the Free Software Foundation; either                  *
-* version 2.1 of the License, or (at your option) any later version.            *
+* This library is free software; you can redistribute it and/or modify          *
+* it under the terms of the GNU Lesser General Public License as published by   *
+* the Free Software Foundation; either version 3 of the License, or             *
+* (at your option) any later version.                                           *
 *                                                                               *
 * This library is distributed in the hope that it will be useful,               *
 * but WITHOUT ANY WARRANTY; without even the implied warranty of                *
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU             *
-* Lesser General Public License for more details.                               *
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the                 *
+* GNU Lesser General Public License for more details.                           *
 *                                                                               *
-* You should have received a copy of the GNU Lesser General Public              *
-* License along with this library; if not, write to the Free Software           *
-* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA.    *
-*********************************************************************************
-* $Id: FXFontDialog.h,v 1.14 2006/01/22 17:58:02 fox Exp $                      *
+* You should have received a copy of the GNU Lesser General Public License      *
+* along with this program.  If not, see <http://www.gnu.org/licenses/>          *
 ********************************************************************************/
 #ifndef FXFONTDIALOG_H
 #define FXFONTDIALOG_H
@@ -40,25 +37,39 @@ class FXAPI FXFontDialog : public FXDialogBox {
 protected:
   FXFontSelector *fontbox;
 protected:
+  static const FXchar sectionName[];
+protected:
   FXFontDialog(){}
+  void loadSettings();
+  void saveSettings();
 private:
   FXFontDialog(const FXFontDialog&);
   FXFontDialog &operator=(const FXFontDialog&);
 public:
-  /// Constructor
-  FXFontDialog(FXWindow* owner,const FXString& name,FXuint opts=0,FXint x=0,FXint y=0,FXint w=600,FXint h=380);
+
+  /// Constructor font dialog box
+  FXFontDialog(FXWindow* owner,const FXString& name,FXuint opts=0,FXint x=0,FXint y=0,FXint w=0,FXint h=0);
+
+  /// Constructor free-floating font dialog box
+  FXFontDialog(FXApp* a,const FXString& name,FXuint opts=0,FXint x=0,FXint y=0,FXint w=0,FXint h=0);
+
+  /// Set font selection as a string
+  void setFont(const FXString& string);
+
+  /// Get font selection as a string
+  FXString getFont() const;
+
+  /// Set the current font selection
+  void setFontDesc(const FXFontDesc& fontdesc);
+
+  /// Get the current font selection
+  const FXFontDesc& getFontDesc() const;
 
   /// Save dialog to a stream
   virtual void save(FXStream& store) const;
 
   /// Load dialog from a stream
   virtual void load(FXStream& store);
-
-  /// Set the current font selection
-  void setFontSelection(const FXFontDesc& fontdesc);
-
-  /// Get the current font selection
-  void getFontSelection(FXFontDesc& fontdesc) const;
 
   /// Destructor
   virtual ~FXFontDialog();

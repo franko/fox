@@ -3,11 +3,11 @@
 *                  F O X   D e s k t o p   C a l c u l a t o r                  *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 2001,2005 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 2001,2021 by Jeroen van der Zijp.   All Rights Reserved.        *
 *********************************************************************************
-* This program is free software; you can redistribute it and/or modify          *
+* This program is free software: you can redistribute it and/or modify          *
 * it under the terms of the GNU General Public License as published by          *
-* the Free Software Foundation; either version 2 of the License, or             *
+* the Free Software Foundation, either version 3 of the License, or             *
 * (at your option) any later version.                                           *
 *                                                                               *
 * This program is distributed in the hope that it will be useful,               *
@@ -16,10 +16,7 @@
 * GNU General Public License for more details.                                  *
 *                                                                               *
 * You should have received a copy of the GNU General Public License             *
-* along with this program; if not, write to the Free Software                   *
-* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA.    *
-*********************************************************************************
-* $Id: main.cpp,v 1.8 2005/01/16 16:06:06 fox Exp $                             *
+* along with this program.  If not, see <http://www.gnu.org/licenses/>.         *
 ********************************************************************************/
 #include "fx.h"
 #include "fxkeys.h"
@@ -37,8 +34,13 @@
 // Start the whole thing
 int main(int argc,char *argv[]){
 
+  // Make sure  we're linked against the right library version
+  if(fxversion[0]!=FOX_MAJOR || fxversion[1]!=FOX_MINOR || fxversion[2]!=FOX_LEVEL){
+    fxerror("FOX Library mismatch; expected version: %d.%d.%d, but found version: %d.%d.%d.\n",FOX_MAJOR,FOX_MINOR,FOX_LEVEL,fxversion[0],fxversion[1],fxversion[2]);
+    }
+
   // Make application
-  FXApp application("Calculator",FXString::null);
+  FXApp application("Calculator");
 
   // Open display
   application.init(argc,argv);

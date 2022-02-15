@@ -3,9 +3,7 @@
 *                           Device Context Tester                               *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 1999,2006 by Jeroen van der Zijp.   All Rights Reserved.        *
-*********************************************************************************
-* $Id: dctest.cpp,v 1.50 2006/01/22 17:58:59 fox Exp $                          *
+* Copyright (C) 1999,2021 by Jeroen van der Zijp.   All Rights Reserved.        *
 ********************************************************************************/
 #include "fx.h"
 #include <string.h>
@@ -656,7 +654,7 @@ FXIMPLEMENT(DCTestWindow,FXMainWindow,DCTestWindowMap,ARRAYNUMBER(DCTestWindowMa
 
 
 // Make some windows
-DCTestWindow::DCTestWindow(FXApp *app):FXMainWindow(app,"Device Context Test",NULL,NULL,DECOR_ALL,0,0,900,820){
+DCTestWindow::DCTestWindow(FXApp *ap):FXMainWindow(ap,"Device Context Test",NULL,NULL,DECOR_ALL,0,0,1400,1080){
 
   // Preferred line attributes
   lineStyle=LINE_SOLID;
@@ -1108,11 +1106,10 @@ long DCTestWindow::onUpdBackColor(FXObject* sender,FXSelector,void*){
 // Change font
 long DCTestWindow::onCmdFont(FXObject*,FXSelector,void*){
   FXFontDialog fontdlg(this,"Change Font",DECOR_BORDER|DECOR_TITLE);
-  FXFontDesc fontdesc;
-  testFont->getFontDesc(fontdesc);
-  fontdlg.setFontSelection(fontdesc);
+  FXFontDesc fontdesc=testFont->getFontDesc();
+  fontdlg.setFontDesc(fontdesc);
   if(fontdlg.execute()){
-    fontdlg.getFontSelection(fontdesc);
+    fontdesc=fontdlg.getFontDesc();
     delete testFont;
     delete testFontAngle;
     testFont=new FXFont(getApp(),fontdesc);
@@ -1190,6 +1187,7 @@ long DCTestWindow::onPaintShapes(FXObject *sender,FXSelector,void *ptr){
   dc.setBackground(backWell->getRGBA());
   dc.drawRectangle(5,5,50,50);
   dc.fillRectangle(60,5,50,50);
+  dc.fillRectangle(5,60,50,50);
 
   dc.setForeground(foreWell->getRGBA());
   dc.setBackground(backWell->getRGBA());
@@ -1238,7 +1236,7 @@ long DCTestWindow::onPaintShapes(FXObject *sender,FXSelector,void *ptr){
   poly_letter[4].x=15; poly_letter[4].y=53;
   poly_letter[5].x=15; poly_letter[5].y=22;
 
-  // Substract inner O
+  // Subtract inner O
   letter_O -= FXRegion(poly_letter,6);
 
   // Letter X left slant
@@ -1299,6 +1297,7 @@ long DCTestWindow::onPaintImages(FXObject *sender,FXSelector,void *ptr){
 // This is the WYSIWYG routine, it takes a DC and renders
 // into it; it does not know if the DC is a printer or screen.
 void DCTestWindow::drawPage(FXDC& dc,FXint w,FXint h){
+  FXString string;
 
   dc.setForeground(erasecolor);
   dc.fillRectangle(0,0,w,h);
@@ -1329,7 +1328,8 @@ void DCTestWindow::drawPage(FXDC& dc,FXint w,FXint h){
   points[5].x=points[4].x+w/6; points[5].y=points[1].y;
   dc.drawLines(points,6);
 
-  FXString string="Font: "+testFont->getName()+"  Size: "+FXStringVal(testFont->getSize()/10);
+  string.format("Font: %s Size: %d",testFont->getName().text(),testFont->getSize()/10);
+
   dc.setFont(testFont);
   dc.setForeground(forecolor);
   dc.setBackground(backcolor);

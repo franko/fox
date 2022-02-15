@@ -3,9 +3,7 @@
 *                                 Test MDI Widgets                              *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 1998,2006 by Jeroen van der Zijp.   All Rights Reserved.        *
-*********************************************************************************
-* $Id: mditest.cpp,v 1.42 2006/01/22 17:59:01 fox Exp $                         *
+* Copyright (C) 1998,2021 by Jeroen van der Zijp.   All Rights Reserved.        *
 ********************************************************************************/
 #include "fx.h"
 #include <stdio.h>
@@ -871,9 +869,7 @@ MDITestWindow::MDITestWindow(FXApp* a):FXMainWindow(a,"MDI Widget Test",NULL,NUL
   new FXMenuCommand(windowmenu,"Tile &Vertically",NULL,mdiclient,FXMDIClient::ID_MDI_TILEVERTICAL);
   new FXMenuCommand(windowmenu,"C&ascade",NULL,mdiclient,FXMDIClient::ID_MDI_CASCADE);
   new FXMenuCommand(windowmenu,"&Close",NULL,mdiclient,FXMDIClient::ID_MDI_CLOSE);
-  FXMenuSeparator* sep1=new FXMenuSeparator(windowmenu);
-  sep1->setTarget(mdiclient);
-  sep1->setSelector(FXMDIClient::ID_MDI_ANY);
+  new FXMenuSeparator(windowmenu,mdiclient,FXMDIClient::ID_MDI_ANY);
   new FXMenuCommand(windowmenu,FXString::null,NULL,mdiclient,FXMDIClient::ID_MDI_1);
   new FXMenuCommand(windowmenu,FXString::null,NULL,mdiclient,FXMDIClient::ID_MDI_2);
   new FXMenuCommand(windowmenu,FXString::null,NULL,mdiclient,FXMDIClient::ID_MDI_3);

@@ -3,23 +3,20 @@
 *                         C u r s o r - O b j e c t                             *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 1997,2006 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 1997,2021 by Jeroen van der Zijp.   All Rights Reserved.        *
 *********************************************************************************
-* This library is free software; you can redistribute it and/or                 *
-* modify it under the terms of the GNU Lesser General Public                    *
-* License as published by the Free Software Foundation; either                  *
-* version 2.1 of the License, or (at your option) any later version.            *
+* This library is free software; you can redistribute it and/or modify          *
+* it under the terms of the GNU Lesser General Public License as published by   *
+* the Free Software Foundation; either version 3 of the License, or             *
+* (at your option) any later version.                                           *
 *                                                                               *
 * This library is distributed in the hope that it will be useful,               *
 * but WITHOUT ANY WARRANTY; without even the implied warranty of                *
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU             *
-* Lesser General Public License for more details.                               *
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the                 *
+* GNU Lesser General Public License for more details.                           *
 *                                                                               *
-* You should have received a copy of the GNU Lesser General Public              *
-* License along with this library; if not, write to the Free Software           *
-* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA.    *
-*********************************************************************************
-* $Id: FXCursor.h,v 1.28 2006/01/22 17:58:00 fox Exp $                          *
+* You should have received a copy of the GNU Lesser General Public License      *
+* along with this program.  If not, see <http://www.gnu.org/licenses/>          *
 ********************************************************************************/
 #ifndef FXCURSOR_H
 #define FXCURSOR_H
@@ -77,6 +74,18 @@ public:
   /// Make cursor from FXColor pixels; cursor size should be at most 32x32 for portability!
   FXCursor(FXApp* a,const FXColor* pix,FXint w=32,FXint h=32,FXint hx=0,FXint hy=0);
 
+  /// Change options
+  void setOptions(FXuint opts);
+
+  /// To get to the option flags
+  FXuint getOptions() const { return options; }
+
+  /// Set pixel data ownership flag
+  void setOwned(FXbool owned);
+
+  /// Get pixel data ownership flag
+  FXbool isOwned() const;
+
   /// Width of cursor; returns 0 for stock cursors
   FXint getWidth() const { return width; }
 
@@ -96,7 +105,7 @@ public:
   FXint getHotY() const { return hoty; }
 
   /// Check if there is color in the cursor
-  bool isColor() const;
+  FXbool isColor() const;
 
   /// Create cursor
   virtual void create();
@@ -111,10 +120,10 @@ public:
   virtual void release();
 
   /// Save pixel data only
-  virtual bool savePixels(FXStream& store) const;
+  virtual FXbool savePixels(FXStream& store) const;
 
   /// Load pixel data only
-  virtual bool loadPixels(FXStream& store);
+  virtual FXbool loadPixels(FXStream& store);
 
   /// Save cursor to a stream
   virtual void save(FXStream& store) const;

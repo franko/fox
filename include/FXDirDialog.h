@@ -3,23 +3,20 @@
 *                D i r e c t o r y   S e l e c t i o n   D i a l o g            *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 2000,2006 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 2000,2021 by Jeroen van der Zijp.   All Rights Reserved.        *
 *********************************************************************************
-* This library is free software; you can redistribute it and/or                 *
-* modify it under the terms of the GNU Lesser General Public                    *
-* License as published by the Free Software Foundation; either                  *
-* version 2.1 of the License, or (at your option) any later version.            *
+* This library is free software; you can redistribute it and/or modify          *
+* it under the terms of the GNU Lesser General Public License as published by   *
+* the Free Software Foundation; either version 3 of the License, or             *
+* (at your option) any later version.                                           *
 *                                                                               *
 * This library is distributed in the hope that it will be useful,               *
 * but WITHOUT ANY WARRANTY; without even the implied warranty of                *
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU             *
-* Lesser General Public License for more details.                               *
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the                 *
+* GNU Lesser General Public License for more details.                           *
 *                                                                               *
-* You should have received a copy of the GNU Lesser General Public              *
-* License along with this library; if not, write to the Free Software           *
-* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA.    *
-*********************************************************************************
-* $Id: FXDirDialog.h,v 1.17 2006/01/22 17:58:00 fox Exp $                       *
+* You should have received a copy of the GNU Lesser General Public License      *
+* along with this program.  If not, see <http://www.gnu.org/licenses/>          *
 ********************************************************************************/
 #ifndef FXDIRDIALOG_H
 #define FXDIRDIALOG_H
@@ -31,6 +28,7 @@
 namespace FX {
 
 
+class FXFileAssociations;
 class FXDirSelector;
 
 
@@ -67,29 +65,41 @@ public:
   /// Return directory
   FXString getDirectory() const;
 
-  /// Return TRUE if showing files as well as directories
+  /// Change wildcard matching pattern
+  void setPattern(const FXString& ptrn);
+
+  /// Return wildcard pattern
+  FXString getPattern() const;
+
+  /// Return wildcard matching mode
+  FXuint getMatchMode() const;
+
+  /// Change wildcard matching mode (see FXPath)
+  void setMatchMode(FXuint mode);
+
+  /// Return true if showing files as well as directories
   FXbool showFiles() const;
 
   /// Show or hide normal files
   void showFiles(FXbool showing);
 
-  /// Return TRUE if showing hidden files
+  /// Return true if showing hidden files
   FXbool showHiddenFiles() const;
 
   /// Show or hide hidden files
   void showHiddenFiles(FXbool showing);
-
-  /// Return wildcard matching mode
-  FXuint getMatchMode() const;
-
-  /// Change wildcard matching mode
-  void setMatchMode(FXuint mode);
 
   /// Change directory list style
   void setDirBoxStyle(FXuint style);
 
   /// Return directory list style
   FXuint getDirBoxStyle() const;
+
+  /// Change file associations; delete old ones if owned
+  void setAssociations(FXFileAssociations* assoc,FXbool owned=false);
+
+  /// Return file associations
+  FXFileAssociations* getAssociations() const;
 
   /// Open directory name
   static FXString getOpenDirectory(FXWindow* owner,const FXString& caption,const FXString& path);

@@ -3,23 +3,20 @@
 *                            L a b e l   W i d g e t                            *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 1998,2006 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 1998,2021 by Jeroen van der Zijp.   All Rights Reserved.        *
 *********************************************************************************
-* This library is free software; you can redistribute it and/or                 *
-* modify it under the terms of the GNU Lesser General Public                    *
-* License as published by the Free Software Foundation; either                  *
-* version 2.1 of the License, or (at your option) any later version.            *
+* This library is free software; you can redistribute it and/or modify          *
+* it under the terms of the GNU Lesser General Public License as published by   *
+* the Free Software Foundation; either version 3 of the License, or             *
+* (at your option) any later version.                                           *
 *                                                                               *
 * This library is distributed in the hope that it will be useful,               *
 * but WITHOUT ANY WARRANTY; without even the implied warranty of                *
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU             *
-* Lesser General Public License for more details.                               *
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the                 *
+* GNU Lesser General Public License for more details.                           *
 *                                                                               *
-* You should have received a copy of the GNU Lesser General Public              *
-* License along with this library; if not, write to the Free Software           *
-* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA.    *
-*********************************************************************************
-* $Id: FXLabel.h,v 1.31 2006/03/01 02:13:21 fox Exp $                           *
+* You should have received a copy of the GNU Lesser General Public License      *
+* along with this program.  If not, see <http://www.gnu.org/licenses/>          *
 ********************************************************************************/
 #ifndef FXLABEL_H
 #define FXLABEL_H
@@ -60,21 +57,21 @@ class FXFont;
 * A label widget can be used to place a text and/or icon for
 * explanation purposes.  The text label may have an optional tooltip
 * and/or help string.  Icon and label are placed relative to the widget
-* using the justfication options, and relative to each other as determined
+* using the justification options, and relative to each other as determined
 * by the icon relationship options.  A large number of arrangements is
 * possible.
 */
 class FXAPI FXLabel : public FXFrame {
   FXDECLARE(FXLabel)
 protected:
-  FXString label;       // Text on the label
-  FXIcon*  icon;        // Icon on the label
-  FXFont*  font;        // Label font
-  FXHotKey hotkey;      // Hotkey
-  FXint    hotoff;      // Offset in string
-  FXColor  textColor;   // Text color
-  FXString tip;         // Tooltip
-  FXString help;        // Help message
+  FXString     label;           // Text on the label
+  FXIcon      *icon;            // Icon on the label
+  FXFont      *font;            // Label font
+  FXString     help;            // Help message
+  FXString     tip;             // Tooltip
+  FXColor      textColor;       // Text color
+  FXHotKey     hotkey;          // Hotkey
+  FXint        hotoff;          // Offset in string
 protected:
   FXLabel();
   FXint labelHeight(const FXString& text) const;

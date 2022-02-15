@@ -88,17 +88,20 @@ PRE_UNINSTALL = :
 POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
-noinst_PROGRAMS = expression$(EXEEXT) dctest$(EXEEXT) codecs$(EXEEXT) \
-	dialog$(EXEEXT) ControlPanel$(EXEEXT) groupbox$(EXEEXT) \
-	scribble$(EXEEXT) wizard$(EXEEXT) layout$(EXEEXT) rex$(EXEEXT) \
-	table$(EXEEXT) memmap$(EXEEXT) minheritance$(EXEEXT) \
-	bitmapviewer$(EXEEXT) imageviewer$(EXEEXT) button$(EXEEXT) \
-	datatarget$(EXEEXT) dirlist$(EXEEXT) foursplit$(EXEEXT) \
-	header$(EXEEXT) hello$(EXEEXT) hello2$(EXEEXT) \
-	iconlist$(EXEEXT) image$(EXEEXT) mditest$(EXEEXT) \
-	shutter$(EXEEXT) splitter$(EXEEXT) switcher$(EXEEXT) \
-	tabbook$(EXEEXT) ratio$(EXEEXT) gltest$(EXEEXT) \
-	glviewer$(EXEEXT)
+noinst_PROGRAMS = bitmapviewer$(EXEEXT) button$(EXEEXT) \
+	calendar$(EXEEXT) codecs$(EXEEXT) console$(EXEEXT) \
+	datatarget$(EXEEXT) dctest$(EXEEXT) dialog$(EXEEXT) \
+	dirlist$(EXEEXT) expression$(EXEEXT) format$(EXEEXT) \
+	foursplit$(EXEEXT) gaugetest$(EXEEXT) groupbox$(EXEEXT) \
+	half$(EXEEXT) header$(EXEEXT) hello$(EXEEXT) hello2$(EXEEXT) \
+	iconlist$(EXEEXT) image$(EXEEXT) imageviewer$(EXEEXT) \
+	layout$(EXEEXT) match$(EXEEXT) math$(EXEEXT) mditest$(EXEEXT) \
+	memmap$(EXEEXT) minheritance$(EXEEXT) parallel$(EXEEXT) \
+	process$(EXEEXT) ratio$(EXEEXT) rex$(EXEEXT) scan$(EXEEXT) \
+	scribble$(EXEEXT) shutter$(EXEEXT) splitter$(EXEEXT) \
+	switcher$(EXEEXT) tabbook$(EXEEXT) table$(EXEEXT) \
+	thread$(EXEEXT) timefmt$(EXEEXT) unicode$(EXEEXT) \
+	variant$(EXEEXT) wizard$(EXEEXT) xml$(EXEEXT) gltest$(EXEEXT)
 subdir = tests
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/configure.ac
@@ -109,138 +112,189 @@ mkinstalldirs = $(install_sh) -d
 CONFIG_CLEAN_FILES =
 CONFIG_CLEAN_VPATH_FILES =
 PROGRAMS = $(noinst_PROGRAMS)
-am_ControlPanel_OBJECTS = ControlPanel.$(OBJEXT)
-ControlPanel_OBJECTS = $(am_ControlPanel_OBJECTS)
-ControlPanel_LDADD = $(LDADD)
-ControlPanel_DEPENDENCIES = $(top_builddir)/src/libFOX-1.6.la
+am_bitmapviewer_OBJECTS = bitmapviewer.$(OBJEXT)
+bitmapviewer_OBJECTS = $(am_bitmapviewer_OBJECTS)
+bitmapviewer_LDADD = $(LDADD)
+bitmapviewer_DEPENDENCIES = $(top_builddir)/lib/libFOX-1.7.la
 AM_V_lt = $(am__v_lt_@AM_V@)
 am__v_lt_ = $(am__v_lt_@AM_DEFAULT_V@)
 am__v_lt_0 = --silent
 am__v_lt_1 = 
-am_bitmapviewer_OBJECTS = bitmapviewer.$(OBJEXT)
-bitmapviewer_OBJECTS = $(am_bitmapviewer_OBJECTS)
-bitmapviewer_LDADD = $(LDADD)
-bitmapviewer_DEPENDENCIES = $(top_builddir)/src/libFOX-1.6.la
 am_button_OBJECTS = button.$(OBJEXT)
 button_OBJECTS = $(am_button_OBJECTS)
 button_LDADD = $(LDADD)
-button_DEPENDENCIES = $(top_builddir)/src/libFOX-1.6.la
+button_DEPENDENCIES = $(top_builddir)/lib/libFOX-1.7.la
+am_calendar_OBJECTS = calendar.$(OBJEXT)
+calendar_OBJECTS = $(am_calendar_OBJECTS)
+calendar_LDADD = $(LDADD)
+calendar_DEPENDENCIES = $(top_builddir)/lib/libFOX-1.7.la
 am_codecs_OBJECTS = codecs.$(OBJEXT)
 codecs_OBJECTS = $(am_codecs_OBJECTS)
 codecs_LDADD = $(LDADD)
-codecs_DEPENDENCIES = $(top_builddir)/src/libFOX-1.6.la
+codecs_DEPENDENCIES = $(top_builddir)/lib/libFOX-1.7.la
+am_console_OBJECTS = console.$(OBJEXT)
+console_OBJECTS = $(am_console_OBJECTS)
+console_LDADD = $(LDADD)
+console_DEPENDENCIES = $(top_builddir)/lib/libFOX-1.7.la
 am_datatarget_OBJECTS = datatarget.$(OBJEXT)
 datatarget_OBJECTS = $(am_datatarget_OBJECTS)
 datatarget_LDADD = $(LDADD)
-datatarget_DEPENDENCIES = $(top_builddir)/src/libFOX-1.6.la
+datatarget_DEPENDENCIES = $(top_builddir)/lib/libFOX-1.7.la
 am_dctest_OBJECTS = dctest.$(OBJEXT)
 dctest_OBJECTS = $(am_dctest_OBJECTS)
 dctest_LDADD = $(LDADD)
-dctest_DEPENDENCIES = $(top_builddir)/src/libFOX-1.6.la
+dctest_DEPENDENCIES = $(top_builddir)/lib/libFOX-1.7.la
 am_dialog_OBJECTS = dialog.$(OBJEXT)
 dialog_OBJECTS = $(am_dialog_OBJECTS)
 dialog_LDADD = $(LDADD)
-dialog_DEPENDENCIES = $(top_builddir)/src/libFOX-1.6.la
+dialog_DEPENDENCIES = $(top_builddir)/lib/libFOX-1.7.la
 am_dirlist_OBJECTS = dirlist.$(OBJEXT)
 dirlist_OBJECTS = $(am_dirlist_OBJECTS)
 dirlist_LDADD = $(LDADD)
-dirlist_DEPENDENCIES = $(top_builddir)/src/libFOX-1.6.la
+dirlist_DEPENDENCIES = $(top_builddir)/lib/libFOX-1.7.la
 am_expression_OBJECTS = expression.$(OBJEXT)
 expression_OBJECTS = $(am_expression_OBJECTS)
 expression_LDADD = $(LDADD)
-expression_DEPENDENCIES = $(top_builddir)/src/libFOX-1.6.la
+expression_DEPENDENCIES = $(top_builddir)/lib/libFOX-1.7.la
+am_format_OBJECTS = format.$(OBJEXT)
+format_OBJECTS = $(am_format_OBJECTS)
+format_LDADD = $(LDADD)
+format_DEPENDENCIES = $(top_builddir)/lib/libFOX-1.7.la
 am_foursplit_OBJECTS = foursplit.$(OBJEXT)
 foursplit_OBJECTS = $(am_foursplit_OBJECTS)
 foursplit_LDADD = $(LDADD)
-foursplit_DEPENDENCIES = $(top_builddir)/src/libFOX-1.6.la
+foursplit_DEPENDENCIES = $(top_builddir)/lib/libFOX-1.7.la
+am_gaugetest_OBJECTS = gaugetest.$(OBJEXT)
+gaugetest_OBJECTS = $(am_gaugetest_OBJECTS)
+gaugetest_LDADD = $(LDADD)
+gaugetest_DEPENDENCIES = $(top_builddir)/lib/libFOX-1.7.la
 am_gltest_OBJECTS = gltest.$(OBJEXT)
 gltest_OBJECTS = $(am_gltest_OBJECTS)
-gltest_LDADD = $(LDADD)
-gltest_DEPENDENCIES = $(top_builddir)/src/libFOX-1.6.la
-am_glviewer_OBJECTS = glviewer.$(OBJEXT)
-glviewer_OBJECTS = $(am_glviewer_OBJECTS)
-glviewer_LDADD = $(LDADD)
-glviewer_DEPENDENCIES = $(top_builddir)/src/libFOX-1.6.la
+gltest_DEPENDENCIES = $(top_builddir)/lib/libFOX-1.7.la
 am_groupbox_OBJECTS = groupbox.$(OBJEXT)
 groupbox_OBJECTS = $(am_groupbox_OBJECTS)
 groupbox_LDADD = $(LDADD)
-groupbox_DEPENDENCIES = $(top_builddir)/src/libFOX-1.6.la
+groupbox_DEPENDENCIES = $(top_builddir)/lib/libFOX-1.7.la
+am_half_OBJECTS = half.$(OBJEXT)
+half_OBJECTS = $(am_half_OBJECTS)
+half_LDADD = $(LDADD)
+half_DEPENDENCIES = $(top_builddir)/lib/libFOX-1.7.la
 am_header_OBJECTS = header.$(OBJEXT)
 header_OBJECTS = $(am_header_OBJECTS)
 header_LDADD = $(LDADD)
-header_DEPENDENCIES = $(top_builddir)/src/libFOX-1.6.la
+header_DEPENDENCIES = $(top_builddir)/lib/libFOX-1.7.la
 am_hello_OBJECTS = hello.$(OBJEXT)
 hello_OBJECTS = $(am_hello_OBJECTS)
 hello_LDADD = $(LDADD)
-hello_DEPENDENCIES = $(top_builddir)/src/libFOX-1.6.la
+hello_DEPENDENCIES = $(top_builddir)/lib/libFOX-1.7.la
 am_hello2_OBJECTS = hello2.$(OBJEXT)
 hello2_OBJECTS = $(am_hello2_OBJECTS)
 hello2_LDADD = $(LDADD)
-hello2_DEPENDENCIES = $(top_builddir)/src/libFOX-1.6.la
+hello2_DEPENDENCIES = $(top_builddir)/lib/libFOX-1.7.la
 am_iconlist_OBJECTS = iconlist.$(OBJEXT)
 iconlist_OBJECTS = $(am_iconlist_OBJECTS)
 iconlist_LDADD = $(LDADD)
-iconlist_DEPENDENCIES = $(top_builddir)/src/libFOX-1.6.la
+iconlist_DEPENDENCIES = $(top_builddir)/lib/libFOX-1.7.la
 am_image_OBJECTS = image.$(OBJEXT)
 image_OBJECTS = $(am_image_OBJECTS)
 image_LDADD = $(LDADD)
-image_DEPENDENCIES = $(top_builddir)/src/libFOX-1.6.la
+image_DEPENDENCIES = $(top_builddir)/lib/libFOX-1.7.la
 am_imageviewer_OBJECTS = imageviewer.$(OBJEXT)
 imageviewer_OBJECTS = $(am_imageviewer_OBJECTS)
 imageviewer_LDADD = $(LDADD)
-imageviewer_DEPENDENCIES = $(top_builddir)/src/libFOX-1.6.la
+imageviewer_DEPENDENCIES = $(top_builddir)/lib/libFOX-1.7.la
 am_layout_OBJECTS = layout.$(OBJEXT)
 layout_OBJECTS = $(am_layout_OBJECTS)
 layout_LDADD = $(LDADD)
-layout_DEPENDENCIES = $(top_builddir)/src/libFOX-1.6.la
+layout_DEPENDENCIES = $(top_builddir)/lib/libFOX-1.7.la
+am_match_OBJECTS = match.$(OBJEXT)
+match_OBJECTS = $(am_match_OBJECTS)
+match_LDADD = $(LDADD)
+match_DEPENDENCIES = $(top_builddir)/lib/libFOX-1.7.la
+am_math_OBJECTS = math.$(OBJEXT)
+math_OBJECTS = $(am_math_OBJECTS)
+math_LDADD = $(LDADD)
+math_DEPENDENCIES = $(top_builddir)/lib/libFOX-1.7.la
 am_mditest_OBJECTS = mditest.$(OBJEXT)
 mditest_OBJECTS = $(am_mditest_OBJECTS)
 mditest_LDADD = $(LDADD)
-mditest_DEPENDENCIES = $(top_builddir)/src/libFOX-1.6.la
+mditest_DEPENDENCIES = $(top_builddir)/lib/libFOX-1.7.la
 am_memmap_OBJECTS = memmap.$(OBJEXT)
 memmap_OBJECTS = $(am_memmap_OBJECTS)
 memmap_LDADD = $(LDADD)
-memmap_DEPENDENCIES = $(top_builddir)/src/libFOX-1.6.la
+memmap_DEPENDENCIES = $(top_builddir)/lib/libFOX-1.7.la
 am_minheritance_OBJECTS = minheritance.$(OBJEXT)
 minheritance_OBJECTS = $(am_minheritance_OBJECTS)
 minheritance_LDADD = $(LDADD)
-minheritance_DEPENDENCIES = $(top_builddir)/src/libFOX-1.6.la
+minheritance_DEPENDENCIES = $(top_builddir)/lib/libFOX-1.7.la
+am_parallel_OBJECTS = parallel.$(OBJEXT)
+parallel_OBJECTS = $(am_parallel_OBJECTS)
+parallel_LDADD = $(LDADD)
+parallel_DEPENDENCIES = $(top_builddir)/lib/libFOX-1.7.la
+am_process_OBJECTS = process.$(OBJEXT)
+process_OBJECTS = $(am_process_OBJECTS)
+process_LDADD = $(LDADD)
+process_DEPENDENCIES = $(top_builddir)/lib/libFOX-1.7.la
 am_ratio_OBJECTS = ratio.$(OBJEXT)
 ratio_OBJECTS = $(am_ratio_OBJECTS)
 ratio_LDADD = $(LDADD)
-ratio_DEPENDENCIES = $(top_builddir)/src/libFOX-1.6.la
+ratio_DEPENDENCIES = $(top_builddir)/lib/libFOX-1.7.la
 am_rex_OBJECTS = rex.$(OBJEXT)
 rex_OBJECTS = $(am_rex_OBJECTS)
 rex_LDADD = $(LDADD)
-rex_DEPENDENCIES = $(top_builddir)/src/libFOX-1.6.la
+rex_DEPENDENCIES = $(top_builddir)/lib/libFOX-1.7.la
+am_scan_OBJECTS = scan.$(OBJEXT)
+scan_OBJECTS = $(am_scan_OBJECTS)
+scan_LDADD = $(LDADD)
+scan_DEPENDENCIES = $(top_builddir)/lib/libFOX-1.7.la
 am_scribble_OBJECTS = scribble.$(OBJEXT)
 scribble_OBJECTS = $(am_scribble_OBJECTS)
 scribble_LDADD = $(LDADD)
-scribble_DEPENDENCIES = $(top_builddir)/src/libFOX-1.6.la
+scribble_DEPENDENCIES = $(top_builddir)/lib/libFOX-1.7.la
 am_shutter_OBJECTS = shutter.$(OBJEXT)
 shutter_OBJECTS = $(am_shutter_OBJECTS)
 shutter_LDADD = $(LDADD)
-shutter_DEPENDENCIES = $(top_builddir)/src/libFOX-1.6.la
+shutter_DEPENDENCIES = $(top_builddir)/lib/libFOX-1.7.la
 am_splitter_OBJECTS = splitter.$(OBJEXT)
 splitter_OBJECTS = $(am_splitter_OBJECTS)
 splitter_LDADD = $(LDADD)
-splitter_DEPENDENCIES = $(top_builddir)/src/libFOX-1.6.la
+splitter_DEPENDENCIES = $(top_builddir)/lib/libFOX-1.7.la
 am_switcher_OBJECTS = switcher.$(OBJEXT)
 switcher_OBJECTS = $(am_switcher_OBJECTS)
 switcher_LDADD = $(LDADD)
-switcher_DEPENDENCIES = $(top_builddir)/src/libFOX-1.6.la
+switcher_DEPENDENCIES = $(top_builddir)/lib/libFOX-1.7.la
 am_tabbook_OBJECTS = tabbook.$(OBJEXT)
 tabbook_OBJECTS = $(am_tabbook_OBJECTS)
 tabbook_LDADD = $(LDADD)
-tabbook_DEPENDENCIES = $(top_builddir)/src/libFOX-1.6.la
+tabbook_DEPENDENCIES = $(top_builddir)/lib/libFOX-1.7.la
 am_table_OBJECTS = table.$(OBJEXT)
 table_OBJECTS = $(am_table_OBJECTS)
 table_LDADD = $(LDADD)
-table_DEPENDENCIES = $(top_builddir)/src/libFOX-1.6.la
+table_DEPENDENCIES = $(top_builddir)/lib/libFOX-1.7.la
+am_thread_OBJECTS = thread.$(OBJEXT)
+thread_OBJECTS = $(am_thread_OBJECTS)
+thread_LDADD = $(LDADD)
+thread_DEPENDENCIES = $(top_builddir)/lib/libFOX-1.7.la
+am_timefmt_OBJECTS = timefmt.$(OBJEXT)
+timefmt_OBJECTS = $(am_timefmt_OBJECTS)
+timefmt_LDADD = $(LDADD)
+timefmt_DEPENDENCIES = $(top_builddir)/lib/libFOX-1.7.la
+am_unicode_OBJECTS = unicode.$(OBJEXT)
+unicode_OBJECTS = $(am_unicode_OBJECTS)
+unicode_LDADD = $(LDADD)
+unicode_DEPENDENCIES = $(top_builddir)/lib/libFOX-1.7.la
+am_variant_OBJECTS = variant.$(OBJEXT)
+variant_OBJECTS = $(am_variant_OBJECTS)
+variant_LDADD = $(LDADD)
+variant_DEPENDENCIES = $(top_builddir)/lib/libFOX-1.7.la
 am_wizard_OBJECTS = wizard.$(OBJEXT)
 wizard_OBJECTS = $(am_wizard_OBJECTS)
 wizard_LDADD = $(LDADD)
-wizard_DEPENDENCIES = $(top_builddir)/src/libFOX-1.6.la
+wizard_DEPENDENCIES = $(top_builddir)/lib/libFOX-1.7.la
+am_xml_OBJECTS = xml.$(OBJEXT)
+xml_OBJECTS = $(am_xml_OBJECTS)
+xml_LDADD = $(LDADD)
+xml_DEPENDENCIES = $(top_builddir)/lib/libFOX-1.7.la
 AM_V_P = $(am__v_P_@AM_V@)
 am__v_P_ = $(am__v_P_@AM_DEFAULT_V@)
 am__v_P_0 = false
@@ -293,28 +347,38 @@ AM_V_CCLD = $(am__v_CCLD_@AM_V@)
 am__v_CCLD_ = $(am__v_CCLD_@AM_DEFAULT_V@)
 am__v_CCLD_0 = @echo "  CCLD    " $@;
 am__v_CCLD_1 = 
-SOURCES = $(ControlPanel_SOURCES) $(bitmapviewer_SOURCES) \
-	$(button_SOURCES) $(codecs_SOURCES) $(datatarget_SOURCES) \
-	$(dctest_SOURCES) $(dialog_SOURCES) $(dirlist_SOURCES) \
-	$(expression_SOURCES) $(foursplit_SOURCES) $(gltest_SOURCES) \
-	$(glviewer_SOURCES) $(groupbox_SOURCES) $(header_SOURCES) \
+SOURCES = $(bitmapviewer_SOURCES) $(button_SOURCES) \
+	$(calendar_SOURCES) $(codecs_SOURCES) $(console_SOURCES) \
+	$(datatarget_SOURCES) $(dctest_SOURCES) $(dialog_SOURCES) \
+	$(dirlist_SOURCES) $(expression_SOURCES) $(format_SOURCES) \
+	$(foursplit_SOURCES) $(gaugetest_SOURCES) $(gltest_SOURCES) \
+	$(groupbox_SOURCES) $(half_SOURCES) $(header_SOURCES) \
 	$(hello_SOURCES) $(hello2_SOURCES) $(iconlist_SOURCES) \
 	$(image_SOURCES) $(imageviewer_SOURCES) $(layout_SOURCES) \
-	$(mditest_SOURCES) $(memmap_SOURCES) $(minheritance_SOURCES) \
-	$(ratio_SOURCES) $(rex_SOURCES) $(scribble_SOURCES) \
-	$(shutter_SOURCES) $(splitter_SOURCES) $(switcher_SOURCES) \
-	$(tabbook_SOURCES) $(table_SOURCES) $(wizard_SOURCES)
-DIST_SOURCES = $(ControlPanel_SOURCES) $(bitmapviewer_SOURCES) \
-	$(button_SOURCES) $(codecs_SOURCES) $(datatarget_SOURCES) \
-	$(dctest_SOURCES) $(dialog_SOURCES) $(dirlist_SOURCES) \
-	$(expression_SOURCES) $(foursplit_SOURCES) $(gltest_SOURCES) \
-	$(glviewer_SOURCES) $(groupbox_SOURCES) $(header_SOURCES) \
+	$(match_SOURCES) $(math_SOURCES) $(mditest_SOURCES) \
+	$(memmap_SOURCES) $(minheritance_SOURCES) $(parallel_SOURCES) \
+	$(process_SOURCES) $(ratio_SOURCES) $(rex_SOURCES) \
+	$(scan_SOURCES) $(scribble_SOURCES) $(shutter_SOURCES) \
+	$(splitter_SOURCES) $(switcher_SOURCES) $(tabbook_SOURCES) \
+	$(table_SOURCES) $(thread_SOURCES) $(timefmt_SOURCES) \
+	$(unicode_SOURCES) $(variant_SOURCES) $(wizard_SOURCES) \
+	$(xml_SOURCES)
+DIST_SOURCES = $(bitmapviewer_SOURCES) $(button_SOURCES) \
+	$(calendar_SOURCES) $(codecs_SOURCES) $(console_SOURCES) \
+	$(datatarget_SOURCES) $(dctest_SOURCES) $(dialog_SOURCES) \
+	$(dirlist_SOURCES) $(expression_SOURCES) $(format_SOURCES) \
+	$(foursplit_SOURCES) $(gaugetest_SOURCES) $(gltest_SOURCES) \
+	$(groupbox_SOURCES) $(half_SOURCES) $(header_SOURCES) \
 	$(hello_SOURCES) $(hello2_SOURCES) $(iconlist_SOURCES) \
 	$(image_SOURCES) $(imageviewer_SOURCES) $(layout_SOURCES) \
-	$(mditest_SOURCES) $(memmap_SOURCES) $(minheritance_SOURCES) \
-	$(ratio_SOURCES) $(rex_SOURCES) $(scribble_SOURCES) \
-	$(shutter_SOURCES) $(splitter_SOURCES) $(switcher_SOURCES) \
-	$(tabbook_SOURCES) $(table_SOURCES) $(wizard_SOURCES)
+	$(match_SOURCES) $(math_SOURCES) $(mditest_SOURCES) \
+	$(memmap_SOURCES) $(minheritance_SOURCES) $(parallel_SOURCES) \
+	$(process_SOURCES) $(ratio_SOURCES) $(rex_SOURCES) \
+	$(scan_SOURCES) $(scribble_SOURCES) $(shutter_SOURCES) \
+	$(splitter_SOURCES) $(switcher_SOURCES) $(tabbook_SOURCES) \
+	$(table_SOURCES) $(thread_SOURCES) $(timefmt_SOURCES) \
+	$(unicode_SOURCES) $(variant_SOURCES) $(wizard_SOURCES) \
+	$(xml_SOURCES)
 am__can_run_installinfo = \
   case $$AM_UPDATE_INFO_DIR in \
     n|no|NO) false;; \
@@ -345,6 +409,7 @@ ACLOCAL = @ACLOCAL@
 AMTAR = @AMTAR@
 AM_DEFAULT_VERBOSITY = @AM_DEFAULT_VERBOSITY@
 AR = @AR@
+AS = @AS@
 AUTOCONF = @AUTOCONF@
 AUTOHEADER = @AUTOHEADER@
 AUTOMAKE = @AUTOMAKE@
@@ -357,7 +422,7 @@ CPPFLAGS = @CPPFLAGS@
 CXX = @CXX@
 CXXCPP = @CXXCPP@
 CXXDEPMODE = @CXXDEPMODE@
-CXXFLAGS = @CXXFLAGS@ @X_CFLAGS@
+CXXFLAGS = @CXXFLAGS@
 CYGPATH_W = @CYGPATH_W@
 DEFS = @DEFS@
 DEPDIR = @DEPDIR@
@@ -370,10 +435,10 @@ ECHO_T = @ECHO_T@
 EGREP = @EGREP@
 EXEEXT = @EXEEXT@
 FGREP = @FGREP@
-FOX_BYTEORDER = @FOX_BYTEORDER@
 FOX_MAJOR_VERSION = @FOX_MAJOR_VERSION@
 FOX_MINOR_VERSION = @FOX_MINOR_VERSION@
 FOX_PATCH_LEVEL = @FOX_PATCH_LEVEL@
+GLU_LIBS = @GLU_LIBS@
 GL_LIBS = @GL_LIBS@
 GREP = @GREP@
 INSTALL = @INSTALL@
@@ -476,10 +541,18 @@ target_alias = @target_alias@
 top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
+AM_CXXFLAGS = @X_CFLAGS@
 INCLUDES = -I$(top_srcdir)/include -I$(top_builddir)/include
-RESWRAP = $(top_builddir)/utils/reswrap
+RESWRAP = $(top_builddir)/utils/reswrap$(EXEEXT)
 SUFFIXES = .gif .bmp
-LDADD = $(top_builddir)/src/libFOX-1.6.la -lm
+LDADD = $(top_builddir)/lib/libFOX-1.7.la -lm
+gaugetest_SOURCES = gaugetest.cpp
+format_SOURCES = format.cpp
+timefmt_SOURCES = timefmt.cpp
+scan_SOURCES = scan.cpp
+console_SOURCES = console.cpp
+thread_SOURCES = thread.cpp
+calendar_SOURCES = calendar.cpp
 expression_SOURCES = expression.cpp
 wizard_SOURCES = wizard.cpp
 rex_SOURCES = rex.cpp
@@ -487,7 +560,7 @@ layout_SOURCES = layout.cpp
 minheritance_SOURCES = minheritance.cpp
 memmap_SOURCES = memmap.cpp
 gltest_SOURCES = gltest.cpp
-glviewer_SOURCES = glviewer.cpp
+gltest_LDADD = $(top_builddir)/lib/libFOX-1.7.la -lm @GLU_LIBS@
 mditest_SOURCES = mditest.cpp
 table_SOURCES = table.cpp
 groupbox_SOURCES = groupbox.cpp
@@ -503,6 +576,7 @@ header_SOURCES = header.cpp
 hello_SOURCES = hello.cpp
 hello2_SOURCES = hello2.cpp
 switcher_SOURCES = switcher.cpp
+process_SOURCES = process.cpp
 iconlist_SOURCES = iconlist.cpp
 tabbook_SOURCES = tabbook.cpp
 ratio_SOURCES = ratio.cpp
@@ -511,11 +585,14 @@ dirlist_SOURCES = dirlist.cpp
 button_SOURCES = button.cpp
 codecs_SOURCES = codecs.cpp
 dctest_SOURCES = dctest.cpp dippy.h
-ControlPanel_SOURCES = ControlPanel.cpp controlpanelicon.h
-EXTRA_DIST = Makefile.bc \
-             Makefile.wc \
-             Makefile.dmc
-
+half_SOURCES = half.cpp
+match_SOURCES = match.cpp
+unicode_SOURCES = unicode.cpp
+parallel_SOURCES = parallel.cpp
+variant_SOURCES = variant.cpp
+math_SOURCES = math.cpp
+xml_SOURCES = xml.cpp
+EXTRA_DIST = xmltests.json
 all: all-am
 
 .SUFFIXES:
@@ -559,10 +636,6 @@ clean-noinstPROGRAMS:
 	echo " rm -f" $$list; \
 	rm -f $$list
 
-ControlPanel$(EXEEXT): $(ControlPanel_OBJECTS) $(ControlPanel_DEPENDENCIES) $(EXTRA_ControlPanel_DEPENDENCIES) 
-	@rm -f ControlPanel$(EXEEXT)
-	$(AM_V_CXXLD)$(CXXLINK) $(ControlPanel_OBJECTS) $(ControlPanel_LDADD) $(LIBS)
-
 bitmapviewer$(EXEEXT): $(bitmapviewer_OBJECTS) $(bitmapviewer_DEPENDENCIES) $(EXTRA_bitmapviewer_DEPENDENCIES) 
 	@rm -f bitmapviewer$(EXEEXT)
 	$(AM_V_CXXLD)$(CXXLINK) $(bitmapviewer_OBJECTS) $(bitmapviewer_LDADD) $(LIBS)
@@ -571,9 +644,17 @@ button$(EXEEXT): $(button_OBJECTS) $(button_DEPENDENCIES) $(EXTRA_button_DEPENDE
 	@rm -f button$(EXEEXT)
 	$(AM_V_CXXLD)$(CXXLINK) $(button_OBJECTS) $(button_LDADD) $(LIBS)
 
+calendar$(EXEEXT): $(calendar_OBJECTS) $(calendar_DEPENDENCIES) $(EXTRA_calendar_DEPENDENCIES) 
+	@rm -f calendar$(EXEEXT)
+	$(AM_V_CXXLD)$(CXXLINK) $(calendar_OBJECTS) $(calendar_LDADD) $(LIBS)
+
 codecs$(EXEEXT): $(codecs_OBJECTS) $(codecs_DEPENDENCIES) $(EXTRA_codecs_DEPENDENCIES) 
 	@rm -f codecs$(EXEEXT)
 	$(AM_V_CXXLD)$(CXXLINK) $(codecs_OBJECTS) $(codecs_LDADD) $(LIBS)
+
+console$(EXEEXT): $(console_OBJECTS) $(console_DEPENDENCIES) $(EXTRA_console_DEPENDENCIES) 
+	@rm -f console$(EXEEXT)
+	$(AM_V_CXXLD)$(CXXLINK) $(console_OBJECTS) $(console_LDADD) $(LIBS)
 
 datatarget$(EXEEXT): $(datatarget_OBJECTS) $(datatarget_DEPENDENCIES) $(EXTRA_datatarget_DEPENDENCIES) 
 	@rm -f datatarget$(EXEEXT)
@@ -595,21 +676,29 @@ expression$(EXEEXT): $(expression_OBJECTS) $(expression_DEPENDENCIES) $(EXTRA_ex
 	@rm -f expression$(EXEEXT)
 	$(AM_V_CXXLD)$(CXXLINK) $(expression_OBJECTS) $(expression_LDADD) $(LIBS)
 
+format$(EXEEXT): $(format_OBJECTS) $(format_DEPENDENCIES) $(EXTRA_format_DEPENDENCIES) 
+	@rm -f format$(EXEEXT)
+	$(AM_V_CXXLD)$(CXXLINK) $(format_OBJECTS) $(format_LDADD) $(LIBS)
+
 foursplit$(EXEEXT): $(foursplit_OBJECTS) $(foursplit_DEPENDENCIES) $(EXTRA_foursplit_DEPENDENCIES) 
 	@rm -f foursplit$(EXEEXT)
 	$(AM_V_CXXLD)$(CXXLINK) $(foursplit_OBJECTS) $(foursplit_LDADD) $(LIBS)
+
+gaugetest$(EXEEXT): $(gaugetest_OBJECTS) $(gaugetest_DEPENDENCIES) $(EXTRA_gaugetest_DEPENDENCIES) 
+	@rm -f gaugetest$(EXEEXT)
+	$(AM_V_CXXLD)$(CXXLINK) $(gaugetest_OBJECTS) $(gaugetest_LDADD) $(LIBS)
 
 gltest$(EXEEXT): $(gltest_OBJECTS) $(gltest_DEPENDENCIES) $(EXTRA_gltest_DEPENDENCIES) 
 	@rm -f gltest$(EXEEXT)
 	$(AM_V_CXXLD)$(CXXLINK) $(gltest_OBJECTS) $(gltest_LDADD) $(LIBS)
 
-glviewer$(EXEEXT): $(glviewer_OBJECTS) $(glviewer_DEPENDENCIES) $(EXTRA_glviewer_DEPENDENCIES) 
-	@rm -f glviewer$(EXEEXT)
-	$(AM_V_CXXLD)$(CXXLINK) $(glviewer_OBJECTS) $(glviewer_LDADD) $(LIBS)
-
 groupbox$(EXEEXT): $(groupbox_OBJECTS) $(groupbox_DEPENDENCIES) $(EXTRA_groupbox_DEPENDENCIES) 
 	@rm -f groupbox$(EXEEXT)
 	$(AM_V_CXXLD)$(CXXLINK) $(groupbox_OBJECTS) $(groupbox_LDADD) $(LIBS)
+
+half$(EXEEXT): $(half_OBJECTS) $(half_DEPENDENCIES) $(EXTRA_half_DEPENDENCIES) 
+	@rm -f half$(EXEEXT)
+	$(AM_V_CXXLD)$(CXXLINK) $(half_OBJECTS) $(half_LDADD) $(LIBS)
 
 header$(EXEEXT): $(header_OBJECTS) $(header_DEPENDENCIES) $(EXTRA_header_DEPENDENCIES) 
 	@rm -f header$(EXEEXT)
@@ -639,6 +728,14 @@ layout$(EXEEXT): $(layout_OBJECTS) $(layout_DEPENDENCIES) $(EXTRA_layout_DEPENDE
 	@rm -f layout$(EXEEXT)
 	$(AM_V_CXXLD)$(CXXLINK) $(layout_OBJECTS) $(layout_LDADD) $(LIBS)
 
+match$(EXEEXT): $(match_OBJECTS) $(match_DEPENDENCIES) $(EXTRA_match_DEPENDENCIES) 
+	@rm -f match$(EXEEXT)
+	$(AM_V_CXXLD)$(CXXLINK) $(match_OBJECTS) $(match_LDADD) $(LIBS)
+
+math$(EXEEXT): $(math_OBJECTS) $(math_DEPENDENCIES) $(EXTRA_math_DEPENDENCIES) 
+	@rm -f math$(EXEEXT)
+	$(AM_V_CXXLD)$(CXXLINK) $(math_OBJECTS) $(math_LDADD) $(LIBS)
+
 mditest$(EXEEXT): $(mditest_OBJECTS) $(mditest_DEPENDENCIES) $(EXTRA_mditest_DEPENDENCIES) 
 	@rm -f mditest$(EXEEXT)
 	$(AM_V_CXXLD)$(CXXLINK) $(mditest_OBJECTS) $(mditest_LDADD) $(LIBS)
@@ -651,6 +748,14 @@ minheritance$(EXEEXT): $(minheritance_OBJECTS) $(minheritance_DEPENDENCIES) $(EX
 	@rm -f minheritance$(EXEEXT)
 	$(AM_V_CXXLD)$(CXXLINK) $(minheritance_OBJECTS) $(minheritance_LDADD) $(LIBS)
 
+parallel$(EXEEXT): $(parallel_OBJECTS) $(parallel_DEPENDENCIES) $(EXTRA_parallel_DEPENDENCIES) 
+	@rm -f parallel$(EXEEXT)
+	$(AM_V_CXXLD)$(CXXLINK) $(parallel_OBJECTS) $(parallel_LDADD) $(LIBS)
+
+process$(EXEEXT): $(process_OBJECTS) $(process_DEPENDENCIES) $(EXTRA_process_DEPENDENCIES) 
+	@rm -f process$(EXEEXT)
+	$(AM_V_CXXLD)$(CXXLINK) $(process_OBJECTS) $(process_LDADD) $(LIBS)
+
 ratio$(EXEEXT): $(ratio_OBJECTS) $(ratio_DEPENDENCIES) $(EXTRA_ratio_DEPENDENCIES) 
 	@rm -f ratio$(EXEEXT)
 	$(AM_V_CXXLD)$(CXXLINK) $(ratio_OBJECTS) $(ratio_LDADD) $(LIBS)
@@ -658,6 +763,10 @@ ratio$(EXEEXT): $(ratio_OBJECTS) $(ratio_DEPENDENCIES) $(EXTRA_ratio_DEPENDENCIE
 rex$(EXEEXT): $(rex_OBJECTS) $(rex_DEPENDENCIES) $(EXTRA_rex_DEPENDENCIES) 
 	@rm -f rex$(EXEEXT)
 	$(AM_V_CXXLD)$(CXXLINK) $(rex_OBJECTS) $(rex_LDADD) $(LIBS)
+
+scan$(EXEEXT): $(scan_OBJECTS) $(scan_DEPENDENCIES) $(EXTRA_scan_DEPENDENCIES) 
+	@rm -f scan$(EXEEXT)
+	$(AM_V_CXXLD)$(CXXLINK) $(scan_OBJECTS) $(scan_LDADD) $(LIBS)
 
 scribble$(EXEEXT): $(scribble_OBJECTS) $(scribble_DEPENDENCIES) $(EXTRA_scribble_DEPENDENCIES) 
 	@rm -f scribble$(EXEEXT)
@@ -683,9 +792,29 @@ table$(EXEEXT): $(table_OBJECTS) $(table_DEPENDENCIES) $(EXTRA_table_DEPENDENCIE
 	@rm -f table$(EXEEXT)
 	$(AM_V_CXXLD)$(CXXLINK) $(table_OBJECTS) $(table_LDADD) $(LIBS)
 
+thread$(EXEEXT): $(thread_OBJECTS) $(thread_DEPENDENCIES) $(EXTRA_thread_DEPENDENCIES) 
+	@rm -f thread$(EXEEXT)
+	$(AM_V_CXXLD)$(CXXLINK) $(thread_OBJECTS) $(thread_LDADD) $(LIBS)
+
+timefmt$(EXEEXT): $(timefmt_OBJECTS) $(timefmt_DEPENDENCIES) $(EXTRA_timefmt_DEPENDENCIES) 
+	@rm -f timefmt$(EXEEXT)
+	$(AM_V_CXXLD)$(CXXLINK) $(timefmt_OBJECTS) $(timefmt_LDADD) $(LIBS)
+
+unicode$(EXEEXT): $(unicode_OBJECTS) $(unicode_DEPENDENCIES) $(EXTRA_unicode_DEPENDENCIES) 
+	@rm -f unicode$(EXEEXT)
+	$(AM_V_CXXLD)$(CXXLINK) $(unicode_OBJECTS) $(unicode_LDADD) $(LIBS)
+
+variant$(EXEEXT): $(variant_OBJECTS) $(variant_DEPENDENCIES) $(EXTRA_variant_DEPENDENCIES) 
+	@rm -f variant$(EXEEXT)
+	$(AM_V_CXXLD)$(CXXLINK) $(variant_OBJECTS) $(variant_LDADD) $(LIBS)
+
 wizard$(EXEEXT): $(wizard_OBJECTS) $(wizard_DEPENDENCIES) $(EXTRA_wizard_DEPENDENCIES) 
 	@rm -f wizard$(EXEEXT)
 	$(AM_V_CXXLD)$(CXXLINK) $(wizard_OBJECTS) $(wizard_LDADD) $(LIBS)
+
+xml$(EXEEXT): $(xml_OBJECTS) $(xml_DEPENDENCIES) $(EXTRA_xml_DEPENDENCIES) 
+	@rm -f xml$(EXEEXT)
+	$(AM_V_CXXLD)$(CXXLINK) $(xml_OBJECTS) $(xml_LDADD) $(LIBS)
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
@@ -693,19 +822,22 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ControlPanel.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/bitmapviewer.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/button.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/calendar.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/codecs.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/console.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/datatarget.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dctest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dialog.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dirlist.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/expression.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/format.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/foursplit.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gaugetest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/gltest.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/glviewer.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/groupbox.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/half.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/header.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/hello.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/hello2.Po@am__quote@
@@ -713,18 +845,28 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/image.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/imageviewer.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/layout.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/match.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/math.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/mditest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/memmap.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/minheritance.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/parallel.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/process.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ratio.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rex.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/scan.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/scribble.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/shutter.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/splitter.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/switcher.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/tabbook.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/table.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/thread.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/timefmt.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/unicode.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/variant.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/wizard.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/xml.Po@am__quote@
 
 .cpp.o:
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXXCOMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<

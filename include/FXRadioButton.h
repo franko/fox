@@ -3,23 +3,20 @@
 *                  R a d i o   B u t t o n    W i d g e t                       *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 1998,2006 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 1998,2021 by Jeroen van der Zijp.   All Rights Reserved.        *
 *********************************************************************************
-* This library is free software; you can redistribute it and/or                 *
-* modify it under the terms of the GNU Lesser General Public                    *
-* License as published by the Free Software Foundation; either                  *
-* version 2.1 of the License, or (at your option) any later version.            *
+* This library is free software; you can redistribute it and/or modify          *
+* it under the terms of the GNU Lesser General Public License as published by   *
+* the Free Software Foundation; either version 3 of the License, or             *
+* (at your option) any later version.                                           *
 *                                                                               *
 * This library is distributed in the hope that it will be useful,               *
 * but WITHOUT ANY WARRANTY; without even the implied warranty of                *
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU             *
-* Lesser General Public License for more details.                               *
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the                 *
+* GNU Lesser General Public License for more details.                           *
 *                                                                               *
-* You should have received a copy of the GNU Lesser General Public              *
-* License along with this library; if not, write to the Free Software           *
-* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA.    *
-*********************************************************************************
-* $Id: FXRadioButton.h,v 1.29 2006/01/22 17:58:08 fox Exp $                     *
+* You should have received a copy of the GNU Lesser General Public License      *
+* along with this program.  If not, see <http://www.gnu.org/licenses/>          *
 ********************************************************************************/
 #ifndef FXRADIOBUTTON_H
 #define FXRADIOBUTTON_H
@@ -56,8 +53,8 @@ class FXAPI FXRadioButton : public FXLabel {
 protected:
   FXColor  radioColor;  // Color of radio ball
   FXColor  diskColor;   // Color of radio disk
-  FXbool   check;       // Radio state
-  FXbool   oldcheck;    // Old radio state
+  FXuchar  check;       // Radio state
+  FXuchar  oldcheck;    // Old radio state
 protected:
   FXRadioButton();
 private:
@@ -89,7 +86,7 @@ public:
   FXRadioButton(FXComposite* p,const FXString& text,FXObject* tgt=NULL,FXSelector sel=0,FXuint opts=RADIOBUTTON_NORMAL,FXint x=0,FXint y=0,FXint w=0,FXint h=0,FXint pl=DEFAULT_PAD,FXint pr=DEFAULT_PAD,FXint pt=DEFAULT_PAD,FXint pb=DEFAULT_PAD);
 
   /// Returns true because a radio button can receive focus
-  virtual bool canFocus() const;
+  virtual FXbool canFocus() const;
 
   /// Get default width
   virtual FXint getDefaultWidth();
@@ -98,10 +95,10 @@ public:
   virtual FXint getDefaultHeight();
 
   /// Set radio button state (TRUE, FALSE or MAYBE)
-  void setCheck(FXbool s=TRUE,FXbool notify=FALSE);
+  void setCheck(FXuchar s=true,FXbool notify=false);
 
   /// Get radio button state (TRUE, FALSE or MAYBE)
-  FXbool getCheck() const { return check; }
+  FXuchar getCheck() const { return check; }
 
   /// Change radio button style
   void setRadioButtonStyle(FXuint style);

@@ -3,9 +3,7 @@
 *                                 Data Target Test                              *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 1997,2006 by Jeroen van der Zijp.   All Rights Reserved.        *
-*********************************************************************************
-* $Id: datatarget.cpp,v 1.49 2006/02/10 03:53:48 fox Exp $                      *
+* Copyright (C) 1997,2021 by Jeroen van der Zijp.   All Rights Reserved.        *
 ********************************************************************************/
 #include "fx.h"
 #include <stdio.h>
@@ -15,6 +13,7 @@
 #ifndef WIN32
 #include <unistd.h>
 #endif
+
 
 /*******************************************************************************/
 
@@ -171,7 +170,7 @@ DataTargetWindow::DataTargetWindow(FXApp* a):FXMainWindow(a,"Data Target Test",N
   new FXKnob(matrix,&int_target,FXDataTarget::ID_VALUE,KNOB_TICKS|LAYOUT_CENTER_Y|LAYOUT_CENTER_X);
   new FXSpinner(matrix,5,&int_target,FXDataTarget::ID_VALUE,SPIN_CYCLIC|FRAME_SUNKEN|FRAME_THICK|LAYOUT_CENTER_Y|LAYOUT_FILL_ROW);
   new FXProgressBar(matrix,&int_target,FXDataTarget::ID_VALUE,LAYOUT_CENTER_Y|LAYOUT_FILL_X|FRAME_SUNKEN|FRAME_THICK|PROGRESSBAR_PERCENTAGE|LAYOUT_FILL_COLUMN|LAYOUT_FILL_ROW);
-  FX7Segment *seven=new FX7Segment(matrix,FXString::null,SEVENSEGMENT_SHADOW|JUSTIFY_RIGHT|LAYOUT_CENTER_Y|LAYOUT_FILL_ROW|LAYOUT_FILL_X);
+  FX7Segment *seven=new FX7Segment(matrix,FXString::null,SEVENSEGMENT_SHADOW|JUSTIFY_RIGHT|LAYOUT_CENTER_Y|LAYOUT_FILL_ROW|LAYOUT_FIX_WIDTH,0,0,40,0);
   seven->setTarget(&int_target);
   seven->setSelector(FXDataTarget::ID_VALUE);
 
@@ -184,6 +183,7 @@ DataTargetWindow::DataTargetWindow(FXApp* a):FXMainWindow(a,"Data Target Test",N
   new FXTextField(matrix,10,&double_target,FXDataTarget::ID_VALUE,TEXTFIELD_REAL|JUSTIFY_RIGHT|LAYOUT_CENTER_Y|LAYOUT_CENTER_X|FRAME_SUNKEN|FRAME_THICK|LAYOUT_FILL_ROW);
   FXRealSlider *rslider=new FXRealSlider(matrix,&double_target,FXDataTarget::ID_VALUE,LAYOUT_CENTER_Y|LAYOUT_FILL_X|LAYOUT_FILL_ROW|LAYOUT_FIX_WIDTH,0,0,100);
   rslider->setRange(0.0,10.0);
+  rslider->setGranularity(0.01);
   new FXDial(matrix,&double_target,FXDataTarget::ID_VALUE,LAYOUT_CENTER_Y|LAYOUT_FILL_X|LAYOUT_FILL_ROW|LAYOUT_FIX_WIDTH|DIAL_HORIZONTAL|DIAL_HAS_NOTCH,0,0,100);
 
   FXRealSpinner *rspinner=new FXRealSpinner(matrix,8,&double_target,FXDataTarget::ID_VALUE,REALSPIN_CYCLIC|FRAME_SUNKEN|FRAME_THICK|LAYOUT_CENTER_Y|LAYOUT_FILL_ROW);
@@ -223,9 +223,9 @@ DataTargetWindow::DataTargetWindow(FXApp* a):FXMainWindow(a,"Data Target Test",N
   new FXOption(popup,"Second",NULL,&option_target,FXDataTarget::ID_OPTION+1,JUSTIFY_HZ_APART|ICON_AFTER_TEXT);
   new FXOption(popup,"Third",NULL,&option_target,FXDataTarget::ID_OPTION+2,JUSTIFY_HZ_APART|ICON_AFTER_TEXT);
   new FXOption(popup,"Fourth",NULL,&option_target,FXDataTarget::ID_OPTION+3,JUSTIFY_HZ_APART|ICON_AFTER_TEXT);
-  FXOptionMenu *options=new FXOptionMenu(matrix,popup,LAYOUT_TOP|FRAME_RAISED|FRAME_THICK|JUSTIFY_HZ_APART|ICON_AFTER_TEXT);
-  options->setTarget(&option_target);
-  options->setSelector(FXDataTarget::ID_VALUE);
+  FXOptionMenu *optionsmenu=new FXOptionMenu(matrix,popup,LAYOUT_TOP|FRAME_RAISED|FRAME_THICK|JUSTIFY_HZ_APART|ICON_AFTER_TEXT);
+  optionsmenu->setTarget(&option_target);
+  optionsmenu->setSelector(FXDataTarget::ID_VALUE);
 
   new FXFrame(matrix,LAYOUT_FILL_COLUMN|LAYOUT_FILL_ROW);
   new FXFrame(matrix,LAYOUT_FILL_COLUMN|LAYOUT_FILL_ROW);
@@ -234,16 +234,17 @@ DataTargetWindow::DataTargetWindow(FXApp* a):FXMainWindow(a,"Data Target Test",N
   new FXLabel(matrix,"&Color",NULL,LAYOUT_CENTER_Y|LAYOUT_CENTER_X|JUSTIFY_RIGHT|LAYOUT_FILL_ROW);
 
   // Two colorwells connect to the variable "some_color"
-  new FXColorWell(matrix,0,&color_target,FXDataTarget::ID_VALUE,LAYOUT_CENTER_Y|LAYOUT_FILL_X|LAYOUT_FILL_ROW,0,0,0,0, 0,0,0,0);
-  new FXColorWell(matrix,0,&color_target,FXDataTarget::ID_VALUE,LAYOUT_CENTER_Y|LAYOUT_FILL_X|LAYOUT_FILL_ROW,0,0,0,0, 0,0,0,0);
+  new FXColorWell(matrix,0,&color_target,FXDataTarget::ID_VALUE,LAYOUT_CENTER_Y|LAYOUT_FILL_X|LAYOUT_FILL_ROW|FRAME_SUNKEN|FRAME_THICK,0,0,0,0, 0,0,0,0);
+  new FXColorWell(matrix,0,&color_target,FXDataTarget::ID_VALUE,LAYOUT_CENTER_Y|LAYOUT_FILL_X|LAYOUT_FILL_ROW|FRAME_SUNKEN|FRAME_THICK,0,0,0,0, 0,0,0,0);
   new FXFrame(matrix,LAYOUT_FILL_COLUMN|LAYOUT_FILL_ROW);
   new FXFrame(matrix,LAYOUT_FILL_COLUMN|LAYOUT_FILL_ROW);
   new FXFrame(matrix,LAYOUT_FILL_COLUMN|LAYOUT_FILL_ROW);
   new FXFrame(matrix,LAYOUT_FILL_COLUMN|LAYOUT_FILL_ROW);
-  new FXFrame(matrix,LAYOUT_FILL_COLUMN|LAYOUT_FILL_ROW);
+//  new FXFrame(matrix,LAYOUT_FILL_COLUMN|LAYOUT_FILL_ROW);
+  new FXSpinner(matrix,5,&progress_target,FXDataTarget::ID_VALUE,FRAME_SUNKEN|FRAME_THICK|LAYOUT_CENTER_Y|LAYOUT_FILL_ROW);
 
   // Install an accelerator
-  getAccelTable()->addAccel(parseAccel("Ctl-Q"),getApp(),FXSEL(SEL_COMMAND,FXApp::ID_QUIT));
+  getAccelTable()->addAccel("Ctl-Q",getApp(),FXSEL(SEL_COMMAND,FXApp::ID_QUIT));
 
   }
 
@@ -265,7 +266,7 @@ long DataTargetWindow::onCmdTimer(FXObject*,FXSelector,void*){
   some_progress=(some_progress+1)%100;
 
   // Reset timer for next time
-  getApp()->addTimeout(this,ID_TIMER,80);
+  getApp()->addTimeout(this,ID_TIMER,80000000);
   return 1;
   }
 
@@ -291,7 +292,7 @@ void DataTargetWindow::create(){
   FXMainWindow::create();
 
   // Kick off the timer
-  getApp()->addTimeout(this,ID_TIMER,80);
+  getApp()->addTimeout(this,ID_TIMER,80000000);
 
   // Show
   show(PLACEMENT_SCREEN);

@@ -171,6 +171,7 @@ ACLOCAL = @ACLOCAL@
 AMTAR = @AMTAR@
 AM_DEFAULT_VERBOSITY = @AM_DEFAULT_VERBOSITY@
 AR = @AR@
+AS = @AS@
 AUTOCONF = @AUTOCONF@
 AUTOHEADER = @AUTOHEADER@
 AUTOMAKE = @AUTOMAKE@
@@ -196,10 +197,10 @@ ECHO_T = @ECHO_T@
 EGREP = @EGREP@
 EXEEXT = @EXEEXT@
 FGREP = @FGREP@
-FOX_BYTEORDER = @FOX_BYTEORDER@
 FOX_MAJOR_VERSION = @FOX_MAJOR_VERSION@
 FOX_MINOR_VERSION = @FOX_MINOR_VERSION@
 FOX_PATCH_LEVEL = @FOX_PATCH_LEVEL@
+GLU_LIBS = @GLU_LIBS@
 GL_LIBS = @GL_LIBS@
 GREP = @GREP@
 INSTALL = @INSTALL@
@@ -302,7 +303,7 @@ target_alias = @target_alias@
 top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
-foxincludedir = $(includedir)/fox-1.6
+foxincludedir = $(includedir)/fox-1.7
 CODECS = \
 FX88591Codec.h \
 FX88592Codec.h \
@@ -356,6 +357,10 @@ FXAccelTable.h \
 FXApp.h \
 FXArray.h \
 FXArrowButton.h \
+FXAtomic.h \
+FXAutoPtr.h \
+FXAutoThreadStorageKey.h \
+FXBarrier.h \
 FXBMPIcon.h \
 FXBMPImage.h \
 FXBitmap.h \
@@ -364,6 +369,9 @@ FXBitmapView.h \
 FXButton.h \
 FXBZFileStream.h \
 FXCURCursor.h \
+FXCallback.h \
+FXCalendar.h \
+FXCalendarView.h \
 FXCanvas.h \
 FXCheckButton.h \
 FXChoiceBox.h \
@@ -371,29 +379,42 @@ FXColorBar.h \
 FXColorDialog.h \
 FXColorList.h \
 FXColorRing.h \
+FXColors.h \
 FXColorSelector.h \
 FXColorWell.h \
 FXColorWheel.h \
 FXComboBox.h \
+FXCompletion.h \
+FXComplexf.h \
+FXComplexd.h \
 FXComposeContext.h \
 FXComposite.h \
+FXCondition.h \
+FXConsole.h \
 FXCursor.h \
 FXDate.h \
 FXDC.h \
 FXDCPrint.h \
 FXDCWindow.h \
+FXDDSIcon.h \
+FXDDSImage.h \
 FXDLL.h \
 FXDataTarget.h \
 FXDebugTarget.h \
 FXDelegator.h \
 FXDial.h \
 FXDialogBox.h \
-FXDict.h \
+FXDictionary.h \
+FXDictionaryOf.h \
 FXDir.h \
 FXDirBox.h \
 FXDirDialog.h \
 FXDirList.h \
 FXDirSelector.h \
+FXDirVisitor.h \
+FXDirWatch.h \
+FXDispatcher.h \
+FXDisplay.h \
 FXDockBar.h \
 FXDockHandler.h \
 FXDockSite.h \
@@ -403,14 +424,20 @@ FXDragCorner.h \
 FXDrawable.h \
 FXDriveBox.h \
 FXElement.h \
+FXEvent.h \
+FXEventDispatcher.h \
+FXEventLoop.h \
 FXException.h \
+FXEXEIcon.h \
+FXEXEImage.h \
 FXExpression.h \
 FXExtentd.h \
 FXExtentf.h \
 FXFile.h \
+FXFileAssociations.h \
 FXFileDialog.h \
-FXFileDict.h \
 FXFileList.h \
+FXFileProgressDialog.h \
 FXFileSelector.h \
 FXFileStream.h \
 FXFoldingList.h \
@@ -422,21 +449,17 @@ FXGIFCursor.h \
 FXGIFIcon.h \
 FXGIFImage.h \
 FXGLCanvas.h \
-FXGLCone.h \
 FXGLContext.h \
-FXGLCube.h \
-FXGLCylinder.h \
 FXGLObject.h \
-FXGLShape.h \
-FXGLSphere.h \
-FXGLTriangleMesh.h \
 FXGLViewer.h \
 FXGLVisual.h \
-FXGroupBox.h \
+FXGauge.h \
 FXGradientBar.h \
-FXGUISignal.h \
+FXGroupBox.h \
 FXGZFileStream.h \
+FXhalf.h \
 FXHash.h \
+FXHashOf.h \
 FXHeader.h \
 FXHorizontalFrame.h \
 FXICOIcon.h \
@@ -444,8 +467,10 @@ FXICOImage.h \
 FXIFFImage.h \
 FXIFFIcon.h \
 FXIO.h \
+FXIOBuffer.h \
+FXIODevice.h \
 FXIcon.h \
-FXIconDict.h \
+FXIconCache.h \
 FXIconList.h \
 FXIconSource.h \
 FXId.h \
@@ -453,16 +478,25 @@ FXImage.h \
 FXImageFrame.h \
 FXImageView.h \
 FXInputDialog.h \
+FXJP2Icon.h \
+FXJP2Image.h \
 FXJPGIcon.h \
 FXJPGImage.h \
+FXJSON.h \
+FXJSONFile.h \
+FXJSONString.h \
 FXKnob.h \
 FXLabel.h \
+FXLFQueue.h \
 FXList.h \
 FXListBox.h \
+FXLocale.h \
 FXMDIButton.h \
 FXMDIChild.h \
 FXMDIClient.h \
 FXMainWindow.h \
+FXMat2d.h \
+FXMat2f.h \
 FXMat3d.h \
 FXMat4d.h \
 FXMat3f.h \
@@ -481,6 +515,8 @@ FXMenuPane.h \
 FXMenuSeparator.h \
 FXMenuTitle.h \
 FXMessageBox.h \
+FXMetaClass.h \
+FXMutex.h \
 FXObject.h \
 FXObjectList.h \
 FXOptionMenu.h \
@@ -491,39 +527,55 @@ FXPNGImage.h \
 FXPPMIcon.h \
 FXPPMImage.h \
 FXPacker.h \
+FXParallel.h \
 FXPath.h \
 FXPicker.h \
 FXPipe.h \
 FXPoint.h \
 FXPopup.h \
 FXPrintDialog.h \
+FXProcess.h \
 FXProgressBar.h \
 FXProgressDialog.h \
+FXPtrList.h \
+FXPtrQueue.h \
 FXQuatd.h \
 FXQuatf.h \
+FXMessageChannel.h \
 FXRASIcon.h \
 FXRASImage.h \
 FXRGBIcon.h \
 FXRGBImage.h \
 FXRadioButton.h \
+FXRandom.h \
 FXRangef.h \
 FXRanged.h \
+FXRangeSlider.h \
+FXReactor.h \
+FXReadWriteLock.h \
 FXRealSlider.h \
 FXRealSpinner.h \
 FXRecentFiles.h \
 FXRectangle.h \
+FXRefPtr.h \
 FXRegion.h \
 FXRegistry.h \
 FXReplaceDialog.h \
+FXReverseDictionary.h \
+FXReverseDictionaryOf.h \
 FXRex.h \
 FXRootWindow.h \
 FXRuler.h \
 FXRulerView.h \
+FXRunnable.h \
+FXScopedThread.h \
 FXScrollArea.h \
 FXScrollBar.h \
 FXScrollPane.h \
 FXScrollWindow.h \
 FXSearchDialog.h \
+FXSemaphore.h \
+FXSemaQueue.h \
 FXSeparator.h \
 FXSettings.h \
 FXShell.h \
@@ -532,6 +584,7 @@ FXSize.h \
 FXSlider.h \
 FXSocket.h \
 FXSpinner.h \
+FXSpinLock.h \
 FXSpheref.h \
 FXSphered.h \
 FXSplashWindow.h \
@@ -542,7 +595,7 @@ FXStatusBar.h \
 FXStatusLine.h \
 FXStream.h \
 FXString.h \
-FXStringDict.h \
+FXStringDictionary.h \
 FXSwitcher.h \
 FXSystem.h \
 FXTGAIcon.h \
@@ -553,10 +606,12 @@ FXTabBar.h \
 FXTabBook.h \
 FXTabItem.h \
 FXTable.h \
+FXTaskGroup.h \
 FXText.h \
 FXTextCodec.h \
 FXTextField.h \
 FXThread.h \
+FXThreadPool.h \
 FXToggleButton.h \
 FXToolBar.h \
 FXToolBarGrip.h \
@@ -570,6 +625,9 @@ FXTreeListBox.h \
 FXTriStateButton.h \
 FXUndoList.h \
 FXURL.h \
+FXVariant.h \
+FXVariantArray.h \
+FXVariantMap.h \
 FXVec2d.h \
 FXVec2f.h \
 FXVec3d.h \
@@ -578,8 +636,15 @@ FXVec4d.h \
 FXVec4f.h \
 FXVerticalFrame.h \
 FXVisual.h \
+FXWEBPIcon.h \
+FXWEBPImage.h \
 FXWindow.h \
 FXWizard.h \
+FXWorker.h \
+FXWSQueue.h \
+FXXML.h \
+FXXMLFile.h \
+FXXMLString.h \
 FXXBMIcon.h \
 FXXBMImage.h \
 FXXPMIcon.h \
@@ -587,7 +652,10 @@ FXXPMImage.h \
 fx.h \
 fx3d.h \
 fxascii.h \
+fxcpuid.h \
 fxdefs.h \
+fxmath.h \
+fxendian.h \
 fxkeys.h \
 fxunicode.h \
 fxver.h \

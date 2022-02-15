@@ -3,23 +3,20 @@
 *                          G e n e r i c   A r r a y                            *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 1997,2006 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 1997,2021 by Jeroen van der Zijp.   All Rights Reserved.        *
 *********************************************************************************
-* This library is free software; you can redistribute it and/or                 *
-* modify it under the terms of the GNU Lesser General Public                    *
-* License as published by the Free Software Foundation; either                  *
-* version 2.1 of the License, or (at your option) any later version.            *
+* This library is free software; you can redistribute it and/or modify          *
+* it under the terms of the GNU Lesser General Public License as published by   *
+* the Free Software Foundation; either version 3 of the License, or             *
+* (at your option) any later version.                                           *
 *                                                                               *
 * This library is distributed in the hope that it will be useful,               *
 * but WITHOUT ANY WARRANTY; without even the implied warranty of                *
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU             *
-* Lesser General Public License for more details.                               *
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the                 *
+* GNU Lesser General Public License for more details.                           *
 *                                                                               *
-* You should have received a copy of the GNU Lesser General Public              *
-* License along with this library; if not, write to the Free Software           *
-* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA.    *
-*********************************************************************************
-* $Id: FXArray.h,v 1.24.2.1 2008/03/25 20:18:43 fox Exp $                           *
+* You should have received a copy of the GNU Lesser General Public License      *
+* along with this program.  If not, see <http://www.gnu.org/licenses/>          *
 ********************************************************************************/
 #ifndef FXARRAY_H
 #define FXARRAY_H
@@ -31,199 +28,254 @@
 namespace FX {
 
 
-/// Array of some generic type
-template<class TYPE>
-class FXArray {
+/// ArrayBase manages a memory buffer
+class FXAPI FXArrayBase {
 protected:
-  TYPE  *ptr;   // Data array
-  FXint  num;   // Number in array
+  FXptr ptr;
+protected:
+  FXArrayBase();
+  FXbool resize(FXival num,FXival sz);
+ ~FXArrayBase();
+  };
+
+
+/// Array of some generic type
+template<typename EType>
+class FXArray : public FXArrayBase {
 public:
 
-  /// Create as empty
-  FXArray():ptr(NULL),num(0){
+  /// Allocate initially empty array
+  FXArray(){ }
+
+  /// Allocate array of n elements
+  FXArray(FXival n){ no(n); }
+
+  /// Allocate array copied from another
+  FXArray(const FXArray<EType>& src){
+    if(no(src.no())){ copyElms(data(),src.data(),src.no()); }
     }
 
-  /// Create with given size n
-  FXArray(FXint n):ptr(NULL),num(0){
-    if(allocElms(ptr,n)){ constructElms(ptr,n); num=n; }
+  /// Allocate initialized with n copies of object
+  FXArray(const EType& src,FXival n){
+    if(no(n)){ fillElms(data(),src,n); }
     }
 
-  /// Create initialized from another array
-  FXArray(const FXArray<TYPE>& src):ptr(NULL),num(0){
-    if(allocElms(ptr,src.num)){ constructElms(ptr,src.num); copyElms(ptr,src.ptr,src.num); num=src.num; }
+  /// Allocate initialized with array of n objects
+  FXArray(const EType* src,FXival n){
+    if(no(n)){ copyElms(data(),src,n); }
     }
 
-  /// Create initialized with n copies of object
-  FXArray(const TYPE& src,FXint n):ptr(NULL),num(0){
-    if(allocElms(ptr,n)){ constructElms(ptr,n); fillElms(ptr,src,n); num=n; }
-    }
+  /// Return number of items
+  FXival no() const { return *(((FXival*)ptr)-1); }
 
-  /// Create initialized with array of n objects
-  FXArray(const TYPE* src,FXint n):ptr(NULL),num(0){
-    if(allocElms(ptr,n)){ constructElms(ptr,n); copyElms(ptr,src,n); num=n; }
-    }
-
-  /// Return number of elements
-  FXint no() const { return num; }
-
-  /// Change number of elements to n
-  bool no(FXint n){
-    if(n!=num){
-      if(0<num-n){
-        destructElms(ptr+n,num-n);
-        if(!resizeElms(ptr,n)) return false;
-        }
-      else{
-        if(!resizeElms(ptr,n)) return false;
-        constructElms(ptr+num,n-num);
-        }
-      num=n;
+  /// Change number of elements in array to n
+  FXbool no(FXival n){
+    FXival m=no();
+    if((n-m)>0){
+      if(!resize(n,sizeof(EType))) return false;
+      constructElms(&at(m),n-m);
+      }
+    else if((m-n)>0){
+      destructElms(&at(n),m-n);
+      if(!resize(n,sizeof(EType))) return false;
       }
     return true;
     }
 
-  /// Assign from another list
-  FXArray<TYPE>& operator=(const FXArray<TYPE>& src){
-    if(ptr!=src.ptr){ no(src.num); copyElms(ptr,src.ptr,src.num); }
+  /// Assign from another array
+  FXArray<EType>& operator=(const FXArray<EType>& src){
+    if(data()!=src.data() && no(src.no())){ copyElms(data(),src.data(),src.no()); }
     return *this;
     }
+
+  /// Return pointer to array
+  EType* data(){ return reinterpret_cast<EType*>(ptr); }
+  const EType* data() const { return reinterpret_cast<const EType*>(ptr); }
 
   /// Index into array
-  TYPE& operator[](FXint i){ return ptr[i]; }
-  const TYPE& operator[](FXint i) const { return ptr[i]; }
+  EType& operator[](FXival i){ return data()[i]; }
+  const EType& operator[](FXival i) const { return data()[i]; }
 
-  /// Index into list
-  TYPE& at(FXint i){ return ptr[i]; }
-  const TYPE& at(FXint i) const { return ptr[i]; }
+  /// Index into array
+  EType& at(FXival i){ return data()[i]; }
+  const EType& at(FXival i) const { return data()[i]; }
 
-  /// Return pointer to list
-  TYPE* data() const { return ptr; }
+  /// First element in array
+  EType& head(){ return data()[0]; }
+  const EType& head() const { return data()[0]; }
 
-  /// Adopt array from source
-  FXArray<TYPE>& adopt(FXArray<TYPE>& src){
-    no(0);
-    ptr=src.ptr; src.ptr=NULL;
-    num=src.num; src.num=0;
+  /// Last element in array
+  EType& tail(){ return data()[no()-1]; }
+  const EType& tail() const { return data()[no()-1]; }
+
+  /// Adopt array from another one; the other array becomes empty
+  FXArray<EType>& adopt(FXArray<EType>& src){
+    if(ptr!=src.ptr && no(0)){ swap(ptr,src.ptr); }
     return *this;
     }
 
-  /// Assign object p to list
-  FXArray<TYPE>& assign(const TYPE& src){
-    if(no(1)){ ptr[0]=src; }
-    return *this;
+  /// Assign object p to array
+  FXbool assign(const EType& src){
+    if(no(1)){ head()=src; return true; }
+    return false;
     }
 
-  /// Assign n copies of object to list
-  FXArray<TYPE>& assign(const TYPE& src,FXint n){
-    if(no(n)){ fillElms(ptr,src,n); }
-    return *this;
-    }
-
-  /// Assign n objects to list
-  FXArray<TYPE>& assign(const TYPE* src,FXint n){
-    if(no(n)){ copyElms(ptr,src,n); }
-    return *this;
+  /// Assign n copies of object to array
+  FXbool assign(const EType& src,FXival n){
+    if(no(n)){ fillElms(data(),src,n); return true; }
+    return false;
     }
 
   /// Assign n objects to list
-  FXArray<TYPE>& assign(const FXArray<TYPE>& src){
-    if(no(src.num)){ copyElms(ptr,src.ptr,src.num); }
-    return *this;
+  FXbool assign(const EType* src,FXival n){
+    if(no(n)){ copyElms(data(),src,n); return true; }
+    return false;
+    }
+
+  /// Assign n objects to list
+  FXbool assign(const FXArray<EType>& src){
+    return assign(src.data(),src.no());
     }
 
   /// Insert an object
-  FXArray<TYPE>& insert(FXint pos,const TYPE& src){
-    if(no(num+1)){ moveElms(ptr+pos+1,ptr+pos,num-pos-1); ptr[pos]=src; }
-    return *this;
+  FXbool insert(FXival pos,const EType& src){
+    if(no(no()+1)){ moveElms(data()+pos+1,data()+pos,no()-pos-1); at(pos)=src; return true; }
+    return false;
     }
 
   /// Insert n copies of object at specified position
-  FXArray<TYPE>& insert(FXint pos,const TYPE& src,FXint n){
-    if(no(num+n)){ moveElms(ptr+pos+n,ptr+pos,num-pos-n); fillElms(ptr+pos,src,n); }
-    return *this;
+  FXbool insert(FXival pos,const EType& src,FXival n){
+    if(no(no()+n)){ moveElms(data()+pos+n,data()+pos,no()-pos-n); fillElms(data()+pos,src,n); return true; }
+    return false;
     }
 
   /// Insert n objects at specified position
-  FXArray<TYPE>& insert(FXint pos,const TYPE* src,FXint n){
-    if(no(num+n)){ moveElms(ptr+pos+n,ptr+pos,num-pos-n); copyElms(ptr+pos,src,n); }
-    return *this;
+  FXbool insert(FXival pos,const EType* src,FXival n){
+    if(no(no()+n)){ moveElms(data()+pos+n,data()+pos,no()-pos-n); copyElms(data()+pos,src,n); return true; }
+    return false;
     }
 
   /// Insert n objects at specified position
-  FXArray<TYPE>& insert(FXint pos,const FXArray<TYPE>& src){
-    if(no(num+src.num)){ moveElms(ptr+pos+src.num,ptr+pos,num-pos-src.num); copyElms(ptr+pos,src.ptr,src.num); }
-    return *this;
+  FXbool insert(FXival pos,const FXArray<EType>& src){
+    return insert(pos,src.data(),src.no());
     }
 
   /// Prepend object
-  FXArray<TYPE>& prepend(const TYPE& src){
-    if(no(num+1)){ moveElms(ptr+1,ptr,num-1); ptr[0]=src; }
-    return *this;
+  FXbool prepend(const EType& src){
+    if(no(no()+1)){ moveElms(data()+1,data(),no()-1); head()=src; return true; }
+    return false;
     }
 
   /// Prepend n copies of object
-  FXArray<TYPE>& prepend(const TYPE& src,FXint n){
-    if(no(num+n)){ moveElms(ptr+n,ptr,num-n); fillElms(ptr,src,n); }
-    return *this;
+  FXbool prepend(const EType& src,FXival n){
+    if(no(no()+n)){ moveElms(data()+n,data(),no()-n); fillElms(data(),src,n); return true; }
+    return false;
     }
 
   /// Prepend n objects
-  FXArray<TYPE>& prepend(const TYPE* src,FXint n){
-    if(no(num+n)){ moveElms(ptr+n,ptr,num-n); copyElms(ptr,src,n); }
-    return *this;
+  FXbool prepend(const EType* src,FXival n){
+    if(no(no()+n)){ moveElms(data()+n,data(),no()-n); copyElms(data(),src,n); return true; }
+    return false;
     }
 
   /// Prepend n objects
-  FXArray<TYPE>& prepend(const FXArray<TYPE>& src){
-    if(no(num+src.num)){ moveElms(ptr+src.num,ptr,num-src.num); copyElms(ptr,src.ptr,src.num); }
-    return *this;
+  FXbool prepend(const FXArray<EType>& src){
+    return prepend(src.data(),src.no());
     }
 
   /// Append object
-  FXArray<TYPE>& append(const TYPE& src){
-    if(no(num+1)){ ptr[num-1]=src; }
-    return *this;
+  FXbool append(const EType& src){
+    if(no(no()+1)){ tail()=src; return true; }
+    return false;
     }
 
   /// Append n copies of object
-  FXArray<TYPE>& append(const TYPE& src,FXint n){
-    if(no(num+n)){ fillElms(ptr+num-n,src,n); }
-    return *this;
+  FXbool append(const EType& src,FXival n){
+    if(no(no()+n)){ fillElms(data()+no()-n,src,n); return true; }
+    return false;
     }
 
   /// Append n objects
-  FXArray<TYPE>& append(const TYPE* src,FXint n){
-    if(no(num+n)){ copyElms(ptr+num-n,src,n); }
-    return *this;
+  FXbool append(const EType* src,FXival n){
+    if(no(no()+n)){ copyElms(data()+no()-n,src,n); return true; }
+    return false;
     }
 
   /// Append n objects
-  FXArray<TYPE>& append(const FXArray<TYPE>& src){
-    if(no(num+src.num)){ copyElms(ptr+num-src.num,src.ptr,src.num); }
-    return *this;
+  FXbool append(const FXArray<EType>& src){
+    return append(src.data(),src.no());
+    }
+
+  /// Replace an object by other object
+  FXbool replace(FXival pos,const EType& src){
+    at(pos)=src;
+    return true;
+    }
+
+  /// Replace the m objects at pos with n copies of other object
+  FXbool replace(FXival pos,FXival m,const EType& src,FXival n){
+    if(m<n){
+      if(!no(no()-m+n)) return false;
+      moveElms(data()+pos+n,data()+pos+m,no()-pos-n);
+      }
+    else if(m>n){
+      moveElms(data()+pos+n,data()+pos+m,no()-pos-m);
+      if(!no(no()-m+n)) return false;
+      }
+    fillElms(data()+pos,src,n);
+    return true;
+    }
+
+  /// Replace m objects at pos by n other objects
+  FXbool replace(FXival pos,FXival m,const EType* src,FXival n){
+    if(m<n){
+      if(!no(no()-m+n)) return false;
+      moveElms(data()+pos+n,data()+pos+m,no()-pos-n);
+      }
+    else if(m>n){
+      moveElms(data()+pos+n,data()+pos+m,no()-pos-m);
+      if(!no(no()-m+n)) return false;
+      }
+    copyElms(data()+pos,src,n);
+    return true;
+    }
+
+  /// Replace m objects at pos by other objects
+  FXbool replace(FXival pos,FXival m,const FXArray<EType>& src){
+    return replace(pos,m,src.data(),src.no());
     }
 
   /// Remove object at pos
-  FXArray<TYPE>& erase(FXint pos){
-    moveElms(ptr+pos,ptr+pos+1,num-pos-1); no(num-1);
-    return *this;
+  FXbool erase(FXival pos){
+    moveElms(data()+pos,data()+pos+1,no()-pos-1);
+    return no(no()-1);
     }
 
   /// Remove n objects starting at pos
-  FXArray<TYPE>& erase(FXint pos,FXint n){
-    moveElms(ptr+pos,ptr+pos+n,num-n-pos); no(num-n);
-    return *this;
+  FXbool erase(FXival pos,FXival n){
+    moveElms(data()+pos,data()+pos+n,no()-pos-n);
+    return no(no()-n);
+    }
+
+  /// Push object to end
+  FXbool push(const EType& src){
+    if(no(no()+1)){ tail()=src; return true; }
+    return false;
+    }
+
+  /// Pop object from end
+  FXbool pop(){
+    return no(no()-1);
     }
 
   /// Remove all objects
-  FXArray<TYPE>& clear(){
-    destructElms(ptr,num); freeElms(ptr); num=0;
-    return *this;
+  void clear(){
+    no(0);
     }
 
   /// Delete data
-  ~FXArray(){
-    destructElms(ptr,num); freeElms(ptr);
+ ~FXArray(){
+    clear();
     }
   };
 

@@ -1,10 +1,10 @@
 ## Process this file with automake to produce Makefile.in
 
-CXXFLAGS = @CXXFLAGS@ @X_CFLAGS@
+AM_CXXFLAGS = @X_CFLAGS@
 INCLUDES = -I$(top_srcdir)/include -I$(top_builddir)/include
-RESWRAP  = $(top_builddir)/utils/reswrap
+RESWRAP  = $(top_builddir)/utils/reswrap$(EXEEXT)
 SUFFIXES = .gif .bmp
-LDADD = $(top_builddir)/src/libFOX-1.6.la -lm
+LDADD = $(top_builddir)/lib/libFOX-1.7.la -lm
 
 
 bin_PROGRAMS = shutterbug
@@ -12,17 +12,17 @@ bin_PROGRAMS = shutterbug
 man_MANS = shutterbug.1
 
 ICONS  = \
-line_0.gif \
-line_1.gif \
-line_2.gif \
-line_3.gif \
-line_4.gif \
-line_5.gif \
-line_6.gif \
-line_7.gif \
-line_8.gif \
-shutterbug.gif \
-tinyshutterbug.gif
+$(top_srcdir)/shutterbug/line_0.gif \
+$(top_srcdir)/shutterbug/line_1.gif \
+$(top_srcdir)/shutterbug/line_2.gif \
+$(top_srcdir)/shutterbug/line_3.gif \
+$(top_srcdir)/shutterbug/line_4.gif \
+$(top_srcdir)/shutterbug/line_5.gif \
+$(top_srcdir)/shutterbug/line_6.gif \
+$(top_srcdir)/shutterbug/line_7.gif \
+$(top_srcdir)/shutterbug/line_8.gif \
+$(top_srcdir)/shutterbug/shutterbug.gif \
+$(top_srcdir)/shutterbug/tinyshutterbug.gif
 
 
 shutterbug_SOURCES = \
@@ -31,26 +31,23 @@ icons.cpp \
 ShutterBug.h \
 ShutterBug.cpp \
 Snapper.h \
-Snapper.cpp \
-LICENSE \
-$(ICONS)
+Snapper.cpp
 
 
-ShutterBug.cpp: icons.h icons.cpp
+BUILT_SOURCES = icons.h icons.cpp
 
 
 icons.h: $(ICONS)
-	$(RESWRAP) -i -o icons.h $^
+	$(RESWRAP) -h -o $@ $^
 
 
 icons.cpp: $(ICONS)
-	$(RESWRAP) -e -o icons.cpp $^
+	$(RESWRAP) -i icons.h -o $@ $^
 
 
 CLEANFILES = icons.h icons.cpp
 
 EXTRA_DIST = \
 $(man_MANS) \
-Makefile.bc \
-Makefile.wc \
-Makefile.dmc
+LICENSE \
+$(ICONS)

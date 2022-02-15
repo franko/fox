@@ -3,23 +3,20 @@
 *                         M e n u C a p t i o n   W i d g e t                   *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 1997,2006 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 1997,2021 by Jeroen van der Zijp.   All Rights Reserved.        *
 *********************************************************************************
-* This library is free software; you can redistribute it and/or                 *
-* modify it under the terms of the GNU Lesser General Public                    *
-* License as published by the Free Software Foundation; either                  *
-* version 2.1 of the License, or (at your option) any later version.            *
+* This library is free software; you can redistribute it and/or modify          *
+* it under the terms of the GNU Lesser General Public License as published by   *
+* the Free Software Foundation; either version 3 of the License, or             *
+* (at your option) any later version.                                           *
 *                                                                               *
 * This library is distributed in the hope that it will be useful,               *
 * but WITHOUT ANY WARRANTY; without even the implied warranty of                *
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU             *
-* Lesser General Public License for more details.                               *
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the                 *
+* GNU Lesser General Public License for more details.                           *
 *                                                                               *
-* You should have received a copy of the GNU Lesser General Public              *
-* License along with this library; if not, write to the Free Software           *
-* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA.    *
-*********************************************************************************
-* $Id: FXMenuCaption.h,v 1.33 2006/01/22 17:58:06 fox Exp $                     *
+* You should have received a copy of the GNU Lesser General Public License      *
+* along with this program.  If not, see <http://www.gnu.org/licenses/>          *
 ********************************************************************************/
 #ifndef FXMENUCAPTION_H
 #define FXMENUCAPTION_H
@@ -43,24 +40,30 @@ class FXFont;
 
 
 /**
-* The menu caption is a widget which can be used as a caption
-* above a number of menu commands in a menu.
+* The menu caption is a widget which can be used as a caption above a number
+* of menu commands in a menu.
+* When passing a tab-separated list of fields in the text parameter, the caption
+* text is set to the first field, and the help string to the third field.
+* If the caption text contains an ampersand, the letter following it will be
+* underlined, and a suitable hotkey will be installed.  The actual ampersand
+* will be removed.
+* To display an ampersand in the caption, use two consecutive ampersands.
 */
 class FXAPI FXMenuCaption : public FXWindow {
   FXDECLARE(FXMenuCaption)
 protected:
-  FXString     label;
-  FXString     help;
-  FXString     tip;
-  FXIcon      *icon;
-  FXFont      *font;
-  FXint        hotoff;
-  FXHotKey     hotkey;
-  FXColor      textColor;
-  FXColor      selbackColor;
-  FXColor      seltextColor;
-  FXColor      hiliteColor;
-  FXColor      shadowColor;
+  FXString     label;           // Text on the label
+  FXIcon      *icon;            // Icon on the label
+  FXFont      *font;            // Label font
+  FXString     help;            // Help message
+  FXString     tip;             // Tooltip
+  FXColor      textColor;       // Text color
+  FXColor      selbackColor;    // Selection background color
+  FXColor      seltextColor;    // Selected text color
+  FXColor      hiliteColor;     // Highlight color
+  FXColor      shadowColor;     // Shadow color
+  FXHotKey     hotkey;          // Hotkey
+  FXint        hotoff;          // Offset in string
 protected:
   FXMenuCaption();
 private:
@@ -69,6 +72,7 @@ private:
 public:
   long onPaint(FXObject*,FXSelector,void*);
   long onUpdate(FXObject*,FXSelector,void*);
+  long onCmdSetValue(FXObject*,FXSelector,void*);
   long onCmdGetStringValue(FXObject*,FXSelector,void*);
   long onCmdSetStringValue(FXObject*,FXSelector,void*);
   long onCmdSetIconValue(FXObject*,FXSelector,void*);

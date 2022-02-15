@@ -3,15 +3,12 @@
 *                                 Button Test                                   *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 1998,2006 by Jeroen van der Zijp.   All Rights Reserved.        *
-*********************************************************************************
-* $Id: button.cpp,v 1.22 2006/01/22 17:58:59 fox Exp $                          *
+* Copyright (C) 1998,2021 by Jeroen van der Zijp.   All Rights Reserved.        *
 ********************************************************************************/
 #include "fx.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-
 
 /*******************************************************************************/
 
@@ -318,6 +315,7 @@ long ButtonWindow::onCmdJustification(FXObject*,FXSelector sel,void*){
   return 1;
   }
 
+
 // Update justification radio buttons
 long ButtonWindow::onUpdJustification(FXObject* sender,FXSelector sel,void*){
   FXSelector updatemessage=FXSEL(SEL_COMMAND,ID_UNCHECK);
@@ -425,28 +423,12 @@ int main(int argc,char *argv[]){
   // Open display
   application.init(argc,argv);
 
-//FXWindow *buttons=NULL;
-
-//  if(argc>1){
-//    FXFileStream stream;
-//    stream.open(argv[1],FXStreamLoad);
-//    application.readWindow(stream,buttons,application.getRootWindow(),application.getRootWindow());
-//    stream.close();
-//    application.dumpWidgets();
-//    }
-
-//  else{
-    // Main window
-    new ButtonWindow(&application);
-//   }
-
+  // Main window
+  new ButtonWindow(&application);
 
   // Create app
   application.create();
-//if(buttons) buttons->show();
 
   // Run
   return application.run();
   }
-
-

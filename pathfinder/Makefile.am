@@ -1,53 +1,63 @@
 ## Process this file with automake to produce Makefile.in
 
-CXXFLAGS = @CXXFLAGS@ @X_CFLAGS@
+AM_CXXFLAGS = @X_CFLAGS@
 INCLUDES = -I$(top_srcdir)/include -I$(top_builddir)/include
-RESWRAP  = $(top_builddir)/utils/reswrap
+RESWRAP  = $(top_builddir)/utils/reswrap$(EXEEXT)
 SUFFIXES = .gif .bmp
-LDADD	 = $(top_builddir)/src/libFOX-1.6.la -lm
+LDADD	 = $(top_builddir)/lib/libFOX-1.7.la -lm
 
 bin_PROGRAMS	= PathFinder
 
 man_MANS = PathFinder.1
 
-ICONS = \
-bigicons.bmp \
-closepanel.gif \
-clrbook.gif \
-copy.bmp \
-copyit.gif \
-cut.bmp \
-deleteit.bmp \
-desktop.bmp \
-details.bmp \
-dirup.bmp \
-enter.gif \
-file_gif.gif \
-foxbig.gif \
-foxmini.gif \
-goback.bmp \
-goforw.bmp \
-gotodir.bmp \
-home.gif \
-hosts.bmp \
-iconpath.gif \
-linkit.gif \
-location.gif \
-maphost.bmp \
-mimetype.gif \
-moveit.gif \
-paste.bmp \
-pattern_gif.gif \
-properties.bmp \
-quit_gif.gif \
-renameit.gif \
-rotateleft.gif \
-rotateright.gif \
-setbook.gif \
-setdir.gif \
-smallicons.bmp \
-unmaphost.bmp \
-work.gif
+ICONS = $(top_srcdir)/pathfinder/addbook.bmp \
+$(top_srcdir)/pathfinder/bigicons.bmp \
+$(top_srcdir)/pathfinder/closepanel.gif \
+$(top_srcdir)/pathfinder/clrbook.gif \
+$(top_srcdir)/pathfinder/copy.bmp \
+$(top_srcdir)/pathfinder/config_gif.gif \
+$(top_srcdir)/pathfinder/copyit.gif \
+$(top_srcdir)/pathfinder/cut.bmp \
+$(top_srcdir)/pathfinder/delbook.bmp \
+$(top_srcdir)/pathfinder/deleteit.bmp \
+$(top_srcdir)/pathfinder/desktop.bmp \
+$(top_srcdir)/pathfinder/details.bmp \
+$(top_srcdir)/pathfinder/dirup.bmp \
+$(top_srcdir)/pathfinder/enter.gif \
+$(top_srcdir)/pathfinder/execute.bmp \
+$(top_srcdir)/pathfinder/file_gif.gif \
+$(top_srcdir)/pathfinder/fileshown.gif \
+$(top_srcdir)/pathfinder/filehidden.gif \
+$(top_srcdir)/pathfinder/foldernew.gif \
+$(top_srcdir)/pathfinder/foxbig.gif \
+$(top_srcdir)/pathfinder/foxmini.gif \
+$(top_srcdir)/pathfinder/goback.bmp \
+$(top_srcdir)/pathfinder/goforw.bmp \
+$(top_srcdir)/pathfinder/gotodir.bmp \
+$(top_srcdir)/pathfinder/home.gif \
+$(top_srcdir)/pathfinder/hosts.bmp \
+$(top_srcdir)/pathfinder/iconpath.gif \
+$(top_srcdir)/pathfinder/linkit.bmp \
+$(top_srcdir)/pathfinder/location.gif \
+$(top_srcdir)/pathfinder/maphost.bmp \
+$(top_srcdir)/pathfinder/miscellaneous_gif.gif \
+$(top_srcdir)/pathfinder/moveit.gif \
+$(top_srcdir)/pathfinder/paste.bmp \
+$(top_srcdir)/pathfinder/pattern_gif.gif \
+$(top_srcdir)/pathfinder/properties.bmp \
+$(top_srcdir)/pathfinder/quit_gif.gif \
+$(top_srcdir)/pathfinder/newfolder.bmp \
+$(top_srcdir)/pathfinder/renameit.gif \
+$(top_srcdir)/pathfinder/rotateleft.gif \
+$(top_srcdir)/pathfinder/rotateright.gif \
+$(top_srcdir)/pathfinder/run_bmp.bmp \
+$(top_srcdir)/pathfinder/setbook.gif \
+$(top_srcdir)/pathfinder/setdir.gif \
+$(top_srcdir)/pathfinder/sorting.bmp \
+$(top_srcdir)/pathfinder/smallicons.bmp \
+$(top_srcdir)/pathfinder/unmaphost.bmp \
+$(top_srcdir)/pathfinder/warningicon_gif.gif \
+$(top_srcdir)/pathfinder/work.gif
 
 PathFinder_SOURCES =  \
 icons.h \
@@ -59,22 +69,20 @@ PathFinder.h \
 Preferences.cpp \
 Preferences.h \
 PropertyDialog.cpp \
-PropertyDialog.h \
-LICENSE \
-$(ICONS)
+PropertyDialog.h
 
-PathFinder.cpp: icons.h icons.cpp
+BUILT_SOURCES =	icons.h icons.cpp
 
 icons.h: $(ICONS)
-	$(RESWRAP) -i -o icons.h $^
+	$(RESWRAP) -h -o $@ $^
 
 icons.cpp: $(ICONS)
-	$(RESWRAP) -e -o icons.cpp $^
+	$(RESWRAP) -i icons.h -o $@ $^
 
 CLEANFILES	= icons.h icons.cpp
 
-EXTRA_DIST = $(man_MANS) \
-             Makefile.bc \
-             Makefile.wc \
-             Makefile.dmc
+EXTRA_DIST = \
+$(man_MANS) \
+LICENSE \
+$(ICONS)
 

@@ -16,7 +16,7 @@ you that under MSWindows, no stdout/stderr is opened up for non-console applicat
 and one has to use the Debug API calls instead of printf() calls.
 
 Using FXTRACE is therefore pretty convenient, as the MSWindows implementation of FOX
-will automatically use those Debug API's if your program is not compiled as a console 
+will automatically use those Debug API's if your program is not compiled as a console
 application, and will revert to stderr under console mode [and of course under UNIX].
 
 
@@ -67,10 +67,13 @@ For now, tracelevels 0 through 99 are reserved for application use, with FOX its
 using levels 100 and upwards.
 
 Note that as tracing is controlled by a simple global variable fxTraceLevel, your
-program can simply set a higher tracelevel at a point in its execution where things 
+program can simply set a higher tracelevel at a point in its execution where things
 are starting to get a little bit hairy.....
 
-
+Another way to set the tracelevel is to set the environment variable FOX_TRACE_LEVEL.
+The tracelevel takes effect when the FXApp is initialized.  Setting the tracelevel
+from the command-line takes precedence over the FOX_TRACE_LEVEL tracelevel value.
+ 
 
 Tentative assignments of tracelevels in FOX:
 
@@ -87,7 +90,7 @@ Tentative assignments of tracelevels in FOX:
   250: More frequent stuff such as DND events.
 
   300: Button clicks.
-  
+
   350: Mouse movements.
 
   400: GUI Updates, when GUI Updates are allowed.

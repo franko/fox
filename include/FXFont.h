@@ -3,23 +3,20 @@
 *                               F o n t   O b j e c t                           *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 1997,2006 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 1997,2021 by Jeroen van der Zijp.   All Rights Reserved.        *
 *********************************************************************************
-* This library is free software; you can redistribute it and/or                 *
-* modify it under the terms of the GNU Lesser General Public                    *
-* License as published by the Free Software Foundation; either                  *
-* version 2.1 of the License, or (at your option) any later version.            *
+* This library is free software; you can redistribute it and/or modify          *
+* it under the terms of the GNU Lesser General Public License as published by   *
+* the Free Software Foundation; either version 3 of the License, or             *
+* (at your option) any later version.                                           *
 *                                                                               *
 * This library is distributed in the hope that it will be useful,               *
 * but WITHOUT ANY WARRANTY; without even the implied warranty of                *
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU             *
-* Lesser General Public License for more details.                               *
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the                 *
+* GNU Lesser General Public License for more details.                           *
 *                                                                               *
-* You should have received a copy of the GNU Lesser General Public              *
-* License along with this library; if not, write to the Free Software           *
-* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA.    *
-*********************************************************************************
-* $Id: FXFont.h,v 1.66 2006/01/22 17:58:02 fox Exp $                            *
+* You should have received a copy of the GNU Lesser General Public License      *
+* along with this program.  If not, see <http://www.gnu.org/licenses/>          *
 ********************************************************************************/
 #ifndef FXFONT_H
 #define FXFONT_H
@@ -114,15 +111,21 @@ enum FXFontEncoding {
   };
 
 
-/// Font style
+/// Font description
 struct FXFontDesc {
   FXchar          face[116];                /// Face name
-  FXushort        size;                     /// Size in deci-points
+  FXushort        size;                     /// Size in deci-points (one point is 1/72 inch)
   FXushort        weight;                   /// Weight [light, normal, bold, ...]
   FXushort        slant;                    /// Slant [normal, italic, oblique, ...]
   FXushort        setwidth;                 /// Set width [normal, condensed, expanded, ...]
   FXushort        encoding;                 /// Encoding of character set
   FXushort        flags;                    /// Flags
+
+  /// Set font description from a string
+  void setFont(const FXString& string);
+
+  /// Get string of font description
+  FXString getFont() const;
   };
 
 
@@ -307,11 +310,14 @@ public:
   /// Get flags
   FXuint getFlags() const { return flags; }
 
-  /// Get font description
-  void getFontDesc(FXFontDesc& fontdesc) const;
-
   /// Change font description
   virtual void setFontDesc(const FXFontDesc& fontdesc);
+
+  /// Get font description
+  FXFontDesc getFontDesc() const;
+
+  /// Get actual font description
+  FXFontDesc getActualFontDesc() const;
 
   /// Return angle
   FXint getAngle() const { return angle; }
@@ -381,10 +387,30 @@ public:
   /// Calculate height of given text in this font
   virtual FXint getTextHeight(const FXchar *string,FXuint length) const;
 
+  /// Convert style hints to string and vice versa
+  static FXuint styleFromString(const FXString& str);
+  static FXString stringFromStyle(FXuint style);
+
+  /// Convert slant to string and vice versa
+  static FXuint slantFromString(const FXString& str);
+  static FXString stringFromSlant(FXuint slant);
+
+  /// Convert weight to string and vice versa
+  static FXuint weightFromString(const FXString& str);
+  static FXString stringFromWeight(FXuint weight);
+
+  /// Convert setwidth to string and vice versa
+  static FXuint setWidthFromString(const FXString& str);
+  static FXString stringFromSetWidth(FXuint setwidth);
+
+  /// Convert encoding to string and vice versa
+  static FXuint encodingFromString(const FXString& str);
+  static FXString stringFromEncoding(FXuint encoding);
+
   /**
-  * List all fonts matching hints. If listFonts() returns TRUE then
+  * List all fonts matching hints. If listFonts() returns true then
   * fonts points to a newly-allocated array of length numfonts. It
-  * is the caller's responsibility to free this array using FXFREE().
+  * is the caller's responsibility to free this array using freeElms().
   */
   static FXbool listFonts(FXFontDesc*& fonts,FXuint& numfonts,const FXString& face,FXuint wt=0,FXuint sl=0,FXuint sw=0,FXuint en=0,FXuint h=0);
 

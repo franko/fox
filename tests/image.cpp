@@ -4,26 +4,6 @@
 *                                                                               *
 ********************************************************************************/
 #include "fx.h"
-#ifdef HAVE_PNG_H
-#include "FXPNGImage.h"
-#endif
-#ifdef HAVE_JPEG_H
-#include "FXJPGImage.h"
-#endif
-#ifdef HAVE_TIFF_H
-#include "FXTIFImage.h"
-#endif
-#include "FXICOImage.h"
-#include "FXTGAImage.h"
-#include "FXRGBImage.h"
-
-#include "FXGradientBar.h"
-
-
-FXColor grey_ramp[512*50];                 // Created images
-FXColor red_ramp[512*50];
-FXColor green_ramp[512*50];
-FXColor blue_ramp[512*50];
 
 
 // Event Handler Object
@@ -47,6 +27,8 @@ private:
   FXImage         *green_nodither;
   FXImage         *blue_nodither;
   FXImage         *picture;                   // Complete picture
+  FXGradientBar   *gb;                        // Gradient bars
+  FXGradientBar   *gb2;
   FXFont          *font;                      // Font for text
 
 protected:
@@ -98,9 +80,15 @@ FXDEFMAP(ImageWindow) ImageWindowMap[]={
 FXIMPLEMENT(ImageWindow,FXMainWindow,ImageWindowMap,ARRAYNUMBER(ImageWindowMap))
 
 
+FXColor grey_ramp[512*50];                 // Created images
+FXColor red_ramp[512*50];
+FXColor green_ramp[512*50];
+FXColor blue_ramp[512*50];
+
+
 
 // Construct ImageWindow
-ImageWindow::ImageWindow(FXApp* a):FXMainWindow(a,"Image Application",NULL,NULL,DECOR_ALL,0,0,800,600){
+ImageWindow::ImageWindow(FXApp* a):FXMainWindow(a,"Image Application",NULL,NULL,DECOR_ALL,0,0,900,600){
   FXint x,y;
   FXVerticalFrame *canvasFrame;
   FXVerticalFrame *buttonFrame;
@@ -111,23 +99,23 @@ ImageWindow::ImageWindow(FXApp* a):FXMainWindow(a,"Image Application",NULL,NULL,
   FXHorizontalFrame *hf=new FXHorizontalFrame(this,LAYOUT_SIDE_BOTTOM|LAYOUT_FILL_X,0,0,0,0, 0,0,0,0);
 
   //new FXGradientBar(this,NULL,0,GRADIENTBAR_VERTICAL|GRADIENTBAR_CONTROLS_LEFT|FRAME_SUNKEN|LAYOUT_SIDE_LEFT|LAYOUT_FILL_Y,0,0,0,0, 15,15,15,15);
-  new FXGradientBar(this,NULL,0,GRADIENTBAR_VERTICAL|GRADIENTBAR_CONTROLS_LEFT|GRADIENTBAR_CONTROLS_RIGHT|FRAME_SUNKEN|LAYOUT_SIDE_LEFT|LAYOUT_FILL_Y,0,0,0,0, 15,15,15,15);
+  gb2=new FXGradientBar(this,NULL,0,GRADIENTBAR_VERTICAL|GRADIENTBAR_CONTROLS_LEFT|GRADIENTBAR_CONTROLS_RIGHT|FRAME_SUNKEN|LAYOUT_SIDE_LEFT|LAYOUT_FILL_Y,0,0,0,0, 15,15,15,15);
   //new FXGradientBar(this,NULL,0,GRADIENTBAR_VERTICAL|GRADIENTBAR_CONTROLS_RIGHT|FRAME_SUNKEN|LAYOUT_SIDE_LEFT|LAYOUT_FILL_Y,0,0,0,0, 15,15,15,15);
   //new FXGradientBar(this,NULL,0,GRADIENTBAR_VERTICAL|FRAME_SUNKEN|LAYOUT_SIDE_LEFT|LAYOUT_FILL_Y,0,0,0,0, 15,15,15,15);
 
   //new FXGradientBar(this,NULL,0,GRADIENTBAR_HORIZONTAL|GRADIENTBAR_CONTROLS_BOTTOM|FRAME_SUNKEN|LAYOUT_SIDE_BOTTOM|LAYOUT_FILL_X,0,0,0,0, 15,15,15,15);
-  FXGradientBar *gb=new FXGradientBar(this,NULL,0,GRADIENTBAR_HORIZONTAL|GRADIENTBAR_CONTROLS_TOP|GRADIENTBAR_CONTROLS_BOTTOM|FRAME_SUNKEN|LAYOUT_SIDE_BOTTOM|LAYOUT_FILL_X,0,0,0,0, 15,15,15,15);
+  gb=new FXGradientBar(this,NULL,0,GRADIENTBAR_HORIZONTAL|GRADIENTBAR_CONTROLS_TOP|GRADIENTBAR_CONTROLS_BOTTOM|FRAME_SUNKEN|LAYOUT_SIDE_BOTTOM|LAYOUT_FILL_X,0,0,0,0, 15,15,15,15);
   //new FXGradientBar(this,NULL,0,GRADIENTBAR_HORIZONTAL|GRADIENTBAR_CONTROLS_TOP|GRADIENTBAR_CONTROLS_BOTTOM|FRAME_SUNKEN|LAYOUT_SIDE_BOTTOM|LAYOUT_FILL_X,0,0,0,0, 15,15,15,15);
   //new FXGradientBar(this,NULL,0,GRADIENTBAR_HORIZONTAL|FRAME_SUNKEN|LAYOUT_SIDE_BOTTOM|LAYOUT_FILL_X,0,0,0,0, 15,15,15,15);
-  
+
 
   new FXRadioButton(hf,"Linear blend",gb,FXGradientBar::ID_BLEND_LINEAR,LAYOUT_CENTER_Y|ICON_BEFORE_TEXT);
   new FXRadioButton(hf,"Power law blend",gb,FXGradientBar::ID_BLEND_POWER,LAYOUT_CENTER_Y|ICON_BEFORE_TEXT);
   new FXRadioButton(hf,"Sine blend",gb,FXGradientBar::ID_BLEND_SINE,LAYOUT_CENTER_Y|ICON_BEFORE_TEXT);
   new FXRadioButton(hf,"Increasing blend",gb,FXGradientBar::ID_BLEND_INCREASING,LAYOUT_CENTER_Y|ICON_BEFORE_TEXT);
   new FXRadioButton(hf,"Decreasing blend",gb,FXGradientBar::ID_BLEND_DECREASING,LAYOUT_CENTER_Y|ICON_BEFORE_TEXT);
-  new FXColorWell(hf,FXRGB(0,0,0),gb,FXGradientBar::ID_LOWER_COLOR,LAYOUT_CENTER_Y);
-  new FXColorWell(hf,FXRGB(0,0,0),gb,FXGradientBar::ID_UPPER_COLOR,LAYOUT_CENTER_Y);
+  new FXColorWell(hf,FXRGB(0,0,0),gb,FXGradientBar::ID_LOWER_COLOR,LAYOUT_CENTER_Y|FRAME_SUNKEN|FRAME_THICK);
+  new FXColorWell(hf,FXRGB(0,0,0),gb,FXGradientBar::ID_UPPER_COLOR,LAYOUT_CENTER_Y|FRAME_SUNKEN|FRAME_THICK);
   new FXButton(hf,"Recenter",NULL,gb,FXGradientBar::ID_RECENTER,FRAME_RAISED|FRAME_THICK|LAYOUT_CENTER_Y|ICON_BEFORE_TEXT);
   new FXButton(hf,"Split",NULL,gb,FXGradientBar::ID_SPLIT,FRAME_RAISED|FRAME_THICK|LAYOUT_CENTER_Y|ICON_BEFORE_TEXT);
   new FXButton(hf,"Merge",NULL,gb,FXGradientBar::ID_MERGE,FRAME_RAISED|FRAME_THICK|LAYOUT_CENTER_Y|ICON_BEFORE_TEXT);
@@ -142,7 +130,7 @@ ImageWindow::ImageWindow(FXApp* a):FXMainWindow(a,"Image Application",NULL,NULL,
     new FXLabel(canvasFrame,"Canvas Frame",NULL,JUSTIFY_CENTER_X|LAYOUT_FILL_X);
 
     new FXRuler(canvasFrame,NULL,0,RULER_MARKERS|RULER_NUMBERS|RULER_ARROW|RULER_TICKS_CENTER|LAYOUT_FILL_X);
-    
+
     // Horizontal divider line
     new FXHorizontalSeparator(canvasFrame,SEPARATOR_GROOVE|LAYOUT_FILL_X);
 
@@ -160,13 +148,13 @@ ImageWindow::ImageWindow(FXApp* a):FXMainWindow(a,"Image Application",NULL,NULL,
     new FXHorizontalSeparator(buttonFrame,SEPARATOR_RIDGE|LAYOUT_FILL_X);
 
     new FXLabel(buttonFrame,"&Background\nColor well",NULL,JUSTIFY_CENTER_X|LAYOUT_FILL_X);
-    backwell=new FXColorWell(buttonFrame,FXRGB(255,255,255),this,ID_WELL,LAYOUT_CENTER_X|LAYOUT_TOP|LAYOUT_LEFT|LAYOUT_FIX_WIDTH|LAYOUT_FIX_HEIGHT,0,0,100,30);
+    backwell=new FXColorWell(buttonFrame,FXRGB(255,255,255),this,ID_WELL,LAYOUT_CENTER_X|LAYOUT_TOP|LAYOUT_LEFT|LAYOUT_FIX_WIDTH|LAYOUT_FIX_HEIGHT|FRAME_SUNKEN|FRAME_THICK,0,0,100,30);
 
     new FXLabel(buttonFrame,"B&order\nColor well",NULL,JUSTIFY_CENTER_X|LAYOUT_FILL_X);
-    borderwell=new FXColorWell(buttonFrame,FXRGB(0,0,0),this,ID_WELL,LAYOUT_CENTER_X|LAYOUT_TOP|LAYOUT_LEFT|LAYOUT_FIX_WIDTH|LAYOUT_FIX_HEIGHT,0,0,100,30);
+    borderwell=new FXColorWell(buttonFrame,FXRGB(0,0,0),this,ID_WELL,LAYOUT_CENTER_X|LAYOUT_TOP|LAYOUT_LEFT|LAYOUT_FIX_WIDTH|LAYOUT_FIX_HEIGHT|FRAME_SUNKEN|FRAME_THICK,0,0,100,30);
 
     new FXLabel(buttonFrame,"&Text\nColor well",NULL,JUSTIFY_CENTER_X|LAYOUT_FILL_X);
-    textwell=new FXColorWell(buttonFrame,FXRGB(0,0,0),this,ID_WELL,LAYOUT_CENTER_X|LAYOUT_TOP|LAYOUT_LEFT|LAYOUT_FIX_WIDTH|LAYOUT_FIX_HEIGHT,0,0,100,30);
+    textwell=new FXColorWell(buttonFrame,FXRGB(0,0,0),this,ID_WELL,LAYOUT_CENTER_X|LAYOUT_TOP|LAYOUT_LEFT|LAYOUT_FIX_WIDTH|LAYOUT_FIX_HEIGHT|FRAME_SUNKEN|FRAME_THICK,0,0,100,30);
 
     // Button to draw
     new FXButton(buttonFrame,"&Colors...\tPop the color dialog",NULL,colordlg,FXWindow::ID_SHOW,FRAME_THICK|FRAME_RAISED|LAYOUT_FILL_X|LAYOUT_TOP|LAYOUT_LEFT,0,0,0,0,10,10,5,5);
@@ -267,7 +255,6 @@ void ImageWindow::create(){
 
   // First time repaint
   canvas->update();
-
   }
 
 
@@ -375,7 +362,7 @@ long ImageWindow::onCmdRestore(FXObject*,FXSelector,void*){
 int main(int argc,char *argv[]){
 
   // Make application
-  FXApp application("Image","FoxText");
+  FXApp application("Image","FoxTest");
 
   // Start app
   application.init(argc,argv);
@@ -389,7 +376,4 @@ int main(int argc,char *argv[]){
   // Run the application
   return application.run();
   }
-
-
-
 

@@ -2,8 +2,9 @@
 
                            ADDENDUM TO LICENSE
                                March 2003
+                            Revised July 2007
 
-                Copyright (C) 2002,2005 Jeroen van der Zijp.
+                Copyright (C) 2002,2021 Jeroen van der Zijp.
 
         Everyone is permitted to copy and distribute verbatim copies
      of this license addendum document, but changing it is not allowed.
@@ -14,7 +15,7 @@ FOX Toolkit Library License Addendum.
 
 1. License.  The FOX Toolkit Library ("The Library") is licensed under GNU
 Lesser General Public License as published by the Free Software Foundation,
-version 2.1 of the License, or (at your option) any later version.
+version 3 of the License, or (at your option) any later version.
 
 2. Relinking Exemption.  You may distribute a combined work using a
 statically linked, unmodified copy of the FOX Library under terms of your
@@ -39,7 +40,13 @@ Public License, subject to the following conditions:
   no modifications to the source code of the Library itself, and does not
   constitute creating a modified copy based on the Library.
 
-3. If you do not accept or are unable to meet the conditions under (2), you
+3. This FOX Toolkit Library License Addendum is NOT propagated to derivative
+works.  When making derivative works based on the FOX Library, this license
+addendum ceases to apply, and code will revert to the simple GNU Lesser General
+Public License.  The Relinking Exemption only applies to unmodified versions
+of the FOX Library.
+
+4. If you do not accept or are unable to meet the conditions under (2), you
 may continue to distribute the combined work under the original GNU Lesser
 General Public License.
 

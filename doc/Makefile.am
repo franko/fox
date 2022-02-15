@@ -52,8 +52,8 @@ screenshots.html \
 serialization.html \
 styles.css \
 timers.html \
-top.html \
 widgets.html \
+top.html \
 win32.html \
 window.html \
 xml.html

@@ -85,10 +85,10 @@ You may of course need other system headers ("stdio.h", "gl.h", etc).
 Enabling XFT Support.
 =====================
 
-On Linux systems, you can turn on XFT anti-aliased font support.
+On Linux systems, you can turn off XFT anti-aliased font support.
 
 
-        ./configure --with-xft=yes
+        ./configure --with-xft=no
 
 
 For portability reasons, the default of this settings is off.

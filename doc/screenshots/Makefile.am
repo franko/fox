@@ -11,19 +11,21 @@ adie.gif \
 adie_sty.gif \
 analysisview.png \
 aqx_linux_visualizacao_peq.jpg \
+ares_lauch.jpg \
 arithmedrill-screenshot.png \
 arithmedrill-screenshot_small.png \
+big_ctc_osx.gif \
+big_ctc_xp.gif \
 boskalisday.gif \
 boskalisnite.gif \
 clview_icon.gif \
 colordialog.png \
 cometassay.jpg \
 contact.gif \
-dlgedit1.png \
-dlgedit2.png \
 dirdialog.png \
 emso_screen.png \
 emso_screen_small.jpg \
+FAB3000v7_600.jpg \
 filedialog.png \
 fontdialog.png \
 foxcalc.jpg \
@@ -32,7 +34,11 @@ foxcalc_prefdialog_02_small.jpg \
 foxcalc_prefdialog_03_small.jpg \
 glview.png \
 goggles.png \
+igscanner-screenshot-small.png \
 imagedebugger.gif \
+inload.jpg \
+jorobus_small.png \
+openspace.gif \
 pathfinder.png \
 pdiary.jpg \
 printdialog.png \
@@ -42,6 +48,8 @@ SbSScreen1_small.jpg \
 scenegraphnavigator.gif \
 scriptolutions.gif \
 searchdialog.png \
+small_ctc_xp.gif \
+small_ctc_osx.gif \
 iims1.png \
 iims1_small.png \
 iims2.png \
@@ -59,7 +67,12 @@ vorhour2.jpg \
 vorhour2_small.jpg \
 xfe.png \
 xfe_small.png \
-xtc.gif
+sumo.png \
+20soft2b.png \
+20soft2b_small.png \
+20soft4b.png \
+20soft4b_small.png
+
 
 
 screenshots_DATA = $(SCREENSHOTS_FILES)

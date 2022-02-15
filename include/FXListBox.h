@@ -3,23 +3,20 @@
 *                        L i s t   B o x   W i d g e t                          *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 1997,2006 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 1997,2021 by Jeroen van der Zijp.   All Rights Reserved.        *
 *********************************************************************************
-* This library is free software; you can redistribute it and/or                 *
-* modify it under the terms of the GNU Lesser General Public                    *
-* License as published by the Free Software Foundation; either                  *
-* version 2.1 of the License, or (at your option) any later version.            *
+* This library is free software; you can redistribute it and/or modify          *
+* it under the terms of the GNU Lesser General Public License as published by   *
+* the Free Software Foundation; either version 3 of the License, or             *
+* (at your option) any later version.                                           *
 *                                                                               *
 * This library is distributed in the hope that it will be useful,               *
 * but WITHOUT ANY WARRANTY; without even the implied warranty of                *
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU             *
-* Lesser General Public License for more details.                               *
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the                 *
+* GNU Lesser General Public License for more details.                           *
 *                                                                               *
-* You should have received a copy of the GNU Lesser General Public              *
-* License along with this library; if not, write to the Free Software           *
-* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA.    *
-*********************************************************************************
-* $Id: FXListBox.h,v 1.43 2006/01/22 17:58:05 fox Exp $                         *
+* You should have received a copy of the GNU Lesser General Public License      *
+* along with this program.  If not, see <http://www.gnu.org/licenses/>          *
 ********************************************************************************/
 #ifndef FXLISTBOX_H
 #define FXLISTBOX_H
@@ -51,6 +48,9 @@ class FXPopup;
 * messages to indicate which option the cursor is hovering over.
 * The List Box is able to receive ID_GETINTVALUE and ID_SETINTVALUE which
 * will retrieve the current option or change the selected option.
+* When items are added, replaced, or removed, the list sends messages of
+* the type SEL_INSERTED, SEL_REPLACED, or SEL_DELETED, with the index of
+* the affected item as argument.
 */
 class FXAPI FXListBox : public FXPacker {
   FXDECLARE(FXListBox)
@@ -73,6 +73,8 @@ public:
   long onListUpdate(FXObject*,FXSelector,void*);
   long onListClicked(FXObject*,FXSelector,void*);
   long onListChanged(FXObject*,FXSelector,void*);
+  long onListCommand(FXObject*,FXSelector,void*);
+  long onListForward(FXObject*,FXSelector,void*);
   long onCmdSetValue(FXObject*,FXSelector,void*);
   long onCmdGetIntValue(FXObject*,FXSelector,void*);
   long onCmdSetIntValue(FXObject*,FXSelector,void*);
@@ -124,7 +126,7 @@ public:
   FXbool isItemCurrent(FXint index) const;
 
   /// Set the current item (index is zero-based)
-  virtual void setCurrentItem(FXint index,FXbool notify=FALSE);
+  virtual void setCurrentItem(FXint index,FXbool notify=false);
 
   /// Get the current item's index
   FXint getCurrentItem() const;
@@ -133,34 +135,37 @@ public:
   FXString getItem(FXint index) const;
 
   /// Replace the item at index
-  FXint setItem(FXint index,const FXString& text,FXIcon* icon=NULL,void* ptr=NULL);
+  FXint setItem(FXint index,const FXString& text,FXIcon* icon=NULL,FXptr ptr=NULL,FXbool notify=false);
 
   /// Fill list box by appending items from array of strings
-  FXint fillItems(const FXchar** strings,FXIcon* icon=NULL,void* ptr=NULL);
+  FXint fillItems(const FXchar *const *strings,FXIcon* icon=NULL,FXptr ptr=NULL,FXbool notify=false);
+
+  /// Fill list box by appending items from array of strings
+  FXint fillItems(const FXString* strings,FXIcon* icon=NULL,FXptr ptr=NULL,FXbool notify=false);
 
   /// Fill list box by appending items from newline separated strings
-  FXint fillItems(const FXString& strings,FXIcon* icon=NULL,void* ptr=NULL);
+  FXint fillItems(const FXString& strings,FXIcon* icon=NULL,FXptr ptr=NULL,FXbool notify=false);
 
   /// Insert a new item at index
-  FXint insertItem(FXint index,const FXString& text,FXIcon* icon=NULL,void* ptr=NULL);
+  FXint insertItem(FXint index,const FXString& text,FXIcon* icon=NULL,FXptr ptr=NULL,FXbool notify=false);
 
   /// Add an item to the end of the list
-  FXint appendItem(const FXString& text,FXIcon* icon=NULL,void* ptr=NULL);
+  FXint appendItem(const FXString& text,FXIcon* icon=NULL,FXptr ptr=NULL,FXbool notify=false);
 
   /// Prepend an item to the list
-  FXint prependItem(const FXString& text,FXIcon* icon=NULL,void* ptr=NULL);
+  FXint prependItem(const FXString& text,FXIcon* icon=NULL,FXptr ptr=NULL,FXbool notify=false);
 
   /// Move item from oldindex to newindex
-  FXint moveItem(FXint newindex,FXint oldindex);
+  FXint moveItem(FXint newindex,FXint oldindex,FXbool notify=false);
 
   /// Extract item from list
-  FXListItem* extractItem(FXint index);
+  FXListItem* extractItem(FXint index,FXbool notify=false);
 
   /// Remove this item from the list
-  void removeItem(FXint index);
+  void removeItem(FXint index,FXbool notify=false);
 
   /// Remove all items from the list
-  void clearItems();
+  void clearItems(FXbool notify=false);
 
   /**
   * Search items by name, beginning from item start.  If the start
@@ -181,7 +186,7 @@ public:
   * search direction; this can be combined with SEARCH_NOWRAP or SEARCH_WRAP
   * to control whether the search wraps at the start or end of the list.
   */
-  FXint findItemByData(const void *ptr,FXint start=-1,FXuint flags=SEARCH_FORWARD|SEARCH_WRAP) const;
+  FXint findItemByData(FXptr ptr,FXint start=-1,FXuint flags=SEARCH_FORWARD|SEARCH_WRAP) const;
 
   /// Set text for specified item
   void setItemText(FXint index,const FXString& text);
@@ -190,19 +195,31 @@ public:
   FXString getItemText(FXint index) const;
 
   /// Change item icon, deleting old one if it was owned
-  void setItemIcon(FXint index,FXIcon* icon,FXbool owned=FALSE);
+  void setItemIcon(FXint index,FXIcon* icon,FXbool owned=false);
 
   /// Return icon of item at index
   FXIcon* getItemIcon(FXint index) const;
 
   /// Set data pointer for specified item
-  void setItemData(FXint index,void* ptr) const;
+  void setItemData(FXint index,FXptr ptr) const;
 
   /// Get data pointer for specified item
-  void* getItemData(FXint index) const;
+  FXptr getItemData(FXint index) const;
 
-  /// Is the pane shown
-  FXbool isPaneShown() const;
+  /// Return true if item is enabled
+  FXbool isItemEnabled(FXint index) const;
+
+  /// Enable item
+  FXbool enableItem(FXint index);
+
+  /// Disable item
+  FXbool disableItem(FXint index);
+
+  /// Show or hide menu
+  void showMenu(FXbool shw);
+
+  /// Is the menu pane shown
+  FXbool isMenuShown() const;
 
   /// Sort items using current sort function
   void sortItems();
@@ -212,6 +229,12 @@ public:
 
   /// Get text font
   FXFont* getFont() const;
+
+  /// Change popup pane shrinkwrap mode
+  void setShrinkWrap(FXbool flag);
+
+  /// Return popup pane shrinkwrap mode
+  FXbool getShrinkWrap() const;
 
   /// Set window background color
   virtual void setBackColor(FXColor clr);

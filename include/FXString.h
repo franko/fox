@@ -3,23 +3,20 @@
 *                           S t r i n g   O b j e c t                           *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 1997,2006 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 1997,2021 by Jeroen van der Zijp.   All Rights Reserved.        *
 *********************************************************************************
-* This library is free software; you can redistribute it and/or                 *
-* modify it under the terms of the GNU Lesser General Public                    *
-* License as published by the Free Software Foundation; either                  *
-* version 2.1 of the License, or (at your option) any later version.            *
+* This library is free software; you can redistribute it and/or modify          *
+* it under the terms of the GNU Lesser General Public License as published by   *
+* the Free Software Foundation; either version 3 of the License, or             *
+* (at your option) any later version.                                           *
 *                                                                               *
 * This library is distributed in the hope that it will be useful,               *
 * but WITHOUT ANY WARRANTY; without even the implied warranty of                *
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU             *
-* Lesser General Public License for more details.                               *
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the                 *
+* GNU Lesser General Public License for more details.                           *
 *                                                                               *
-* You should have received a copy of the GNU Lesser General Public              *
-* License along with this library; if not, write to the Free Software           *
-* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA.    *
-*********************************************************************************
-* $Id: FXString.h,v 1.120 2006/02/20 03:32:12 fox Exp $                         *
+* You should have received a copy of the GNU Lesser General Public License      *
+* along with this program.  If not, see <http://www.gnu.org/licenses/>          *
 ********************************************************************************/
 #ifndef FXSTRING_H
 #define FXSTRING_H
@@ -27,43 +24,56 @@
 namespace FX {
 
 
+class FXStream;
+
+
 /**
-* FXString provides essential string manipulation capabilities.
+* FXString provides essential string manipulation capabilities in FOX.
+* Internally, all strings are stored as an array of bytes preceeded by
+* the length of the string; an end-of-string character is appended at the end,
+* but is not included in the length of the string.
+* An empty string is represented by unique empty-string value which comprises
+* a length of 0, followed by an end-of-string character.
+* Thus, it is ALWAYS safe to dereference FXString as it will never be NULL.
+* FXString can be initialized direcly from literal strings in UTF-8 encoding,
+* but supports automatic conversion from UTF-16 encoded ("narrow") character
+* strings and UTF-32 encoded ("wide") character strings.
 */
 class FXAPI FXString {
 private:
   FXchar* str;
 public:
   static const FXchar null[];
-  static const FXchar hex[17];
-  static const FXchar HEX[17];
 public:
-  static const signed char utfBytes[256];
+  static const FXchar  value2Digit[36];
+  static const FXschar digit2Value[256];
+public:
+  static const FXschar utfBytes[256];
 public:
 
-  /// Create empty string
+  /// Construct empty string
   FXString();
 
-  /// Copy construct
+  /// Construct copy of another string
   FXString(const FXString& s);
 
   /// Construct and init from string
   FXString(const FXchar* s);
 
-  /// Construct and init from wide character string
-  FXString(const FXwchar* s);
-
   /// Construct and init from narrow character string
   FXString(const FXnchar* s);
+
+  /// Construct and init from wide character string
+  FXString(const FXwchar* s);
 
   /// Construct and init with substring
   FXString(const FXchar* s,FXint n);
 
-  /// Construct and init with wide character substring
-  FXString(const FXwchar* s,FXint n);
-
   /// Construct and init with narrow character substring
   FXString(const FXnchar* s,FXint n);
+
+  /// Construct and init with wide character substring
+  FXString(const FXwchar* s,FXint n);
 
   /// Construct and fill with constant
   FXString(FXchar c,FXint n);
@@ -72,13 +82,31 @@ public:
   FXint length() const { return *(((FXint*)str)-1); }
 
   /// Change the length of the string to len
-  void length(FXint len);
+  FXbool length(FXint len);
+
+  /// Return wide character starting at offset p
+  FXwchar wc(FXint p) const;
+
+  /// Increment byte offset by one utf8 character
+  FXint inc(FXint p) const;
+
+  /// Increment byte offset by n utf8 characters
+  FXint inc(FXint p,FXint n) const;
+
+  /// Decrement byte offset by one utf8 character
+  FXint dec(FXint p) const;
+
+  /// Decrement byte offset by n utf8 characters
+  FXint dec(FXint p,FXint n) const;
+
+  /// Return extent of utf8 character at position
+  FXint extent(FXint p) const { return utfBytes[(FXuchar)str[p]]; }
 
   /// Count number of utf8 characters
   FXint count() const;
 
-  /// Count number of utf8 characters in subrange
-  FXint count(FXint pos,FXint len) const;
+  /// Count number of utf8 characters in subrange start...end
+  FXint count(FXint start,FXint end) const;
 
   /// Return byte offset of utf8 character at index
   FXint offset(FXint indx) const;
@@ -89,23 +117,17 @@ public:
   /// Validate position to point to begin of utf8 character
   FXint validate(FXint p) const;
 
-  /// Return extent of utf8 character at position
-  FXint extent(FXint p) const { return utfBytes[(FXuchar)str[p]]; }
+  /// Get text contents as pointer
+  FXchar* text(){ return str; }
 
-  /// Return start of next utf8 character
-  FXint inc(FXint p) const;
-
-  /// Return start of previous utf8 character
-  FXint dec(FXint p) const;
-
-  /// Get text contents
-  const FXchar* text() const { return (const FXchar*)str; }
+  /// Get text contents as const pointer
+  const FXchar* text() const { return str; }
 
   /// See if string is empty
-  bool empty() const { return (((FXint*)str)[-1]==0); }
+  FXbool empty() const { return (((FXint*)str)[-1]==0); }
 
   /// See if string is empty
-  bool operator!() const { return (((FXint*)str)[-1]==0); }
+  FXbool operator!() const { return (((FXint*)str)[-1]==0); }
 
   /// Return a non-const reference to the ith character
   FXchar& operator[](FXint i){ return str[i]; }
@@ -119,38 +141,44 @@ public:
   /// Return a const reference to the ith character
   const FXchar& at(FXint i) const { return str[i]; }
 
-  /// Return wide character starting at offset i
-  FXwchar wc(FXint i) const;
+  /// Return a non-const reference to the first character
+  FXchar& head(){ return str[0]; }
 
-  /// Assign a string to this
+  /// Return a const reference to the first character
+  const FXchar& head() const { return str[0]; }
+
+  /// Return a non-const reference to the last character
+  FXchar& tail(){ return str[length()-1]; }
+
+  /// Return a const reference to the last character
+  const FXchar& tail() const { return str[length()-1]; }
+
+  /// Assign a constant string to this string
   FXString& operator=(const FXchar* s);
 
-  /// Assign a wide character string to this
-  FXString& operator=(const FXwchar* s);
-
-  /// Assign a narrow character string to this
+  /// Assign a narrow character string to this string
   FXString& operator=(const FXnchar* s);
 
-  /// Assign another string to this
+  /// Assign a wide character string to this string
+  FXString& operator=(const FXwchar* s);
+
+  /// Assign another string to this string
   FXString& operator=(const FXString& s);
 
-  /// Convert to lower case
-  FXString& lower();
+  /// Append single character to this string
+  FXString& operator+=(FXchar c);
 
-  /// Convert to upper case
-  FXString& upper();
+  /// Append constant string after this string
+  FXString& operator+=(const FXchar* s);
 
-  /// Return num partition(s) beginning at start from a string separated by delimiters delim.
-  FXString section(FXchar delim,FXint start,FXint num=1) const;
+  /// Append narrow character string after this string
+  FXString& operator+=(const FXnchar* s);
 
-  /// Return num partition(s) beginning at start from a string separated by set of delimiters from delim of size n
-  FXString section(const FXchar* delim,FXint n,FXint start,FXint num) const;
+  /// Append wide characeter string after this string
+  FXString& operator+=(const FXwchar* s);
 
-  /// Return num partition(s) beginning at start from a string separated by set of delimiters from delim.
-  FXString section(const FXchar* delim,FXint start,FXint num=1) const;
-
-  /// Return num partition(s) beginning at start from a string separated by set of delimiters from delim.
-  FXString section(const FXString& delim,FXint start,FXint num=1) const;
+  /// Append another string after this string
+  FXString& operator+=(const FXString& s);
 
   /// Adopt string s, leaving s empty
   FXString& adopt(FXString& s);
@@ -161,23 +189,23 @@ public:
   /// Assign n characters c to this string
   FXString& assign(FXchar c,FXint n);
 
-  /// Assign first n characters of string s to this string
-  FXString& assign(const FXchar *s,FXint n);
-
-  /// Assign first n characters of wide character string s to this string
-  FXString& assign(const FXwchar *s,FXint n);
-
-  /// Assign first n characters of narrow character string s to this string
-  FXString& assign(const FXnchar *s,FXint n);
-
   /// Assign string s to this string
   FXString& assign(const FXchar* s);
+
+  /// Assign narrow character string s to this string
+  FXString& assign(const FXnchar* s);
 
   /// Assign wide character string s to this string
   FXString& assign(const FXwchar* s);
 
-  /// Assign narrow character string s to this string
-  FXString& assign(const FXnchar* s);
+  /// Assign first n characters of string s to this string
+  FXString& assign(const FXchar *s,FXint n);
+
+  /// Assign first n characters of narrow character string s to this string
+  FXString& assign(const FXnchar *s,FXint n);
+
+  /// Assign first n characters of wide character string s to this string
+  FXString& assign(const FXwchar *s,FXint n);
 
   /// Assign string s to this string
   FXString& assign(const FXString& s);
@@ -188,23 +216,23 @@ public:
   /// Insert n characters c at specified position
   FXString& insert(FXint pos,FXchar c,FXint n);
 
-  /// Insert first n characters of string at specified position
-  FXString& insert(FXint pos,const FXchar* s,FXint n);
-
-  /// Insert first n characters of wide character string at specified position
-  FXString& insert(FXint pos,const FXwchar* s,FXint n);
-
-  /// Insert first n characters of narrow character string at specified position
-  FXString& insert(FXint pos,const FXnchar* s,FXint n);
-
   /// Insert string at specified position
   FXString& insert(FXint pos,const FXchar* s);
+
+  /// Insert narrow character string at specified position
+  FXString& insert(FXint pos,const FXnchar* s);
 
   /// Insert wide character string at specified position
   FXString& insert(FXint pos,const FXwchar* s);
 
-  /// Insert narrow character string at specified position
-  FXString& insert(FXint pos,const FXnchar* s);
+  /// Insert first n characters of string at specified position
+  FXString& insert(FXint pos,const FXchar* s,FXint n);
+
+  /// Insert first n characters of narrow character string at specified position
+  FXString& insert(FXint pos,const FXnchar* s,FXint n);
+
+  /// Insert first n characters of wide character string at specified position
+  FXString& insert(FXint pos,const FXwchar* s,FXint n);
 
   /// Insert string at specified position
   FXString& insert(FXint pos,const FXString& s);
@@ -215,23 +243,23 @@ public:
   /// Prepend string with n characters c
   FXString& prepend(FXchar c,FXint n);
 
-  /// Prepend first n characters of string s
-  FXString& prepend(const FXchar* s,FXint n);
-
-  /// Prepend first n characters of wide character string s
-  FXString& prepend(const FXwchar* s,FXint n);
-
-  /// Prepend first n characters of narrow character string s
-  FXString& prepend(const FXnchar* s,FXint n);
-
   /// Prepend string with string s
   FXString& prepend(const FXchar* s);
+
+  /// Prepend string with narrow character string
+  FXString& prepend(const FXnchar* s);
 
   /// Prepend string with wide character string
   FXString& prepend(const FXwchar* s);
 
-  /// Prepend string with narrow character string
-  FXString& prepend(const FXnchar* s);
+  /// Prepend first n characters of string s
+  FXString& prepend(const FXchar* s,FXint n);
+
+  /// Prepend first n characters of narrow character string s
+  FXString& prepend(const FXnchar* s,FXint n);
+
+  /// Prepend first n characters of wide character string s
+  FXString& prepend(const FXwchar* s,FXint n);
 
   /// Prepend string with string s
   FXString& prepend(const FXString& s);
@@ -242,23 +270,23 @@ public:
   /// Append n characters c to this string
   FXString& append(FXchar c,FXint n);
 
-  /// Append first n characters of string s to this string
-  FXString& append(const FXchar* s,FXint n);
-
-  /// Append first n characters of wide character string s to this string
-  FXString& append(const FXwchar* s,FXint n);
-
-  /// Append first n characters of narrow character string s to this string
-  FXString& append(const FXnchar* s,FXint n);
-
   /// Append string s to this string
   FXString& append(const FXchar* s);
+
+  /// Append narrow character string s to this string
+  FXString& append(const FXnchar* s);
 
   /// Append wide character string s to this string
   FXString& append(const FXwchar* s);
 
-  /// Append narrow character string s to this string
-  FXString& append(const FXnchar* s);
+  /// Append first n characters of string s to this string
+  FXString& append(const FXchar* s,FXint n);
+
+  /// Append first n characters of narrow character string s to this string
+  FXString& append(const FXnchar* s,FXint n);
+
+  /// Append first n characters of wide character string s to this string
+  FXString& append(const FXwchar* s,FXint n);
 
   /// Append string s to this string
   FXString& append(const FXString& s);
@@ -266,31 +294,31 @@ public:
   /// Replace a single character
   FXString& replace(FXint pos,FXchar c);
 
-  /// Replace the m characters at pos with n characters c
-  FXString& replace(FXint pos,FXint m,FXchar c,FXint n);
+  /// Replace the r characters at pos with n characters c
+  FXString& replace(FXint pos,FXint r,FXchar c,FXint n);
 
-  /// Replaces the m characters at pos with first n characters of string s
-  FXString& replace(FXint pos,FXint m,const FXchar* s,FXint n);
+  /// Replace the r characters at pos with string s
+  FXString& replace(FXint pos,FXint r,const FXchar* s);
 
-  /// Replaces the m characters at pos with first n characters of wide character string s
-  FXString& replace(FXint pos,FXint m,const FXwchar* s,FXint n);
+  /// Replace the r characters at pos with narrow character string s
+  FXString& replace(FXint pos,FXint r,const FXnchar* s);
 
-  /// Replaces the m characters at pos with first n characters of narrow character string s
-  FXString& replace(FXint pos,FXint m,const FXnchar* s,FXint n);
+  /// Replace the r characters at pos with wide character string s
+  FXString& replace(FXint pos,FXint r,const FXwchar* s);
 
-  /// Replace the m characters at pos with string s
-  FXString& replace(FXint pos,FXint m,const FXchar* s);
+  /// Replaces the r characters at pos with first n characters of string s
+  FXString& replace(FXint pos,FXint r,const FXchar* s,FXint n);
 
-  /// Replace the m characters at pos with wide character string s
-  FXString& replace(FXint pos,FXint m,const FXwchar* s);
+  /// Replaces the r characters at pos with first n characters of narrow character string s
+  FXString& replace(FXint pos,FXint r,const FXnchar* s,FXint n);
 
-  /// Replace the m characters at pos with narrow character string s
-  FXString& replace(FXint pos,FXint m,const FXnchar* s);
+  /// Replaces the r characters at pos with first n characters of wide character string s
+  FXString& replace(FXint pos,FXint r,const FXwchar* s,FXint n);
 
-  /// Replace the m characters at pos with string s
-  FXString& replace(FXint pos,FXint m,const FXString& s);
+  /// Replace the r characters at pos with string s
+  FXString& replace(FXint pos,FXint r,const FXString& s);
 
-  /// Move range of m characters from src position to dst position
+  /// Move range of n characters from src position to dst position
   FXString& move(FXint dst,FXint src,FXint n);
 
   /// Remove one character
@@ -298,6 +326,12 @@ public:
 
   /// Remove substring
   FXString& erase(FXint pos,FXint n);
+
+  /// Truncate string at pos
+  FXString& trunc(FXint pos);
+
+  /// Clear
+  FXString& clear();
 
   /// Return number of occurrences of ch in string
   FXint contains(FXchar ch) const;
@@ -312,16 +346,22 @@ public:
   FXint contains(const FXString& sub) const;
 
   /// Substitute one character by another
-  FXString& substitute(FXchar org,FXchar sub,bool all=true);
+  FXString& substitute(FXchar org,FXchar sub,FXbool all=true);
 
   /// Substitute one string by another
-  FXString& substitute(const FXchar* org,FXint olen,const FXchar *rep,FXint rlen,bool all=true);
+  FXString& substitute(const FXchar* org,FXint olen,const FXchar *rep,FXint rlen,FXbool all=true);
 
   /// Substitute one string by another
-  FXString& substitute(const FXchar* org,const FXchar *rep,bool all=true);
+  FXString& substitute(const FXchar* org,const FXchar *rep,FXbool all=true);
 
   /// Substitute one string by another
-  FXString& substitute(const FXString& org,const FXString& rep,bool all=true);
+  FXString& substitute(const FXString& org,const FXString& rep,FXbool all=true);
+
+  /// Convert to lower case
+  FXString& lower();
+
+  /// Convert to upper case
+  FXString& upper();
 
   /// Simplify whitespace in string
   FXString& simplify();
@@ -335,12 +375,6 @@ public:
   /// Remove trailing whitespace
   FXString& trimEnd();
 
-  /// Truncate string at pos
-  FXString& trunc(FXint pos);
-
-  /// Clear
-  FXString& clear();
-
   /// Get left most part
   FXString left(FXint n) const;
 
@@ -349,6 +383,18 @@ public:
 
   /// Get some part in the middle
   FXString mid(FXint pos,FXint n) const;
+
+  /// Return num partition(s) from a given start partition in a string separated by delimiters delim.
+  FXString section(FXchar delim,FXint start,FXint num=1) const;
+
+  /// Return num partition(s) from a given start partition in a string separated by set of delimiters from delim of size n
+  FXString section(const FXchar* delim,FXint n,FXint start,FXint num) const;
+
+  /// Return num partition(s) from a given start partition in a string separated by set of delimiters from delim.
+  FXString section(const FXchar* delim,FXint start,FXint num=1) const;
+
+  /// Return num partition(s) from a given start partition in a string separated by set of delimiters from delim.
+  FXString section(const FXString& delim,FXint start,FXint num=1) const;
 
   /**
   * Return all characters before the n-th occurrence of ch,
@@ -460,95 +506,154 @@ public:
   /// Find last character NOT equal to c, starting from pos; return position or -1
   FXint find_last_not_of(FXchar c,FXint pos=0) const;
 
-  /// Format a string a-la printf
-  FXString& format(const FXchar* fmt,...) FX_PRINTF(2,3) ;
-  FXString& vformat(const FXchar* fmt,va_list args);
-
   /// Scan a string a-la scanf
   FXint scan(const FXchar* fmt,...) const FX_SCANF(2,3) ;
   FXint vscan(const FXchar* fmt,va_list args) const;
 
-  /// Get hash value
+  /// Format a string a-la printf
+  FXint format(const FXchar* fmt,...) FX_PRINTF(2,3) ;
+  FXint vformat(const FXchar* fmt,va_list args);
+
+  /// Convert to integer
+  FXint toInt(FXint base=10,FXbool* ok=NULL) const;
+
+  /// Convert to unsigned integer
+  FXuint toUInt(FXint base=10,FXbool* ok=NULL) const;
+
+  /// Convert to long integer
+  FXlong toLong(FXint base=10,FXbool* ok=NULL) const;
+
+  /// Convert to unsigned long integer
+  FXulong toULong(FXint base=10,FXbool* ok=NULL) const;
+
+  /// Convert to float
+  FXfloat toFloat(FXbool* ok=NULL) const;
+
+  /// Convert to double
+  FXdouble toDouble(FXbool* ok=NULL) const;
+
+  /// Convert from integer
+  FXString& fromInt(FXint number,FXint base=10);
+
+  /// Convert from unsigned integer
+  FXString& fromUInt(FXuint number,FXint base=10);
+
+  /// Convert from long integer
+  FXString& fromLong(FXlong number,FXint base=10);
+
+  /// Convert from unsigned long integer
+  FXString& fromULong(FXulong number,FXint base=10);
+
+  /// Convert from float; fmt is 0 (no exponent), 1 (force exponent), or 2 (exponent when needed)
+  FXString& fromFloat(FXfloat number,FXint prec=6,FXint fmt=2);
+
+  /// Convert from double; fmt is 0 (no exponent), 1 (force exponent), or 2 (exponent when needed)
+  FXString& fromDouble(FXdouble number,FXint prec=6,FXint fmt=2);
+
+  /**
+  * Return a string value by converting an integer number to a string,
+  * using the given number base, which must be between 2 and 16.
+  */
+  static FXString value(FXint num,FXint base=10);
+  static FXString value(FXuint num,FXint base=10);
+
+  /**
+  * Return a string value by converting a long integer number to a string,
+  * using the given number base, which must be between 2 and 16.
+  */
+  static FXString value(FXlong num,FXint base=10);
+  static FXString value(FXulong num,FXint base=10);
+
+  /**
+  * Return a string value by converting real number to a string, using the given
+  * procision and exponential notation mode, which may be 0 (never), 1 (always),
+  * or 2 (when needed).
+  */
+  static FXString value(FXfloat num,FXint prec=6,FXint fmt=2);
+  static FXString value(FXdouble num,FXint prec=6,FXint fmt=2);
+
+  /**
+  * Return a string value from printf-like format arguments.
+  */
+  static FXString value(const FXchar* fmt,...) FX_PRINTF(1,2) ;
+
+  /**
+  * Return a string value from vprintf-like format arguments.
+  */
+  static FXString vvalue(const FXchar* fmt,va_list args);
+
+
+  /// Compute hash value of string
   FXuint hash() const;
 
-  /// Compare
-  friend FXAPI FXint compare(const FXchar* s1,const FXchar* s2);
-  friend FXAPI FXint compare(const FXchar* s1,const FXString& s2);
-  friend FXAPI FXint compare(const FXString& s1,const FXchar* s2);
-  friend FXAPI FXint compare(const FXString& s1,const FXString& s2);
+  /// Compute hash value of string
+  static FXuint hash(const FXchar* s);
 
-  /// Compare up to n
-  friend FXAPI FXint compare(const FXchar* s1,const FXchar* s2,FXint n);
-  friend FXAPI FXint compare(const FXchar* s1,const FXString& s2,FXint n);
-  friend FXAPI FXint compare(const FXString& s1,const FXchar* s2,FXint n);
-  friend FXAPI FXint compare(const FXString& s1,const FXString& s2,FXint n);
+  /**
+  * Check if the string contains special characters or leading or trailing whitespace,
+  * or contains UTF8 if flag!=0.
+  */
+  static FXbool shouldEscape(const FXString& str,FXchar lquote=0,FXchar rquote=0,FXint flag=0);
 
-  /// Compare case insensitive
-  friend FXAPI FXint comparecase(const FXchar* s1,const FXchar* s2);
-  friend FXAPI FXint comparecase(const FXchar* s1,const FXString& s2);
-  friend FXAPI FXint comparecase(const FXString& s1,const FXchar* s2);
-  friend FXAPI FXint comparecase(const FXString& s1,const FXString& s2);
+  /**
+  * Escape special characters.
+  * Optionally enclose return value with left and right quotes.
+  * Flag: 0 don't encode UTF8 multi-byte characters.
+  * Flag: 1 encodes UTF8 multi-byte characters to a sequence of hexadecimals of the form \xXX.
+  * Flag: 2 encodes UTF8 multi-byte characters to the form \uXXXX or \uXXXX\uYYYY.
+  * Ill-formed UTF8 will be encoded as hexadecimals \xXX regardless even if \uXXXX is requested.
+  * Quotes will be escaped if quoting is performed.
+  */
+  static FXString escape(const FXString& str,FXchar lquote=0,FXchar rquote=0,FXint flag=0);
 
-  /// Compare case insensitive up to n
-  friend FXAPI FXint comparecase(const FXchar* s1,const FXchar* s2,FXint n);
-  friend FXAPI FXint comparecase(const FXchar* s1,const FXString& s2,FXint n);
-  friend FXAPI FXint comparecase(const FXString& s1,const FXchar* s2,FXint n);
-  friend FXAPI FXint comparecase(const FXString& s1,const FXString& s2,FXint n);
+  /**
+  * Unescape special characters,
+  * Optionally remove surrounding left and right quotes.
+  * In particular, decode \xXX to the hexadecimal character XX, \uXXXX to the multi-byte
+  * UTF8 sequence representing unicode character XXXX, and decode \t, \n, etc.
+  * Handle surrogate pairs of the form \uXXXX\uYYYY properly.
+  */
+  static FXString unescape(const FXString& str,FXchar lquote=0,FXchar rquote=0);
 
-  /// Compare with numeric interpretation
-  friend FXAPI FXint compareversion(const FXchar* s1,const FXchar* s2);
-  friend FXAPI FXint compareversion(const FXchar* s1,const FXString& s2);
-  friend FXAPI FXint compareversion(const FXString& s1,const FXchar* s2);
-  friend FXAPI FXint compareversion(const FXString& s1,const FXString& s2);
+  /**
+  * Expand tabs with the equivalent amount of spaces.
+  * UTF8 encoded characters are counted as one column.
+  */
+  static FXString detab(const FXString& text,FXint tabcols=8);
 
-  /// Comparison operators
-  friend FXAPI bool operator==(const FXString& s1,const FXString& s2);
-  friend FXAPI bool operator==(const FXString& s1,const FXchar* s2);
-  friend FXAPI bool operator==(const FXchar* s1,const FXString& s2);
+  /**
+  * Compress runs of more than 2 spaces with tabs.
+  * UTF8 characters are counted as one column.
+  */
+  static FXString entab(const FXString& text,FXint tabcols=8);
 
-  friend FXAPI bool operator!=(const FXString& s1,const FXString& s2);
-  friend FXAPI bool operator!=(const FXString& s1,const FXchar* s2);
-  friend FXAPI bool operator!=(const FXchar* s1,const FXString& s2);
+  /**
+  * Retabbify lines of text.
+  * Given lines of text at given indent-level, insert of remove spaces or tabs to
+  * align the text to new outdent-level, shifting over by a number of columns left-ward
+  * or rightward. UTF8 characters are counted as one column, and trailing space will be
+  * deleted.
+  */
+  static FXString tabbify(const FXString& text,FXint tabcols=8,FXint indent=0,FXint outdent=0,FXint shift=0,FXbool tabs=false);
 
-  friend FXAPI bool operator<(const FXString& s1,const FXString& s2);
-  friend FXAPI bool operator<(const FXString& s1,const FXchar* s2);
-  friend FXAPI bool operator<(const FXchar* s1,const FXString& s2);
+  /**
+  * Return normalized string, i.e. reordering of diacritical marks.
+  */
+  static FXString normalize(const FXString& s);
 
-  friend FXAPI bool operator<=(const FXString& s1,const FXString& s2);
-  friend FXAPI bool operator<=(const FXString& s1,const FXchar* s2);
-  friend FXAPI bool operator<=(const FXchar* s1,const FXString& s2);
+  /**
+  * Return normalized decomposition of string.
+  */
+  static FXString decompose(const FXString& s,FXbool canonical=true);
 
-  friend FXAPI bool operator>(const FXString& s1,const FXString& s2);
-  friend FXAPI bool operator>(const FXString& s1,const FXchar* s2);
-  friend FXAPI bool operator>(const FXchar* s1,const FXString& s2);
+  /**
+  * Return normalized composition of string; this first performs normalized
+  * decomposition.
+  */
+  static FXString compose(const FXString& s,FXbool canonical=true);
 
-  friend FXAPI bool operator>=(const FXString& s1,const FXString& s2);
-  friend FXAPI bool operator>=(const FXString& s1,const FXchar* s2);
-  friend FXAPI bool operator>=(const FXchar* s1,const FXString& s2);
-
-  /// Append operators
-  FXString& operator+=(const FXString& s);
-  FXString& operator+=(const FXchar* s);
-  FXString& operator+=(const FXwchar* s);
-  FXString& operator+=(const FXnchar* s);
-  FXString& operator+=(FXchar c);
-
-  /// Concatenate one FXString with another
-  friend FXAPI FXString operator+(const FXString& s1,const FXString& s2);
-
-  /// Concatenate FXString and a string
-  friend FXAPI FXString operator+(const FXString& s1,const FXchar* s2);
-  friend FXAPI FXString operator+(const FXString& s1,const FXwchar* s2);
-  friend FXAPI FXString operator+(const FXString& s1,const FXnchar* s2);
-
-  /// Concatenate string and FXString
-  friend FXAPI FXString operator+(const FXchar* s1,const FXString& s2);
-  friend FXAPI FXString operator+(const FXwchar* s1,const FXString& s2);
-  friend FXAPI FXString operator+(const FXnchar* s1,const FXString& s2);
-
-  /// Concatenate string and single character
-  friend FXAPI FXString operator+(const FXString& s,FXchar c);
-  friend FXAPI FXString operator+(FXchar c,const FXString& s);
+  /// Swap two strings
+  friend inline FXString& swap(FXString& dst,FXString& src);
 
   /// Saving to a stream
   friend FXAPI FXStream& operator<<(FXStream& store,const FXString& s);
@@ -556,172 +661,111 @@ public:
   /// Load from a stream
   friend FXAPI FXStream& operator>>(FXStream& store,FXString& s);
 
-  /// Format a string a-la printf
-  friend FXAPI FXString FXStringFormat(const FXchar* fmt,...) FX_PRINTF(1,2) ;
-  friend FXAPI FXString FXStringVFormat(const FXchar* fmt,va_list args);
-
-  /**
-  * Convert integer number to a string, using the given number
-  * base, which must be between 2 and 16.
-  */
-  friend FXAPI FXString FXStringVal(FXint num,FXint base);
-  friend FXAPI FXString FXStringVal(FXuint num,FXint base);
-
-  /**
-  * Convert long integer number to a string, using the given number
-  * base, which must be between 2 and 16.
-  */
-  friend FXAPI FXString FXStringVal(FXlong num,FXint base);
-  friend FXAPI FXString FXStringVal(FXulong num,FXint base);
-
-  /**
-  * Convert real number to a string, using the given procision and
-  * exponential notation mode, which may be FALSE (never), TRUE (always), or
-  * MAYBE (when needed).
-  */
-  friend FXAPI FXString FXStringVal(FXfloat num,FXint prec,FXint exp);
-  friend FXAPI FXString FXStringVal(FXdouble num,FXint prec,FXint exp);
-
-  /// Convert string to a integer number, assuming given number base
-  friend FXAPI FXint FXIntVal(const FXString& s,FXint base);
-  friend FXAPI FXuint FXUIntVal(const FXString& s,FXint base);
-
-  /// Convert string to long integer number, assuming given number base
-  friend FXAPI FXlong FXLongVal(const FXString& s,FXint base);
-  friend FXAPI FXulong FXULongVal(const FXString& s,FXint base);
-
-  /// Convert string into real number
-  friend FXAPI FXfloat FXFloatVal(const FXString& s);
-  friend FXAPI FXdouble FXDoubleVal(const FXString& s);
-
-  /// Return utf8 from ascii containing unicode escapes
-  friend FXAPI FXString fromAscii(const FXString& s);
-
-  /// Return ascii containing unicode escapes from utf8
-  friend FXAPI FXString toAscii(const FXString& s);
-
-  /// Escape special characters in a string
-  friend FXAPI FXString escape(const FXString& s);
-
-  /// Unescape special characters in a string
-  friend FXAPI FXString unescape(const FXString& s);
-
-  /// Return normalized string, i.e. reordering of diacritical marks
-  friend FXAPI FXString normalize(const FXString& s);
-
-  /// Return normalized decomposition of string
-  friend FXAPI FXString decompose(const FXString& s,FXuint kind);
-
-  /// Return normalized composition of string; this first performs normalized decomposition
-  friend FXAPI FXString compose(const FXString& s,FXuint kind);
-
-  /// Swap two strings
-  friend inline void swap(FXString& a,FXString& b);
-
-  /// Convert to and from dos
-  friend FXAPI FXString& unixToDos(FXString& str);
-  friend FXAPI FXString& dosToUnix(FXString& str);
-
   /// Delete
  ~FXString();
   };
 
 
-inline void swap(FXString& a,FXString& b){ FXchar *t=a.str; a.str=b.str; b.str=t; }
+/// Swap two strings
+inline FXString& swap(FXString& dst,FXString& src){
+  FXchar* t=dst.str; dst.str=src.str; src.str=t;
+  return dst;
+  }
 
+
+/// Compare
 extern FXAPI FXint compare(const FXchar* s1,const FXchar* s2);
 extern FXAPI FXint compare(const FXchar* s1,const FXString& s2);
 extern FXAPI FXint compare(const FXString& s1,const FXchar* s2);
 extern FXAPI FXint compare(const FXString& s1,const FXString& s2);
 
+/// Compare up to n
 extern FXAPI FXint compare(const FXchar* s1,const FXchar* s2,FXint n);
 extern FXAPI FXint compare(const FXchar* s1,const FXString& s2,FXint n);
 extern FXAPI FXint compare(const FXString& s1,const FXchar* s2,FXint n);
 extern FXAPI FXint compare(const FXString& s1,const FXString& s2,FXint n);
 
+/// Compare case insensitive
 extern FXAPI FXint comparecase(const FXchar* s1,const FXchar* s2);
 extern FXAPI FXint comparecase(const FXchar* s1,const FXString& s2);
 extern FXAPI FXint comparecase(const FXString& s1,const FXchar* s2);
 extern FXAPI FXint comparecase(const FXString& s1,const FXString& s2);
 
+/// Compare case insensitive up to n
 extern FXAPI FXint comparecase(const FXchar* s1,const FXchar* s2,FXint n);
 extern FXAPI FXint comparecase(const FXchar* s1,const FXString& s2,FXint n);
 extern FXAPI FXint comparecase(const FXString& s1,const FXchar* s2,FXint n);
 extern FXAPI FXint comparecase(const FXString& s1,const FXString& s2,FXint n);
 
+/// Compare with natural interpretation
 extern FXAPI FXint compareversion(const FXchar* s1,const FXchar* s2);
 extern FXAPI FXint compareversion(const FXchar* s1,const FXString& s2);
 extern FXAPI FXint compareversion(const FXString& s1,const FXchar* s2);
 extern FXAPI FXint compareversion(const FXString& s1,const FXString& s2);
 
-extern FXAPI bool operator==(const FXString& s1,const FXString& s2);
-extern FXAPI bool operator==(const FXString& s1,const FXchar* s2);
-extern FXAPI bool operator==(const FXchar* s1,const FXString& s2);
+/// Compare case insensitive with natural interpretation
+extern FXAPI FXint compareversioncase(const FXchar* s1,const FXchar* s2);
+extern FXAPI FXint compareversioncase(const FXchar* s1,const FXString& s2);
+extern FXAPI FXint compareversioncase(const FXString& s1,const FXchar* s2);
+extern FXAPI FXint compareversioncase(const FXString& s1,const FXString& s2);
 
-extern FXAPI bool operator!=(const FXString& s1,const FXString& s2);
-extern FXAPI bool operator!=(const FXString& s1,const FXchar* s2);
-extern FXAPI bool operator!=(const FXchar* s1,const FXString& s2);
+/// Equality operators
+extern FXAPI FXbool operator==(const FXString& s1,const FXString& s2);
+extern FXAPI FXbool operator==(const FXString& s1,const FXchar* s2);
+extern FXAPI FXbool operator==(const FXchar* s1,const FXString& s2);
 
-extern FXAPI bool operator<(const FXString& s1,const FXString& s2);
-extern FXAPI bool operator<(const FXString& s1,const FXchar* s2);
-extern FXAPI bool operator<(const FXchar* s1,const FXString& s2);
+/// Inequality operators
+extern FXAPI FXbool operator!=(const FXString& s1,const FXString& s2);
+extern FXAPI FXbool operator!=(const FXString& s1,const FXchar* s2);
+extern FXAPI FXbool operator!=(const FXchar* s1,const FXString& s2);
 
-extern FXAPI bool operator<=(const FXString& s1,const FXString& s2);
-extern FXAPI bool operator<=(const FXString& s1,const FXchar* s2);
-extern FXAPI bool operator<=(const FXchar* s1,const FXString& s2);
+/// Lexicographic less than operators
+extern FXAPI FXbool operator<(const FXString& s1,const FXString& s2);
+extern FXAPI FXbool operator<(const FXString& s1,const FXchar* s2);
+extern FXAPI FXbool operator<(const FXchar* s1,const FXString& s2);
 
-extern FXAPI bool operator>(const FXString& s1,const FXString& s2);
-extern FXAPI bool operator>(const FXString& s1,const FXchar* s2);
-extern FXAPI bool operator>(const FXchar* s1,const FXString& s2);
+/// Lexicographic less than or equal operators
+extern FXAPI FXbool operator<=(const FXString& s1,const FXString& s2);
+extern FXAPI FXbool operator<=(const FXString& s1,const FXchar* s2);
+extern FXAPI FXbool operator<=(const FXchar* s1,const FXString& s2);
 
-extern FXAPI bool operator>=(const FXString& s1,const FXString& s2);
-extern FXAPI bool operator>=(const FXString& s1,const FXchar* s2);
-extern FXAPI bool operator>=(const FXchar* s1,const FXString& s2);
+/// Lexicographic greater than operators
+extern FXAPI FXbool operator>(const FXString& s1,const FXString& s2);
+extern FXAPI FXbool operator>(const FXString& s1,const FXchar* s2);
+extern FXAPI FXbool operator>(const FXchar* s1,const FXString& s2);
 
+/// Lexicographic greater than or equal operators
+extern FXAPI FXbool operator>=(const FXString& s1,const FXString& s2);
+extern FXAPI FXbool operator>=(const FXString& s1,const FXchar* s2);
+extern FXAPI FXbool operator>=(const FXchar* s1,const FXString& s2);
+
+/// Concatenate FXString and FXString
 extern FXAPI FXString operator+(const FXString& s1,const FXString& s2);
 
+/// Concatenate FXString and a string
 extern FXAPI FXString operator+(const FXString& s1,const FXchar* s2);
-extern FXAPI FXString operator+(const FXString& s1,const FXwchar* s2);
 extern FXAPI FXString operator+(const FXString& s1,const FXnchar* s2);
+extern FXAPI FXString operator+(const FXString& s1,const FXwchar* s2);
 
+/// Concatenate string and FXString
 extern FXAPI FXString operator+(const FXchar* s1,const FXString& s2);
-extern FXAPI FXString operator+(const FXwchar* s1,const FXString& s2);
 extern FXAPI FXString operator+(const FXnchar* s1,const FXString& s2);
+extern FXAPI FXString operator+(const FXwchar* s1,const FXString& s2);
 
+/// Concatenate string and single character
 extern FXAPI FXString operator+(const FXString& s,FXchar c);
 extern FXAPI FXString operator+(FXchar c,const FXString& s);
 
+/// Saving to a stream
 extern FXAPI FXStream& operator<<(FXStream& store,const FXString& s);
+
+/// Load from a stream
 extern FXAPI FXStream& operator>>(FXStream& store,FXString& s);
 
-extern FXAPI FXString FXStringFormat(const FXchar* fmt,...) FX_PRINTF(1,2) ;
-extern FXAPI FXString FXStringVFormat(const FXchar* fmt,va_list args);
-
-extern FXAPI FXString FXStringVal(FXint num,FXint base=10);
-extern FXAPI FXString FXStringVal(FXuint num,FXint base=10);
-extern FXAPI FXString FXStringVal(FXlong num,FXint base=10);
-extern FXAPI FXString FXStringVal(FXulong num,FXint base=10);
-extern FXAPI FXString FXStringVal(FXfloat num,FXint prec=6,FXint exp=MAYBE);
-extern FXAPI FXString FXStringVal(FXdouble num,FXint prec=6,FXint exp=MAYBE);
-
-extern FXAPI FXint FXIntVal(const FXString& s,FXint base=10);
-extern FXAPI FXuint FXUIntVal(const FXString& s,FXint base=10);
-extern FXAPI FXlong FXLongVal(const FXString& s,FXint base=10);
-extern FXAPI FXulong FXULongVal(const FXString& s,FXint base=10);
-extern FXAPI FXfloat FXFloatVal(const FXString& s);
-extern FXAPI FXdouble FXDoubleVal(const FXString& s);
-
-extern FXAPI FXString fromAscii(const FXString& s);
-extern FXAPI FXString toAscii(const FXString& s);
-
-extern FXAPI FXString escape(const FXString& s);
-extern FXAPI FXString unescape(const FXString& s);
-
-extern FXAPI FXString normalize(const FXString& s);
-extern FXAPI FXString decompose(const FXString& s,FXuint kind);
-extern FXAPI FXString compose(const FXString& s,FXuint kind);
-
+/// Convert unix string to dos string
 extern FXAPI FXString& unixToDos(FXString& str);
+
+/// Convert dos string to unix string
 extern FXAPI FXString& dosToUnix(FXString& str);
 
 }

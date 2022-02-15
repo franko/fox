@@ -1,20 +1,65 @@
-.TH adie 1 "30 January 2002"
+.TH adie 1 "April 2021" "Adie Editor" "Adie Text Editor Manual"
+
 .SH NAME
-adie \- The ADvanced Interactive Editor
+Adie \- The ADvanced Interactive Editor
+
+.SH SYNOPSIS
+.B adie
+.RB [ options ]
+.RB [
+.I files...
+.RB ]
+
 .SH INTRODUCTION
-Adie is an extremely fast and convenient programming text editor written using the FOX Toolkit.
-Besides being a nice text editor, Adie is also an extremely convenient file viewer,
-supporting a plethora of methods to move from one file to the next.
+Adie is an extremely fast and convenient programming text editor using the FOX Toolkit.
+The text being edited can be colorized by user-configurable colors and user-configurable syntax
+rules.  However, many programming languages are already supported with supplied syntax coloring
+rules in the "Adie.stx" rules-file.  At this time, syntax rules are available for C, C++, C#,
+Pascal, Python, Fortran, Ada, Ruby, Perl, Lua, Java, JavaScript, Go, Assembler, Shell, Matlab,
+and many more.
+The rule-set used for colorizing is determined either by file-extensions or by file contents, but
+may be forced explicitly if needed.
 
-For each visited file, Adie remembers where in that file you were last looking, and
-which special places in that file have been bookmarked, so you can quickly return to frequently
-visited places.
+For each visited file, Adie remembers the location in that file, bookmarks, and whether custom
+syntax rule-set was used so that next time the file is visited, the user will be positioned
+at the same place in the file, and the text will be colorized like last time.
 
-Project browsing is made easy by optionally displaying a File/Directory browser side by side
-with the text so files may be visited by means of a single click.  Files may also be opened
-simply by highlighting a file name, compiler warning message, or #include directive and hitting
-a single button; Adie will search for the file in the same directory as an already
-loaded file, or in a number of predefined directories (like for example include directories).
+.SH OPTIONS
+.TP
+\fB\-?\fR, \fB\-h\fR, or \fB\--help\fR
+Print summary usage information of all the supported options.
+
+.TP
+\fB\-v\fR \fB\--view\fR
+Open the file for viewing only.  Editor commands which change the text are not allowed.
+
+.TP
+\fB\-e\fR \fB\--edit\fR
+Open the file for editing.
+
+.TP
+\fB\-V\fR \fB\--version\fR
+Display version and license information.
+
+.TP
+\fB\-l\fR\fI <number>\fR \fB\--line\fR\fI <number>\fR
+Jump to given line number after opening file for editing.
+
+.TP
+\fB\-c\fR\fI <number>\fR \fB\--col\fR\fI <number>\fR
+Jump to given column number after opening file for editing; often used in addition to the previous
+parameter to jump to a particular place in the text.
+
+.TP
+\fB\-S\fR\fI <syntax>\fR \fB\--syntax\fR\fI <syntax>\fR
+Load the syntax rules from the given syntax file rather than searching for the syntax file in the
+usual places (a file called "Adie.stx" in one of the $PATH directories, or the syntax file listed
+in the configuration settings).
+
+.TP
+\fB\-L\fR\fI <language>\fR \fB\--lang\fR\fI <language>\fR
+After loading the file, switch to the given programming language for syntax coloring.  The normal rules
+for determining the file's syntax (file extension of content maching) are ignored.
 
 .SH FEATURES
 
@@ -22,6 +67,14 @@ loaded file, or in a number of predefined directories (like for example include 
 
 Preferences are configurable with convenient dialogs.
 
+- Programmable syntax coloring and text styles.
+.br
+- Active or current text line highlighting.
+.br
+- Optional line number display.
+.br
+- Preferences are configurable with convenient dialogs.
+.br
 - Text size only limited by available memory.
 .br
 - Persistent bookmarks may be set for each file.
@@ -86,9 +139,34 @@ Preferences are configurable with convenient dialogs.
 .br
 - Insert files or extract highlighted text to file.
 
+.I Syntax Coloring Features.
+
+- Syntax coloring is programmable, using PERL-like regular expressions.
+.br
+- Syntax patterns are keyed to file extension, file contents, modelines, or explicitly set by user.
+.br
+- Text styles including foreground, background, selection colors, as well as underlining and strike-throughs.
+.br
+- Syntax expressions, text styles, and language modes can be set up from convenient dialogs.
+.br
+- Color fallback mechanism to minimize style setup hassles.
+
+
 .SH AUTHOR
 This manpage was originally written by Bastian Kleineidam <calvin@debian.org>
-for the Debian distribution of the FOX Toolkit.
+for the Debian distribution of the FOX Toolkit, and is currently maintained
+by Jeroen van der Zijp (jeroen@fox-toolkit.com).
 
-The main author of FOX is Jeroen van der Zijp <jeroen@fox-toolkit.org>. For a list of
-contributors see /usr/share/doc/libfox0.99/AUTHORS.
+.SH COPYRIGHT
+Copyright \(co 1997,2020 Jeroen van der Zijp.
+.br
+This is free software; see the source for copying conditions.  There is
+NO warranty; not even for MERCHANTABILITY or FITNESS FOR  A  PARTICULAR
+PURPOSE.
+.SH SEE ALSO
+The Adie text editor is a part of the FOX GUI Toolkit.  Further information
+can be found at:
+
+.B http://www.fox-toolkit.org
+
+The FOX Toolkit website includes detailed information about the Adie Editor.

@@ -3,9 +3,7 @@
 *                                 Test Tab Book                                 *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 1997 by Jeroen van der Zijp.   All Rights Reserved.             *
-*********************************************************************************
-* $Id: tabbook.cpp,v 1.23 2006/02/06 03:06:51 fox Exp $                         *
+* Copyright (C) 1997,2021 by Jeroen van der Zijp.   All Rights Reserved.        *
 ********************************************************************************/
 #include "fx.h"
 
@@ -57,8 +55,8 @@ public:
     ID_TABS_RIGHT,
     ID_HIDESHOW,
     ID_PANEL,
-	ID_PACK_UNIFORM_WIDTH,
-	ID_PACK_NON_UNIFORM_WIDTH,
+    ID_PACK_UNIFORM_WIDTH,
+    ID_PACK_NON_UNIFORM_WIDTH,
     };
 public:
   TabBookWindow(FXApp* a);
@@ -106,7 +104,7 @@ TabBookWindow::TabBookWindow(FXApp *a):FXMainWindow(a,"Tab Book Test",NULL,NULL,
   tabbook=new FXTabBook(contents,this,ID_PANEL,PACK_UNIFORM_WIDTH|PACK_UNIFORM_HEIGHT|LAYOUT_FILL_X|LAYOUT_FILL_Y|LAYOUT_RIGHT);
 
   // First item is a list
-  tab1=new FXTabItem(tabbook,"&Simple List",NULL);
+  tab1=new FXTabItem(tabbook,"&Simple List\tSwitch to first panel",NULL);
 
   listframe=new FXHorizontalFrame(tabbook,FRAME_THICK|FRAME_RAISED);
   boxframe=new FXHorizontalFrame(listframe,FRAME_THICK|FRAME_SUNKEN|LAYOUT_FILL_X|LAYOUT_FILL_Y, 0,0,0,0, 0,0,0,0);
@@ -117,19 +115,19 @@ TabBookWindow::TabBookWindow(FXApp *a):FXMainWindow(a,"Tab Book Test",NULL,NULL,
   simplelist->appendItem("Fourth Entry");
 
   // Second item is a file list
-  tab2=new FXTabItem(tabbook,"F&ile List",NULL);
+  tab2=new FXTabItem(tabbook,"F&ile List\tSwitch to second panel",NULL);
   fileframe=new FXHorizontalFrame(tabbook,FRAME_THICK|FRAME_RAISED);
   boxframe=new FXHorizontalFrame(fileframe,FRAME_THICK|FRAME_SUNKEN|LAYOUT_FILL_X|LAYOUT_FILL_Y, 0,0,0,0, 0,0,0,0);
   filelist=new FXFileList(boxframe,NULL,0,ICONLIST_EXTENDEDSELECT|LAYOUT_FILL_X|LAYOUT_FILL_Y);
 
   // Third item is a directory list
-  tab3=new FXTabItem(tabbook,"T&ree List",NULL);
+  tab3=new FXTabItem(tabbook,"T&ree List\tSwitch to third panel",NULL);
   dirframe=new FXHorizontalFrame(tabbook,FRAME_THICK|FRAME_RAISED);
   boxframe=new FXHorizontalFrame(dirframe,FRAME_THICK|FRAME_SUNKEN|LAYOUT_FILL_X|LAYOUT_FILL_Y, 0,0,0,0, 0,0,0,0);
   dirlist=new FXDirList(boxframe,NULL,0,DIRLIST_SHOWFILES|TREELIST_SHOWS_LINES|TREELIST_SHOWS_BOXES|LAYOUT_FILL_X|LAYOUT_FILL_Y);
 
   // Fourth item is text
-  tab4=new FXTabItem(tabbook,"Text",NULL);
+  tab4=new FXTabItem(tabbook,"Text\tSwitch to fourth panel",NULL);
   textframe=new FXHorizontalFrame(tabbook,FRAME_THICK|FRAME_RAISED);
   boxframe=new FXHorizontalFrame(textframe,FRAME_THICK|FRAME_SUNKEN|LAYOUT_FILL_X|LAYOUT_FILL_Y, 0,0,0,0, 0,0,0,0);
   text=new FXText(boxframe,NULL,0,LAYOUT_FILL_X|LAYOUT_FILL_Y);
@@ -200,19 +198,17 @@ long TabBookWindow::onCmdTabOrient(FXObject*,FXSelector sel,void*){
   }
 
 // Calculate tab header widths based on largest tab label string
-long TabBookWindow::onCmdPackUniformWidth(FXObject*,FXSelector sel,void*){
-  FXuint sid=FXSELID(sel);
-  FXuint packing_hints = tabbook->getPackingHints();
-  packing_hints |= PACK_UNIFORM_WIDTH;
+long TabBookWindow::onCmdPackUniformWidth(FXObject*,FXSelector,void*){
+  FXuint packing_hints=tabbook->getPackingHints();
+  packing_hints|=PACK_UNIFORM_WIDTH;
   tabbook->setPackingHints(packing_hints);
   return 1;
   }
 
 // Calculate tab header width individually for each tab label string
-long TabBookWindow::onCmdPackNonUniformWidth(FXObject*,FXSelector sel,void*){
-  FXuint sid=FXSELID(sel);
-  FXuint packing_hints = tabbook->getPackingHints();
-  packing_hints &= ~PACK_UNIFORM_WIDTH;
+long TabBookWindow::onCmdPackNonUniformWidth(FXObject*,FXSelector,void*){
+  FXuint packing_hints=tabbook->getPackingHints();
+  packing_hints&=~PACK_UNIFORM_WIDTH;
   tabbook->setPackingHints(packing_hints);
   return 1;
   }

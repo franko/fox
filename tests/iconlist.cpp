@@ -3,9 +3,7 @@
 *                           Test Icon List Widget                               *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 1998,2006 by Jeroen van der Zijp.   All Rights Reserved.        *
-*********************************************************************************
-* $Id: iconlist.cpp,v 1.23 2006/01/22 17:59:01 fox Exp $                        *
+* Copyright (C) 1998,2021 by Jeroen van der Zijp.   All Rights Reserved.        *
 ********************************************************************************/
 #include "fx.h"
 #include <stdio.h>
@@ -32,7 +30,6 @@ protected:
   FXTextField*       pattern;
   FXGIFIcon*         big_folder;
   FXGIFIcon*         mini_folder;
-  FXDebugTarget*     dbg;
 protected:
   IconListWindow(){}
 public:
@@ -109,10 +106,8 @@ IconListWindow::IconListWindow(FXApp* a):FXMainWindow(a,"Icon List Test",NULL,NU
   new FXLabel(group,"Icon List WIdget",NULL,LAYOUT_TOP|LAYOUT_FILL_X|FRAME_SUNKEN);
   subgroup=new FXVerticalFrame(group,FRAME_SUNKEN|FRAME_THICK|LAYOUT_FILL_X|LAYOUT_FILL_Y, 0,0,0,0, 0,0,0,0);
 
-  dbg=new FXDebugTarget();
-
   // Icon list on the right
-  iconlist=new FXIconList(subgroup,dbg,1,LAYOUT_FILL_X|LAYOUT_FILL_Y|ICONLIST_DETAILED|ICONLIST_EXTENDEDSELECT);
+  iconlist=new FXIconList(subgroup,NULL,0,LAYOUT_FILL_X|LAYOUT_FILL_Y|ICONLIST_DETAILED|ICONLIST_EXTENDEDSELECT);
   iconlist->appendHeader("Name",NULL,200);
   iconlist->appendHeader("Type",NULL,100);
   iconlist->appendHeader("Size",NULL,60);
@@ -125,7 +120,7 @@ IconListWindow::IconListWindow(FXApp* a):FXMainWindow(a,"Icon List Test",NULL,NU
 
   iconlist->appendItem("Really BIG and wide item to test\tDocument\t10000\tJune 13, 1999\tUser\tSoftware",big_folder,mini_folder);
   for(i=1; i<400; i++){
-    iconlist->appendItem("Filename_"+FXStringVal(i)+"\tDocument\t10000\tJune 13, 1999\tUser\tSoftware",big_folder,mini_folder);
+    iconlist->appendItem("Filename_"+FXString::value(i)+"\tDocument\t10000\tJune 13, 1999\tUser\tSoftware",big_folder,mini_folder);
     }
   iconlist->setCurrentItem(iconlist->getNumItems()-1);
 
@@ -162,7 +157,6 @@ IconListWindow::~IconListWindow(){
   delete sortmenu;
   delete big_folder;
   delete mini_folder;
-  delete dbg;
   }
 
 // Make application

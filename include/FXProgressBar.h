@@ -3,23 +3,20 @@
 *                      P r o g r e s s B a r   W i d g e t                      *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 1998,2006 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 1998,2021 by Jeroen van der Zijp.   All Rights Reserved.        *
 *********************************************************************************
-* This library is free software; you can redistribute it and/or                 *
-* modify it under the terms of the GNU Lesser General Public                    *
-* License as published by the Free Software Foundation; either                  *
-* version 2.1 of the License, or (at your option) any later version.            *
+* This library is free software; you can redistribute it and/or modify          *
+* it under the terms of the GNU Lesser General Public License as published by   *
+* the Free Software Foundation; either version 3 of the License, or             *
+* (at your option) any later version.                                           *
 *                                                                               *
 * This library is distributed in the hope that it will be useful,               *
 * but WITHOUT ANY WARRANTY; without even the implied warranty of                *
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU             *
-* Lesser General Public License for more details.                               *
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the                 *
+* GNU Lesser General Public License for more details.                           *
 *                                                                               *
-* You should have received a copy of the GNU Lesser General Public              *
-* License along with this library; if not, write to the Free Software           *
-* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA.    *
-*********************************************************************************
-* $Id: FXProgressBar.h,v 1.22 2006/01/22 17:58:07 fox Exp $                     *
+* You should have received a copy of the GNU Lesser General Public License      *
+* along with this program.  If not, see <http://www.gnu.org/licenses/>          *
 ********************************************************************************/
 #ifndef FXPROGRESSBAR_H
 #define FXPROGRESSBAR_H
@@ -45,14 +42,14 @@ enum {
 class FXAPI FXProgressBar : public FXFrame {
   FXDECLARE(FXProgressBar)
 protected:
-  FXuint   progress;                      // Integer percentage number
-  FXuint   total;                         // Amount for completion
-  FXint    barsize;                       // Bar size
-  FXFont*  font;
-  FXColor  barBGColor;
-  FXColor  barColor;
-  FXColor  textNumColor;
-  FXColor  textAltColor;
+  FXuint   progress;            // Integer percentage number
+  FXuint   total;               // Amount for completion
+  FXint    barsize;             // Bar size
+  FXFont*  font;                // Text font
+  FXColor  barBGColor;          // Bar background color
+  FXColor  barColor;            // Filled bar color
+  FXColor  textNumColor;        // Text color inside bar background
+  FXColor  textAltColor;        // Text color inside filled bar
 protected:
   FXProgressBar(){}
   void drawInterior(FXDCWindow& dc);
@@ -64,6 +61,10 @@ public:
   long onCmdSetValue(FXObject*,FXSelector,void*);
   long onCmdSetIntValue(FXObject*,FXSelector,void*);
   long onCmdGetIntValue(FXObject*,FXSelector,void*);
+  long onCmdSetLongValue(FXObject*,FXSelector,void*);
+  long onCmdGetLongValue(FXObject*,FXSelector,void*);
+  long onCmdSetIntRange(FXObject*,FXSelector,void*);
+  long onCmdGetIntRange(FXObject*,FXSelector,void*);
 public:
 
   /// Construct progress bar

@@ -3,23 +3,20 @@
 *                        D r i v e   B o x   W i d g e t                        *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 1999,2006 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 1999,2021 by Jeroen van der Zijp.   All Rights Reserved.        *
 *********************************************************************************
-* This library is free software; you can redistribute it and/or                 *
-* modify it under the terms of the GNU Lesser General Public                    *
-* License as published by the Free Software Foundation; either                  *
-* version 2.1 of the License, or (at your option) any later version.            *
+* This library is free software; you can redistribute it and/or modify          *
+* it under the terms of the GNU Lesser General Public License as published by   *
+* the Free Software Foundation; either version 3 of the License, or             *
+* (at your option) any later version.                                           *
 *                                                                               *
 * This library is distributed in the hope that it will be useful,               *
 * but WITHOUT ANY WARRANTY; without even the implied warranty of                *
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU             *
-* Lesser General Public License for more details.                               *
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the                 *
+* GNU Lesser General Public License for more details.                           *
 *                                                                               *
-* You should have received a copy of the GNU Lesser General Public              *
-* License along with this library; if not, write to the Free Software           *
-* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA.    *
-*********************************************************************************
-* $Id: FXDriveBox.h,v 1.17 2006/01/22 17:58:01 fox Exp $                        *
+* You should have received a copy of the GNU Lesser General Public License      *
+* along with this program.  If not, see <http://www.gnu.org/licenses/>          *
 ********************************************************************************/
 #ifndef FXDRIVEBOX_H
 #define FXDRIVEBOX_H
@@ -31,8 +28,7 @@
 namespace FX {
 
 
-class FXIcon;
-class FXFileDict;
+class FXFileAssociations;
 
 /// Drive Box options
 enum {
@@ -44,14 +40,14 @@ enum {
 class FXAPI FXDriveBox : public FXListBox {
   FXDECLARE(FXDriveBox)
 protected:
-  FXFileDict *associations;     // Association table
-  FXIcon     *foldericon;       // Folder icons
-  FXIcon     *cdromicon;        // CDROM icon
-  FXIcon     *harddiskicon;     // Hard disk icon
-  FXIcon     *netdriveicon;     // Networked drive icon
-  FXIcon     *floppyicon;       // Floppy icon
-  FXIcon     *nethoodicon;      // Network neighborhood icon
-  FXIcon     *zipdiskicon;      // Zip drive icon
+  FXFileAssociations *associations;     // Association table
+  FXIcon             *foldericon;       // Folder icons
+  FXIcon             *cdromicon;        // CDROM icon
+  FXIcon             *harddiskicon;     // Hard disk icon
+  FXIcon             *netdriveicon;     // Networked drive icon
+  FXIcon             *floppyicon;       // Floppy icon
+  FXIcon             *nethoodicon;      // Network neighborhood icon
+  FXIcon             *zipdiskicon;      // Zip drive icon
 protected:
   FXDriveBox(){}
   void listDrives();
@@ -91,10 +87,10 @@ public:
   FXString getDrive() const;
 
   /// Change file associations
-  void setAssociations(FXFileDict* assoc);
+  void setAssociations(FXFileAssociations* assoc);
 
   /// Return file associations
-  FXFileDict* getAssociations() const { return associations; }
+  FXFileAssociations* getAssociations() const { return associations; }
 
   /// Destructor
   virtual ~FXDriveBox();

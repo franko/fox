@@ -3,23 +3,20 @@
 *              F O X   P r i v a t e   I n c l u d e   F i l e s                *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 1997,2006 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 1997,2021 by Jeroen van der Zijp.   All Rights Reserved.        *
 *********************************************************************************
-* This library is free software; you can redistribute it and/or                 *
-* modify it under the terms of the GNU Lesser General Public                    *
-* License as published by the Free Software Foundation; either                  *
-* version 2.1 of the License, or (at your option) any later version.            *
+* This library is free software; you can redistribute it and/or modify          *
+* it under the terms of the GNU Lesser General Public License as published by   *
+* the Free Software Foundation; either version 3 of the License, or             *
+* (at your option) any later version.                                           *
 *                                                                               *
 * This library is distributed in the hope that it will be useful,               *
 * but WITHOUT ANY WARRANTY; without even the implied warranty of                *
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU             *
-* Lesser General Public License for more details.                               *
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the                 *
+* GNU Lesser General Public License for more details.                           *
 *                                                                               *
-* You should have received a copy of the GNU Lesser General Public              *
-* License along with this library; if not, write to the Free Software           *
-* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA.    *
-*********************************************************************************
-* $Id: xincs.h,v 1.73 2006/01/22 17:58:14 fox Exp $                             *
+* You should have received a copy of the GNU Lesser General Public License      *
+* along with this program.  If not, see <http://www.gnu.org/licenses/>          *
 ********************************************************************************/
 #ifndef XINCS_H
 #define XINCS_H
@@ -44,6 +41,7 @@
 #endif
 #endif
 
+
 // Basic includes
 #include <stdio.h>
 #include <stdlib.h>
@@ -57,79 +55,97 @@
 #include <time.h>
 #include <locale.h>
 #include <fcntl.h>
-#include <sys/types.h>
 #include <sys/stat.h>
 
-#ifndef WIN32
+// Platform includes
+#if defined(WIN32)  /////////////// Windows /////////////////////////////////////
 
+// Windows 2000 is minimum now
+#if _WIN32_WINNT < 0x0500
+#define _WIN32_WINNT 0x0500
+#endif
+
+// Enforce handle types
+#ifndef STRICT
+#define STRICT 1
+#endif
+
+// Skip some stuff
+#ifndef WIN32_LEAN_AND_MEAN
+#define WIN32_LEAN_AND_MEAN
+#endif
+
+#if (_MSC_VER >= 1500)
+#pragma warning(disable: 4251)
+#endif
+
+// Common headers
+#include <windows.h>            // Core Windows stuff
+#include <winspool.h>           // Printer stuff
+#include <io.h>                 // For _access()
+#ifndef __CYGWIN__
+#include <winsock2.h>
+#endif
+#include <commctrl.h>           // For _TrackMouseEvent
+#include <shellapi.h>
+#include <imm.h>                // IME
+#ifdef UNICODE
+#include <wchar.h>              // Wide character support
+#endif
+#ifndef PROCESS_SUSPEND_RESUME
+#define PROCESS_SUSPEND_RESUME 0x0800
+#endif
+#ifndef INVALID_FILE_ATTRIBUTES
+#define INVALID_FILE_ATTRIBUTES ((DWORD)-1)
+#endif
+#if (_MSC_VER >= 1400)          // VC++ 2005 or newer
+#include <intrin.h>
+#endif
+
+// OpenGL includes
+#ifdef HAVE_GL_H
+#include <GL/gl.h>
+#endif
+//#ifdef _WIN32
+//#include <GL/glext.h>
+//#endif
+#ifndef GLAPIENTRY
+#define GLAPIENTRY
+#endif
+#ifndef GLAPI
+#define GLAPI
+#endif
+#ifndef GL_BGRA
+#define GL_BGRA GL_BGRA_EXT
+#endif
+//#ifdef HAVE_GLU_H
+//#include <GL/glu.h>
+//#endif
+
+#else ////////////////////////////// Unix ///////////////////////////////////////
+
+// Common headers
 #include <grp.h>
 #include <pwd.h>
 #include <sys/ioctl.h>
+#ifdef HAVE_SYS_STATVFS_H
+#include <sys/statvfs.h>
+#endif
+#ifdef HAVE_SYS_MOUNT_H
+#include <sys/mount.h>
+#endif
+#ifdef HAVE_UNISTD_H
+#include <sys/types.h>
+#include <unistd.h>
+#endif
 #ifdef HAVE_SYS_FILIO_H         // Get FIONREAD on Solaris
 #include <sys/filio.h>
-#endif
-#else
-
-#include <io.h>                 // For _access()
-#if defined(_MSC_VER) || defined(__WATCOMC__)		// Microsoft Visual C++ or Watcom C++
-#include <direct.h>
-#define stat _stat
-#define lstat _stat
-#define getcwd _getcwd
-#define mkdir _mkdir
-#define access _access
-#define vsnprintf _vsnprintf
-#define execl _execl
-#define execlp _execlp
-#define execle _execle
-#define execv _execv
-#define execve _execve
-#define execvp _execvp
-#define strdup _strdup
-#define alloca _alloca
-#endif
-#ifdef __BORLANDC__	        // Borland C++ Builder
-#include <dir.h>
-#if __BORLANDC__ <= 0x0530      // C++ Builder 3.0
-#define vsnprintf(a, b, c, d) vsprintf(a, c, d)
-#endif
-#define lstat stat
-#endif
-#ifdef __MINGW32__              // GCC MingW32
-#include <direct.h>
-#define vsnprintf _vsnprintf
-#endif
-#ifdef __SC__                   // Digital Mars C++ Compiler
-#include <direct.h>
-#include <io.h>                 // For _access()
-#define vsnprintf _vsnprintf
-#endif
-
-#endif
-
-#ifdef HAVE_UNISTD_H
-#include <unistd.h>
 #endif
 #ifdef HAVE_SYS_WAIT_H
 #include <sys/wait.h>
 #endif
-#ifdef TIME_WITH_SYS_TIME
-#include <sys/time.h>
-#include <time.h>
-#else
-#ifdef HAVE_SYS_TIME_H
-#include <sys/time.h>
-#else
-#include <time.h>
-#endif
-#endif
 #ifdef HAVE_SYS_PARAM_H
 #include <sys/param.h>
-#endif
-#ifdef HAVE_SYS_SELECT_H
-#if (!defined(__MINGW32__)) && (!defined(hpux))
-#include <sys/select.h>
-#endif
 #endif
 #ifdef HAVE_DIRENT_H
 #include <dirent.h>
@@ -147,60 +163,147 @@
 #include <ndir.h>
 #endif
 #endif
-#ifdef HAVE_XSHM_H
+#ifdef TIME_WITH_SYS_TIME
+#include <sys/time.h>
+#include <time.h>
+#else
+#ifdef HAVE_SYS_TIME_H
+#include <sys/time.h>
+#else
+#include <time.h>
+#endif
+#endif
+#ifdef HAVE_SYS_SELECT_H
+#include <sys/select.h>
+#endif
+#ifdef HAVE_SYS_EPOLL_H
+#include <sys/epoll.h>
+#endif
+#ifdef HAVE_SYS_TIMERFD_H
+#include <sys/timerfd.h>
+#endif
+#ifdef HAVE_SYS_RESOURCE_H
+#include <sys/resource.h>
+#endif
+#ifdef HAVE_SYS_IPC_H
 #include <sys/ipc.h>
+#endif
+#ifdef HAVE_SYS_SHM_H
 #include <sys/shm.h>
 #endif
-#ifdef HAVE_MMAP
+#ifdef HAVE_SYS_MMAN_H
 #include <sys/mman.h>
 #endif
-
-
-// For thread-safe readdir_r, we sometimes need extra
-// space above and beyond the space for dirent itself
-#ifdef HAVE_DIRENT_H
-#ifndef WIN32
-struct fxdirent : public dirent {
-  char buffer[256];
-  };
+#ifdef HAVE_SYS_PSTAT_H
+#include <sys/pstat.h>
+#endif
+#ifdef HAVE_SYS_INOTIFY_H
+#include <sys/inotify.h>
+#endif
+#ifdef HAVE_SYS_SYSCTL_H
+#if !defined(__linux__)
+#include <sys/sysctl.h>
+#endif
+#endif
+#if defined(__APPLE__)
+#include <libkern/OSAtomic.h>
+#endif
+#include <pthread.h>
+#ifdef HAVE_SEMAPHORE_H
+#include <semaphore.h>
+#endif
+#if defined(HAVE_PTHREAD_SETAFFINITY_NP)
+#if defined(__FreeBSD__)
+#include <osreldate.h>
+#if __FreeBSD_version >= 702000
+#include <pthread_np.h>
+#include <sys/cpuset.h>
+typedef cpuset_t   cpu_set_t;
+#endif
+#endif
+#endif
+#if defined(__minix)            // MINIX
+#ifdef sleep
+#undef sleep                    // We mean sleep not __pthread_sleep
+#endif
+#ifdef read
+#undef read                     // We mean read not __pthread_read
+#endif
+#ifdef write
+#undef write                    // We mean write not __pthread_write
+#endif
+#ifdef select
+#undef select                   // We mean select not __pthread_select
 #endif
 #endif
 
-
-// MS-Windows
-#ifdef WIN32
-#ifndef STRICT
-#define STRICT
+// Dynamic library loading
+#ifdef HAVE_SHL_LOAD
+#include <dl.h>                 // HP-UX
+#ifndef	DYNAMIC_PATH
+#define DYNAMIC_PATH 0
 #endif
-#ifndef WIN32_LEAN_AND_MEAN
-#define WIN32_LEAN_AND_MEAN
+#ifndef	BIND_RESTRICTED
+#define BIND_RESTRICTED	0
 #endif
-#include <windows.h>
-#ifndef __CYGWIN__
-#include <winsock2.h>
-#endif
-#include <commctrl.h>           // For _TrackMouseEvent
-#include <shellapi.h>
-
-// X windows includes
 #else
+#ifdef HAVE_DLFCN_H
+#include <dlfcn.h>              // POSIX
+#endif
+#endif
+#ifndef RTLD_GLOBAL
+#define RTLD_GLOBAL 0           // Does not exist on DEC
+#endif
+#ifndef RTLD_NOLOAD             // Older GLIBC libraries
+#define RTLD_NOLOAD 0
+#endif
+#ifndef RTLD_NOW                // for OpenBSD
+#define RTLD_NOW DL_LAZY
+#endif
 
+// SSE Intrinsics only if available and turned on
+#if ((defined(__GNUC__) || defined(__INTEL_COMPILER)) && (defined(__i386__) || defined(__x86_64__)))
+#if defined(HAVE_IMMINTRIN_H)
+#include <immintrin.h>
+#if defined(__SSE__)
+#define FOX_HAS_SSE
+#endif
+#if defined(__SSE2__)
+#define FOX_HAS_SSE2
+#endif
+#if defined(__SSE3__)
+#define FOX_HAS_SSE3
+#endif
+#if defined(__SSSE3__)
+#define FOX_HAS_SSSE3
+#endif
+#if defined(__SSE4_1__) && defined(__SSE4_2__)
+#define FOX_HAS_SSE4
+#endif
+#if defined(__AVX__)
+#define FOX_HAS_AVX
+#endif
+#if defined(__AVX2__)
+#define FOX_HAS_AVX2
+#endif
+#if defined(__FMA__)
+#define FOX_HAS_FMA
+#endif
+#if defined(__F16C__)
+#define FOX_HAS_F16
+#endif
+#endif
+#endif
+
+
+// X11 includes
 #include <X11/X.h>
-#define XRegisterIMInstantiateCallback broken_XRegisterIMInstantiateCallback
-#define XUnregisterIMInstantiateCallback broken_XUnregisterIMInstantiateCallback
-#define XSetIMValues broken_XSetIMValues
 #include <X11/Xlib.h>
-#undef XRegisterIMInstantiateCallback
-#undef XUnregisterIMInstantiateCallback
-#undef XSetIMValues
 #include <X11/Xcms.h>
 #include <X11/Xutil.h>
 #include <X11/Xresource.h>
 #include <X11/Xatom.h>
 #include <X11/cursorfont.h>
-#ifdef HUMMINGBIRD
-#include <X11/XlibXtra.h>
-#endif
 #ifdef HAVE_XSHM_H
 #include <X11/extensions/XShm.h>
 #endif
@@ -216,7 +319,15 @@ struct fxdirent : public dirent {
 #ifdef HAVE_XRANDR_H
 #include <X11/extensions/Xrandr.h>
 #endif
-
+#ifdef HAVE_XFIXES_H
+#include <X11/extensions/Xfixes.h>
+#endif
+#ifdef HAVE_XRENDER_H
+#include <X11/extensions/Xrender.h>
+#endif
+#ifdef HAVE_XINPUT2_H
+#include <X11/extensions/XInput2.h>
+#endif
 #ifndef NO_XIM
 #ifndef XlibSpecificationRelease        // Not defined until X11R5
 #define NO_XIM
@@ -224,17 +335,6 @@ struct fxdirent : public dirent {
 #define NO_XIM
 #endif
 #endif
-
-#ifndef NO_XIM
-extern "C" Bool XRegisterIMInstantiateCallback(Display*,struct _XrmHashBucketRec*,char*,char*,XIMProc,XPointer);
-extern "C" Bool XUnregisterIMInstantiateCallback(Display*,struct _XrmHashBucketRec*,char*,char*,XIMProc,XPointer);
-extern "C" char *XSetIMValues(XIM,...);
-#endif
-
-#endif
-
-
-
 
 // OpenGL includes
 #ifdef HAVE_GL_H
@@ -245,19 +345,15 @@ extern "C" char *XSetIMValues(XIM,...);
 #define HPOGL_SUPPRESS_FAST_API
 #endif
 #include <GL/gl.h>
-#ifndef WIN32
+#ifdef HAVE_GLX_H
 #include <GL/glx.h>
 #endif
 #endif
-#ifndef GLAPIENTRY
-#define GLAPIENTRY
-#endif
-#ifndef GLAPI
-#define GLAPI
-#endif
-#ifdef HAVE_GLU_H
-#include <GL/glu.h>
-#endif
+//#ifdef HAVE_GLU_H
+//#include <GL/glu.h>
+//#endif
+
+#endif //////////////////////////////////////////////////////////////////////////
 
 // Maximum path length
 #ifndef MAXPATHLEN
@@ -268,38 +364,13 @@ extern "C" char *XSetIMValues(XIM,...);
 #elif defined(MAX_PATH)
 #define MAXPATHLEN   MAX_PATH
 #else
-#define MAXPATHLEN   1024
+#define MAXPATHLEN   4096
 #endif
 #endif
 
-// Modes for access(filename,mode) on Windows
-#ifdef WIN32
-#ifndef R_OK
-#define R_OK 4
-#endif
-#ifndef W_OK
-#define W_OK 2
-#endif
-#ifndef X_OK
-#define X_OK 1
-#endif
-#ifndef F_OK
-#define F_OK 0
-#endif
-#endif
-
-// File open modes on Windows
-#ifdef WIN32
-#if defined(_MSC_VER)
-#define O_APPEND _O_APPEND
-#define O_CREAT  _O_CREAT
-#define O_EXCL   _O_EXCL
-#define O_RDONLY _O_RDONLY
-#define O_RDWR   _O_RDWR
-#define O_TRUNC  _O_TRUNC
-#define O_WRONLY _O_WRONLY
-#define O_BINARY _O_BINARY
-#endif
+// Maximum host name length
+#ifndef MAXHOSTNAMELEN
+#define MAXHOSTNAMELEN 256
 #endif
 
 // Some systems don't have it
@@ -313,92 +384,9 @@ extern "C" char *XSetIMValues(XIM,...);
 #define SEEK_END 2
 #endif
 
-// Printer stuff
-#ifdef WIN32
-#include <winspool.h>
-#endif
-
-
-// Wheel support (OS >= W98, OS>=NT4.0)
-#ifdef WIN32
-
-// Missing wheel message id's
-#ifndef SPI_GETWHEELSCROLLLINES
-#define SPI_GETWHEELSCROLLLINES   104
-#endif
-#ifndef WM_MOUSEWHEEL
-#define WM_MOUSEWHEEL             0x020A
-#endif
-
-// GetSystemMetrics parameters missing in header files
-#ifndef SM_XVIRTUALSCREEN
-#define SM_XVIRTUALSCREEN       76
-#endif
-#ifndef SM_YVIRTUALSCREEN
-#define SM_YVIRTUALSCREEN       77
-#endif
-#ifndef SM_CXVIRTUALSCREEN
-#define SM_CXVIRTUALSCREEN      78
-#endif
-#ifndef SM_CYVIRTUALSCREEN
-#define SM_CYVIRTUALSCREEN      79
-#endif
-#ifndef SM_CMONITORS
-#define SM_CMONITORS            80
-#endif
-#ifndef SM_SAMEDISPLAYFORMAT
-#define SM_SAMEDISPLAYFORMAT    81
-#endif
-
-// Missing in CYGWIN
-#ifndef IMAGE_SUBSYSTEM_NATIVE_WINDOWS
-#define IMAGE_SUBSYSTEM_NATIVE_WINDOWS 8
-#endif
-#ifndef IMAGE_SUBSYSTEM_WINDOWS_CE_GUI
-#define IMAGE_SUBSYSTEM_WINDOWS_CE_GUI 9
-#endif
-#endif
-
-
-// IBM VisualAge for C++ 3.5
-#if defined(__IBMCPP__) && defined(WIN32)
-#include <direct.h>
-#include <io.h>         // for _access()
-#define _mkdir(x) mkdir((char *)(x))
-#define _vsnprintf(a, b, c, d) vsprintf(a, c, d)
-#define ICON_SMALL      0
-#define ICON_BIG        1
-#define bool            int
-
-// This declarations come from Microsoft SDK
-#define TME_HOVER       0x00000001
-#define TME_LEAVE       0x00000002
-#define TME_QUERY       0x40000000
-#define TME_CANCEL      0x80000000
-#define HOVER_DEFAULT   0xFFFFFFFF
-#define WM_MOUSEHOVER   0x02A1
-#define WM_MOUSELEAVE   0x02A3
-
-typedef struct tagTRACKMOUSEEVENT {
-    DWORD cbSize;
-    DWORD dwFlags;
-    HWND  hwndTrack;
-    DWORD dwHoverTime;
-} TRACKMOUSEEVENT, *LPTRACKMOUSEEVENT;
-
-WINUSERAPI
-BOOL
-WINAPI
-TrackMouseEvent(
-    IN OUT LPTRACKMOUSEEVENT lpEventTrack);
-
-#ifdef __GL_H__
-#define GL_COLOR_LOGIC_OP                 0x0BF2
-#define GL_POLYGON_OFFSET_POINT           0x2A01
-#define GL_POLYGON_OFFSET_LINE            0x2A02
-WINGDIAPI void APIENTRY glPolygonOffset (GLfloat factor,GLfloat units);
-#endif
-
+// Remove crap
+#ifdef VOID
+#undef VOID
 #endif
 
 #endif

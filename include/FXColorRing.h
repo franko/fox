@@ -3,23 +3,20 @@
 *                         C o l o r R i n g   W i d g e t                       *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 2005,2006 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 2005,2021 by Jeroen van der Zijp.   All Rights Reserved.        *
 *********************************************************************************
-* This library is free software; you can redistribute it and/or                 *
-* modify it under the terms of the GNU Lesser General Public                    *
-* License as published by the Free Software Foundation; either                  *
-* version 2.1 of the License, or (at your option) any later version.            *
+* This library is free software; you can redistribute it and/or modify          *
+* it under the terms of the GNU Lesser General Public License as published by   *
+* the Free Software Foundation; either version 3 of the License, or             *
+* (at your option) any later version.                                           *
 *                                                                               *
 * This library is distributed in the hope that it will be useful,               *
 * but WITHOUT ANY WARRANTY; without even the implied warranty of                *
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU             *
-* Lesser General Public License for more details.                               *
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the                 *
+* GNU Lesser General Public License for more details.                           *
 *                                                                               *
-* You should have received a copy of the GNU Lesser General Public              *
-* License along with this library; if not, write to the Free Software           *
-* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA.    *
-*********************************************************************************
-* $Id: FXColorRing.h,v 1.11 2006/01/22 17:57:59 fox Exp $                       *
+* You should have received a copy of the GNU Lesser General Public License      *
+* along with this program.  If not, see <http://www.gnu.org/licenses/>          *
 ********************************************************************************/
 #ifndef FXCOLORRING_H
 #define FXCOLORRING_H
@@ -35,12 +32,14 @@ class FXImage;
 
 
 /**
-* A Color Ring widget provides an intuitive way to specify a color.
+* A ColorRing widget provides an intuitive way to specify a color.
 * The outer ring of the widget is rotated to control the hue of the color
 * being specified, while the inner triangle varies the color saturation
 * and the brightness of the color.  The color saturation axis of the
 * triangle goes from a fully saturated "pure" color to "pastel" color;
 * the brightness goes from black to a bright color.
+* ColorRing supports justify options to allow control of the placement of
+* the ring inside the rectangular space of the widget.
 */
 class FXAPI FXColorRing : public FXFrame {
   FXDECLARE(FXColorRing)
@@ -142,6 +141,12 @@ public:
 
   /// Return width of hue ring
   FXint getRingWidth() const { return ringwidth; }
+
+  /// Set the current justification mode
+  void setJustify(FXuint style);
+
+  /// Get the current justification mode
+  FXuint getJustify() const;
 
   /// Set status line help text for this color well
   void setHelpText(const FXString& text){ help=text; }

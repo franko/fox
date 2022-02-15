@@ -3,23 +3,20 @@
 *                       U R L   M a n i p u l a t i o n                         *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 2000,2006 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 2000,2021 by Jeroen van der Zijp.   All Rights Reserved.        *
 *********************************************************************************
-* This library is free software; you can redistribute it and/or                 *
-* modify it under the terms of the GNU Lesser General Public                    *
-* License as published by the Free Software Foundation; either                  *
-* version 2.1 of the License, or (at your option) any later version.            *
+* This library is free software; you can redistribute it and/or modify          *
+* it under the terms of the GNU Lesser General Public License as published by   *
+* the Free Software Foundation; either version 3 of the License, or             *
+* (at your option) any later version.                                           *
 *                                                                               *
 * This library is distributed in the hope that it will be useful,               *
 * but WITHOUT ANY WARRANTY; without even the implied warranty of                *
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU             *
-* Lesser General Public License for more details.                               *
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the                 *
+* GNU Lesser General Public License for more details.                           *
 *                                                                               *
-* You should have received a copy of the GNU Lesser General Public              *
-* License along with this library; if not, write to the Free Software           *
-* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA.    *
-*********************************************************************************
-* $Id: FXURL.h,v 1.13 2006/01/22 17:58:12 fox Exp $                             *
+* You should have received a copy of the GNU Lesser General Public License      *
+* along with this program.  If not, see <http://www.gnu.org/licenses/>          *
 ********************************************************************************/
 #ifndef FXURL_H
 #define FXURL_H
@@ -28,22 +25,50 @@ namespace FX {
 
 namespace FXURL {
 
-/// Return host name
-extern FXAPI FXString hostname();
+  /// Encode control characters and characters from set using %-encoding
+  extern FXAPI FXString encode(const FXString& string,const FXchar* set=NULL);
 
-/// Return URL of filename
-extern FXAPI FXString fileToURL(const FXString& file);
+  /// Decode string containing %-encoded characters
+  extern FXAPI FXString decode(const FXString& string);
 
-/// Return filename from URL, empty if url is not a local file
-extern FXAPI FXString fileFromURL(const FXString& url);
+  /// Parse scheme from string containing url
+  extern FXAPI FXString scheme(const FXString& string);
 
-/// Decode url string
-extern FXAPI FXString decode(const FXString& url);
+  /// Parse username from string containing url
+  extern FXAPI FXString username(const FXString& string);
 
-/// Encode url string
-extern FXAPI FXString encode(const FXString& url);
+  /// Parse password from string containing url
+  extern FXAPI FXString password(const FXString& string);
 
-}
+  /// Parse hostname from string containing url
+  extern FXAPI FXString host(const FXString& string);
+
+  /// Parse port number from string containing url
+  extern FXAPI FXint port(const FXString& string,FXint def=0);
+
+  /// Parse path from string containing url
+  extern FXAPI FXString path(const FXString& string);
+
+  /// Parse query from string containing url
+  extern FXAPI FXString query(const FXString& string);
+
+  /// Parse fragment from string containing url
+  extern FXAPI FXString fragment(const FXString& string);
+
+
+  /// Return URL of filename
+  extern FXAPI FXString fileToURL(const FXString& string);
+
+  /// Return filename from URL, empty if url is not a local file
+  extern FXAPI FXString fileFromURL(const FXString& string);
+
+
+  /// Make URI list from array of filenames
+  extern FXAPI FXString filesToURIList(const FXString* files);
+
+  /// Make array of filenames from URI list
+  extern FXAPI FXString* filesFromURIList(const FXString& urilist);
+  }
 
 }
 

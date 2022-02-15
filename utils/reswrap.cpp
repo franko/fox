@@ -3,11 +3,11 @@
 *                R e s o u r c e   W r a p p i n g   U t i l i t y              *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 1997,2006 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 1997,2021 by Jeroen van der Zijp.   All Rights Reserved.        *
 *********************************************************************************
-* This program is free software; you can redistribute it and/or modify          *
+* This program is free software: you can redistribute it and/or modify          *
 * it under the terms of the GNU General Public License as published by          *
-* the Free Software Foundation; either version 2 of the License, or             *
+* the Free Software Foundation, either version 3 of the License, or             *
 * (at your option) any later version.                                           *
 *                                                                               *
 * This program is distributed in the hope that it will be useful,               *
@@ -16,14 +16,12 @@
 * GNU General Public License for more details.                                  *
 *                                                                               *
 * You should have received a copy of the GNU General Public License             *
-* along with this program; if not, write to the Free Software                   *
-* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA.    *
-*********************************************************************************
-* $Id: reswrap.cpp,v 1.17 2006/01/22 17:59:02 fox Exp $                         *
+* along with this program.  If not, see <http://www.gnu.org/licenses/>.         *
 ********************************************************************************/
 #include "stdio.h"
 #include "stdlib.h"
 #include "string.h"
+#include <time.h>
 #include "ctype.h"
 
 
@@ -31,90 +29,150 @@
 /*
 
   Notes:
-  - Updated to version 4.0.
-  - Can now also generate output as a text string.
-  - When ASCII option is used with text string option, it prints human
-    readable C-style string, with non-ASCII characters escaped as appropriate.
-  - Removed PPM feature as that was never really used in FOX.
-  - License changed to GPL from LGPL because this is a standalone program
-    that does not need to be linked to anything.
-  - Added MSDOS mode, useful for wrapping ASCII text.
-  - Added option to keep extension (separated by '_').
-  - Need option to place #include "icons.h" or something into icons.cpp
-  - Always prepend prefix in front of resource name, even if name was overrided
-    because prefix may be namespace name.
+  - Can now also generate output as a (possibly escaped) text string.
+  - Options to suffixes and prefixes; for example:
+
+        reswrap -o icons.cpp  --prefix tb_ --suffix _gif *.gif --suffix _bmp *.bmp
+
+    Given file names a.gif, b.gif, c.bmp, d.bmp, generates names like:
+
+        const unsigned char tb_a_gif[];
+        const unsigned char tb_b_gif[];
+        const unsigned char tb_c_bmp[];
+        const unsigned char tb_d_bmp[];
+
+  - Added ability to switch output files allows both icons.h and icons.cpp
+    to be generated in one command like:
+
+        reswrap -h -o icons.h $(ICONS) -s -i icons.h -o icons.cpp $(ICONS)
+
+    which will kill issues with dependencies; this will also embed the
+    string:
+
+        #include "icons.h"
+
+    Into the icons.cpp file.
 */
+
+#define MODE_DECIMAL   0
+#define MODE_HEX       1
+#define MODE_TEXT      2
+#define MODE_ASCII     3
+
+#define LINKAGE_NONE   0
+#define LINKAGE_EXTERN 1
+#define LINKAGE_STATIC 2
+
+#define TYPE_SOURCE    0
+#define TYPE_HEADER    1
+
+#define MAX_RESOURCE   512
+
+#define NUM_COLUMNS    16
 
 /*******************************************************************************/
 
-#define MODE_DECIMAL  0
-#define MODE_HEX      1
-#define MODE_TEXT     2
+
+const char version[]="6.0.0";
 
 
-const char version[]="4.0.0";
+typedef struct {
+  const char *outfilename;
+  const char *prefix;
+  const char *suffix;
+  const char *scope;
+  const char *header;
+  FILE       *outfile;
+  int         append;
+  int         maxcols;
+  int         colsset;
+  int         linkage;
+  int         filetype;
+  int         declaresize;
+  int         forceunsigned;
+  int         constant;
+  int         comments;
+  int         keepext;
+  int         binary;
+  int         verbose;
+  int         mode;
+  } OPTIONS;
+
+/*******************************************************************************/
+
+/* Print short help */
+static void printhelp(const char *option){
+  printf("reswrap: invalid option: -- %s\n",option);
+  printf("Usage: reswrap [options] [-o[a] outfile] files...\n");
+  printf("Try \"reswrap --help\" for more information.\n");
+  }
 
 
 /* Print some help */
-void printusage(){
-  fprintf(stderr,"Usage: reswrap [options] [-o[a] outfile] files...\n");
-  fprintf(stderr,"Convert files containing images, text, or binary data into C/C++ data arrays.\n");
-  fprintf(stderr,"\n");
-  fprintf(stderr,"Options:\n");
-  fprintf(stderr,"  -o[a] outfile  Output [append] to outfile instead of stdout\n");
-  fprintf(stderr,"  -h             Print help\n");
-  fprintf(stderr,"  -v             Print version number\n");
-  fprintf(stderr,"  -d             Output as decimal\n");
-  fprintf(stderr,"  -m             Read files with MS-DOS mode (default is binary)\n");
-  fprintf(stderr,"  -x             Output as hex (default)\n");
-  fprintf(stderr,"  -t[a]          Output as [ascii] text string\n");
-  fprintf(stderr,"  -e             Generate external reference declaration\n");
-  fprintf(stderr,"  -i             Build an include file\n");
-  fprintf(stderr,"  -k             Keep extension, separated by underscore\n");
-  fprintf(stderr,"  -s             Suppress header in output file\n");
-  fprintf(stderr,"  -p prefix      Place prefix in front of names of declarations and definitions\n");
-  fprintf(stderr,"  -n namespace   Place declarations and definitions inside given namespace\n");
-  fprintf(stderr,"  -c cols        Change number of columns in output to cols\n");
-  fprintf(stderr,"  -u             Force unsigned char even for text mode\n");
-  fprintf(stderr,"  -z             Output size in declarations\n");
-  fprintf(stderr,"\n");
-  fprintf(stderr,"Each file may be preceded by the following extra option:\n");
-  fprintf(stderr,"  -r name        Override resource name of following resource file\n");
-  fprintf(stderr,"\n");
+static void printusage(){
+  printf("Usage: reswrap [options] [-o[a] outfile] files...\n");
+  printf("Convert files containing images, text, or binary data into C/C++ data arrays.\n");
+  printf("\n");
+  printf("Options:\n");
+  printf("  -?, --help                Print this help\n");
+  printf("  -v, --version             Print version number\n");
+  printf("  -h, --header              Create header file containing only declarations\n");
+  printf("  -s, --source              Create source file containing data arrays (default)\n");
+  printf("  -V, --verbose             Show which resource files are being processed\n");
+  printf("  -i file, --include file   Generate #include \"file\" in output file\n");
+  printf("  -o file, --output file    Output to file instead of stdout\n");
+  printf("  -oa file, --append file   Append to file instead of stdout\n");
+  printf("  -e, --extern              Generate extern reference declarations (default for headers)\n");
+  printf("  -S, --static              Generate static reference declarations\n");
+  printf("  -z, --size                Output size in array declarations\n");
+  printf("  -d, --decimal             Output as decimal\n");
+  printf("  -x, --hex                 Output as hex (default)\n");
+  printf("  -t, --text                Output as hexadecimal text string\n");
+  printf("  -a, --ascii               Output as ascii text string\n");
+  printf("  -k, --keep-ext            Keep file extension, replacing period by underscore\n");
+  printf("  -nk, --drop-ext           Drop extension (default)\n");
+  printf("  -m, --msdos               Read files with MS-DOS mode\n");
+  printf("  -b, --binary              Read files using binary mode (default)\n");
+  printf("  -u, --unsigned            Force unsigned char even for text mode\n");
+  printf("  -N  --no-const            Don't output const specifier in declaration\n");
+  printf("  -C  --const               Force const specifier in declaration\n");
+  printf("  -cc, --comments           Add comments to the output files (default)\n");
+  printf("  -nc, --no-comments        Remove comments from the output files\n");
+  printf("  -p name, --prefix name    Prepend name in front of names of declarations and definitions\n");
+  printf("  -f name, --suffix name    Append name in after names of declarations and definitions\n");
+  printf("  -n name, --namespace name Place declarations and definitions inside namespace name\n");
+  printf("  -c cols, --columns cols   Change number of columns in output from %d to cols\n",NUM_COLUMNS);
+  printf("  -r name, --resource name  Override resource name of following resource file\n");
+  printf("\n");
   }
 
 
 /* Print version information */
-void printversion(){
-  fprintf(stderr,"Reswrap %s %s.\n",version,__DATE__);
-  fprintf(stderr,"Copyright (C) 1997,2005 Jeroen van der Zijp. All Rights Reserved.\n");
-  fprintf(stderr,"Please visit: http://www.fox-toolkit.org for further information.\n");
-  fprintf(stderr,"\n");
-  fprintf(stderr,"This program is free software; you can redistribute it and/or modify\n");
-  fprintf(stderr,"it under the terms of the GNU General Public License as published by\n");
-  fprintf(stderr,"the Free Software Foundation; either version 2 of the License, or\n");
-  fprintf(stderr,"(at your option) any later version.\n");
-  fprintf(stderr,"\n");
-  fprintf(stderr,"This program is distributed in the hope that it will be useful,\n");
-  fprintf(stderr,"but WITHOUT ANY WARRANTY; without even the implied warranty of\n");
-  fprintf(stderr,"MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the\n");
-  fprintf(stderr,"GNU General Public License for more details.\n");
-  fprintf(stderr,"\n");
-  fprintf(stderr,"You should have received a copy of the GNU General Public License\n");
-  fprintf(stderr,"along with this program; if not, write to the Free Software\n");
-  fprintf(stderr,"Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA.\n");
+static void printversion(){
+  printf("reswrap %s\n\n",version);
+  printf("Copyright (C) 1997,2021 Jeroen van der Zijp. All Rights Reserved.\n");
+  printf("Please visit: http://www.fox-toolkit.org for further information.\n");
+  printf("\n");
+  printf("This program is free software: you can redistribute it and/or modify\n");
+  printf("it under the terms of the GNU General Public License as published by\n");
+  printf("the Free Software Foundation, either version 3 of the License, or\n");
+  printf("(at your option) any later version.\n");
+  printf("\n");
+  printf("This program is distributed in the hope that it will be useful,\n");
+  printf("but WITHOUT ANY WARRANTY; without even the implied warranty of\n");
+  printf("MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the\n");
+  printf("GNU General Public License for more details.\n");
+  printf("\n");
+  printf("You should have received a copy of the GNU General Public License\n");
+  printf("along with this program.  If not, see <http://www.gnu.org/licenses/>.\n");
   }
 
+/*******************************************************************************/
 
 /* Build resource name */
-void resourcename(char *name,const char* prefix,const char* filename,int keepdot){
+static const char* resourcename(char *name,const char* filename,int keepdot){
   const char* begin=name;
   const char* ptr;
-
-  /* Copy prefix */
-  while(*prefix){
-    *name++=*prefix++;
-    }
 
   /* Get name only; take care of mixed path separator characters on mswindows */
   if((ptr=strrchr(filename,'/'))!=0) filename=ptr;
@@ -137,335 +195,505 @@ void resourcename(char *name,const char* prefix,const char* filename,int keepdot
     filename++;
     }
   *name=0;
+  return begin;
   }
 
 
-/* Main */
-int main(int argc,char **argv){
-  char *outfilename,*resfilename;
-  FILE *resfile,*outfile;
-  int i,b,first,col,append,maxcols,external,header,include,mode,colsset,ascii,msdos,keepext,hex,forceunsigned,declaresize,resfilesize;
-  const char *thenamespace,*theprefix;
-  char resname[1000];
-
-  /* Initialize */
-  outfilename=0;
-  outfile=stdout;
-  maxcols=16;
-  colsset=0;
-  external=0;
-  header=1;
-  include=0;
-  ascii=0;
-  mode=MODE_HEX;
-  msdos=0;
-  keepext=0;
-  thenamespace=0;
-  theprefix="";
-  append=0;
-  forceunsigned=0;
-  declaresize=0;
-
-  /* Check arguments */
-  if(argc<2){
-    printusage();
-    exit(1);
-    }
-
-  /* Process all options first, except for the -r option */
-  for(i=1; i<argc && argv[i][0]=='-' && argv[i][1]!='r'; i++){
-
-    /* Change output file */
-    if(argv[i][1]=='o'){
-      if(argv[i][2]=='a') append=1;
-      i++;
-      if(i>=argc){
-        fprintf(stderr,"reswrap: missing argument for -o option\n");
+/* Process prologue */
+static void prologue(OPTIONS* opts){
+  char date[100];
+  time_t clock;
+  if(opts->outfilename){
+    if(opts->append){
+      opts->outfile=fopen(opts->outfilename,"a");
+      if(!opts->outfile){
+        fprintf(stderr,"reswrap: unable to open output file: %s\n",opts->outfilename);
         exit(1);
         }
-      outfilename=argv[i];
+      if(ftell(opts->outfile)>0) return;
       }
-
-    /* Print help */
-    else if(argv[i][1]=='h'){
-      printusage();
-      exit(0);
-      }
-
-    /* Print version */
-    else if(argv[i][1]=='v'){
-      printversion();
-      exit(0);
-      }
-
-    /* Switch to decimal */
-    else if(argv[i][1]=='d'){
-      mode=MODE_DECIMAL;
-      if(!colsset) maxcols=10;
-      }
-
-    /* Switch to hex */
-    else if(argv[i][1]=='x'){
-      mode=MODE_HEX;
-      if(!colsset) maxcols=16;
-      }
-
-    /* Switch to text */
-    else if(argv[i][1]=='t'){
-      if(argv[i][2]=='a') ascii=1;
-      mode=MODE_TEXT;
-      if(!colsset) maxcols=80;
-      }
-
-    /* Suppress header */
-    else if(argv[i][1]=='s'){
-      header=0;
-      }
-
-    /* Force unsigned */
-    else if(argv[i][1]=='u'){
-      forceunsigned=1;
-      }
-
-    /* Declare size */
-    else if(argv[i][1]=='z'){
-      declaresize=1;
-      }
-
-    /* Generate as external reference */
-    else if(argv[i][1]=='e'){
-      external=1;
-      }
-
-    /* Building include file implies also extern */
-    else if(argv[i][1]=='i'){
-      include=1;
-      external=1;
-      }
-
-    /* Read resource with MS-DOS mode */
-    else if(argv[i][1]=='m'){
-      msdos=1;
-      }
-
-    /* Keep extension */
-    else if(argv[i][1]=='k'){
-      keepext=1;
-      }
-
-    /* Change number of columns */
-    else if(argv[i][1]=='c'){
-      i++;
-      if(i>=argc){
-        fprintf(stderr,"reswrap: missing argument for -c option\n");
-        exit(1);
-        }
-      if(sscanf(argv[i],"%d",&maxcols)==1 && maxcols<1){
-        fprintf(stderr,"reswrap: illegal argument for number of columns\n");
-        exit(1);
-        }
-      colsset=1;
-      }
-
-    /* Embed in namespace */
-    else if(argv[i][1]=='n'){
-      i++;
-      if(i>=argc){
-        fprintf(stderr,"reswrap: missing argument for -n option\n");
-        exit(1);
-        }
-      thenamespace=argv[i];
-      }
-
-    /* Prefix in front of declarations */
-    else if(argv[i][1]=='p'){
-      i++;
-      if(i>=argc){
-        fprintf(stderr,"reswrap: missing argument for -p option\n");
-        exit(1);
-        }
-      theprefix=argv[i];
-      }
-    }
-
-  /* To file instead out stdout */
-  if(outfilename){
-    outfile=fopen(outfilename,append?"a":"w");
-    if(!outfile){
-      fprintf(stderr,"reswrap: unable to open output file %s\n",outfilename);
-      exit(1);
-      }
-    }
-
-  /* Output header */
-  if(header){
-    fprintf(outfile,"/* Generated by reswrap version %s */\n\n",version);
-    }
-
-  /* Output namespace begin */
-  if(thenamespace){
-    fprintf(outfile,"namespace %s {\n\n",thenamespace);
-    }
-
-  /* Process resource files next */
-  for(; i<argc; i++){
-
-    /* Resource name override */
-    if(argv[i][0]=='-' && argv[i][1]=='r'){
-
-      /* Must have extra argument */
-      if(++i>=argc){
-        fprintf(stderr,"reswrap: missing name argument for -r option\n");
-        exit(1);
-        }
-
-      /* Get resource name */
-      resourcename(resname,theprefix,argv[i],keepext);
-
-      /* Must have following file name */
-      if(++i>=argc){
-        fprintf(stderr,"reswrap: missing resource file name\n");
-        exit(1);
-        }
-
-      /* Get resource file name */
-      resfilename=argv[i];
-      }
-
     else{
-
-      /* Get resource file name */
-      resfilename=argv[i];
-
-      /* Get resource name */
-      resourcename(resname,theprefix,resfilename,keepext);
+      opts->outfile=fopen(opts->outfilename,"w");
+      if(!opts->outfile){
+        fprintf(stderr,"reswrap: unable to open output file: %s\n",opts->outfilename);
+        exit(1);
+        }
       }
+    }
+  if(opts->comments){
+    clock=time(NULL);
+    strftime(date,sizeof(date),"%Y/%m/%d %H:%M:%S",localtime(&clock));
+    fprintf(opts->outfile,"/*********** Generated on %s by reswrap version %s *********/\n\n",date,version);
+    }
+  if(opts->header){
+    fprintf(opts->outfile,"#include \"%s\"\n\n",opts->header);
+    }
+  if(opts->scope){
+    fprintf(opts->outfile,"namespace %s {\n\n",opts->scope);
+    }
+  }
 
 
-    /* Check resource name not empty */
-    if(*resname==0){
-      fprintf(stderr,"reswrap: empty resource name for %s\n",resfilename);
-      exit(1);
-      }
+/* Process epilogue */
+static void epilogue(OPTIONS* opts){
+  if(opts->scope){
+    fprintf(opts->outfile,"}\n");
+    }
+  if(opts->outfile!=stdout){
+    fclose(opts->outfile);
+    opts->outfile=stdout;
+    }
+  }
 
-    /* Open resource file; always open as binary */
-    resfile=fopen(resfilename,"rb");
-    if(!resfile){
-      fprintf(stderr,"reswrap: unable to open input file %s\n",resfilename);
-      exit(1);
-      }
+
+/* Process resource file */
+static int processresourcefile(const char* filename,const char* name,OPTIONS* opts){
+  const char *typestr="unsigned char ";
+  const char *sizestr="[]";
+  const char *conststr="";
+  const char *linkstr="";
+  char resource[MAX_RESOURCE],size[10];
+  int ressize,first,col,hex,b;
+  FILE *file;
+
+  /* Open resource file; always open as binary */
+  file=fopen(filename,"rb");
+  if(file){
 
     /* Get the size */
-    fseek(resfile,0,SEEK_END);
-    resfilesize=ftell(resfile);
-    fseek(resfile,0,SEEK_SET);
+    fseek(file,0,SEEK_END);
+    ressize=ftell(file);
+    fseek(file,0,SEEK_SET);
 
     /* Add one if text mode, for end of string */
-    if(mode==MODE_TEXT){
-      resfilesize++;
+    if(opts->mode>=MODE_TEXT){
+      ressize++;
       }
 
     /* Output header */
-    if(header){
-      fprintf(outfile,"/* created by reswrap from file %s */\n",resfilename);
+    if(opts->comments){
+      fprintf(opts->outfile,"/* Created by reswrap from file %s */\n",filename);
       }
 
-    /* Generate external reference for #include's */
-    if(external){ fprintf(outfile,"extern "); }
+    /* Generate external reference */
+    if(opts->linkage==LINKAGE_EXTERN){
+      linkstr="extern ";
+      }
+
+    /* Generate static reference */
+    else if(opts->linkage==LINKAGE_STATIC){
+      linkstr="static ";
+      }
+
+    /* Generate const declaration */
+    if(opts->constant){
+      conststr="const ";
+      }
 
     /* In text mode, output a 'char' declaration */
-    if((mode==MODE_TEXT) && !forceunsigned){
-      if(declaresize){
-        fprintf(outfile,"const char %s[%d]",resname,resfilesize);
-        }
-      else{
-        fprintf(outfile,"const char %s[]",resname);
-        }
+    if((opts->mode>=MODE_TEXT) && !opts->forceunsigned){
+      typestr="char ";
       }
 
-    /* In binary mode, output a 'unsigned char' declaration */
-    else{
-      if(declaresize){
-        fprintf(outfile,"const unsigned char %s[%d]",resname,resfilesize);
-        }
-      else{
-        fprintf(outfile,"const unsigned char %s[]",resname);
-        }
+    /* Compute resource name from filename if no override */
+    if(!name){
+      name=resourcename(resource,filename,opts->keepext);
       }
 
-    /* Generate resource array */
-    if(!include){
-      if(mode==MODE_TEXT){
+    /* Size specifier */
+    if(opts->declaresize){
+      sprintf(size,"[%d]",ressize);
+      sizestr=size;
+      }
+
+    /* Generate resource name */
+    fprintf(opts->outfile,"%s%s%s%s%s%s%s",linkstr,conststr,typestr,opts->prefix,name,opts->suffix,sizestr);
+
+    /* Generating source file */
+    if(opts->filetype==TYPE_SOURCE){
+
+      /* Text Mode */
+      if(opts->mode>=MODE_TEXT){
         col=0;
         hex=0;
-        fprintf(outfile,"=\n  \"");
-        while((b=fgetc(resfile))!=EOF){
-          if(msdos && (b=='\r')) continue;
-          if(col>=maxcols){
-            fprintf(outfile,"\"\n  \"");
+        fprintf(opts->outfile,"=\n  \"");
+        while((b=fgetc(file))!=EOF){
+          if(!opts->binary && (b=='\r')) continue;
+          if(col>=opts->maxcols && opts->maxcols){
+            fprintf(opts->outfile,"\"\n  \"");
             col=0;
             }
-          if(ascii){
-            if(b=='\\'){ fprintf(outfile,"\\\\"); col+=2; hex=0; }
-            else if(b=='\a'){ fprintf(outfile,"\\a"); col+=2; hex=0; }
-            else if(b=='\t'){ fprintf(outfile,"\\t"); col+=2; hex=0; }
-            else if(b=='\r'){ fprintf(outfile,"\\r"); col+=2; hex=0; }
-            else if(b=='\f'){ fprintf(outfile,"\\f"); col+=2; hex=0; }
-            else if(b=='\v'){ fprintf(outfile,"\\v"); col+=2; hex=0; }
-            else if(b=='\"'){ fprintf(outfile,"\\\""); col+=2; hex=0; }
-            else if(b=='\n'){ fprintf(outfile,"\\n\"\n  \""); col=0; hex=0; }
-            else if(b<32 || b>=127){ fprintf(outfile,"\\x%02x",b); col+=4; hex=1; }
-            else if(hex && isxdigit(b)){ fprintf(outfile,"\\x%02x",b); col+=4; hex=1; }
-            else{ fprintf(outfile,"%c",b); col+=1; hex=0; }
+          if(opts->mode==MODE_ASCII){
+            if(b=='\\'){ fprintf(opts->outfile,"\\\\"); col+=2; hex=0; }
+            else if(b=='\a'){ fprintf(opts->outfile,"\\a"); col+=2; hex=0; }
+            else if(b=='\t'){ fprintf(opts->outfile,"\\t"); col+=2; hex=0; }
+            else if(b=='\r'){ fprintf(opts->outfile,"\\r"); col+=2; hex=0; }
+            else if(b=='\f'){ fprintf(opts->outfile,"\\f"); col+=2; hex=0; }
+            else if(b=='\v'){ fprintf(opts->outfile,"\\v"); col+=2; hex=0; }
+            else if(b=='\"'){ fprintf(opts->outfile,"\\\""); col+=2; hex=0; }
+            else if(b=='\n'){ fprintf(opts->outfile,"\\n\"\n  \""); col=0; hex=0; }
+            else if(b<32 || b>=127){ fprintf(opts->outfile,"\\x%02x",b); col+=4; hex=1; }
+            else if(hex && isxdigit(b)){ fprintf(opts->outfile,"\\x%02x",b); col+=4; hex=1; }
+            else{ fprintf(opts->outfile,"%c",b); col+=1; hex=0; }
             }
           else{
-            fprintf(outfile,"\\x%02x",b); col+=4;
+            fprintf(opts->outfile,"\\x%02x",b); col+=4;
             }
           }
-        fprintf(outfile,"\"\n  ");
+        fprintf(opts->outfile,"\"\n  ");
         }
+
+      /* Normal Mode */
       else{
         col=0;
         first=1;
-        fprintf(outfile,"={\n  ");
-        while((b=fgetc(resfile))!=EOF){
-          if(msdos && (b=='\r')) continue;
+        fprintf(opts->outfile,"={");
+        if(opts->maxcols) fprintf(opts->outfile,"\n  ");
+        while((b=fgetc(file))!=EOF){
+          if(!opts->binary && (b=='\r')) continue;
           if(!first){
-            fprintf(outfile,",");
+            fprintf(opts->outfile,",");
             }
-          if(col>=maxcols){
-            fprintf(outfile,"\n  ");
+          if(col>=opts->maxcols && opts->maxcols){
+            fprintf(opts->outfile,"\n  ");
             col=0;
             }
-          if(mode==MODE_HEX)
-            fprintf(outfile,"0x%02x",b);
-          else
-            fprintf(outfile,"%3d",b);
+          if(opts->mode==MODE_HEX){
+            fprintf(opts->outfile,"0x%02x",b);
+            }
+          else{
+            fprintf(opts->outfile,"%3d",b);
+            }
           first=0;
           col++;
           }
-        fprintf(outfile,"\n  }");
+        if(opts->maxcols) fprintf(opts->outfile,"\n  ");
+        fprintf(opts->outfile,"}");
         }
       }
 
-    fprintf(outfile,";\n\n");
+    /* Append ; */
+    fprintf(opts->outfile,";\n\n");
+
+    /* Verbose mode */
+    if(opts->verbose){
+      fprintf(stderr,"%-30s  %s%s%s%s%s%s%s\n",filename,linkstr,conststr,typestr,opts->prefix,name,opts->suffix,sizestr);
+      }
 
     /* Close resource file */
-    fclose(resfile);
+    fclose(file);
+    return 1;
+    }
+  return 0;
+  }
+
+/*******************************************************************************/
+
+/* Main */
+int main(int argc,char **argv){
+  const char *resource=0;
+  int         needprologue=1;
+  int         needepilogue=0;
+  OPTIONS     opts;
+  int         arg;
+
+  /* Initialize */
+  opts.outfilename=0;
+  opts.prefix="";
+  opts.suffix="";
+  opts.scope=0;
+  opts.append=0;
+  opts.header=0;
+  opts.constant=1;
+  opts.outfile=stdout;
+  opts.maxcols=NUM_COLUMNS;
+  opts.colsset=0;
+  opts.linkage=LINKAGE_NONE;
+  opts.filetype=TYPE_SOURCE;
+  opts.declaresize=0;
+  opts.forceunsigned=0;
+  opts.comments=1;
+  opts.keepext=0;
+  opts.binary=1;
+  opts.verbose=0;
+  opts.mode=MODE_HEX;
+
+  /* Process all options first, except for the -r option */
+  for(arg=1; arg<argc; arg++){
+
+    /* Handle options */
+    if(argv[arg][0]=='-'){
+
+      /* Change output file */
+      if(strcmp(argv[arg],"-o")==0 || strcmp(argv[arg],"--output")==0){
+
+        /* Output epilogue */
+        if(needepilogue){
+          epilogue(&opts);
+          }
+
+        /* Check if argument provided */
+        if(++arg>=argc){
+          fprintf(stderr,"reswrap: missing argument for -o or --output option\n");
+          exit(1);
+          }
+
+        /* Get new filename */
+        opts.outfilename=argv[arg];
+        opts.append=0;
+        needprologue=1;
+        needepilogue=0;
+        }
+
+      /* Change output file and append */
+      else if(strcmp(argv[arg],"-oa")==0 || strcmp(argv[arg],"--append")==0){
+
+        /* Output epilogue */
+        if(needepilogue){
+          epilogue(&opts);
+          }
+
+        /* Check if argument provided */
+        if(++arg>=argc){
+          fprintf(stderr,"reswrap: missing argument for -oa or --append option\n");
+          exit(1);
+          }
+
+        /* Get new filename */
+        opts.outfilename=argv[arg];
+        opts.append=1;
+        needprologue=1;
+        needepilogue=1;
+        }
+
+      /* Print help */
+      else if(strcmp(argv[arg],"-?")==0 || strcmp(argv[arg],"--help")==0 || (strcmp(argv[arg],"-h")==0 && arg==argc-1)){
+        printusage();
+        exit(0);
+        }
+
+      /* Building include file */
+      else if(strcmp(argv[arg],"-h")==0 || strcmp(argv[arg],"--header")==0){
+        opts.filetype=TYPE_HEADER;
+        opts.linkage=LINKAGE_EXTERN;
+        }
+
+      /* Building source file */
+      else if(strcmp(argv[arg],"-s")==0 || strcmp(argv[arg],"--source")==0){
+        opts.filetype=TYPE_SOURCE;
+        opts.linkage=LINKAGE_NONE;
+        }
+
+      /* Include header file */
+      else if(strcmp(argv[arg],"-i")==0 || strcmp(argv[arg],"--include")==0){
+        if(++arg>=argc){
+          fprintf(stderr,"reswrap: missing filename for -i or --include option\n");
+          exit(1);
+          }
+        opts.header=0;
+        if(strcmp(argv[arg],"-")!=0){
+          opts.header=argv[arg];
+          }
+        }
+
+      /* Print version */
+      else if(strcmp(argv[arg],"--version")==0){
+        printversion();
+        exit(0);
+        }
+
+      /* Print version */
+      else if(strcmp(argv[arg],"-v")==0){
+        printf("reswrap %s\n",version);
+        exit(0);
+        }
+
+      /* Switch to decimal */
+      else if(strcmp(argv[arg],"-d")==0 || strcmp(argv[arg],"--decimal")==0){
+        opts.mode=MODE_DECIMAL;
+        if(!opts.colsset) opts.maxcols=10;
+        }
+
+      /* Switch to hex */
+      else if(strcmp(argv[arg],"-x")==0 || strcmp(argv[arg],"--hex")==0){
+        opts.mode=MODE_HEX;
+        if(!opts.colsset) opts.maxcols=16;
+        }
+
+      /* Switch to hexadecimal text */
+      else if(strcmp(argv[arg],"-t")==0 || strcmp(argv[arg],"--text")==0){
+        opts.mode=MODE_TEXT;
+        if(!opts.colsset) opts.maxcols=80;
+        }
+
+      /* Switch to ascii text */
+      else if(strcmp(argv[arg],"-a")==0 || strcmp(argv[arg],"--ascii")==0){
+        opts.mode=MODE_ASCII;
+        if(!opts.colsset) opts.maxcols=80;
+        }
+
+      /* Switch to ascii text */
+      else if(strcmp(argv[arg],"-ta")==0){
+        fprintf(stderr,"reswrap: -ta option is deprecated; please use -a or --ascii\n");
+        opts.mode=MODE_ASCII;
+        if(!opts.colsset) opts.maxcols=80;
+        }
+
+      /* Generate as external reference */
+      else if(strcmp(argv[arg],"-e")==0 || strcmp(argv[arg],"--extern")==0){
+        opts.linkage=LINKAGE_EXTERN;
+        }
+
+      /* Generate as static reference */
+      else if(strcmp(argv[arg],"-S")==0 || strcmp(argv[arg],"--static")==0){
+        opts.linkage=LINKAGE_STATIC;
+        }
+
+      /* Force unsigned */
+      else if(strcmp(argv[arg],"-u")==0 || strcmp(argv[arg],"--unsigned")==0){
+        opts.forceunsigned=1;
+        }
+
+      /* No constant declaration */
+      else if(strcmp(argv[arg],"-N")==0 || strcmp(argv[arg],"--no-const")==0){
+        opts.constant=0;
+        }
+
+      /* Force constant declaration */
+      else if(strcmp(argv[arg],"-C")==0 || strcmp(argv[arg],"--const")==0){
+        opts.constant=1;
+        }
+
+      /* Declare size */
+      else if(strcmp(argv[arg],"-z")==0 || strcmp(argv[arg],"--size")==0){
+        opts.declaresize=1;
+        }
+
+      /* Read resource with MS-DOS mode */
+      else if(strcmp(argv[arg],"-m")==0 || strcmp(argv[arg],"--msdos")==0){
+        opts.binary=0;
+        }
+
+      /* Read resource with BINARY mode */
+      else if(strcmp(argv[arg],"-b")==0 || strcmp(argv[arg],"--binary")==0){
+        opts.binary=1;
+        }
+
+      /* Keep extension */
+      else if(strcmp(argv[arg],"-k")==0 || strcmp(argv[arg],"--keep-ext")==0){
+        opts.keepext=1;
+        }
+
+      /* Base name only */
+      else if(strcmp(argv[arg],"-nk")==0 || strcmp(argv[arg],"--drop-ext")==0){
+        opts.keepext=0;
+        }
+
+      /* Change number of columns */
+      else if(strcmp(argv[arg],"-c")==0 || strcmp(argv[arg],"--columns")==0){
+        if(++arg>=argc){
+          fprintf(stderr,"reswrap: missing argument for -c or --columns option\n");
+          exit(1);
+          }
+        if(sscanf(argv[arg],"%d",&opts.maxcols)==1 && opts.maxcols<0){
+          fprintf(stderr,"reswrap: illegal argument for number of columns\n");
+          exit(1);
+          }
+        opts.colsset=1;
+        }
+
+      /* Add comments */
+      else if(strcmp(argv[arg],"-cc")==0 || strcmp(argv[arg],"--comments")==0){
+        opts.comments=1;
+        }
+
+      /* No comments */
+      else if(strcmp(argv[arg],"-nc")==0 || strcmp(argv[arg],"--no-comments")==0){
+        opts.comments=0;
+        }
+
+      /* Verbose */
+      else if(strcmp(argv[arg],"-V")==0 || strcmp(argv[arg],"--verbose")==0){
+        opts.verbose=1;
+        }
+
+      /* Embed in namespace */
+      else if(strcmp(argv[arg],"-n")==0 || strcmp(argv[arg],"--namespace")==0){
+        if(++arg>=argc){
+          fprintf(stderr,"reswrap: missing argument for -n option\n");
+          exit(1);
+          }
+        opts.scope=0;
+        if(strcmp(argv[arg],"-")!=0){
+          opts.scope=argv[arg];
+          }
+        }
+
+      /* Prefix in front of declarations */
+      else if(strcmp(argv[arg],"-p")==0 || strcmp(argv[arg],"--prefix")==0){
+        if(++arg>=argc){
+          fprintf(stderr,"reswrap: missing argument for -p or --prefix option\n");
+          exit(1);
+          }
+        opts.prefix="";
+        if(strcmp(argv[arg],"-")!=0){
+          opts.prefix=argv[arg];
+          }
+        }
+
+      /* Suffix behind declarations */
+      else if(strcmp(argv[arg],"-f")==0 || strcmp(argv[arg],"--suffix")==0){
+        if(++arg>=argc){
+          fprintf(stderr,"reswrap: missing argument for -f or --suffix option\n");
+          exit(1);
+          }
+        opts.suffix="";
+        if(strcmp(argv[arg],"-")!=0){
+          opts.suffix=argv[arg];
+          }
+        }
+
+      /* Explicitly named resource for this filename */
+      else if(strcmp(argv[arg],"-r")==0 || strcmp(argv[arg],"--resource")==0){
+        if(++arg>=argc){
+          fprintf(stderr,"reswrap: missing argument for -r or --resource option\n");
+          exit(1);
+          }
+        resource=argv[arg];
+        }
+
+      /* Don't know this option */
+      else{
+        printhelp(argv[arg]);
+        exit(1);
+        }
+      }
+
+    /* Handle resource file */
+    else{
+
+      /* Output prologue */
+      if(needprologue){
+        prologue(&opts);
+        needprologue=0;
+        }
+
+      /* Process resource file */
+      if(!processresourcefile(argv[arg],resource,&opts)){
+        fprintf(stderr,"reswrap: error reading resource file: %s\n",argv[arg]);
+        break;
+        }
+
+      /* Reset for next time */
+      needepilogue=1;
+      resource=0;
+      }
     }
 
-  /* Output namespace end */
-  if(thenamespace){
-    fprintf(outfile,"}\n");
-    }
-
-  /* To file instead out stdout */
-  if(outfilename){
-    fclose(outfile);
+  /* Output epilogue */
+  if(needepilogue){
+    epilogue(&opts);
     }
 
   return 0;
   }
-
-
-

@@ -3,23 +3,20 @@
 *      A d d i t i o n a l   F O X   I n c l u d e   F i l e   F o r   3 D      *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 1997,2006 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 1997,2021 by Jeroen van der Zijp.   All Rights Reserved.        *
 *********************************************************************************
-* This library is free software; you can redistribute it and/or                 *
-* modify it under the terms of the GNU Lesser General Public                    *
-* License as published by the Free Software Foundation; either                  *
-* version 2.1 of the License, or (at your option) any later version.            *
+* This library is free software; you can redistribute it and/or modify          *
+* it under the terms of the GNU Lesser General Public License as published by   *
+* the Free Software Foundation; either version 3 of the License, or             *
+* (at your option) any later version.                                           *
 *                                                                               *
 * This library is distributed in the hope that it will be useful,               *
 * but WITHOUT ANY WARRANTY; without even the implied warranty of                *
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU             *
-* Lesser General Public License for more details.                               *
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the                 *
+* GNU Lesser General Public License for more details.                           *
 *                                                                               *
-* You should have received a copy of the GNU Lesser General Public              *
-* License along with this library; if not, write to the Free Software           *
-* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA.    *
-*********************************************************************************
-* $Id: fx3d.h,v 1.22 2006/01/22 17:58:13 fox Exp $                              *
+* You should have received a copy of the GNU Lesser General Public License      *
+* along with this program.  If not, see <http://www.gnu.org/licenses/>          *
 ********************************************************************************/
 #ifndef FX3D_H
 #define FX3D_H
@@ -30,8 +27,13 @@
 #define STRICT
 #endif
 #include <windows.h>
+#undef max
+#undef min
 #endif
 #ifdef HAVE_GL_H
+#ifndef GL_GLEXT_PROTOTYPES
+#define GL_GLEXT_PROTOTYPES 1
+#endif
 #include <GL/gl.h>
 #endif
 #ifndef GLAPIENTRY
@@ -53,6 +55,8 @@
 #include "FXVec4d.h"
 #include "FXQuatf.h"
 #include "FXQuatd.h"
+#include "FXMat2f.h"
+#include "FXMat2d.h"
 #include "FXMat3f.h"
 #include "FXMat3d.h"
 #include "FXMat4f.h"
@@ -63,17 +67,13 @@
 #include "FXSphered.h"
 #include "FXExtentf.h"
 #include "FXExtentd.h"
+#include "FXComplexf.h"
+#include "FXComplexd.h"
 #include "FXGLVisual.h"
 #include "FXGLContext.h"
 #include "FXGLCanvas.h"
 #include "FXGLViewer.h"
 #include "FXGLObject.h"
-#include "FXGLShape.h"
-#include "FXGLCone.h"
-#include "FXGLCube.h"
-#include "FXGLCylinder.h"
-#include "FXGLSphere.h"
-#include "FXGLTriangleMesh.h"
 
 #ifndef FX_NO_GLOBAL_NAMESPACE
 using namespace FX;

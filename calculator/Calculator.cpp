@@ -3,11 +3,11 @@
 *                  F O X   D e s k t o p   C a l c u l a t o r                  *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 2001,2006 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 2001,2021 by Jeroen van der Zijp.   All Rights Reserved.        *
 *********************************************************************************
-* This program is free software; you can redistribute it and/or modify          *
+* This program is free software: you can redistribute it and/or modify          *
 * it under the terms of the GNU General Public License as published by          *
-* the Free Software Foundation; either version 2 of the License, or             *
+* the Free Software Foundation, either version 3 of the License, or             *
 * (at your option) any later version.                                           *
 *                                                                               *
 * This program is distributed in the hope that it will be useful,               *
@@ -16,10 +16,7 @@
 * GNU General Public License for more details.                                  *
 *                                                                               *
 * You should have received a copy of the GNU General Public License             *
-* along with this program; if not, write to the Free Software                   *
-* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA.    *
-*********************************************************************************
-* $Id: Calculator.cpp,v 1.58 2006/01/22 18:01:12 fox Exp $                      *
+* along with this program.  If not, see <http://www.gnu.org/licenses/>.         *
 ********************************************************************************/
 #include "fx.h"
 #include "fxkeys.h"
@@ -31,6 +28,7 @@
 #include <unistd.h>
 #endif
 #include <ctype.h>
+#include <math.h>
 #include "icons.h"
 #include "Calculator.h"
 #include "Preferences.h"
@@ -83,6 +81,8 @@ FXDEFMAP(Calculator) CalculatorMap[]={
   FXMAPFUNC(SEL_COMMAND,Calculator::ID_EXPONENT_NEVER,Calculator::onCmdExponent),
   FXMAPFUNC(SEL_UPDATE,Calculator::ID_EXPONENT_ALWAYS,Calculator::onUpdExponent),
   FXMAPFUNC(SEL_UPDATE,Calculator::ID_EXPONENT_NEVER,Calculator::onUpdExponent),
+  FXMAPFUNC(SEL_COMMAND,Calculator::ID_ENGINEERING_MODE,Calculator::onCmdEngineeringMode),
+  FXMAPFUNC(SEL_UPDATE,Calculator::ID_ENGINEERING_MODE,Calculator::onUpdEngineeringMode),
   FXMAPFUNC(SEL_COMMAND,Calculator::ID_PRECISION,Calculator::onCmdPrecision),
   FXMAPFUNC(SEL_UPDATE,Calculator::ID_PRECISION,Calculator::onUpdPrecision),
   FXMAPFUNC(SEL_COMMAND,Calculator::ID_QUESTION,Calculator::onCmdQuestion),
@@ -162,7 +162,7 @@ static const FXuint   nanny[2]={0xffffffff,0x7fffffff};
 #endif
 
 // Double precision nan
-static const FXdouble& dblnan=*((FXdouble*)nanny);
+static const FXdouble& dblnan=*((const FXdouble*)(const void*)nanny);
 
 
 // Operator priorities
@@ -379,8 +379,8 @@ Calculator::Calculator(FXApp* a):FXMainWindow(a,"FOX Calculator",NULL,NULL,DECOR
   base=NUM_DEC;
   angles=ANG_RAD;
   precision=16;
-  exponent=MAYBE;
-  beep=TRUE;
+  exponent=EXPONENT_IFNEEDED;
+  beep=true;
   parens=0;
   modifiers=0;
   }
@@ -622,8 +622,8 @@ FXColor Calculator::getAngleColor() const {
 
 
 // Set display font
-void Calculator::setDisplayFont(FXFont* font){
-  display->setFont(font);
+void Calculator::setDisplayFont(FXFont* fnt){
+  display->setFont(fnt);
   }
 
 
@@ -659,19 +659,22 @@ void Calculator::readRegistry(){
   FXColor angmodeclr=getApp()->reg().readColorEntry("SETTINGS","anglemodecolor",FXRGB(203,203,203));
 
   // Number base
-  FXint numbase=getApp()->reg().readIntEntry("SETTINGS","base",NUM_DEC);
+  FXint nbase=getApp()->reg().readIntEntry("SETTINGS","base",NUM_DEC);
 
   // Angle type
-  FXint angmode=getApp()->reg().readIntEntry("SETTINGS","angles",ANG_RAD);
+  FXint amode=getApp()->reg().readIntEntry("SETTINGS","angles",ANG_RAD);
 
   // Exponent mode
-  FXbool expmode=(FXExponent)getApp()->reg().readIntEntry("SETTINGS","exponent",MAYBE);
+  FXint expmode=getApp()->reg().readIntEntry("SETTINGS","exponent",EXPONENT_IFNEEDED);
+
+  // Engineering mode
+  FXint engmode=getApp()->reg().readBoolEntry("SETTINGS","engineering",false);
 
   // Precision
   FXint prec=getApp()->reg().readIntEntry("SETTINGS","precision",10);
 
   // Beep
-  FXbool noise=getApp()->reg().readIntEntry("SETTINGS","beep",TRUE);
+  FXbool noise=getApp()->reg().readIntEntry("SETTINGS","beep",true);
 
   // Memory cell
   recall=getApp()->reg().readRealEntry("SETTINGS","memory",0.0);
@@ -698,10 +701,11 @@ void Calculator::readRegistry(){
   setAngleColor(angmodeclr);
 
   // Number base
-  setBase(numbase);
-  setAngles(angmode);
+  setBase(nbase);
+  setAngles(amode);
   setPrecision(prec);
   setExponentMode(expmode);
+  setEngineeringMode(engmode);
   setBeep(noise);
 
   setX(xx);
@@ -745,6 +749,9 @@ void Calculator::writeRegistry(){
   // Exponent mode
   getApp()->reg().writeIntEntry("SETTINGS","exponent",getExponentMode());
 
+  // Engineering mode
+  getApp()->reg().writeIntEntry("SETTINGS","engineering",getEngineeringMode());
+
   // Precision
   getApp()->reg().writeIntEntry("SETTINGS","precision",getPrecision());
 
@@ -778,34 +785,35 @@ void Calculator::setDisplayText(const FXString& txt){
 FXdouble Calculator::getDisplayValue() const {
   FXdouble val;
   if(base==10)
-    val=FXDoubleVal(getDisplayText());
+    val=getDisplayText().toDouble();
   else
-    val=(FXdouble)FXUIntVal(getDisplayText(),base);
+    val=(FXdouble)getDisplayText().toLong(base);
   return val;
   }
 
 
 // Redisplay new value
 void Calculator::setDisplayValue(FXdouble val){
-  FXint fp=fxieeedoubleclass(val);
-  if(fp==-2 || fp==+2){
+  FXString string;
+  if(Math::fpNan(val)){
     setDisplayText("ERROR");
     if(beep) getApp()->beep();
     }
-  else if(fp==-1){
-    setDisplayText("-INF");
-    if(beep) getApp()->beep();
-    }
-  else if(fp==+1){
-    setDisplayText("+INF");
+  else if(Math::fpInfinite(val)){
+    if(Math::fpSign(val)){
+      setDisplayText("-INF");
+      }
+    else{
+      setDisplayText("+INF");
+      }
     if(beep) getApp()->beep();
     }
   else if(base==10){
     if(val==0.0) val=0.0;       // Don't ever print out -0 instead of 0
-    setDisplayText(FXStringVal(val,precision,exponent));
+    setDisplayText(string.fromDouble(val,precision,exponent));
     }
   else{
-    setDisplayText(FXStringVal((FXuint)floor(val),base));
+    setDisplayText(string.fromLong((FXlong)((0.0<=val)?val+0.5:val-0.5),base));
     }
   }
 
@@ -856,8 +864,16 @@ void Calculator::setBase(FXint b){
 
 
 // Set exponent mode
-void Calculator::setExponentMode(FXbool expmode){
-  exponent=expmode;
+void Calculator::setExponentMode(FXuchar expmode){
+  exponent=(expmode&3)|(exponent&4);
+  setDisplayValue(getnum());
+  modifiers=0;
+  }
+
+
+// Set exponent mode
+void Calculator::setEngineeringMode(FXbool engmode){
+  exponent^=((0-engmode)^exponent)&4;
   setDisplayValue(getnum());
   modifiers=0;
   }
@@ -872,24 +888,24 @@ void Calculator::setPrecision(FXint prec){
 
 
 // Argument to sine, cosine, etc
-FXdouble Calculator::trigarg(FXdouble ang) const {
+FXdouble Calculator::trigarg(FXdouble a) const {
   switch(angles){
-    case ANG_DEG: return DEG2RAD(ang);
-    case ANG_GRA: return GRA2RAD(ang);
-    case ANG_RAD: return ang;
+    case ANG_DEG: return DEG2RAD(a);
+    case ANG_GRA: return GRA2RAD(a);
+    case ANG_RAD: return a;
     }
-  return ang;
+  return a;
   }
 
 
 // Result from arcsine, arccosine, etc
-FXdouble Calculator::trigres(FXdouble res) const {
+FXdouble Calculator::trigres(FXdouble r) const {
   switch(angles){
-    case ANG_DEG: return RAD2DEG(res);
-    case ANG_GRA: return RAD2GRA(res);
-    case ANG_RAD: return res;
+    case ANG_DEG: return RAD2DEG(r);
+    case ANG_GRA: return RAD2GRA(r);
+    case ANG_RAD: return r;
     }
-  return res;
+  return r;
   }
 
 
@@ -898,11 +914,11 @@ FXdouble Calculator::trigres(FXdouble res) const {
 // result = n!
 //
 static FXdouble factorial(FXdouble n){
-  FXdouble num=floor(n);
+  FXdouble num=Math::floor(n);
   FXdouble result=1.0;
   if(0.0<=num && num==n){
     while(num>0.0){
-      if(fxieeedoubleclass(result)>0) break;
+      if(!Math::fpFinite(result)) break;
       result=result*num;
       num=num-1.0;
       }
@@ -919,12 +935,12 @@ static FXdouble factorial(FXdouble n){
 //            (n-r)!
 //
 static FXdouble permutations(FXdouble n,FXdouble r){
-  FXdouble num=floor(n);
-  FXdouble den=floor(r);
+  FXdouble num=Math::floor(n);
+  FXdouble den=Math::floor(r);
   FXdouble result=1.0;
   if(0.0<=num && 0.0<=den && den<=num && num==n && den==r){
     while(den>0.0){
-      if(fxieeedoubleclass(result)>0) break;
+      if(!Math::fpFinite(result)) break;
       result=result*num;
       num=num-1.0;
       den=den-1.0;
@@ -942,13 +958,13 @@ static FXdouble permutations(FXdouble n,FXdouble r){
 //            r! (n-r)!
 //
 static FXdouble combinations(FXdouble n,FXdouble r){
-  FXdouble num=floor(n);
-  FXdouble den=floor(r);
+  FXdouble num=Math::floor(n);
+  FXdouble den=Math::floor(r);
   FXdouble res1=1.0;
   FXdouble res2=1.0;
   if(0.0<=num && 0.0<=den && den<=num && num==n && den==r){
     while(den>0.0){
-      if(fxieeedoubleclass(res1)>0) break;
+      if(!Math::fpFinite(res1)) break;
       res1=res1*num;
       res2=res2*den;
       num=num-1.0;
@@ -987,19 +1003,19 @@ void Calculator::unary(FXuchar op){
   acc=0.0;
   switch(op){
     case UN_NOT:
-      acc=(FXdouble) (~((FXuint)floor(val)));
+      acc=(FXdouble) (~((FXlong)Math::floor(val)));
       break;
     case UN_NEG:
       acc=-val;
       break;
     case UN_SHL:
-      acc=(FXdouble) (((FXuint)floor(val))<<1);
+      acc=(FXdouble) (((FXulong)Math::floor(val))<<1);
       break;
     case UN_SHR:
-      acc=(FXdouble) (((FXuint)floor(val))>>1);
+      acc=(FXdouble) (((FXulong)Math::floor(val))>>1);
       break;
     case UN_SAR:
-      acc=(FXdouble) ((((FXuint)floor(val))>>1) | (((FXuint)floor(val))&0x80000000));
+      acc=(FXdouble) (((FXlong)Math::floor(val))>>1);
       break;
     case UN_RECIP:
       acc=1.0/val;
@@ -1008,64 +1024,64 @@ void Calculator::unary(FXuchar op){
       acc=factorial(val);
       break;
     case UN_SQRT:
-      acc=sqrt(val);
+      acc=Math::sqrt(val);
       break;
     case UN_QUAD:
       acc=val*val;
       break;
     case UN_2LOG:
-      acc=log(val)/log(2.0);
+      acc=Math::log2(val);
       break;
     case UN_2TOX:
-      acc=pow(2.0,val);
+      acc=Math::exp2(val);
       break;
     case UN_LOG:
-      acc=log10(val);
+      acc=Math::log10(val);
       break;
     case UN_10TOX:
-      acc=pow(10.0,val);
+      acc=Math::exp10(val);
       break;
     case UN_LN:
-      acc=log(val);
+      acc=Math::log(val);
       break;
     case UN_EXP:
-      acc=exp(val);
+      acc=Math::exp(val);
       break;
     case UN_SIN:
-      acc=sin(trigarg(val));
+      acc=Math::sin(trigarg(val));
       break;
     case UN_COS:
-      acc=cos(trigarg(val));
+      acc=Math::cos(trigarg(val));
       break;
     case UN_TAN:
-      acc=tan(trigarg(val));
+      acc=Math::tan(trigarg(val));
       break;
     case UN_ASIN:
-      acc=trigres(asin(val));
+      acc=trigres(Math::asin(val));
       break;
     case UN_ACOS:
-      acc=trigres(acos(val));
+      acc=trigres(Math::acos(val));
       break;
     case UN_ATAN:
-      acc=trigres(atan(val));
+      acc=trigres(Math::atan(val));
       break;
     case UN_SINH:
-      acc=sinh(val);
+      acc=Math::sinh(val);
       break;
     case UN_COSH:
-      acc=cosh(val);
+      acc=Math::cosh(val);
       break;
     case UN_TANH:
-      acc=tanh(val);
+      acc=Math::tanh(val);
       break;
     case UN_ASINH:
-      acc=log(val+sqrt(val*val+1.0));   // Tired of #ifdef's:- just expand definitions (Abramowitz & Stegun, pp. 87)
+      acc=Math::asinh(val);
       break;
     case UN_ACOSH:
-      acc=log(val+sqrt(val*val-1.0));   // Same here
+      acc=Math::acosh(val);
       break;
     case UN_ATANH:
-      acc=0.5*log((1.0+val)/(1.0-val)); // And here
+      acc=Math::atanh(val);
     default:
       break;
     }
@@ -1084,13 +1100,13 @@ void Calculator::dyop(FXuchar op){
   acc=getnum();
   switch(op){
     case DY_OR:
-      acc=(FXdouble) (((FXuint)floor(acc)) | ((FXuint)floor(val)));
+      acc=(FXdouble) (((FXulong)Math::floor(acc)) | ((FXulong)Math::floor(val)));
       break;
     case DY_XOR:
-      acc=(FXdouble) (((FXuint)floor(acc)) ^ ((FXuint)floor(val)));
+      acc=(FXdouble) (((FXulong)Math::floor(acc)) ^ ((FXulong)Math::floor(val)));
       break;
     case DY_AND:
-      acc=(FXdouble) (((FXuint)floor(acc)) & ((FXuint)floor(val)));
+      acc=(FXdouble) (((FXulong)Math::floor(acc)) & ((FXulong)Math::floor(val)));
       break;
     case DY_SUB:
       acc=acc-val;
@@ -1099,8 +1115,8 @@ void Calculator::dyop(FXuchar op){
       acc=acc+val;
       break;
     case DY_MOD:                // Theo Veenker <Theo.Veenker@let.uu.nl> suggested this new definition of "mod":
-      val=fabs(val);            // x = a div |b|        ; with a round toward 0
-      acc=fmod(acc,val);        // y = a mod |b|
+      val=Math::fabs(val);      // x = a div |b|        ; with a round toward 0
+      acc=Math::fmod(acc,val);  // y = a mod |b|
       break;                    // a = x * |b| + y
     case DY_IDIV:
       modf(acc/val,&acc);
@@ -1112,10 +1128,10 @@ void Calculator::dyop(FXuchar op){
       acc=acc*val;
       break;
     case DY_XTOY:
-      acc=pow(acc,val);
+      acc=Math::pow(acc,val);
       break;
     case DY_XTOINVY:
-      acc=pow(acc,1.0/val);
+      acc=Math::pow(acc,1.0/val);
       break;
     case DY_PER:
       acc=permutations(acc,val);
@@ -1148,7 +1164,7 @@ void Calculator::dyadic(FXuchar op){
 
 // Enter evaluate
 void Calculator::evaluate(){
-  register FXuchar op;
+  FXuchar op;
   while(0<=opsp){
     op=opstack[opsp--];
     if(op!=DY_LPAR)
@@ -1173,7 +1189,7 @@ void Calculator::lparen(){
 
 // Right parentheses
 void Calculator::rparen(){
-  register FXuchar op;
+  FXuchar op;
   while(0<=opsp){
     op=opstack[opsp--];
     if(op==DY_LPAR){ parens--; break; }
@@ -1251,12 +1267,11 @@ long Calculator::onUpdColor(FXObject* sender,FXSelector sel,void*){
 // Change font
 long Calculator::onCmdFont(FXObject*,FXSelector,void*){
   FXFontDialog fontdlg(this,"Change Display Font",DECOR_BORDER|DECOR_TITLE);
-  FXFontDesc fontdesc;
-  getDisplayFont()->getFontDesc(fontdesc);
-  fontdlg.setFontSelection(fontdesc);
+  FXFontDesc fontdesc=getDisplayFont()->getFontDesc();
+  fontdlg.setFontDesc(fontdesc);
   if(fontdlg.execute()){
     FXFont *oldfont=font;
-    fontdlg.getFontSelection(fontdesc);
+    fontdesc=fontdlg.getFontDesc();
     font=new FXFont(getApp(),fontdesc);
     font->create();
     setDisplayFont(font);
@@ -1268,18 +1283,35 @@ long Calculator::onCmdFont(FXObject*,FXSelector,void*){
 
 // Change exponential notation
 long Calculator::onCmdExponent(FXObject*,FXSelector sel,void* ptr){
-  if(FXSELID(sel)==ID_EXPONENT_ALWAYS && ptr) setExponentMode(TRUE);
-  else if(FXSELID(sel)==ID_EXPONENT_NEVER && ptr) setExponentMode(FALSE);
-  else setExponentMode(MAYBE);
+  if((FXSELID(sel)==ID_EXPONENT_ALWAYS) && ptr) setExponentMode(EXPONENT_ALWAYS);
+  else if((FXSELID(sel)==ID_EXPONENT_NEVER) && ptr) setExponentMode(EXPONENT_NEVER);
+  else setExponentMode(EXPONENT_IFNEEDED);
   return 1;
   }
 
 
 // Update exponential notation
 long Calculator::onUpdExponent(FXObject* sender,FXSelector sel,void*){
-  if(FXSELID(sel)==ID_EXPONENT_ALWAYS && exponent==TRUE)
+  if(FXSELID(sel)==ID_EXPONENT_ALWAYS && getExponentMode()==EXPONENT_ALWAYS)
     sender->handle(this,FXSEL(SEL_COMMAND,ID_CHECK),NULL);
-  else if(FXSELID(sel)==ID_EXPONENT_NEVER && exponent==FALSE)
+  else if(FXSELID(sel)==ID_EXPONENT_NEVER && getExponentMode()==EXPONENT_NEVER)
+    sender->handle(this,FXSEL(SEL_COMMAND,ID_CHECK),NULL);
+  else
+    sender->handle(this,FXSEL(SEL_COMMAND,ID_UNCHECK),NULL);
+  return 1;
+  }
+
+
+// Change engineering notation
+long Calculator::onCmdEngineeringMode(FXObject*,FXSelector,void*){
+  setEngineeringMode(!getEngineeringMode());
+  return 1;
+  }
+
+
+// Update exponential notation
+long Calculator::onUpdEngineeringMode(FXObject* sender,FXSelector,void*){
+  if(getEngineeringMode())
     sender->handle(this,FXSEL(SEL_COMMAND,ID_CHECK),NULL);
   else
     sender->handle(this,FXSEL(SEL_COMMAND,ID_UNCHECK),NULL);
@@ -1315,8 +1347,6 @@ long Calculator::onUpdBeep(FXObject* sender,FXSelector,void*){
   sender->handle(this,beep ? FXSEL(SEL_COMMAND,ID_CHECK) : FXSEL(SEL_COMMAND,ID_UNCHECK), NULL);
   return 1;
   }
-
-
 
 
 // Popup help
@@ -1375,14 +1405,14 @@ long Calculator::onCmdDigit(FXObject*,FXSelector sel,void*){
     if(text[pos]=='-' || text[pos]=='+') pos++;     // Skip sign
     if(text[pos]=='0' || (text[pos] && text[pos+1] && text[pos+2])){
       while(text[pos+1]){ text[pos]=text[pos+1]; pos++; }
-      text[pos]=FXString::HEX[FXSELID(sel)-ID_0];
+      text[pos]=FXString::value2Digit[FXSELID(sel)-ID_0];
       }
     else{
-      text.append(FXString::HEX[FXSELID(sel)-ID_0]);
+      text.append(FXString::value2Digit[FXSELID(sel)-ID_0]);
       }
     }
   else if(digits<limit){
-    text+=FXString::HEX[FXSELID(sel)-ID_0];
+    text+=FXString::value2Digit[FXSELID(sel)-ID_0];
     digits++;
     }
   setDisplayText(text);
@@ -1866,7 +1896,7 @@ long Calculator::onCmdMemAdd(FXObject*,FXSelector,void*){
   }
 
 
-// Substract from memory
+// Subtract from memory
 long Calculator::onCmdMemSub(FXObject*,FXSelector,void*){
   recall-=getnum();
   modifiers=0;

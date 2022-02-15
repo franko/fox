@@ -3,23 +3,20 @@
 *                            R u l e r   W i d g e t                            *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 2002,2006 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 2002,2021 by Jeroen van der Zijp.   All Rights Reserved.        *
 *********************************************************************************
-* This library is free software; you can redistribute it and/or                 *
-* modify it under the terms of the GNU Lesser General Public                    *
-* License as published by the Free Software Foundation; either                  *
-* version 2.1 of the License, or (at your option) any later version.            *
+* This library is free software; you can redistribute it and/or modify          *
+* it under the terms of the GNU Lesser General Public License as published by   *
+* the Free Software Foundation; either version 3 of the License, or             *
+* (at your option) any later version.                                           *
 *                                                                               *
 * This library is distributed in the hope that it will be useful,               *
 * but WITHOUT ANY WARRANTY; without even the implied warranty of                *
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU             *
-* Lesser General Public License for more details.                               *
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the                 *
+* GNU Lesser General Public License for more details.                           *
 *                                                                               *
-* You should have received a copy of the GNU Lesser General Public              *
-* License along with this library; if not, write to the Free Software           *
-* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA.    *
-*********************************************************************************
-* $Id: FXRuler.h,v 1.36 2006/01/28 20:30:21 fox Exp $                           *
+* You should have received a copy of the GNU Lesser General Public License      *
+* along with this program.  If not, see <http://www.gnu.org/licenses/>          *
 ********************************************************************************/
 #ifndef FXRULER_H
 #define FXRULER_H
@@ -73,7 +70,7 @@ class FXFont;
 * center, left-adjust, or right-adjust the document.
 * Finally, a special option exists to stretch the document to the
 * available space, that is to say, the document will always be fitten
-* with given left and right edges substracted from the available space.
+* with given left and right edges subtracted from the available space.
 */
 class FXAPI FXRuler : public FXFrame {
   FXDECLARE(FXRuler)
@@ -162,13 +159,13 @@ public:
   virtual FXint getDefaultHeight();
 
   /// Set the current position
-  void setPosition(FXint pos,FXbool notify=FALSE);
+  void setPosition(FXint pos,FXbool notify=false);
 
   /// Return the current position
   FXint getPosition() const { return pos; }
 
   /// Change/return content size
-  void setContentSize(FXint size,FXbool notify=FALSE);
+  void setContentSize(FXint size,FXbool notify=false);
   FXint getContentSize() const;
 
   /// Get lower edge of document
@@ -178,55 +175,55 @@ public:
   FXint getDocumentUpper() const;
 
   /// Change/return document size
-  void setDocumentSize(FXint size,FXbool notify=FALSE);
+  void setDocumentSize(FXint size,FXbool notify=false);
   FXint getDocumentSize() const { return documentSize; }
 
   /// Change/return document edge spacing
-  void setEdgeSpacing(FXint space,FXbool notify=FALSE);
+  void setEdgeSpacing(FXint space,FXbool notify=false);
   FXint getEdgeSpacing() const { return edgeSpacing; }
 
   /// Change/return lower document margin
-  void setMarginLower(FXint mgn,FXbool notify=FALSE);
+  void setMarginLower(FXint mgn,FXbool notify=false);
   FXint getMarginLower() const { return marginLower; }
 
   /// Change/return upper document margin
-  void setMarginUpper(FXint mgn,FXbool notify=FALSE);
+  void setMarginUpper(FXint mgn,FXbool notify=false);
   FXint getMarginUpper() const { return marginUpper; }
 
   /// Change/return first line indent
-  void setIndentFirst(FXint ind,FXbool notify=FALSE);
+  void setIndentFirst(FXint ind,FXbool notify=false);
   FXint getIndentFirst() const { return indentFirst; }
 
   /// Change/return lower indent
-  void setIndentLower(FXint ind,FXbool notify=FALSE);
+  void setIndentLower(FXint ind,FXbool notify=false);
   FXint getIndentLower() const { return indentLower; }
 
   /// Change/return upper indent
-  void setIndentUpper(FXint ind,FXbool notify=FALSE);
+  void setIndentUpper(FXint ind,FXbool notify=false);
   FXint getIndentUpper() const { return indentUpper; }
 
   /// Change/return document number placement
-  void setNumberTicks(FXint ticks,FXbool notify=FALSE);
+  void setNumberTicks(FXint ticks,FXbool notify=false);
   FXint getNumberTicks() const { return numberTicks; }
 
   /// Change/return document major ticks
-  void setMajorTicks(FXint ticks,FXbool notify=FALSE);
+  void setMajorTicks(FXint ticks,FXbool notify=false);
   FXint getMajorTicks() const { return majorTicks; }
 
   /// Change/return document medium ticks
-  void setMediumTicks(FXint ticks,FXbool notify=FALSE);
+  void setMediumTicks(FXint ticks,FXbool notify=false);
   FXint getMediumTicks() const { return mediumTicks; }
 
   /// Change/return document tiny ticks
-  void setTinyTicks(FXint ticks,FXbool notify=FALSE);
+  void setTinyTicks(FXint ticks,FXbool notify=false);
   FXint getTinyTicks() const { return tinyTicks; }
 
   /// Change/return pixel per tick spacing
-  void setPixelPerTick(FXdouble space,FXbool notify=FALSE);
+  void setPixelPerTick(FXdouble space,FXbool notify=false);
   FXdouble getPixelPerTick() const { return pixelPerTick; }
 
   /// Set the text font
-  void setFont(FXFont *fnt,FXbool notify=FALSE);
+  void setFont(FXFont *fnt,FXbool notify=false);
 
   /// Get the text font
   FXFont* getFont() const { return font; }
@@ -244,7 +241,7 @@ public:
   FXuint getRulerStyle() const;
 
   /// Set ruler alignment
-  void setRulerAlignment(FXuint alignment,FXbool notify=FALSE);
+  void setRulerAlignment(FXuint alignment,FXbool notify=false);
 
   /// Get ruler alignment
   FXuint getRulerAlignment() const;

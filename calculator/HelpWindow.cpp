@@ -3,11 +3,11 @@
 *                            H e l p   W i n d o w                              *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 1998,2006 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 1998,2021 by Jeroen van der Zijp.   All Rights Reserved.        *
 *********************************************************************************
-* This program is free software; you can redistribute it and/or modify          *
+* This program is free software: you can redistribute it and/or modify          *
 * it under the terms of the GNU General Public License as published by          *
-* the Free Software Foundation; either version 2 of the License, or             *
+* the Free Software Foundation, either version 3 of the License, or             *
 * (at your option) any later version.                                           *
 *                                                                               *
 * This program is distributed in the hope that it will be useful,               *
@@ -16,10 +16,7 @@
 * GNU General Public License for more details.                                  *
 *                                                                               *
 * You should have received a copy of the GNU General Public License             *
-* along with this program; if not, write to the Free Software                   *
-* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA.    *
-*********************************************************************************
-* $Id: HelpWindow.cpp,v 1.10 2006/01/22 18:01:13 fox Exp $                      *
+* along with this program.  If not, see <http://www.gnu.org/licenses/>.         *
 ********************************************************************************/
 #include "fx.h"
 #include "HelpWindow.h"
@@ -32,8 +29,7 @@ FXIMPLEMENT(HelpWindow,FXDialogBox,NULL,0)
 
 
 // Construct help dialog box
-HelpWindow::HelpWindow(FXWindow *owner,const FXString& title):
-  FXDialogBox(owner,title,DECOR_TITLE|DECOR_BORDER|DECOR_RESIZE|DECOR_CLOSE,0,0,0,0, 6,6,6,6, 4,4){
+HelpWindow::HelpWindow(FXWindow *own,const FXString& ttl):FXDialogBox(own,ttl,DECOR_TITLE|DECOR_BORDER|DECOR_RESIZE|DECOR_CLOSE,0,0,0,0, 6,6,6,6, 4,4){
 
   // Bottom part
   FXHorizontalFrame *closebox=new FXHorizontalFrame(this,LAYOUT_SIDE_BOTTOM|LAYOUT_FILL_X|PACK_UNIFORM_WIDTH);
