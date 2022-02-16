@@ -1,0 +1,7 @@
+option('opengl', type : 'boolean', value : false, description: 'enable OpenGL support')
+option('jpeg', type : 'boolean', value : false, description: 'JPEG image support')
+option('png', type : 'boolean', value : false, description: 'PNG image support')
+option('zlib', type : 'boolean', value : false, description: 'zlib support')
+option('bzlib', type : 'boolean', value : false, description: 'bzlib support')
+option('xft', type : 'boolean', value : true, description: 'enable Xft support')
+option('apps', type : 'boolean', value : true, description: 'Build FOX apps')
