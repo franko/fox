@@ -31,17 +31,21 @@ fox_ext_defines = []
 fox_deps = []
 fox_defines = []
 
+if get_option('default_library') != 'static'
+    fox_defines += '-DFOXDLL'
+endif
+
 if not host_is_window
     fox_deps += dependency('x11')
     fox_deps += dependency('xext')
-    fox_deps += dependency('xrandr', required: false)
-    fox_deps += dependency('xrender', required: false)
-    fox_deps += dependency('xfixes', required: false)
-    fox_deps += dependency('xcursor', required: false)
-    fox_deps += dependency('xi', required: false)
+    foreach libname : ['xrandr', 'xrender', 'xfixes', 'xcursor', 'xi']
+        fox_deps += dependency(libname, required: false)
+    endforeach
 else
-    fox_defines += ['-DDLL_EXPORT']
-    fox_ext_defines += ['-DWIN32', '-D_WINDOWS']
+    fox_ext_defines += '-DWIN32'
+    if cc.get_id() == 'msvc'
+        fox_defines += ['-D_WINDOWS', '-DUNICODE', '-D_USRDLL', '-D_CRT_SECURE_NO_WARNINGS']
+    endif
     foreach lib : ['comctl32', 'wsock32', 'winspool', 'mpr', 'gdi32', 'imm32']
         fox_ext_deps += cc.find_library(lib, required : true)
     endforeach
@@ -122,10 +126,13 @@ if get_option('zlib')
 endif
 
 if get_option('bzlib')
-    bzlib = dependency('bzlib', required : false)
-    if bzlib.found()
-        fox_defines += ['-DHAVE_BZLIB_H', '-DHAVE_BZ2LIB_H']
-        fox_deps += bzlib
+    # the bzlib is provided without a pkg-config file.
+    if cc.has_header('bzlib.h')
+        bzlib = cc.find_library('bz2', required : false)
+        if bzlib.found()
+            fox_defines += '-DHAVE_BZ2LIB_H'
+            fox_deps += bzlib
+        endif
     endif
 endif
 
@@ -260,8 +267,7 @@ subdir('lib')
 if get_option('apps')
     subdir('adie')
     subdir('calculator')
-    # FIXME: on linux chart does not compile
-    # subdir('chart')
+    subdir('chart')
     subdir('pathfinder')
     subdir('shutterbug')
 endif

@@ -384,7 +384,7 @@ fox_src = fox_src_codecs + [
 libfox = library('FOX-1.7', fox_src,
     include_directories : fox_include,
     dependencies : fox_deps,
-    cpp_args : fox_defines,
+    cpp_args : fox_defines + ['-DFOXDLL_EXPORTS'],
     install : true,
 )
 
