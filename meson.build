@@ -235,10 +235,13 @@ subdir('include')
 subdir('utils')
 subdir('lib')
 if get_option('apps')
-    # subdir('tests')
     subdir('adie')
-    # subdir('calculator')
-    # subdir('chart')
-    # subdir('pathfinder')
-    # subdir('shutterbug')
+    subdir('calculator')
+    subdir('chart')
+    subdir('pathfinder')
+    subdir('shutterbug')
 endif
+if get_option('tests')
+    subdir('tests')
+endif
+

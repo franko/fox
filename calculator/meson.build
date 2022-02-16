@@ -18,19 +18,21 @@ calc_icons = [
 calc_icons_h = custom_target('calc-icons-h',
     input : calc_icons,
     output : 'icons.h',
-    command : [reswrap, '-i', '-o', '@OUTPUT@', '@INPUT@']
+    command : [reswrap, '-h', '-o', '@OUTPUT@', '@INPUT@']
 )
 
 calc_icons_cpp = custom_target('calc-icons-cpp',
     input : calc_icons,
     output : 'icons.cpp',
-    command : [reswrap, '-e', '-o', '@OUTPUT@', '@INPUT@']
+    command : [reswrap, '-i', calc_icons_h, '-o', '@OUTPUT@', '@INPUT@']
 )
 
 calc_sources += calc_icons_cpp
 
 executable('calculator', calc_sources,
-    dependencies: libfox_dep, install : true, gui_app : true
+    dependencies: libfox_dep,
+    include_directories: fox_topdir_include,
+    install : true, gui_app : true
 )
 
 install_man('calculator.1')
