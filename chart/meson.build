@@ -26,7 +26,7 @@ chart_icons_cpp = custom_target('chart-icons-cpp',
 
 chart_sources += chart_icons_cpp
 
-executable('charttest', chart_sources + 'charttest.cpp',
+executable('charttest', chart_sources + ['charttest.cpp'],
     dependencies: libfox_dep,
     include_directories: fox_topdir_include,
     link_with : libchart, install : true, gui_app : true

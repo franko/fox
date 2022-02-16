@@ -34,6 +34,11 @@ fox_defines = []
 if not host_is_window
     fox_deps += dependency('x11')
     fox_deps += dependency('xext')
+    fox_deps += dependency('xrandr', required: false)
+    fox_deps += dependency('xrender', required: false)
+    fox_deps += dependency('xfixes', required: false)
+    fox_deps += dependency('xcursor', required: false)
+    fox_deps += dependency('xi', required: false)
 else
     fox_defines += ['-DDLL_EXPORT']
     fox_ext_defines += ['-DWIN32', '-D_WINDOWS']
@@ -134,6 +139,20 @@ conf.set('FOX_BYTEORDER', fox_byteorder)
 check_headers = [
   ['HAVE_SYS_TYPES_H', 'sys/types.h'],
   ['HAVE_SYS_STAT_H', 'sys/stat.h'],
+  ['HAVE_SYS_SELECT_H', 'sys/select.h'],
+  ['HAVE_SYS_EPOLL_H', 'sys/epoll.h'],
+  ['HAVE_SYS_TIMERFD_H', 'sys/timerfd.h'],
+  ['HAVE_SYS_IPC_H', 'sys/ipc.h'],
+  ['HAVE_SYS_SHM_H', 'sys/shm.h'],
+  ['HAVE_SYS_MMAN_H', 'sys/mman.h'],
+  ['HAVE_SYS_PSTAT_H', 'sys/pstat.h'],
+  ['HAVE_SYS_MOUNT_H', 'sys/mount.h'],
+  ['HAVE_SYS_WAIT_H', 'sys/wait.h'],
+  ['HAVE_SYS_STATVFS_H', 'sys/statvfs.h'],
+  ['HAVE_SYS_INOTIFY_H', 'sys/inotify.h'],
+  ['HAVE_SYS_RESOURCE_H', 'sys/resource.h'],
+  ['HAVE_SYS_SYSCTL_H', 'sys/sysctl.h'],
+  ['HAVE_DLFCN_H', 'dlfcn.h'],
   ['HAVE_STDLIB_H', 'stdlib.h'],
   ['HAVE_STRING_H', 'string.h'],
   ['HAVE_MEMORY_H', 'memory.h'],
@@ -141,7 +160,6 @@ check_headers = [
   ['HAVE_INTTYPES_H', 'inttypes.h'],
   ['HAVE_UNISTD_H', 'unistd.h'],
   ['HAVE_DIRENT_H', 'dirent.h'],
-  ['HAVE_SYS_WAIT_H', 'sys/wait.h'],
   ['HAVE_SEMAPHORE_H', 'semaphore.h'],
   ['HAVE_IMMINTRIN_H', 'immintrin.h'],
   # The valus below are not actually used.
@@ -172,7 +190,7 @@ xft_dep        = dependency('xft', required: false)
 
 has_xft_deps = freetype_dep.found() and fontconfig_dep.found() and xft_dep.found()
 
-if use_x_window and get_option('xft') and has_xfs_deps
+if use_x_window and get_option('xft') and has_xft_deps
     foreach h : x11_check_headers
         if cc.has_header(h[1])
             fox_defines += '-D@0@'.format(h[0])
@@ -189,7 +207,7 @@ check_functions = [
     ['getpwuid_r',     'pwd.h',         '#include<sys/types.h>\n#include<pwd.h>'],
     ['getgrgid_r',     'grp.h',         '#include<sys/types.h>\n#include<grp.h>'],
     ['sched_getcpu',   'sched.h',       '#include<sched.h>'],
-    ['epoll_create1',  'epoll.h',       '#include<epoll.h>'],
+    ['epoll_create1',  'sys/epoll.h',   '#include<sys/epoll.h>'],
     ['timerfd_create', 'sys/timerfd.h', '#include<sys/timerfd.h>'],
     ['pipe2',          'unistd.h',      '#include<unistd.h>'],
     ['statvfs',        'sys/statvfs.h', '#include<sys/statvfs.h>'],
@@ -242,7 +260,8 @@ subdir('lib')
 if get_option('apps')
     subdir('adie')
     subdir('calculator')
-    subdir('chart')
+    # FIXME: on linux chart does not compile
+    # subdir('chart')
     subdir('pathfinder')
     subdir('shutterbug')
 endif
