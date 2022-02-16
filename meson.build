@@ -34,16 +34,6 @@ fox_defines = []
 if not host_is_window
     fox_deps += dependency('x11')
     fox_deps += dependency('xext')
-    fox_defines += [
-# TODO: X11 extentions should be detected.
-        '-DHAVE_X11_EXTENSIONS_XSHM_H',
-        '-DHAVE_X11_EXTENSIONS_SHAPE_H',
-        '-DHAVE_X11_XCURSOR_XCURSOR_H',
-        '-DHAVE_X11_EXTENSIONS_XRENDER_H',
-        '-DHAVE_X11_EXTENSIONS_XRANDR_H',
-        '-DHAVE_X11_EXTENSIONS_XFIXES_H',
-        '-DHAVE_X11_EXTENSIONS_XINPUT_H'
-    ]
 else
     fox_defines += ['-DDLL_EXPORT']
     fox_ext_defines += ['-DWIN32', '-D_WINDOWS']
@@ -134,17 +124,6 @@ if get_option('bzlib')
     endif
 endif
 
-freetype_dep   = dependency('freetype2', required: false)
-fontconfig_dep = dependency('fontconfig', required: false)
-xft_dep        = dependency('xft', required: false)
-
-has_xft_deps = freetype_dep.found() and fontconfig_dep.found() and xft_dep.found()
-
-if use_x_window and get_option('xft') and has_xfs_deps
-    fox_deps += [freetype_dep, fontconfig_dep, xft_dep]
-    fox_defines += '-DHAVE_XFT_H'
-endif
-
 conf = configuration_data()
 conf.set('FOX_MAJOR_VERSION', fox_version_array[0])
 conf.set('FOX_MINOR_VERSION', fox_version_array[1])
@@ -171,11 +150,37 @@ check_headers = [
   ['HAVE_SYS_STAT_H', 'sys/stat.h'],
 ]
 
+x11_check_headers = [
+    ['HAVE_XSHM_H',    'X11/extensions/XShm.h'],
+    ['HAVE_SHAPE_H',   'X11/extensions/shape.h'],
+    ['HAVE_XCURSOR_H', 'X11/Xcursor/Xcursor.h'],
+    ['HAVE_XRENDER_H', 'X11/extensions/Xrender.h'],
+    ['HAVE_XRANDR_H',  'X11/extensions/Xrandr.h'],
+    ['HAVE_XFIXES_H',  'X11/extensions/Xfixes.h'],
+    ['HAVE_XINPUT2_H', 'X11/extensions/XInput2.h'],
+]
+
 foreach h : check_headers
     if cc.has_header(h[1])
         fox_defines += '-D@0@'.format(h[0])
     endif
 endforeach
+
+freetype_dep   = dependency('freetype2', required: false)
+fontconfig_dep = dependency('fontconfig', required: false)
+xft_dep        = dependency('xft', required: false)
+
+has_xft_deps = freetype_dep.found() and fontconfig_dep.found() and xft_dep.found()
+
+if use_x_window and get_option('xft') and has_xfs_deps
+    foreach h : x11_check_headers
+        if cc.has_header(h[1])
+            fox_defines += '-D@0@'.format(h[0])
+        endif
+    endforeach
+    fox_deps += [freetype_dep, fontconfig_dep, xft_dep]
+    fox_defines += '-DHAVE_XFT_H'
+endif
 
 check_functions = [
     ['localtime_r',    'time.h',        '#include<time.h>'],
