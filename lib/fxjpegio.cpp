@@ -3,7 +3,7 @@
 *                      J P E G    I n p u t / O u t p u t                       *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 2000,2021 by David Tyree.   All Rights Reserved.                *
+* Copyright (C) 2000,2022 by David Tyree.   All Rights Reserved.                *
 *********************************************************************************
 * This library is free software; you can redistribute it and/or modify          *
 * it under the terms of the GNU Lesser General Public License as published by   *
@@ -182,12 +182,12 @@ FXbool fxloadJPG(FXStream& store,FXColor*& data,FXint& width,FXint& height,FXint
   int row_stride,color,i;
 
   // Null out
-  data=NULL;
+  data=nullptr;
   width=0;
   height=0;
 
   // No sample buffer
-  buffer[0]=NULL;
+  buffer[0]=nullptr;
 
   // initialize the jpeg data structure;
   memset(&srcinfo,0,sizeof(srcinfo));
@@ -210,7 +210,7 @@ FXbool fxloadJPG(FXStream& store,FXColor*& data,FXint& width,FXint& height,FXint
   src.pub.skip_input_data=skip_input_data;
   src.pub.term_source=term_source;
   src.pub.bytes_in_buffer=0;
-  src.pub.next_input_byte=NULL;
+  src.pub.next_input_byte=nullptr;
   src.stream=&store;
 
   // Set our src manager
@@ -357,7 +357,7 @@ FXbool fxsaveJPG(FXStream& store,const FXColor* data,FXint width,FXint height,FX
   dst.pub.empty_output_buffer=empty_output_buffer;
   dst.pub.term_destination=term_destination;
   dst.pub.free_in_buffer=0;
-  dst.pub.next_output_byte=NULL;
+  dst.pub.next_output_byte=nullptr;
   dst.stream=&store;
 
   // Set up the input parameters for the file

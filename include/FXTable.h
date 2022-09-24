@@ -3,7 +3,7 @@
 *                            T a b l e   W i d g e t                            *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 1999,2021 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 1999,2022 by Jeroen van der Zijp.   All Rights Reserved.        *
 *********************************************************************************
 * This library is free software; you can redistribute it and/or modify          *
 * it under the terms of the GNU Lesser General Public License as published by   *
@@ -76,7 +76,7 @@ private:
   FXTableItem(const FXTableItem&);
   FXTableItem& operator=(const FXTableItem&);
 protected:
-  FXTableItem():icon(NULL),data(NULL),state(0){}
+  FXTableItem():icon(nullptr),data(nullptr),state(0){}
   FXint textWidth(const FXTable* table) const;
   FXint textHeight(const FXTable* table) const;
   virtual void draw(const FXTable* table,FXDC& dc,FXint x,FXint y,FXint w,FXint h) const;
@@ -111,7 +111,7 @@ public:
 public:
 
   /// Construct new table item
-  FXTableItem(const FXString& text,FXIcon* ic=NULL,FXptr ptr=NULL):label(text),icon(ic),data(ptr),state(RIGHT|CENTER_Y){}
+  FXTableItem(const FXString& text,FXIcon* ic=nullptr,FXptr ptr=nullptr):label(text),icon(ic),data(ptr),state(RIGHT|CENTER_Y){}
 
   /// Change item's text label
   virtual void setText(const FXString& txt);
@@ -230,7 +230,7 @@ protected:
 public:
 
   /// Construct new table item
-  FXComboTableItem(const FXString& text,FXIcon* ic=NULL,void* ptr=NULL);
+  FXComboTableItem(const FXString& text,FXIcon* ic=nullptr,void* ptr=nullptr);
 
   /// Create input control for editing this item
   virtual FXWindow *getControlFor(FXTable* table);
@@ -489,7 +489,7 @@ public:
   * The table is initially empty, and reports a default size based on
   * the scroll areas's scrollbar placement policy.
   */
-  FXTable(FXComposite *p,FXObject* tgt=NULL,FXSelector sel=0,FXuint opts=0,FXint x=0,FXint y=0,FXint w=0,FXint h=0,FXint pl=DEFAULT_MARGIN,FXint pr=DEFAULT_MARGIN,FXint pt=DEFAULT_MARGIN,FXint pb=DEFAULT_MARGIN);
+  FXTable(FXComposite *p,FXObject* tgt=nullptr,FXSelector sel=0,FXuint opts=0,FXint x=0,FXint y=0,FXint w=0,FXint h=0,FXint pl=DEFAULT_MARGIN,FXint pr=DEFAULT_MARGIN,FXint pt=DEFAULT_MARGIN,FXint pb=DEFAULT_MARGIN);
 
   /// Create the server-side resources
   virtual void create();
@@ -535,9 +535,6 @@ public:
 
   /// Remove the focus from this window
   virtual void killFocus();
-
-  /// Notification that focus moved to new child
-  virtual void changeFocus(FXWindow *child);
 
   /// Return button in the top/left corner
   FXButton* getCornerButton() const { return cornerButton; }

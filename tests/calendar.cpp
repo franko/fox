@@ -3,7 +3,7 @@
 *                    Calendar Example and Test Program                          *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 2006,2021 Sander Jansen. All Rights Reserved                    *
+* Copyright (C) 2006,2022 Sander Jansen. All Rights Reserved                    *
 ********************************************************************************/
 #include <fx.h>
 
@@ -82,13 +82,13 @@ FXIMPLEMENT(TestWindow,FXMainWindow,TestWindowMap,ARRAYNUMBER(TestWindowMap));
 
 
 // Main window constructor
-TestWindow::TestWindow(FXApp *a):FXMainWindow(a,"Calendar Test Program",NULL,NULL,DECOR_ALL,0,0,0,0){
+TestWindow::TestWindow(FXApp *a):FXMainWindow(a,"Calendar Test Program",nullptr,nullptr,DECOR_ALL,0,0,0,0){
 
   // Switcher
-  FXTabBook *tabbook=new FXTabBook(this,NULL,0,LAYOUT_FILL_X|LAYOUT_FILL_Y);
+  FXTabBook *tabbook=new FXTabBook(this,nullptr,0,LAYOUT_FILL_X|LAYOUT_FILL_Y);
 
   // First item is a list
-  new FXTabItem(tabbook,"One Calendar",NULL);
+  new FXTabItem(tabbook,"One Calendar",nullptr);
 
   FXHorizontalFrame *hframe=new FXHorizontalFrame(tabbook,LAYOUT_FILL_X|LAYOUT_FILL_Y|FRAME_RAISED|FRAME_THICK,0,0,0,0,0,0,0,0,0);
   FXVerticalFrame *vframe1=new FXVerticalFrame(hframe,LAYOUT_FILL_Y|PACK_UNIFORM_WIDTH);
@@ -144,17 +144,17 @@ TestWindow::TestWindow(FXApp *a):FXMainWindow(a,"Calendar Test Program",NULL,NUL
   box = new FXGroupBox(vframe3,"Keys",FRAME_RIDGE);
 
   FXMatrix * mat = new FXMatrix(box,2,LAYOUT_FILL_X|MATRIX_BY_COLUMNS,0,0,0,0,0,0,0,0,0,0);
-  new FXLabel(mat,"Page Up",NULL,LAYOUT_CENTER_Y|JUSTIFY_LEFT);
-  new FXLabel(mat,"Previous Month",NULL,LAYOUT_CENTER_Y|JUSTIFY_LEFT);
+  new FXLabel(mat,"Page Up",nullptr,LAYOUT_CENTER_Y|JUSTIFY_LEFT);
+  new FXLabel(mat,"Previous Month",nullptr,LAYOUT_CENTER_Y|JUSTIFY_LEFT);
 
-  new FXLabel(mat,"Page Down",NULL,LAYOUT_CENTER_Y|JUSTIFY_LEFT);
-  new FXLabel(mat,"Next Month",NULL,LAYOUT_CENTER_Y|JUSTIFY_LEFT);
+  new FXLabel(mat,"Page Down",nullptr,LAYOUT_CENTER_Y|JUSTIFY_LEFT);
+  new FXLabel(mat,"Next Month",nullptr,LAYOUT_CENTER_Y|JUSTIFY_LEFT);
 
-  new FXLabel(mat,"Home",NULL,LAYOUT_CENTER_Y|JUSTIFY_LEFT);
-  new FXLabel(mat,"Select Today",NULL,LAYOUT_CENTER_Y|JUSTIFY_LEFT);
+  new FXLabel(mat,"Home",nullptr,LAYOUT_CENTER_Y|JUSTIFY_LEFT);
+  new FXLabel(mat,"Select Today",nullptr,LAYOUT_CENTER_Y|JUSTIFY_LEFT);
 
-  new FXLabel(mat,"End",NULL,LAYOUT_CENTER_Y|JUSTIFY_LEFT);
-  new FXLabel(mat,"Show Selected",NULL,LAYOUT_CENTER_Y|JUSTIFY_LEFT);
+  new FXLabel(mat,"End",nullptr,LAYOUT_CENTER_Y|JUSTIFY_LEFT);
+  new FXLabel(mat,"Show Selected",nullptr,LAYOUT_CENTER_Y|JUSTIFY_LEFT);
 
   box = new FXGroupBox(vframe3,"Colors",FRAME_RIDGE|LAYOUT_FILL_Y);
 
@@ -165,43 +165,43 @@ TestWindow::TestWindow(FXApp *a):FXMainWindow(a,"Calendar Test Program",NULL,NUL
 
   cw = new FXColorWell(mat,0,this,ID_COLOR_1,LAYOUT_CENTER_Y|FRAME_LINE);
   cw->setRGBA(view->getBackColor());
-  new FXLabel(mat,"Background",NULL,LAYOUT_CENTER_Y|JUSTIFY_LEFT);
+  new FXLabel(mat,"Background",nullptr,LAYOUT_CENTER_Y|JUSTIFY_LEFT);
 
   cw = new FXColorWell(mat,0,this,ID_COLOR_2,LAYOUT_CENTER_Y|FRAME_LINE);
   cw->setRGBA(view->getTitleBackColor());
-  new FXLabel(mat,"Title Background",NULL,LAYOUT_CENTER_Y|JUSTIFY_LEFT);
+  new FXLabel(mat,"Title Background",nullptr,LAYOUT_CENTER_Y|JUSTIFY_LEFT);
 
   cw = new FXColorWell(mat,0,this,ID_COLOR_3,LAYOUT_CENTER_Y|FRAME_LINE);
   cw->setRGBA(view->getTitleColor());
-  new FXLabel(mat,"Title Foreground",NULL,LAYOUT_CENTER_Y|JUSTIFY_LEFT);
+  new FXLabel(mat,"Title Foreground",nullptr,LAYOUT_CENTER_Y|JUSTIFY_LEFT);
 
   cw = new FXColorWell(mat,0,this,ID_COLOR_4,LAYOUT_CENTER_Y|FRAME_LINE);
   cw->setRGBA(view->getWeekendColor());
-  new FXLabel(mat,"Weekend",NULL,LAYOUT_CENTER_Y|JUSTIFY_LEFT);
+  new FXLabel(mat,"Weekend",nullptr,LAYOUT_CENTER_Y|JUSTIFY_LEFT);
 
   cw = new FXColorWell(mat,0,this,ID_COLOR_5,LAYOUT_CENTER_Y|FRAME_LINE);
   cw->setRGBA(view->getOtherWeekendColor());
-  new FXLabel(mat,"Weekend (disabled)",NULL,LAYOUT_CENTER_Y|JUSTIFY_LEFT);
+  new FXLabel(mat,"Weekend (disabled)",nullptr,LAYOUT_CENTER_Y|JUSTIFY_LEFT);
 
 
   cw = new FXColorWell(mat,0,this,ID_COLOR_6,LAYOUT_CENTER_Y|FRAME_LINE);
   cw->setRGBA(view->getDayColor());
-  new FXLabel(mat,"Day",NULL,LAYOUT_CENTER_Y|JUSTIFY_LEFT);
+  new FXLabel(mat,"Day",nullptr,LAYOUT_CENTER_Y|JUSTIFY_LEFT);
 
   cw = new FXColorWell(mat,0,this,ID_COLOR_7,LAYOUT_CENTER_Y|FRAME_LINE);
   cw->setRGBA(view->getOtherDayColor());
-  new FXLabel(mat,"Day (disabled)",NULL,LAYOUT_CENTER_Y|JUSTIFY_LEFT);
+  new FXLabel(mat,"Day (disabled)",nullptr,LAYOUT_CENTER_Y|JUSTIFY_LEFT);
 
   cw = new FXColorWell(mat,0,this,ID_COLOR_8,LAYOUT_CENTER_Y|FRAME_LINE);
   cw->setRGBA(view->getTodayColor());
-  new FXLabel(mat,"Today",NULL,LAYOUT_CENTER_Y|JUSTIFY_LEFT);
+  new FXLabel(mat,"Today",nullptr,LAYOUT_CENTER_Y|JUSTIFY_LEFT);
 
 
   spinner->setValue(view->getFirstDay());
 
   FXLabel * label;
   // First item is a list
-  new FXTabItem(tabbook,"Multiple Calendars",NULL);
+  new FXTabItem(tabbook,"Multiple Calendars",nullptr);
 
   hframe = new FXHorizontalFrame(tabbook,LAYOUT_FILL_X|LAYOUT_FILL_Y|FRAME_RAISED|FRAME_THICK,0,0,0,0);
   hframe = new FXHorizontalFrame(hframe,LAYOUT_FILL_X|LAYOUT_FILL_Y|FRAME_SUNKEN|FRAME_THICK,0,0,0,0,0,0,0,0);
@@ -211,44 +211,44 @@ TestWindow::TestWindow(FXApp *a):FXMainWindow(a,"Calendar Test Program",NULL,NUL
   mat = new FXMatrix(scrollframe,3,LAYOUT_FILL_X|LAYOUT_FILL_Y|MATRIX_BY_COLUMNS,0,0,0,0);
   mat->setBackColor(FXRGB(255,255,255));
 
-  label = new FXLabel(mat,"January",NULL,LAYOUT_CENTER_X|LAYOUT_CENTER_Y);
+  label = new FXLabel(mat,"January",nullptr,LAYOUT_CENTER_X|LAYOUT_CENTER_Y);
   label->setBackColor(FXRGB(255,255,255));
-  label = new FXLabel(mat,"February",NULL,LAYOUT_CENTER_X|LAYOUT_CENTER_Y);
+  label = new FXLabel(mat,"February",nullptr,LAYOUT_CENTER_X|LAYOUT_CENTER_Y);
   label->setBackColor(FXRGB(255,255,255));
-  label = new FXLabel(mat,"March",NULL,LAYOUT_CENTER_X|LAYOUT_CENTER_Y);
+  label = new FXLabel(mat,"March",nullptr,LAYOUT_CENTER_X|LAYOUT_CENTER_Y);
   label->setBackColor(FXRGB(255,255,255));
 
   cal[0] = new FXCalendarView(mat,this,ID_CALENDAR,CALENDAR_STATIC|CALENDAR_HIDEOTHER|CALENDAR_SINGLESELECT);
   cal[1] = new FXCalendarView(mat,this,ID_CALENDAR,CALENDAR_STATIC|CALENDAR_HIDEOTHER|CALENDAR_SINGLESELECT);
   cal[2] = new FXCalendarView(mat,this,ID_CALENDAR,CALENDAR_STATIC|CALENDAR_HIDEOTHER|CALENDAR_SINGLESELECT);
 
-  label = new FXLabel(mat,"April",NULL,LAYOUT_CENTER_X|LAYOUT_CENTER_Y);
+  label = new FXLabel(mat,"April",nullptr,LAYOUT_CENTER_X|LAYOUT_CENTER_Y);
   label->setBackColor(FXRGB(255,255,255));
-  label = new FXLabel(mat,"May",NULL,LAYOUT_CENTER_X|LAYOUT_CENTER_Y);
+  label = new FXLabel(mat,"May",nullptr,LAYOUT_CENTER_X|LAYOUT_CENTER_Y);
   label->setBackColor(FXRGB(255,255,255));
-  label = new FXLabel(mat,"June",NULL,LAYOUT_CENTER_X|LAYOUT_CENTER_Y);
+  label = new FXLabel(mat,"June",nullptr,LAYOUT_CENTER_X|LAYOUT_CENTER_Y);
   label->setBackColor(FXRGB(255,255,255));
 
   cal[3] = new FXCalendarView(mat,this,ID_CALENDAR,CALENDAR_STATIC|CALENDAR_HIDEOTHER|CALENDAR_SINGLESELECT);
   cal[4] = new FXCalendarView(mat,this,ID_CALENDAR,CALENDAR_STATIC|CALENDAR_HIDEOTHER|CALENDAR_SINGLESELECT);
   cal[5] = new FXCalendarView(mat,this,ID_CALENDAR,CALENDAR_STATIC|CALENDAR_HIDEOTHER|CALENDAR_SINGLESELECT);
 
-  label = new FXLabel(mat,"July",NULL,LAYOUT_CENTER_X|LAYOUT_CENTER_Y);
+  label = new FXLabel(mat,"July",nullptr,LAYOUT_CENTER_X|LAYOUT_CENTER_Y);
   label->setBackColor(FXRGB(255,255,255));
-  label = new FXLabel(mat,"August",NULL,LAYOUT_CENTER_X|LAYOUT_CENTER_Y);
+  label = new FXLabel(mat,"August",nullptr,LAYOUT_CENTER_X|LAYOUT_CENTER_Y);
   label->setBackColor(FXRGB(255,255,255));
-  label = new FXLabel(mat,"September",NULL,LAYOUT_CENTER_X|LAYOUT_CENTER_Y);
+  label = new FXLabel(mat,"September",nullptr,LAYOUT_CENTER_X|LAYOUT_CENTER_Y);
   label->setBackColor(FXRGB(255,255,255));
 
   cal[6] = new FXCalendarView(mat,this,ID_CALENDAR,CALENDAR_STATIC|CALENDAR_HIDEOTHER|CALENDAR_SINGLESELECT);
   cal[7] = new FXCalendarView(mat,this,ID_CALENDAR,CALENDAR_STATIC|CALENDAR_HIDEOTHER|CALENDAR_SINGLESELECT);
   cal[8] = new FXCalendarView(mat,this,ID_CALENDAR,CALENDAR_STATIC|CALENDAR_HIDEOTHER|CALENDAR_SINGLESELECT);
 
-  label = new FXLabel(mat,"October",NULL,LAYOUT_CENTER_X|LAYOUT_CENTER_Y);
+  label = new FXLabel(mat,"October",nullptr,LAYOUT_CENTER_X|LAYOUT_CENTER_Y);
   label->setBackColor(FXRGB(255,255,255));
-  label = new FXLabel(mat,"November",NULL,LAYOUT_CENTER_X|LAYOUT_CENTER_Y);
+  label = new FXLabel(mat,"November",nullptr,LAYOUT_CENTER_X|LAYOUT_CENTER_Y);
   label->setBackColor(FXRGB(255,255,255));
-  label = new FXLabel(mat,"December",NULL,LAYOUT_CENTER_X|LAYOUT_CENTER_Y);
+  label = new FXLabel(mat,"December",nullptr,LAYOUT_CENTER_X|LAYOUT_CENTER_Y);
   label->setBackColor(FXRGB(255,255,255));
 
   cal[9] = new FXCalendarView(mat,this,ID_CALENDAR,CALENDAR_STATIC|CALENDAR_HIDEOTHER|CALENDAR_SINGLESELECT);

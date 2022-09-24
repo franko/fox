@@ -3,7 +3,7 @@
 *                        C h a r t   B a s e   W i d g e t                      *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 2003,2021 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 2003,2022 by Jeroen van der Zijp.   All Rights Reserved.        *
 *********************************************************************************
 * This library is free software; you can redistribute it and/or modify          *
 * it under the terms of the GNU Lesser General Public License as published by   *
@@ -62,7 +62,7 @@ FXDragType FXChart::tifType=0;
 
 // Default back fill style
 const FillStyle defaultBackStyle={
-  NULL,FXRGB(255,255,255),FXRGBA(0,0,0,0),FXRGB(255,255,255),FXRGB(0,0,255),STIPPLE_NONE,FILLSTYLE_SOLID
+  nullptr,FXRGB(255,255,255),FXRGBA(0,0,0,0),FXRGB(255,255,255),FXRGB(0,0,255),STIPPLE_NONE,FILLSTYLE_SOLID
   };
 
 /*******************************************************************************/
@@ -84,7 +84,7 @@ FXChart::FXChart(){
 // Make a chart
 FXChart::FXChart(FXComposite* p,FXObject* tgt,FXSelector sel,FXuint opts,FXint x,FXint y,FXint w,FXint h,FXint pl,FXint pr,FXint pt,FXint pb):FXComposite(p,opts,x,y,w,h){
   flags|=FLAG_SHOWN|FLAG_ENABLED|FLAG_DROPTARGET;
-  chart=new FXImage(getApp(),NULL,IMAGE_DITHER|IMAGE_SHMI|IMAGE_SHMP,w,h);
+  chart=new FXImage(getApp(),nullptr,IMAGE_DITHER|IMAGE_SHMI|IMAGE_SHMP,w,h);
   captionfont=getApp()->getNormalFont();
   captioncolor=FXRGB(0,0,0);
   captionoffset=5;
@@ -203,7 +203,7 @@ long FXChart::onClipboardRequest(FXObject *sender,FXSelector sel,void *ptr){
     chart->restore();
 
     // Open memory stream
-    ms.open(FXStreamSave,NULL,0);
+    ms.open(FXStreamSave,nullptr,0);
 
     // Render image to memory stream
     if(event->target==bmpType)

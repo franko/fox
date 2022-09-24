@@ -3,7 +3,7 @@
 *                   U n i c o d e   T e x t   C o d e c                         *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 2002,2021 by L.Johnson & J.van der Zijp.  All Rights Reserved.  *
+* Copyright (C) 2002,2022 by L.Johnson & J.van der Zijp.  All Rights Reserved.  *
 *********************************************************************************
 * This library is free software; you can redistribute it and/or modify          *
 * it under the terms of the GNU Lesser General Public License as published by   *
@@ -54,7 +54,7 @@ namespace FX {
 
 
 // Base class is not instantiated
-FXIMPLEMENT_ABSTRACT(FXTextCodec,FXObject,NULL,0)
+FXIMPLEMENT_ABSTRACT(FXTextCodec,FXObject,nullptr,0)
 
 
 /*********  Convert arrays of characters from multi-byte to unicode  ***********/

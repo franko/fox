@@ -3,7 +3,7 @@
 *                                 Data Target Test                              *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 1997,2021 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 1997,2022 by Jeroen van der Zijp.   All Rights Reserved.        *
 ********************************************************************************/
 #include "fx.h"
 #include <stdio.h>
@@ -77,7 +77,7 @@ FXIMPLEMENT(DataTargetWindow,FXMainWindow,DataTargetWindowMap,ARRAYNUMBER(DataTa
 
 
 // Make some windows
-DataTargetWindow::DataTargetWindow(FXApp* a):FXMainWindow(a,"Data Target Test",NULL,NULL,DECOR_ALL,20,20,700,460){
+DataTargetWindow::DataTargetWindow(FXApp* a):FXMainWindow(a,"Data Target Test",nullptr,nullptr,DECOR_ALL,20,20,700,460){
 
   // Initialize some simple variables
   some_int = 10;
@@ -116,9 +116,9 @@ DataTargetWindow::DataTargetWindow(FXApp* a):FXMainWindow(a,"Data Target Test",N
 
   // File menu
   filemenu=new FXMenuPane(this);
-    new FXMenuCommand(filemenu,"Progress dialog...",NULL,this,ID_PROGRESS);
-    new FXMenuCommand(filemenu,"&Quit\tCtl-Q",NULL,getApp(),FXApp::ID_QUIT);
-  new FXMenuTitle(menubar,"&File",NULL,filemenu);
+    new FXMenuCommand(filemenu,"Progress dialog...",nullptr,this,ID_PROGRESS);
+    new FXMenuCommand(filemenu,"&Quit\tCtl-Q",nullptr,getApp(),FXApp::ID_QUIT);
+  new FXMenuTitle(menubar,"&File",nullptr,filemenu);
 
   // Option menu
   optionmenu=new FXMenuPane(this);
@@ -129,7 +129,7 @@ DataTargetWindow::DataTargetWindow(FXApp* a):FXMainWindow(a,"Data Target Test",N
     new FXMenuRadio(optionmenu,"Option 3",&option_target,FXDataTarget::ID_OPTION+2);
     new FXMenuRadio(optionmenu,"Option 4",&option_target,FXDataTarget::ID_OPTION+3);
 
-  new FXMenuTitle(menubar,"&Option",NULL,optionmenu);
+  new FXMenuTitle(menubar,"&Option",nullptr,optionmenu);
 
 
   // Lone progress bar at the bottom, which reflects the value of variable "some_progress"
@@ -149,7 +149,7 @@ DataTargetWindow::DataTargetWindow(FXApp* a):FXMainWindow(a,"Data Target Test",N
     "The progress bar below shows a time-varying variable, demonstrating that widgets\n"
     "can be updated via FXDataTarget's regardless how the variables are changed.\n\n"
     "Note that the \"Option\" pulldown menu is also connected to the option variable!",
-    NULL,LAYOUT_LEFT|JUSTIFY_LEFT);
+    nullptr,LAYOUT_LEFT|JUSTIFY_LEFT);
 
   new FXProgressBar(horframe,&int_target,FXDataTarget::ID_VALUE,PROGRESSBAR_PERCENTAGE|PROGRESSBAR_DIAL|LAYOUT_RIGHT|LAYOUT_FILL_Y|LAYOUT_FILL_X);
 
@@ -160,7 +160,7 @@ DataTargetWindow::DataTargetWindow(FXApp* a):FXMainWindow(a,"Data Target Test",N
   matrix=new FXMatrix(this,9,MATRIX_BY_COLUMNS|LAYOUT_SIDE_TOP|LAYOUT_FILL_X|LAYOUT_FILL_Y);
 
   // First row
-  new FXLabel(matrix,"&Integer",NULL,LAYOUT_CENTER_Y|LAYOUT_CENTER_X|JUSTIFY_RIGHT|LAYOUT_FILL_ROW);
+  new FXLabel(matrix,"&Integer",nullptr,LAYOUT_CENTER_Y|LAYOUT_CENTER_X|JUSTIFY_RIGHT|LAYOUT_FILL_ROW);
 
   // The value of variable "some_int" may be changed by any of these widgets below
   new FXTextField(matrix,10,&int_target,FXDataTarget::ID_VALUE,TEXTFIELD_INTEGER|JUSTIFY_RIGHT|LAYOUT_CENTER_Y|LAYOUT_CENTER_X|FRAME_SUNKEN|FRAME_THICK|LAYOUT_FILL_ROW);
@@ -176,7 +176,7 @@ DataTargetWindow::DataTargetWindow(FXApp* a):FXMainWindow(a,"Data Target Test",N
 
 
   // Second row
-  new FXLabel(matrix,"&Real",NULL,LAYOUT_CENTER_Y|LAYOUT_CENTER_X|JUSTIFY_RIGHT|LAYOUT_FILL_ROW);
+  new FXLabel(matrix,"&Real",nullptr,LAYOUT_CENTER_Y|LAYOUT_CENTER_X|JUSTIFY_RIGHT|LAYOUT_FILL_ROW);
 
   // The value of variable "some_double" may be changed by the widgets below
   new FXTextField(matrix,10,&double_target,FXDataTarget::ID_VALUE,TEXTFIELD_REAL|JUSTIFY_RIGHT|LAYOUT_CENTER_Y|LAYOUT_CENTER_X|FRAME_SUNKEN|FRAME_THICK|LAYOUT_FILL_ROW);
@@ -195,7 +195,7 @@ DataTargetWindow::DataTargetWindow(FXApp* a):FXMainWindow(a,"Data Target Test",N
   new FXFrame(matrix,LAYOUT_FILL_COLUMN|LAYOUT_FILL_ROW);
 
   // Third row
-  new FXLabel(matrix,"&String",NULL,LAYOUT_CENTER_Y|LAYOUT_CENTER_X|JUSTIFY_RIGHT|LAYOUT_FILL_ROW);
+  new FXLabel(matrix,"&String",nullptr,LAYOUT_CENTER_Y|LAYOUT_CENTER_X|JUSTIFY_RIGHT|LAYOUT_FILL_ROW);
 
   // The string variable "some_string" can be changed by these text fields
   new FXTextField(matrix,10,&string_target,FXDataTarget::ID_VALUE,LAYOUT_CENTER_Y|LAYOUT_CENTER_X|FRAME_SUNKEN|FRAME_THICK|LAYOUT_FILL_ROW);
@@ -208,7 +208,7 @@ DataTargetWindow::DataTargetWindow(FXApp* a):FXMainWindow(a,"Data Target Test",N
   new FXFrame(matrix,LAYOUT_FILL_COLUMN|LAYOUT_FILL_ROW);
 
   // Fourth row
-  new FXLabel(matrix,"&Option",NULL,LAYOUT_CENTER_Y|LAYOUT_CENTER_X|JUSTIFY_RIGHT|LAYOUT_FILL_ROW);
+  new FXLabel(matrix,"&Option",nullptr,LAYOUT_CENTER_Y|LAYOUT_CENTER_X|JUSTIFY_RIGHT|LAYOUT_FILL_ROW);
 
   // The variable "some_option" is changed by the following widgets
   new FXTextField(matrix,10,&option_target,FXDataTarget::ID_VALUE,TEXTFIELD_INTEGER|LAYOUT_CENTER_Y|LAYOUT_CENTER_X|FRAME_SUNKEN|FRAME_THICK|LAYOUT_FILL_ROW);
@@ -219,10 +219,10 @@ DataTargetWindow::DataTargetWindow(FXApp* a):FXMainWindow(a,"Data Target Test",N
 
   // Even option menus can be hooked up
   popup=new FXPopup(this);
-  new FXOption(popup,"First",NULL,&option_target,FXDataTarget::ID_OPTION+0,JUSTIFY_HZ_APART|ICON_AFTER_TEXT);
-  new FXOption(popup,"Second",NULL,&option_target,FXDataTarget::ID_OPTION+1,JUSTIFY_HZ_APART|ICON_AFTER_TEXT);
-  new FXOption(popup,"Third",NULL,&option_target,FXDataTarget::ID_OPTION+2,JUSTIFY_HZ_APART|ICON_AFTER_TEXT);
-  new FXOption(popup,"Fourth",NULL,&option_target,FXDataTarget::ID_OPTION+3,JUSTIFY_HZ_APART|ICON_AFTER_TEXT);
+  new FXOption(popup,"First",nullptr,&option_target,FXDataTarget::ID_OPTION+0,JUSTIFY_HZ_APART|ICON_AFTER_TEXT);
+  new FXOption(popup,"Second",nullptr,&option_target,FXDataTarget::ID_OPTION+1,JUSTIFY_HZ_APART|ICON_AFTER_TEXT);
+  new FXOption(popup,"Third",nullptr,&option_target,FXDataTarget::ID_OPTION+2,JUSTIFY_HZ_APART|ICON_AFTER_TEXT);
+  new FXOption(popup,"Fourth",nullptr,&option_target,FXDataTarget::ID_OPTION+3,JUSTIFY_HZ_APART|ICON_AFTER_TEXT);
   FXOptionMenu *optionsmenu=new FXOptionMenu(matrix,popup,LAYOUT_TOP|FRAME_RAISED|FRAME_THICK|JUSTIFY_HZ_APART|ICON_AFTER_TEXT);
   optionsmenu->setTarget(&option_target);
   optionsmenu->setSelector(FXDataTarget::ID_VALUE);
@@ -231,7 +231,7 @@ DataTargetWindow::DataTargetWindow(FXApp* a):FXMainWindow(a,"Data Target Test",N
   new FXFrame(matrix,LAYOUT_FILL_COLUMN|LAYOUT_FILL_ROW);
 
   // Fifth
-  new FXLabel(matrix,"&Color",NULL,LAYOUT_CENTER_Y|LAYOUT_CENTER_X|JUSTIFY_RIGHT|LAYOUT_FILL_ROW);
+  new FXLabel(matrix,"&Color",nullptr,LAYOUT_CENTER_Y|LAYOUT_CENTER_X|JUSTIFY_RIGHT|LAYOUT_FILL_ROW);
 
   // Two colorwells connect to the variable "some_color"
   new FXColorWell(matrix,0,&color_target,FXDataTarget::ID_VALUE,LAYOUT_CENTER_Y|LAYOUT_FILL_X|LAYOUT_FILL_ROW|FRAME_SUNKEN|FRAME_THICK,0,0,0,0, 0,0,0,0);

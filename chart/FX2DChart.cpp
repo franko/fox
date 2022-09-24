@@ -3,7 +3,7 @@
 *             T w o - D i m e n s i o n a l   C h a r t   W i d g e t           *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 2007,2021 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 2007,2022 by Jeroen van der Zijp.   All Rights Reserved.        *
 *********************************************************************************
 * This library is free software; you can redistribute it and/or modify          *
 * it under the terms of the GNU Lesser General Public License as published by   *
@@ -38,7 +38,7 @@ namespace FXCHART {
 
 
 // Default chart fill style
-const FillStyle defaultChartStyle={NULL,FXRGB(255,255,255),FXRGBA(0,0,0,0),FXRGB(240,240,240),FXRGB(255,255,255),STIPPLE_NONE,FILLSTYLE_SOLID};
+const FillStyle defaultChartStyle={nullptr,FXRGB(255,255,255),FXRGBA(0,0,0,0),FXRGB(240,240,240),FXRGB(255,255,255),STIPPLE_NONE,FILLSTYLE_SOLID};
 
 
 // Map
@@ -54,10 +54,10 @@ FXIMPLEMENT(FX2DChart,FXChart,FX2DChartMap,ARRAYNUMBER(FX2DChartMap))
 // Deserialization
 FX2DChart::FX2DChart(){
   chartstyle=defaultChartStyle;
-  axes[XLO]=NULL;
-  axes[YLO]=NULL;
-  axes[XHI]=NULL;
-  axes[YHI]=NULL;
+  axes[XLO]=nullptr;
+  axes[YLO]=nullptr;
+  axes[XHI]=nullptr;
+  axes[YHI]=nullptr;
   }
 
 
@@ -105,6 +105,8 @@ void FX2DChart::drawSelf(FXDC& dc) const {
   plottop=dc.getClipY()+margintop;
   plotright=dc.getClipX()+dc.getClipWidth()-marginright-1;
   plotbottom=dc.getClipY()+dc.getClipHeight()-marginbottom-1;
+
+  caps=TEXT_ATTACH_CENTER|TEXT_JUSTIFY_CENTER;
 
   // Space left after margins?
   if(plotleft<plotright && plottop<plotbottom){

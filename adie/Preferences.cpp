@@ -3,7 +3,7 @@
 *                        P r e f e r e n c e s   D i a l o g                    *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 1998,2021 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 1998,2022 by Jeroen van der Zijp.   All Rights Reserved.        *
 *********************************************************************************
 * This program is free software: you can redistribute it and/or modify          *
 * it under the terms of the GNU General Public License as published by          *
@@ -33,7 +33,7 @@
 
 
 // Object implementation
-FXIMPLEMENT(Preferences,FXDialogBox,NULL,0)
+FXIMPLEMENT(Preferences,FXDialogBox,nullptr,0)
 
 
 
@@ -58,20 +58,20 @@ Preferences::Preferences(TextWindow *own):FXDialogBox(own,"Adie Preferences",DEC
 
   ///////////////////////////  Editor settings pane  ////////////////////////////
   FXVerticalFrame* editorpane=new FXVerticalFrame(switcher,LAYOUT_FILL_X|LAYOUT_FILL_Y,0,0,0,0, 0,0,0,0, 0,0);
-  new FXLabel(editorpane,tr("Editor settings"),NULL,LAYOUT_LEFT);
+  new FXLabel(editorpane,tr("Editor settings"),nullptr,LAYOUT_LEFT);
   new FXHorizontalSeparator(editorpane,SEPARATOR_LINE|LAYOUT_FILL_X);
   FXMatrix *matrix2=new FXMatrix(editorpane,10,MATRIX_BY_ROWS|PACK_UNIFORM_HEIGHT|LAYOUT_FILL_X|LAYOUT_FILL_Y,0,0,0,0, 4,4,4,4, 4, 2);
 
-  new FXLabel(matrix2,tr("Word wrapping:"),NULL,JUSTIFY_LEFT|LAYOUT_CENTER_Y|LAYOUT_FILL_X|LAYOUT_FILL_ROW);
-  new FXLabel(matrix2,tr("Auto indent:\tAutomatically indent new line same as previous line\tAutomatically indent new line same as previous line."),NULL,JUSTIFY_LEFT|LAYOUT_CENTER_Y|LAYOUT_FILL_X|LAYOUT_FILL_ROW);
-  new FXLabel(matrix2,tr("Fixed wrap margin:\tWrap words at fixed margin instead of width of window\tWrap words at fixed margin instead of width of window."),NULL,JUSTIFY_LEFT|LAYOUT_CENTER_Y|LAYOUT_FILL_X|LAYOUT_FILL_ROW);
-  new FXLabel(matrix2,tr("Strip carriage returns:\tStrip carriage returns when loading files\tStrip carriage returns when loading files."),NULL,JUSTIFY_LEFT|LAYOUT_CENTER_Y|LAYOUT_FILL_X|LAYOUT_FILL_ROW);
-  new FXLabel(matrix2,tr("Append carriage returns:\tAppend carriage returns when saving files\tAppend carriage returns when saving files."),NULL,JUSTIFY_LEFT|LAYOUT_CENTER_Y|LAYOUT_FILL_X|LAYOUT_FILL_ROW);
-  new FXLabel(matrix2,tr("Strip trailing spaces:\tStrip useless spaces from ends of lines when saving files\tStrip useless spaces from ends of lines when saving files."),NULL,JUSTIFY_LEFT|LAYOUT_CENTER_Y|LAYOUT_FILL_X|LAYOUT_FILL_ROW);
-  new FXLabel(matrix2,tr("Append newline at end of file:\tAppend a newline at the end of the file if needed\tEnsure file ends with a newline when saved."),NULL,JUSTIFY_LEFT|LAYOUT_CENTER_Y|LAYOUT_FILL_X|LAYOUT_FILL_ROW);
-  new FXLabel(matrix2,tr("Insert tab characters:"),NULL,JUSTIFY_LEFT|LAYOUT_CENTER_Y|LAYOUT_FILL_X|LAYOUT_FILL_ROW);
-  new FXLabel(matrix2,tr("Brace matching:\tHighlight matching braces, parentheses, or brackets\tHighlight matching braces, parentheses, or brackets."),NULL,JUSTIFY_LEFT|LAYOUT_CENTER_Y|LAYOUT_FILL_X|LAYOUT_FILL_ROW);
-  new FXLabel(matrix2,tr("Modeline parsing support:\tParse adie, emacs, or vim modelines\tParse adie, emacs, or vim modelines to set language and other attributes."),NULL,JUSTIFY_LEFT|LAYOUT_CENTER_Y|LAYOUT_FILL_X);
+  new FXLabel(matrix2,tr("Word wrapping:"),nullptr,JUSTIFY_LEFT|LAYOUT_CENTER_Y|LAYOUT_FILL_X|LAYOUT_FILL_ROW);
+  new FXLabel(matrix2,tr("Auto indent:\tAutomatically indent new line same as previous line\tAutomatically indent new line same as previous line."),nullptr,JUSTIFY_LEFT|LAYOUT_CENTER_Y|LAYOUT_FILL_X|LAYOUT_FILL_ROW);
+  new FXLabel(matrix2,tr("Fixed wrap margin:\tWrap words at fixed margin instead of width of window\tWrap words at fixed margin instead of width of window."),nullptr,JUSTIFY_LEFT|LAYOUT_CENTER_Y|LAYOUT_FILL_X|LAYOUT_FILL_ROW);
+  new FXLabel(matrix2,tr("Strip carriage returns:\tStrip carriage returns when loading files\tStrip carriage returns when loading files."),nullptr,JUSTIFY_LEFT|LAYOUT_CENTER_Y|LAYOUT_FILL_X|LAYOUT_FILL_ROW);
+  new FXLabel(matrix2,tr("Append carriage returns:\tAppend carriage returns when saving files\tAppend carriage returns when saving files."),nullptr,JUSTIFY_LEFT|LAYOUT_CENTER_Y|LAYOUT_FILL_X|LAYOUT_FILL_ROW);
+  new FXLabel(matrix2,tr("Strip trailing spaces:\tStrip useless spaces from ends of lines when saving files\tStrip useless spaces from ends of lines when saving files."),nullptr,JUSTIFY_LEFT|LAYOUT_CENTER_Y|LAYOUT_FILL_X|LAYOUT_FILL_ROW);
+  new FXLabel(matrix2,tr("Append newline at end of file:\tAppend a newline at the end of the file if needed\tEnsure file ends with a newline when saved."),nullptr,JUSTIFY_LEFT|LAYOUT_CENTER_Y|LAYOUT_FILL_X|LAYOUT_FILL_ROW);
+  new FXLabel(matrix2,tr("Insert tab characters:"),nullptr,JUSTIFY_LEFT|LAYOUT_CENTER_Y|LAYOUT_FILL_X|LAYOUT_FILL_ROW);
+  new FXLabel(matrix2,tr("Brace matching:\tHighlight matching braces, parentheses, or brackets\tHighlight matching braces, parentheses, or brackets."),nullptr,JUSTIFY_LEFT|LAYOUT_CENTER_Y|LAYOUT_FILL_X|LAYOUT_FILL_ROW);
+  new FXLabel(matrix2,tr("Modeline parsing support:\tParse adie, emacs, or vim modelines\tParse adie, emacs, or vim modelines to set language and other attributes."),nullptr,JUSTIFY_LEFT|LAYOUT_CENTER_Y|LAYOUT_FILL_X);
 
   new FXCheckButton(matrix2,FXString::null,own,TextWindow::ID_TOGGLE_WRAP,LAYOUT_LEFT|LAYOUT_CENTER_Y|LAYOUT_FILL_ROW,0,0,0,0, 0,0,0,0);
   new FXCheckButton(matrix2,FXString::null,own,TextWindow::ID_AUTOINDENT,LAYOUT_LEFT|LAYOUT_CENTER_Y|LAYOUT_FILL_ROW,0,0,0,0, 0,0,0,0);
@@ -95,15 +95,15 @@ Preferences::Preferences(TextWindow *own):FXDialogBox(own,"Adie Preferences",DEC
   new FXFrame(matrix2,LAYOUT_FILL_COLUMN|LAYOUT_FILL_ROW);
   new FXFrame(matrix2,LAYOUT_FILL_COLUMN|LAYOUT_FILL_ROW);
 
-  new FXLabel(matrix2,tr("Wrap margin:"),NULL,JUSTIFY_LEFT|LAYOUT_CENTER_Y|LAYOUT_FILL_X|LAYOUT_FILL_ROW);
-  new FXLabel(matrix2,tr("Tab columns:"),NULL,JUSTIFY_LEFT|LAYOUT_CENTER_Y|LAYOUT_FILL_X|LAYOUT_FILL_ROW);
-  new FXLabel(matrix2,tr("Brace match time (ms):"),NULL,JUSTIFY_LEFT|LAYOUT_CENTER_Y|LAYOUT_FILL_X|LAYOUT_FILL_ROW);
-  new FXLabel(matrix2,tr("Mouse wheel lines:"),NULL,JUSTIFY_LEFT|LAYOUT_CENTER_Y|LAYOUT_FILL_X|LAYOUT_FILL_ROW);
-  new FXLabel(matrix2,tr("Line number space:"),NULL,JUSTIFY_LEFT|LAYOUT_CENTER_Y|LAYOUT_FILL_X|LAYOUT_FILL_ROW);
-  new FXLabel(matrix2,tr("Save view of file:\tSave and restore file view\tPermanently remember view for each file."),NULL,JUSTIFY_LEFT|LAYOUT_CENTER_Y|LAYOUT_FILL_X|LAYOUT_FILL_ROW);
-  new FXLabel(matrix2,tr("Save bookmarks:\tSave and restore bookmarks\tPermanently remember bookmark positions for each file."),NULL,JUSTIFY_LEFT|LAYOUT_CENTER_Y|LAYOUT_FILL_X|LAYOUT_FILL_ROW);
-  new FXLabel(matrix2,tr("Warn if changed externally:\tWarn if another program changed the file\tWarn if another program changed the file being edited."),NULL,JUSTIFY_LEFT|LAYOUT_CENTER_Y|LAYOUT_FILL_X|LAYOUT_FILL_ROW);
-  new FXLabel(matrix2,tr("Brace match stays:\tMatching brace stays highlighted\tMatching brace stays highlighted until cursor moves."),NULL,JUSTIFY_LEFT|LAYOUT_CENTER_Y|LAYOUT_FILL_X|LAYOUT_FILL_ROW);
+  new FXLabel(matrix2,tr("Wrap margin:"),nullptr,JUSTIFY_LEFT|LAYOUT_CENTER_Y|LAYOUT_FILL_X|LAYOUT_FILL_ROW);
+  new FXLabel(matrix2,tr("Tab columns:"),nullptr,JUSTIFY_LEFT|LAYOUT_CENTER_Y|LAYOUT_FILL_X|LAYOUT_FILL_ROW);
+  new FXLabel(matrix2,tr("Brace match time (ms):"),nullptr,JUSTIFY_LEFT|LAYOUT_CENTER_Y|LAYOUT_FILL_X|LAYOUT_FILL_ROW);
+  new FXLabel(matrix2,tr("Mouse wheel lines:"),nullptr,JUSTIFY_LEFT|LAYOUT_CENTER_Y|LAYOUT_FILL_X|LAYOUT_FILL_ROW);
+  new FXLabel(matrix2,tr("Line number space:"),nullptr,JUSTIFY_LEFT|LAYOUT_CENTER_Y|LAYOUT_FILL_X|LAYOUT_FILL_ROW);
+  new FXLabel(matrix2,tr("Save view of file:\tSave and restore file view\tPermanently remember view for each file."),nullptr,JUSTIFY_LEFT|LAYOUT_CENTER_Y|LAYOUT_FILL_X|LAYOUT_FILL_ROW);
+  new FXLabel(matrix2,tr("Save bookmarks:\tSave and restore bookmarks\tPermanently remember bookmark positions for each file."),nullptr,JUSTIFY_LEFT|LAYOUT_CENTER_Y|LAYOUT_FILL_X|LAYOUT_FILL_ROW);
+  new FXLabel(matrix2,tr("Warn if changed externally:\tWarn if another program changed the file\tWarn if another program changed the file being edited."),nullptr,JUSTIFY_LEFT|LAYOUT_CENTER_Y|LAYOUT_FILL_X|LAYOUT_FILL_ROW);
+  new FXLabel(matrix2,tr("Brace match stays:\tMatching brace stays highlighted\tMatching brace stays highlighted until cursor moves."),nullptr,JUSTIFY_LEFT|LAYOUT_CENTER_Y|LAYOUT_FILL_X|LAYOUT_FILL_ROW);
   new FXFrame(matrix2,LAYOUT_FILL_COLUMN|LAYOUT_FILL_ROW);
 
   new FXTextField(matrix2,6,own,TextWindow::ID_WRAPCOLUMNS,JUSTIFY_RIGHT|FRAME_SUNKEN|FRAME_THICK|LAYOUT_CENTER_Y|LAYOUT_FILL_X|LAYOUT_FILL_ROW,0,0,0,0, 2,2,1,1);
@@ -125,18 +125,18 @@ Preferences::Preferences(TextWindow *own):FXDialogBox(own,"Adie Preferences",DEC
 
   /////////////////////////  Color settings pane  ///////////////////////////////
   FXVerticalFrame* colorspane=new FXVerticalFrame(switcher,LAYOUT_FILL_X|LAYOUT_FILL_Y,0,0,0,0, 0,0,0,0, 0,0);
-  new FXLabel(colorspane,tr("Color settings"),NULL,LAYOUT_LEFT);
+  new FXLabel(colorspane,tr("Color settings"),nullptr,LAYOUT_LEFT);
   new FXHorizontalSeparator(colorspane,SEPARATOR_LINE|LAYOUT_FILL_X);
   FXMatrix *matrix1=new FXMatrix(colorspane,8,MATRIX_BY_ROWS|PACK_UNIFORM_HEIGHT|LAYOUT_FILL_X|LAYOUT_FILL_Y,0,0,0,0, 4,4,4,4, 4, 4);
 
-  new FXLabel(matrix1,tr("Background:"),NULL,JUSTIFY_LEFT|LAYOUT_CENTER_Y|LAYOUT_FILL_X|LAYOUT_FILL_ROW);
-  new FXLabel(matrix1,tr("Text:"),NULL,JUSTIFY_LEFT|LAYOUT_CENTER_Y|LAYOUT_FILL_X|LAYOUT_FILL_ROW);
-  new FXLabel(matrix1,tr("Sel. text background:"),NULL,JUSTIFY_LEFT|LAYOUT_CENTER_Y|LAYOUT_FILL_X|LAYOUT_FILL_ROW);
-  new FXLabel(matrix1,tr("Sel. text:"),NULL,JUSTIFY_LEFT|LAYOUT_CENTER_Y|LAYOUT_FILL_X|LAYOUT_FILL_ROW);
-  new FXLabel(matrix1,tr("Hilite text background:"),NULL,JUSTIFY_LEFT|LAYOUT_CENTER_Y|LAYOUT_FILL_X|LAYOUT_FILL_ROW);
-  new FXLabel(matrix1,tr("Hilite text:"),NULL,JUSTIFY_LEFT|LAYOUT_CENTER_Y|LAYOUT_FILL_X|LAYOUT_FILL_ROW);
-  new FXLabel(matrix1,tr("Act. text background:"),NULL,JUSTIFY_LEFT|LAYOUT_CENTER_Y|LAYOUT_FILL_X|LAYOUT_FILL_ROW);
-  new FXLabel(matrix1,tr("Numbers background:"),NULL,JUSTIFY_LEFT|LAYOUT_CENTER_Y|LAYOUT_FILL_X|LAYOUT_FILL_ROW);
+  new FXLabel(matrix1,tr("Background:"),nullptr,JUSTIFY_LEFT|LAYOUT_CENTER_Y|LAYOUT_FILL_X|LAYOUT_FILL_ROW);
+  new FXLabel(matrix1,tr("Text:"),nullptr,JUSTIFY_LEFT|LAYOUT_CENTER_Y|LAYOUT_FILL_X|LAYOUT_FILL_ROW);
+  new FXLabel(matrix1,tr("Sel. text background:"),nullptr,JUSTIFY_LEFT|LAYOUT_CENTER_Y|LAYOUT_FILL_X|LAYOUT_FILL_ROW);
+  new FXLabel(matrix1,tr("Sel. text:"),nullptr,JUSTIFY_LEFT|LAYOUT_CENTER_Y|LAYOUT_FILL_X|LAYOUT_FILL_ROW);
+  new FXLabel(matrix1,tr("Hilite text background:"),nullptr,JUSTIFY_LEFT|LAYOUT_CENTER_Y|LAYOUT_FILL_X|LAYOUT_FILL_ROW);
+  new FXLabel(matrix1,tr("Hilite text:"),nullptr,JUSTIFY_LEFT|LAYOUT_CENTER_Y|LAYOUT_FILL_X|LAYOUT_FILL_ROW);
+  new FXLabel(matrix1,tr("Act. text background:"),nullptr,JUSTIFY_LEFT|LAYOUT_CENTER_Y|LAYOUT_FILL_X|LAYOUT_FILL_ROW);
+  new FXLabel(matrix1,tr("Numbers background:"),nullptr,JUSTIFY_LEFT|LAYOUT_CENTER_Y|LAYOUT_FILL_X|LAYOUT_FILL_ROW);
 
   new FXColorWell(matrix1,FXRGB(0,0,0),own,TextWindow::ID_TEXT_BACK,FRAME_SUNKEN|FRAME_THICK|LAYOUT_LEFT|LAYOUT_CENTER_Y|LAYOUT_FIX_WIDTH|LAYOUT_FIX_HEIGHT|LAYOUT_FILL_ROW,0,0,40,24);
   new FXColorWell(matrix1,FXRGB(0,0,0),own,TextWindow::ID_TEXT_FORE,FRAME_SUNKEN|FRAME_THICK|LAYOUT_LEFT|LAYOUT_CENTER_Y|LAYOUT_FIX_WIDTH|LAYOUT_FIX_HEIGHT|LAYOUT_FILL_ROW,0,0,40,24);
@@ -156,14 +156,14 @@ Preferences::Preferences(TextWindow *own):FXDialogBox(own,"Adie Preferences",DEC
   new FXFrame(matrix1,LAYOUT_FILL_COLUMN|LAYOUT_FILL_ROW);
   new FXFrame(matrix1,LAYOUT_FILL_COLUMN|LAYOUT_FILL_ROW);
 
-  new FXLabel(matrix1,tr("Files background:"),NULL,JUSTIFY_LEFT|LAYOUT_CENTER_Y|LAYOUT_FILL_X|LAYOUT_FILL_ROW);
-  new FXLabel(matrix1,tr("Files:"),NULL,JUSTIFY_LEFT|LAYOUT_CENTER_Y|LAYOUT_FILL_X|LAYOUT_FILL_ROW);
-  new FXLabel(matrix1,tr("Sel. files background:"),NULL,JUSTIFY_LEFT|LAYOUT_CENTER_Y|LAYOUT_FILL_X|LAYOUT_FILL_ROW);
-  new FXLabel(matrix1,tr("Sel. files:"),NULL,JUSTIFY_LEFT|LAYOUT_CENTER_Y|LAYOUT_FILL_X|LAYOUT_FILL_ROW);
-  new FXLabel(matrix1,tr("Lines:"),NULL,JUSTIFY_LEFT|LAYOUT_CENTER_Y|LAYOUT_FILL_X|LAYOUT_FILL_ROW);
-  new FXLabel(matrix1,tr("Cursor:"),NULL,JUSTIFY_LEFT|LAYOUT_CENTER_Y|LAYOUT_FILL_X|LAYOUT_FILL_ROW);
-  new FXLabel(matrix1,tr("Active background:"),NULL,JUSTIFY_LEFT|LAYOUT_CENTER_Y|LAYOUT_FILL_X|LAYOUT_FILL_ROW);
-  new FXLabel(matrix1,tr("Numbers:"),NULL,JUSTIFY_LEFT|LAYOUT_CENTER_Y|LAYOUT_FILL_X|LAYOUT_FILL_ROW);
+  new FXLabel(matrix1,tr("Files background:"),nullptr,JUSTIFY_LEFT|LAYOUT_CENTER_Y|LAYOUT_FILL_X|LAYOUT_FILL_ROW);
+  new FXLabel(matrix1,tr("Files:"),nullptr,JUSTIFY_LEFT|LAYOUT_CENTER_Y|LAYOUT_FILL_X|LAYOUT_FILL_ROW);
+  new FXLabel(matrix1,tr("Sel. files background:"),nullptr,JUSTIFY_LEFT|LAYOUT_CENTER_Y|LAYOUT_FILL_X|LAYOUT_FILL_ROW);
+  new FXLabel(matrix1,tr("Sel. files:"),nullptr,JUSTIFY_LEFT|LAYOUT_CENTER_Y|LAYOUT_FILL_X|LAYOUT_FILL_ROW);
+  new FXLabel(matrix1,tr("Lines:"),nullptr,JUSTIFY_LEFT|LAYOUT_CENTER_Y|LAYOUT_FILL_X|LAYOUT_FILL_ROW);
+  new FXLabel(matrix1,tr("Cursor:"),nullptr,JUSTIFY_LEFT|LAYOUT_CENTER_Y|LAYOUT_FILL_X|LAYOUT_FILL_ROW);
+  new FXLabel(matrix1,tr("Active background:"),nullptr,JUSTIFY_LEFT|LAYOUT_CENTER_Y|LAYOUT_FILL_X|LAYOUT_FILL_ROW);
+  new FXLabel(matrix1,tr("Numbers:"),nullptr,JUSTIFY_LEFT|LAYOUT_CENTER_Y|LAYOUT_FILL_X|LAYOUT_FILL_ROW);
 
   new FXColorWell(matrix1,FXRGB(0,0,0),own,TextWindow::ID_DIR_BACK,FRAME_SUNKEN|FRAME_THICK|LAYOUT_LEFT|LAYOUT_CENTER_Y|LAYOUT_FIX_WIDTH|LAYOUT_FIX_HEIGHT|LAYOUT_FILL_ROW,0,0,40,24);
   new FXColorWell(matrix1,FXRGB(0,0,0),own,TextWindow::ID_DIR_FORE,FRAME_SUNKEN|FRAME_THICK|LAYOUT_LEFT|LAYOUT_CENTER_Y|LAYOUT_FIX_WIDTH|LAYOUT_FIX_HEIGHT|LAYOUT_FILL_ROW,0,0,40,24);
@@ -180,12 +180,12 @@ Preferences::Preferences(TextWindow *own):FXDialogBox(own,"Adie Preferences",DEC
 
   ///////////////////////  File pattern settings pane  //////////////////////////
   FXVerticalFrame* filepatpane=new FXVerticalFrame(switcher,LAYOUT_FILL_X|LAYOUT_FILL_Y,0,0,0,0, 0,0,0,0, 0,0);
-  new FXLabel(filepatpane,tr("Filename patterns"),NULL,LAYOUT_LEFT);
+  new FXLabel(filepatpane,tr("Filename patterns"),nullptr,LAYOUT_LEFT);
   new FXHorizontalSeparator(filepatpane,SEPARATOR_LINE|LAYOUT_FILL_X);
   FXVerticalFrame *sub3=new FXVerticalFrame(filepatpane,LAYOUT_FILL_Y|LAYOUT_FILL_X,0,0,0,0, 0,0,10,0, 0,0);
-  new FXLabel(sub3,tr("Filename patterns, one per line:"),NULL,JUSTIFY_LEFT);
+  new FXLabel(sub3,tr("Filename patterns, one per line:"),nullptr,JUSTIFY_LEFT);
   FXVerticalFrame* textwell=new FXVerticalFrame(sub3,LAYOUT_FILL_X|LAYOUT_FILL_Y|FRAME_SUNKEN|FRAME_THICK,0,0,0,0, 0,0,0,0);
-  filepattext=new FXText(textwell,NULL,0,LAYOUT_FILL_X|LAYOUT_FILL_Y);
+  filepattext=new FXText(textwell,nullptr,0,LAYOUT_FILL_X|LAYOUT_FILL_Y);
 
   //// File pattern settings button
   new FXButton(buttons,tr("Patterns\tFilename patterns\tChange wildcard patterns for filenames."),pat,switcher,FXSwitcher::ID_OPEN_THIRD,FRAME_RAISED|ICON_ABOVE_TEXT|LAYOUT_FILL_Y);
@@ -193,7 +193,7 @@ Preferences::Preferences(TextWindow *own):FXDialogBox(own,"Adie Preferences",DEC
 
   /////////////////////  Highlight style settings pane  /////////////////////////
   FXVerticalFrame* highlightpane=new FXVerticalFrame(switcher,LAYOUT_FILL_X|LAYOUT_FILL_Y,0,0,0,0, 0,0,0,0, 0,0);
-  new FXLabel(highlightpane,tr("Highlight styles"),NULL,LAYOUT_LEFT);
+  new FXLabel(highlightpane,tr("Highlight styles"),nullptr,LAYOUT_LEFT);
   new FXHorizontalSeparator(highlightpane,SEPARATOR_LINE|LAYOUT_FILL_X);
   FXHorizontalFrame *sub5=new FXHorizontalFrame(highlightpane,LAYOUT_FILL_Y|LAYOUT_FILL_X,0,0,0,0, 0,0,10,0);
 
@@ -211,21 +211,21 @@ Preferences::Preferences(TextWindow *own):FXDialogBox(own,"Adie Preferences",DEC
 
   ///////////////////////  File paths settings pane  //////////////////////////
   FXVerticalFrame* miscellaneouspane=new FXVerticalFrame(switcher,LAYOUT_FILL_X|LAYOUT_FILL_Y,0,0,0,0, 0,0,0,0, 0,0);
-  new FXLabel(miscellaneouspane,tr("Miscellaneous settings"),NULL,LAYOUT_LEFT);
+  new FXLabel(miscellaneouspane,tr("Miscellaneous settings"),nullptr,LAYOUT_LEFT);
   new FXHorizontalSeparator(miscellaneouspane,SEPARATOR_LINE|LAYOUT_FILL_X);
   FXMatrix *matrix3=new FXMatrix(miscellaneouspane,2,MATRIX_BY_COLUMNS|LAYOUT_FILL_X,0,0,0,0, 4,4,4,4, 4, 4);
 
-  new FXLabel(matrix3,tr("Search paths:"),NULL,JUSTIFY_LEFT|LAYOUT_CENTER_Y);
+  new FXLabel(matrix3,tr("Search paths:"),nullptr,JUSTIFY_LEFT|LAYOUT_CENTER_Y);
   searchtext=new FXTextField(matrix3,10,own,TextWindow::ID_SEARCHPATHS,FRAME_SUNKEN|FRAME_THICK|LAYOUT_CENTER_Y|LAYOUT_FILL_X|LAYOUT_FILL_COLUMN,0,0,0,0, 2,2,1,1);
   searchtext->setTipText(tr("List of directories separated by a '" PATHLISTSEPSTRING "' where include files are to be found.\nPaths are subjected to tilde and environment variable expansion."));
   searchtext->setHelpText(tr("Change file search path."));
 
-  new FXLabel(matrix3,tr("Syntax path:"),NULL,JUSTIFY_LEFT|LAYOUT_CENTER_Y);
+  new FXLabel(matrix3,tr("Syntax path:"),nullptr,JUSTIFY_LEFT|LAYOUT_CENTER_Y);
   syntaxtext=new FXTextField(matrix3,10,getApp(),Adie::ID_SYNTAXPATHS,FRAME_SUNKEN|FRAME_THICK|LAYOUT_CENTER_Y|LAYOUT_FILL_X|LAYOUT_FILL_COLUMN,0,0,0,0, 2,2,1,1);
   syntaxtext->setTipText(tr("List of directories separated by a '" PATHLISTSEPSTRING "' where syntax file is to be found."));
   syntaxtext->setHelpText(tr("Change syntax file search path."));
 
-  new FXLabel(matrix3,tr("Word delimiters:"),NULL,JUSTIFY_LEFT|LAYOUT_CENTER_Y);
+  new FXLabel(matrix3,tr("Word delimiters:"),nullptr,JUSTIFY_LEFT|LAYOUT_CENTER_Y);
   new FXTextField(matrix3,10,own,TextWindow::ID_DELIMITERS,FRAME_SUNKEN|FRAME_THICK|LAYOUT_CENTER_Y|LAYOUT_FILL_X|LAYOUT_FILL_COLUMN,0,0,0,0, 2,2,1,1);
 
 
@@ -235,8 +235,8 @@ Preferences::Preferences(TextWindow *own):FXDialogBox(own,"Adie Preferences",DEC
   // Bottom part
   new FXHorizontalSeparator(vertical,SEPARATOR_RIDGE|LAYOUT_FILL_X);
   FXHorizontalFrame *closebox=new FXHorizontalFrame(vertical,LAYOUT_BOTTOM|LAYOUT_FILL_X|PACK_UNIFORM_WIDTH);
-  new FXButton(closebox,tr("&Accept"),NULL,this,FXDialogBox::ID_ACCEPT,BUTTON_INITIAL|BUTTON_DEFAULT|LAYOUT_RIGHT|FRAME_RAISED|FRAME_THICK,0,0,0,0, 20,20);
-  new FXButton(closebox,tr("&Cancel"),NULL,this,FXDialogBox::ID_CANCEL,BUTTON_DEFAULT|LAYOUT_RIGHT|FRAME_RAISED|FRAME_THICK,0,0,0,0, 20,20);
+  new FXButton(closebox,tr("&Accept"),nullptr,this,FXDialogBox::ID_ACCEPT,BUTTON_INITIAL|BUTTON_DEFAULT|LAYOUT_RIGHT|FRAME_RAISED|FRAME_THICK,0,0,0,0, 20,20);
+  new FXButton(closebox,tr("&Cancel"),nullptr,this,FXDialogBox::ID_CANCEL,BUTTON_DEFAULT|LAYOUT_RIGHT|FRAME_RAISED|FRAME_THICK,0,0,0,0, 20,20);
   }
 
 /*******************************************************************************/
@@ -262,23 +262,23 @@ void Preferences::setSyntax(Syntax* syn){
     FXLabel       *label;
 
     // Captions
-    new FXLabel(stylemat,tr("Rule\tSyntax rule name"),NULL,JUSTIFY_LEFT|JUSTIFY_CENTER_Y|LAYOUT_FILL_X|LAYOUT_FILL_Y|LAYOUT_FILL_COLUMN);
-    new FXLabel(stylemat,tr("Nfg\tNormal foreground color"),NULL,JUSTIFY_RIGHT|JUSTIFY_CENTER_Y|LAYOUT_FILL_X|LAYOUT_FILL_Y|LAYOUT_FILL_COLUMN);
-    new FXLabel(stylemat,tr("Nbg\tNormal background color"),NULL,JUSTIFY_LEFT|JUSTIFY_CENTER_Y|LAYOUT_FILL_X|LAYOUT_FILL_Y|LAYOUT_FILL_COLUMN);
-    new FXLabel(stylemat,tr("Sfg\tSelected background color"),NULL,JUSTIFY_RIGHT|JUSTIFY_CENTER_Y|LAYOUT_FILL_X|LAYOUT_FILL_Y|LAYOUT_FILL_COLUMN);
-    new FXLabel(stylemat,tr("Sbg\tSelected background color"),NULL,JUSTIFY_LEFT|JUSTIFY_CENTER_Y|LAYOUT_FILL_X|LAYOUT_FILL_Y|LAYOUT_FILL_COLUMN);
-    new FXLabel(stylemat,tr("Hfg\tHighlight background color"),NULL,JUSTIFY_RIGHT|JUSTIFY_CENTER_Y|LAYOUT_FILL_X|LAYOUT_FILL_Y|LAYOUT_FILL_COLUMN);
-    new FXLabel(stylemat,tr("Hbg\tHighlight background color"),NULL,JUSTIFY_LEFT|JUSTIFY_CENTER_Y|LAYOUT_FILL_X|LAYOUT_FILL_Y|LAYOUT_FILL_COLUMN);
-    new FXLabel(stylemat,tr("Act bg\tActive background color"),NULL,JUSTIFY_CENTER_X|JUSTIFY_CENTER_Y|LAYOUT_FILL_X|LAYOUT_FILL_Y|LAYOUT_FILL_COLUMN);
-    new FXLabel(stylemat,tr("Und\tUnderline"),NULL,JUSTIFY_CENTER_X|JUSTIFY_CENTER_Y|LAYOUT_FILL_X|LAYOUT_FILL_Y|LAYOUT_FILL_COLUMN);
-    new FXLabel(stylemat,tr("Str\tStrikeout"),NULL,JUSTIFY_CENTER_X|JUSTIFY_CENTER_Y|LAYOUT_FILL_X|LAYOUT_FILL_Y|LAYOUT_FILL_COLUMN);
-    new FXLabel(stylemat,tr("Bld\tBold face"),NULL,JUSTIFY_CENTER_X|JUSTIFY_CENTER_Y|LAYOUT_FILL_X|LAYOUT_FILL_Y|LAYOUT_FILL_COLUMN);
+    new FXLabel(stylemat,tr("Rule\tSyntax rule name"),nullptr,JUSTIFY_LEFT|JUSTIFY_CENTER_Y|LAYOUT_FILL_X|LAYOUT_FILL_Y|LAYOUT_FILL_COLUMN);
+    new FXLabel(stylemat,tr("Nfg\tNormal foreground color"),nullptr,JUSTIFY_RIGHT|JUSTIFY_CENTER_Y|LAYOUT_FILL_X|LAYOUT_FILL_Y|LAYOUT_FILL_COLUMN);
+    new FXLabel(stylemat,tr("Nbg\tNormal background color"),nullptr,JUSTIFY_LEFT|JUSTIFY_CENTER_Y|LAYOUT_FILL_X|LAYOUT_FILL_Y|LAYOUT_FILL_COLUMN);
+    new FXLabel(stylemat,tr("Sfg\tSelected background color"),nullptr,JUSTIFY_RIGHT|JUSTIFY_CENTER_Y|LAYOUT_FILL_X|LAYOUT_FILL_Y|LAYOUT_FILL_COLUMN);
+    new FXLabel(stylemat,tr("Sbg\tSelected background color"),nullptr,JUSTIFY_LEFT|JUSTIFY_CENTER_Y|LAYOUT_FILL_X|LAYOUT_FILL_Y|LAYOUT_FILL_COLUMN);
+    new FXLabel(stylemat,tr("Hfg\tHighlight background color"),nullptr,JUSTIFY_RIGHT|JUSTIFY_CENTER_Y|LAYOUT_FILL_X|LAYOUT_FILL_Y|LAYOUT_FILL_COLUMN);
+    new FXLabel(stylemat,tr("Hbg\tHighlight background color"),nullptr,JUSTIFY_LEFT|JUSTIFY_CENTER_Y|LAYOUT_FILL_X|LAYOUT_FILL_Y|LAYOUT_FILL_COLUMN);
+    new FXLabel(stylemat,tr("Act bg\tActive background color"),nullptr,JUSTIFY_CENTER_X|JUSTIFY_CENTER_Y|LAYOUT_FILL_X|LAYOUT_FILL_Y|LAYOUT_FILL_COLUMN);
+    new FXLabel(stylemat,tr("Und\tUnderline"),nullptr,JUSTIFY_CENTER_X|JUSTIFY_CENTER_Y|LAYOUT_FILL_X|LAYOUT_FILL_Y|LAYOUT_FILL_COLUMN);
+    new FXLabel(stylemat,tr("Str\tStrikeout"),nullptr,JUSTIFY_CENTER_X|JUSTIFY_CENTER_Y|LAYOUT_FILL_X|LAYOUT_FILL_Y|LAYOUT_FILL_COLUMN);
+    new FXLabel(stylemat,tr("Bld\tBold face"),nullptr,JUSTIFY_CENTER_X|JUSTIFY_CENTER_Y|LAYOUT_FILL_X|LAYOUT_FILL_Y|LAYOUT_FILL_COLUMN);
 
     // Add controls for each rule
     for(FXint i=0; i<syn->getNumRules()-1; i++){
 
       // Rule name
-      label=new FXLabel(stylemat,syn->getRule(i+1)->getName(),NULL,JUSTIFY_LEFT|JUSTIFY_CENTER_Y|LAYOUT_FILL_X|LAYOUT_FILL_Y|LAYOUT_FILL_COLUMN);
+      label=new FXLabel(stylemat,syn->getRule(i+1)->getName(),nullptr,JUSTIFY_LEFT|JUSTIFY_CENTER_Y|LAYOUT_FILL_X|LAYOUT_FILL_Y|LAYOUT_FILL_COLUMN);
       label->setBackColor(getApp()->getBackColor());
 
       // Color wells

@@ -57,18 +57,18 @@ FXIMPLEMENT(GLSettingsDialog,FXDialogBox,GLSettingsDialogMap,ARRAYNUMBER(GLSetti
 
 
 // Default constructor
-GLSettingsDialog::GLSettingsDialog():canvas(NULL),thickfont(NULL),extensionlist(NULL){
+GLSettingsDialog::GLSettingsDialog():canvas(nullptr),thickfont(nullptr),extensionlist(nullptr){
   }
 
 
 // Construct with GL canvas (free floating version)
-GLSettingsDialog::GLSettingsDialog(FXApp *a,FXGLCanvas *ca):FXDialogBox(a,FXString::null,DECOR_STRETCHABLE|DECOR_TITLE|DECOR_BORDER,0,0,0,0,0,0,0,0,0,0),canvas(ca),thickfont(NULL),extensionlist(NULL){
+GLSettingsDialog::GLSettingsDialog(FXApp *a,FXGLCanvas *ca):FXDialogBox(a,FXString::null,DECOR_STRETCHABLE|DECOR_TITLE|DECOR_BORDER,0,0,0,0,0,0,0,0,0,0),canvas(ca),thickfont(nullptr),extensionlist(nullptr){
   setup();
   }
 
 
 // Construct with GL canvas (modal version)
-GLSettingsDialog::GLSettingsDialog(FXWindow *o,FXGLCanvas *ca):FXDialogBox(o,FXString::null,DECOR_STRETCHABLE|DECOR_TITLE|DECOR_BORDER,0,0,0,0,0,0,0,0,0,0),canvas(ca),thickfont(NULL),extensionlist(NULL){
+GLSettingsDialog::GLSettingsDialog(FXWindow *o,FXGLCanvas *ca):FXDialogBox(o,FXString::null,DECOR_STRETCHABLE|DECOR_TITLE|DECOR_BORDER,0,0,0,0,0,0,0,0,0,0),canvas(ca),thickfont(nullptr),extensionlist(nullptr){
   setup();
   }
 
@@ -94,54 +94,54 @@ void GLSettingsDialog::setup() {
   setTitle(tr("OpenGL Information"));
 
   hframe=new FXHorizontalFrame(this,LAYOUT_SIDE_BOTTOM|LAYOUT_FILL_X|PACK_UNIFORM_WIDTH);
-  new FXButton(hframe,tr("Close"),NULL,this,ID_ACCEPT,FRAME_RAISED|FRAME_THICK|LAYOUT_RIGHT|BUTTON_DEFAULT|BUTTON_INITIAL,0,0,0,0,20,20,2,2);
-  new FXButton(hframe,tr("Save"),NULL,this,ID_SAVE,FRAME_RAISED|FRAME_THICK|LAYOUT_RIGHT,0,0,0,0,20,20,2,2);
+  new FXButton(hframe,tr("Close"),nullptr,this,ID_ACCEPT,FRAME_RAISED|FRAME_THICK|LAYOUT_RIGHT|BUTTON_DEFAULT|BUTTON_INITIAL,0,0,0,0,20,20,2,2);
+  new FXButton(hframe,tr("Save"),nullptr,this,ID_SAVE,FRAME_RAISED|FRAME_THICK|LAYOUT_RIGHT,0,0,0,0,20,20,2,2);
 
-  FXTabBook *tabbook=new FXTabBook(this,NULL,0,LAYOUT_FILL_X|LAYOUT_FILL_Y,0,0,0,0);
+  FXTabBook *tabbook=new FXTabBook(this,nullptr,0,LAYOUT_FILL_X|LAYOUT_FILL_Y,0,0,0,0);
 
 
   new FXTabItem(tabbook,tr(" Display Mode "));
   matrix=new FXMatrix(tabbook,2,MATRIX_BY_COLUMNS|LAYOUT_FILL_X|LAYOUT_FILL_Y|FRAME_RAISED|FRAME_THICK);
 
-  label=new FXLabel(matrix,tr("Hardware-accelerated:"),NULL,LABEL_NORMAL|LAYOUT_RIGHT);
+  label=new FXLabel(matrix,tr("Hardware-accelerated:"),nullptr,LABEL_NORMAL|LAYOUT_RIGHT);
   label->setFont(thickfont);
-  new FXLabel(matrix,tr(PRINT_YESNO(glvisual->isAccelerated())),NULL,LABEL_NORMAL);
+  new FXLabel(matrix,tr(PRINT_YESNO(glvisual->isAccelerated())),nullptr,LABEL_NORMAL);
 
-  label=new FXLabel(matrix,tr("Double Buffering:"),NULL,LABEL_NORMAL|LAYOUT_RIGHT);
+  label=new FXLabel(matrix,tr("Double Buffering:"),nullptr,LABEL_NORMAL|LAYOUT_RIGHT);
   label->setFont(thickfont);
-  new FXLabel(matrix,tr(PRINT_YESNO(glvisual->isDoubleBuffer())),NULL,LABEL_NORMAL);
+  new FXLabel(matrix,tr(PRINT_YESNO(glvisual->isDoubleBuffer())),nullptr,LABEL_NORMAL);
 
-  label=new FXLabel(matrix,tr("Stereo View:"),NULL,LABEL_NORMAL|LAYOUT_RIGHT);
+  label=new FXLabel(matrix,tr("Stereo View:"),nullptr,LABEL_NORMAL|LAYOUT_RIGHT);
   label->setFont(thickfont);
-  new FXLabel(matrix,tr(PRINT_YESNO(glvisual->isStereo())),NULL,LABEL_NORMAL);
+  new FXLabel(matrix,tr(PRINT_YESNO(glvisual->isStereo())),nullptr,LABEL_NORMAL);
 
-  label=new FXLabel(matrix,tr("Buffer-swap by copy:"),NULL,LABEL_NORMAL|LAYOUT_RIGHT);
+  label=new FXLabel(matrix,tr("Buffer-swap by copy:"),nullptr,LABEL_NORMAL|LAYOUT_RIGHT);
   label->setFont(thickfont);
-  new FXLabel(matrix,tr(PRINT_YESNO(glvisual->isBufferSwapCopy())),NULL,LABEL_NORMAL);
+  new FXLabel(matrix,tr(PRINT_YESNO(glvisual->isBufferSwapCopy())),nullptr,LABEL_NORMAL);
 
-  label=new FXLabel(matrix,tr("Color Depth:"),NULL,LABEL_NORMAL|LAYOUT_RIGHT);
+  label=new FXLabel(matrix,tr("Color Depth:"),nullptr,LABEL_NORMAL|LAYOUT_RIGHT);
   label->setFont(thickfont);
-  new FXLabel(matrix,FXString::value("%d",glvisual->getActualRedSize()+glvisual->getActualGreenSize()+glvisual->getActualBlueSize()+glvisual->getActualAlphaSize()),NULL,LABEL_NORMAL);
+  new FXLabel(matrix,FXString::value("%d",glvisual->getActualRedSize()+glvisual->getActualGreenSize()+glvisual->getActualBlueSize()+glvisual->getActualAlphaSize()),nullptr,LABEL_NORMAL);
 
-  label=new FXLabel(matrix,tr("Depth Buffer Size:"),NULL,LABEL_NORMAL|LAYOUT_RIGHT);
+  label=new FXLabel(matrix,tr("Depth Buffer Size:"),nullptr,LABEL_NORMAL|LAYOUT_RIGHT);
   label->setFont(thickfont);
-  new FXLabel(matrix,FXString::value("%d",glvisual->getActualDepthSize()),NULL,LABEL_NORMAL);
+  new FXLabel(matrix,FXString::value("%d",glvisual->getActualDepthSize()),nullptr,LABEL_NORMAL);
 
-  label=new FXLabel(matrix,tr("Stencil Buffer Size:"),NULL,LABEL_NORMAL|LAYOUT_RIGHT);
+  label=new FXLabel(matrix,tr("Stencil Buffer Size:"),nullptr,LABEL_NORMAL|LAYOUT_RIGHT);
   label->setFont(thickfont);
-  new FXLabel(matrix,FXString::value("%d",glvisual->getActualStencilSize()),NULL,LABEL_NORMAL);
+  new FXLabel(matrix,FXString::value("%d",glvisual->getActualStencilSize()),nullptr,LABEL_NORMAL);
 
-  label=new FXLabel(matrix,tr("RGBA:"),NULL,LABEL_NORMAL|LAYOUT_RIGHT);
+  label=new FXLabel(matrix,tr("RGBA:"),nullptr,LABEL_NORMAL|LAYOUT_RIGHT);
   label->setFont(thickfont);
-  new FXLabel(matrix,FXString::value("%d-%d-%d-%d",glvisual->getActualRedSize(),glvisual->getActualGreenSize(),glvisual->getActualBlueSize(),glvisual->getActualAlphaSize()),NULL,LABEL_NORMAL);
+  new FXLabel(matrix,FXString::value("%d-%d-%d-%d",glvisual->getActualRedSize(),glvisual->getActualGreenSize(),glvisual->getActualBlueSize(),glvisual->getActualAlphaSize()),nullptr,LABEL_NORMAL);
 
-  label=new FXLabel(matrix,tr("Accum RGBA:"),NULL,LABEL_NORMAL|LAYOUT_RIGHT);
+  label=new FXLabel(matrix,tr("Accum RGBA:"),nullptr,LABEL_NORMAL|LAYOUT_RIGHT);
   label->setFont(thickfont);
-  new FXLabel(matrix,FXString::value("%d-%d-%d-%d",glvisual->getActualAccumRedSize(),glvisual->getActualAccumGreenSize(),glvisual->getActualAccumBlueSize(),glvisual->getActualAccumAlphaSize()),NULL,LABEL_NORMAL);
+  new FXLabel(matrix,FXString::value("%d-%d-%d-%d",glvisual->getActualAccumRedSize(),glvisual->getActualAccumGreenSize(),glvisual->getActualAccumBlueSize(),glvisual->getActualAccumAlphaSize()),nullptr,LABEL_NORMAL);
 
-  label=new FXLabel(matrix,tr("Multi Sample:"),NULL,LABEL_NORMAL|LAYOUT_RIGHT);
+  label=new FXLabel(matrix,tr("Multi Sample:"),nullptr,LABEL_NORMAL|LAYOUT_RIGHT);
   label->setFont(thickfont);
-  new FXLabel(matrix,FXString::value("%dx",glvisual->getActualMultiSamples()),NULL,LABEL_NORMAL);
+  new FXLabel(matrix,FXString::value("%dx",glvisual->getActualMultiSamples()),nullptr,LABEL_NORMAL);
 
 
 
@@ -150,49 +150,49 @@ void GLSettingsDialog::setup() {
   matrix=new FXMatrix(tabbook, 2, MATRIX_BY_COLUMNS|LAYOUT_FILL_X|LAYOUT_FILL_Y|FRAME_RAISED|FRAME_THICK);
 
   glGetIntegerv(GL_MAX_VIEWPORT_DIMS, intvals);
-  label=new FXLabel(matrix,tr("Viewport Size:"),NULL,LABEL_NORMAL|LAYOUT_RIGHT);
+  label=new FXLabel(matrix,tr("Viewport Size:"),nullptr,LABEL_NORMAL|LAYOUT_RIGHT);
   label->setFont(thickfont);
   new FXLabel(matrix, FXString::value("%d x %d", intvals[0], intvals[1]));
 
   glGetIntegerv(GL_MAX_TEXTURE_SIZE, &intval);
-  label=new FXLabel(matrix,tr("Texture Size:"),NULL,LABEL_NORMAL|LAYOUT_RIGHT);
+  label=new FXLabel(matrix,tr("Texture Size:"),nullptr,LABEL_NORMAL|LAYOUT_RIGHT);
   label->setFont(thickfont);
   new FXLabel(matrix, FXString::value("%d", intval));
 
 #if defined(GL_MAX_TEXTURE_UNITS)
   glGetIntegerv(GL_MAX_TEXTURE_UNITS, &intval);
-  label=new FXLabel(matrix,tr("Texture Units:"),NULL,LABEL_NORMAL|LAYOUT_RIGHT);
+  label=new FXLabel(matrix,tr("Texture Units:"),nullptr,LABEL_NORMAL|LAYOUT_RIGHT);
   label->setFont(thickfont);
   new FXLabel(matrix, FXString::value("%d", intval));
 #endif
 
   glGetIntegerv(GL_MAX_LIGHTS, &intval);
-  label=new FXLabel(matrix,tr("Lights:"),NULL,LABEL_NORMAL|LAYOUT_RIGHT);
+  label=new FXLabel(matrix,tr("Lights:"),nullptr,LABEL_NORMAL|LAYOUT_RIGHT);
   label->setFont(thickfont);
   new FXLabel(matrix, FXString::value("%d", intval));
 
 
   glGetIntegerv(GL_MAX_CLIP_PLANES, &intval);
-  label=new FXLabel(matrix,tr("Clipping Planes:"),NULL,LABEL_NORMAL|LAYOUT_RIGHT);
+  label=new FXLabel(matrix,tr("Clipping Planes:"),nullptr,LABEL_NORMAL|LAYOUT_RIGHT);
   label->setFont(thickfont);
   new FXLabel(matrix, FXString::value("%d", intval));
 
   glGetIntegerv(GL_MAX_MODELVIEW_STACK_DEPTH, &intval);
-  label=new FXLabel(matrix,tr("Modelview Stack:"),NULL,LABEL_NORMAL|LAYOUT_RIGHT);
+  label=new FXLabel(matrix,tr("Modelview Stack:"),nullptr,LABEL_NORMAL|LAYOUT_RIGHT);
   label->setFont(thickfont);
   new FXLabel(matrix, FXString::value("%d", intval));
 
   glGetIntegerv(GL_MAX_PROJECTION_STACK_DEPTH, &intval);
-  label=new FXLabel(matrix,tr("Projection Stack:"),NULL,LABEL_NORMAL|LAYOUT_RIGHT);
+  label=new FXLabel(matrix,tr("Projection Stack:"),nullptr,LABEL_NORMAL|LAYOUT_RIGHT);
   label->setFont(thickfont);
   new FXLabel(matrix, FXString::value("%d", intval));
 
   glGetIntegerv(GL_MAX_ATTRIB_STACK_DEPTH, &intval);
-  label=new FXLabel(matrix,tr("Attribute Stack:"),NULL,LABEL_NORMAL|LAYOUT_RIGHT);
+  label=new FXLabel(matrix,tr("Attribute Stack:"),nullptr,LABEL_NORMAL|LAYOUT_RIGHT);
   label->setFont(thickfont);
   new FXLabel(matrix, FXString::value("%d", intval));
 
-  label=new FXLabel(matrix,tr("Vertex Attributes:"),NULL,LABEL_NORMAL|LAYOUT_RIGHT);
+  label=new FXLabel(matrix,tr("Vertex Attributes:"),nullptr,LABEL_NORMAL|LAYOUT_RIGHT);
   label->setFont(thickfont);
 #if defined(GL_MAX_VERTEX_ATTRIBS)
   glGetIntegerv(GL_MAX_VERTEX_ATTRIBS, &intval);
@@ -202,7 +202,7 @@ void GLSettingsDialog::setup() {
 #endif
 
 
-  label=new FXLabel(matrix,tr("Vertex Uniform Components:"),NULL,LABEL_NORMAL|LAYOUT_RIGHT);
+  label=new FXLabel(matrix,tr("Vertex Uniform Components:"),nullptr,LABEL_NORMAL|LAYOUT_RIGHT);
   label->setFont(thickfont);
 #if defined(GL_MAX_VERTEX_UNIFORM_COMPONENTS)
   glGetIntegerv(GL_MAX_VERTEX_UNIFORM_COMPONENTS, &intval);
@@ -212,7 +212,7 @@ void GLSettingsDialog::setup() {
 #endif
 
 
-  label = new FXLabel(matrix,tr("Fragment Uniform Components:"),NULL,LABEL_NORMAL|LAYOUT_RIGHT);
+  label = new FXLabel(matrix,tr("Fragment Uniform Components:"),nullptr,LABEL_NORMAL|LAYOUT_RIGHT);
   label->setFont(thickfont);
 #if defined(GL_MAX_FRAGMENT_UNIFORM_COMPONENTS)
   glGetIntegerv(GL_MAX_FRAGMENT_UNIFORM_COMPONENTS, &intval);
@@ -226,7 +226,7 @@ void GLSettingsDialog::setup() {
   vframe=new FXVerticalFrame(tabbook,LAYOUT_FILL_X|LAYOUT_FILL_Y|FRAME_RAISED|FRAME_THICK);
 
   vframe=new FXVerticalFrame(vframe,LAYOUT_FILL_X|LAYOUT_FILL_Y|FRAME_SUNKEN|FRAME_THICK,0,0,0,0,0,0,0,0);
-  extensionlist=new FXList(vframe,NULL,0,FRAME_SUNKEN|FRAME_THICK|LAYOUT_FILL_X|LAYOUT_FILL_Y|HSCROLLING_OFF);
+  extensionlist=new FXList(vframe,nullptr,0,FRAME_SUNKEN|FRAME_THICK|LAYOUT_FILL_X|LAYOUT_FILL_Y|HSCROLLING_OFF);
 
   // Get OpenGL extensions
   tmp=(char*)glGetString(GL_EXTENSIONS);
@@ -235,7 +235,7 @@ void GLSettingsDialog::setup() {
     token=strtok(text," ");
     while(token){
       extensionlist->appendItem(token);
-      token=strtok(NULL," ");
+      token=strtok(nullptr," ");
       }
     free(text);
     }
@@ -249,9 +249,9 @@ void GLSettingsDialog::setup() {
   if(tmp){
     text=strdup(tmp);
     token=strtok(text," ");
-    while(token!=NULL){
+    while(token!=nullptr){
       extensionlist->appendItem(token);
-      token=strtok(NULL," ");
+      token=strtok(nullptr," ");
       }
     free(text);
     }
@@ -260,21 +260,21 @@ void GLSettingsDialog::setup() {
   new FXTabItem(tabbook,tr(" Driver "));
   matrix=new FXMatrix(tabbook, 2, MATRIX_BY_COLUMNS|LAYOUT_FILL_X|LAYOUT_FILL_Y|FRAME_RAISED|FRAME_THICK);
 
-  label = new FXLabel(matrix,tr("Vendor:"),NULL,LABEL_NORMAL|LAYOUT_RIGHT);
+  label = new FXLabel(matrix,tr("Vendor:"),nullptr,LABEL_NORMAL|LAYOUT_RIGHT);
   label->setFont(thickfont);
-  new FXLabel(matrix,FXString::value("%s",glGetString(GL_VENDOR)),NULL,LABEL_NORMAL);
+  new FXLabel(matrix,FXString::value("%s",glGetString(GL_VENDOR)),nullptr,LABEL_NORMAL);
 
-  label = new FXLabel(matrix,tr("Renderer:"),NULL,LABEL_NORMAL|LAYOUT_RIGHT);
+  label = new FXLabel(matrix,tr("Renderer:"),nullptr,LABEL_NORMAL|LAYOUT_RIGHT);
   label->setFont(thickfont);
-  new FXLabel(matrix,FXString::value("%s",glGetString(GL_RENDERER)),NULL,LABEL_NORMAL);
+  new FXLabel(matrix,FXString::value("%s",glGetString(GL_RENDERER)),nullptr,LABEL_NORMAL);
 
-  label = new FXLabel(matrix,tr("GL Version:"),NULL,LABEL_NORMAL|LAYOUT_RIGHT);
+  label = new FXLabel(matrix,tr("GL Version:"),nullptr,LABEL_NORMAL|LAYOUT_RIGHT);
   label->setFont(thickfont);
-  new FXLabel(matrix,FXString::value("%s",glGetString(GL_VERSION)),NULL,LABEL_NORMAL);
+  new FXLabel(matrix,FXString::value("%s",glGetString(GL_VERSION)),nullptr,LABEL_NORMAL);
 
-  label = new FXLabel(matrix,tr("GLU Version:"),NULL,LABEL_NORMAL|LAYOUT_RIGHT);
+  label = new FXLabel(matrix,tr("GLU Version:"),nullptr,LABEL_NORMAL|LAYOUT_RIGHT);
   label->setFont(thickfont);
-  new FXLabel(matrix,FXString::value("%s",gluGetString(GLU_VERSION)),NULL,LABEL_NORMAL);
+  new FXLabel(matrix,FXString::value("%s",gluGetString(GLU_VERSION)),nullptr,LABEL_NORMAL);
 
   canvas->makeNonCurrent();
   }
@@ -492,7 +492,7 @@ FXIMPLEMENT(GLTestWindow,FXMainWindow,GLTestWindowMap,ARRAYNUMBER(GLTestWindowMa
 
 
 // Construct a GLTestApp
-GLTestWindow::GLTestWindow(FXApp* a):FXMainWindow(a,"OpenGL Test Application",NULL,NULL,DECOR_ALL,0,0,800,600){
+GLTestWindow::GLTestWindow(FXApp* a):FXMainWindow(a,"OpenGL Test Application",nullptr,nullptr,DECOR_ALL,0,0,800,600){
   FXVerticalFrame *glcanvasFrame;
   FXVerticalFrame *buttonFrame;
   FXComposite *glpanel;
@@ -513,14 +513,14 @@ GLTestWindow::GLTestWindow(FXApp* a):FXMainWindow(a,"OpenGL Test Application",NU
   // Drawing glcanvas
   glcanvas=new FXGLCanvas(glpanel,glvisual,this,ID_CANVAS,LAYOUT_FILL_X|LAYOUT_FILL_Y|LAYOUT_TOP|LAYOUT_LEFT);
 
-  new FXButton(buttonFrame,tr("&OpenGL Info\tDisplay OpenGL Capabilities"),NULL,this,ID_OPENGL,FRAME_THICK|FRAME_RAISED|LAYOUT_FILL_X|LAYOUT_TOP|LAYOUT_LEFT,0,0,0,0,10,10,5,5);
+  new FXButton(buttonFrame,tr("&OpenGL Info\tDisplay OpenGL Capabilities"),nullptr,this,ID_OPENGL,FRAME_THICK|FRAME_RAISED|LAYOUT_FILL_X|LAYOUT_TOP|LAYOUT_LEFT,0,0,0,0,10,10,5,5);
 
   // Button to print
-  new FXButton(buttonFrame,tr("Spin &Timer\tSpin using interval timers\nNote the app blocks until the interal has elapsed..."),NULL,this,ID_SPIN,FRAME_THICK|FRAME_RAISED|LAYOUT_FILL_X|LAYOUT_TOP|LAYOUT_LEFT,0,0,0,0,10,10,5,5);
-  new FXButton(buttonFrame,tr("Spin &Chore\tSpin as fast as possible using chores\nNote even though the app is very responsive, it never blocks;\nthere is always something to do..."),NULL,this,ID_SPINFAST,FRAME_THICK|FRAME_RAISED|LAYOUT_FILL_X|LAYOUT_TOP|LAYOUT_LEFT,0,0,0,0,10,10,5,5);
+  new FXButton(buttonFrame,tr("Spin &Timer\tSpin using interval timers\nNote the app blocks until the interal has elapsed..."),nullptr,this,ID_SPIN,FRAME_THICK|FRAME_RAISED|LAYOUT_FILL_X|LAYOUT_TOP|LAYOUT_LEFT,0,0,0,0,10,10,5,5);
+  new FXButton(buttonFrame,tr("Spin &Chore\tSpin as fast as possible using chores\nNote even though the app is very responsive, it never blocks;\nthere is always something to do..."),nullptr,this,ID_SPINFAST,FRAME_THICK|FRAME_RAISED|LAYOUT_FILL_X|LAYOUT_TOP|LAYOUT_LEFT,0,0,0,0,10,10,5,5);
 
   // Button to print
-  new FXButton(buttonFrame,tr("&Stop Spin\tStop this mad spinning, I'm getting dizzy"),NULL,this,ID_STOP,FRAME_THICK|FRAME_RAISED|LAYOUT_FILL_X|LAYOUT_TOP|LAYOUT_LEFT,0,0,0,0,10,10,5,5);
+  new FXButton(buttonFrame,tr("&Stop Spin\tStop this mad spinning, I'm getting dizzy"),nullptr,this,ID_STOP,FRAME_THICK|FRAME_RAISED|LAYOUT_FILL_X|LAYOUT_TOP|LAYOUT_LEFT,0,0,0,0,10,10,5,5);
 
   groupbox = new FXGroupBox(buttonFrame,tr("Speed (rts)"),GROUPBOX_NORMAL|FRAME_GROOVE|LAYOUT_FILL_X);
   speedcontrol = new FXRealSpinner(groupbox,3,&dt_rts,FXDataTarget::ID_VALUE,FRAME_SUNKEN|FRAME_THICK|LAYOUT_FILL_X);
@@ -535,7 +535,7 @@ GLTestWindow::GLTestWindow(FXApp* a):FXMainWindow(a,"OpenGL Test Application",NU
 
 
   // Exit button
-  new FXButton(buttonFrame,tr("&Exit\tExit the application"),NULL,getApp(),FXApp::ID_QUIT,FRAME_THICK|FRAME_RAISED|LAYOUT_FILL_X|LAYOUT_BOTTOM|LAYOUT_LEFT,0,0,0,0,10,10,5,5);
+  new FXButton(buttonFrame,tr("&Exit\tExit the application"),nullptr,getApp(),FXApp::ID_QUIT,FRAME_THICK|FRAME_RAISED|LAYOUT_FILL_X|LAYOUT_BOTTOM|LAYOUT_LEFT,0,0,0,0,10,10,5,5);
 
   // Make a tooltip
   new FXToolTip(getApp());
@@ -659,9 +659,9 @@ long GLTestWindow::onUpdStop(FXObject* sender,FXSelector,void*){
 // Enable or disable the stop button
 long GLTestWindow::onUpdSpeed(FXObject* sender,FXSelector,void*){
   if (getApp()->hasTimeout(this,ID_TIMEOUT))
-  sender->handle(this,FXSEL(SEL_COMMAND,ID_DISABLE),NULL);
+  sender->handle(this,FXSEL(SEL_COMMAND,ID_DISABLE),nullptr);
   else
-  sender->handle(this,FXSEL(SEL_COMMAND,ID_ENABLE),NULL);
+  sender->handle(this,FXSEL(SEL_COMMAND,ID_ENABLE),nullptr);
   return 1;
   }
 
@@ -840,7 +840,7 @@ long GLTestWindow::onCmdMultiSample(FXObject* sender,FXSelector sel,void*){
   glvisual->setMultiSamples(nsamples);
   glvisual->create();
   if(glvisual->getActualMultiSamples()!=nsamples){
-    sender->handle(this,FXSEL(SEL_COMMAND,ID_DISABLE),NULL);
+    sender->handle(this,FXSEL(SEL_COMMAND,ID_DISABLE),nullptr);
     }
   glcanvas->create();
   return 1;
@@ -856,16 +856,16 @@ long GLTestWindow::onUpdMultiSample(FXObject* sender,FXSelector sel,void*){
     case ID_MULTISAMPLE_4X : if(glvisual->getActualMultiSamples()==4) check=true; break;
     }
   if(check)
-    sender->handle(this,FXSEL(SEL_COMMAND,ID_CHECK),NULL);
+    sender->handle(this,FXSEL(SEL_COMMAND,ID_CHECK),nullptr);
   else
-    sender->handle(this,FXSEL(SEL_COMMAND,ID_UNCHECK),NULL);
+    sender->handle(this,FXSEL(SEL_COMMAND,ID_UNCHECK),nullptr);
   return 1;
   }
 
 
 // Here we begin
 int main(int argc,char *argv[]){
-  
+
   // Make application
   FXApp application("GLTest","FoxTest");
 

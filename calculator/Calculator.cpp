@@ -3,7 +3,7 @@
 *                  F O X   D e s k t o p   C a l c u l a t o r                  *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 2001,2021 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 2001,2022 by Jeroen van der Zijp.   All Rights Reserved.        *
 *********************************************************************************
 * This program is free software: you can redistribute it and/or modify          *
 * it under the terms of the GNU General Public License as published by          *
@@ -189,10 +189,10 @@ static const FXuchar priority[]={
 /*******************************************************************************/
 
 // Construct calculator dialog
-Calculator::Calculator(FXApp* a):FXMainWindow(a,"FOX Calculator",NULL,NULL,DECOR_ALL, 0,0,0,0, 0,0){
+Calculator::Calculator(FXApp* a):FXMainWindow(a,"FOX Calculator",nullptr,nullptr,DECOR_ALL, 0,0,0,0, 0,0){
 
   // Default font used by default, duh!
-  font=NULL;
+  font=nullptr;
 
   // Make some icons
   bigicon=new FXGIFIcon(getApp(),bigcalc);
@@ -216,87 +216,87 @@ Calculator::Calculator(FXApp* a):FXMainWindow(a,"FOX Calculator",NULL,NULL,DECOR
 
   FXHorizontalFrame *baseframe=new FXHorizontalFrame(modeframe,FRAME_SUNKEN|LAYOUT_FILL_X|LAYOUT_FILL_Y|PACK_UNIFORM_WIDTH, 0,0,0,0, 0,0,0,0 ,0,0);
 
-  numbase[0]=new FXButton(baseframe,"&Hex",NULL,this,ID_HEX,FRAME_RAISED|LAYOUT_FILL_X|LAYOUT_FILL_Y);
-  numbase[1]=new FXButton(baseframe,"D&ec",NULL,this,ID_DEC,FRAME_RAISED|LAYOUT_FILL_X|LAYOUT_FILL_Y);
-  numbase[2]=new FXButton(baseframe,"&Oct",NULL,this,ID_OCT,FRAME_RAISED|LAYOUT_FILL_X|LAYOUT_FILL_Y);
-  numbase[3]=new FXButton(baseframe,"&Bin",NULL,this,ID_BIN,FRAME_RAISED|LAYOUT_FILL_X|LAYOUT_FILL_Y);
+  numbase[0]=new FXButton(baseframe,"&Hex",nullptr,this,ID_HEX,FRAME_RAISED|LAYOUT_FILL_X|LAYOUT_FILL_Y);
+  numbase[1]=new FXButton(baseframe,"D&ec",nullptr,this,ID_DEC,FRAME_RAISED|LAYOUT_FILL_X|LAYOUT_FILL_Y);
+  numbase[2]=new FXButton(baseframe,"&Oct",nullptr,this,ID_OCT,FRAME_RAISED|LAYOUT_FILL_X|LAYOUT_FILL_Y);
+  numbase[3]=new FXButton(baseframe,"&Bin",nullptr,this,ID_BIN,FRAME_RAISED|LAYOUT_FILL_X|LAYOUT_FILL_Y);
 
   FXHorizontalFrame *degframe=new FXHorizontalFrame(modeframe,FRAME_SUNKEN|LAYOUT_FILL_X|LAYOUT_FILL_Y|PACK_UNIFORM_WIDTH, 0,0,0,0, 0,0,0,0 ,0,0);
 
-  angmode[0]=new FXButton(degframe,"&Deg",NULL,this,ID_DEG,FRAME_RAISED|LAYOUT_FILL_X|LAYOUT_FILL_Y,0,0,0,0, 2,2,2,2);
-  angmode[1]=new FXButton(degframe,"&Rad",NULL,this,ID_RAD,FRAME_RAISED|LAYOUT_FILL_X|LAYOUT_FILL_Y,0,0,0,0, 2,2,2,2);
-  angmode[2]=new FXButton(degframe,"&Gra",NULL,this,ID_GRA,FRAME_RAISED|LAYOUT_FILL_X|LAYOUT_FILL_Y,0,0,0,0, 2,2,2,2);
+  angmode[0]=new FXButton(degframe,"&Deg",nullptr,this,ID_DEG,FRAME_RAISED|LAYOUT_FILL_X|LAYOUT_FILL_Y,0,0,0,0, 2,2,2,2);
+  angmode[1]=new FXButton(degframe,"&Rad",nullptr,this,ID_RAD,FRAME_RAISED|LAYOUT_FILL_X|LAYOUT_FILL_Y,0,0,0,0, 2,2,2,2);
+  angmode[2]=new FXButton(degframe,"&Gra",nullptr,this,ID_GRA,FRAME_RAISED|LAYOUT_FILL_X|LAYOUT_FILL_Y,0,0,0,0, 2,2,2,2);
 
   // Frame for button blocks
   FXHorizontalFrame *buttonframe=new FXHorizontalFrame(this,LAYOUT_FILL_X|LAYOUT_FILL_Y|PACK_UNIFORM_WIDTH, 0,0,0,0, 4,4,4,4, 0,0);
 
   // Functions block
   FXMatrix *funcblock=new FXMatrix(buttonframe,6,MATRIX_BY_ROWS|LAYOUT_FILL_X|LAYOUT_FILL_Y|PACK_UNIFORM_WIDTH|PACK_UNIFORM_HEIGHT);
-  inverse=new FXButton(funcblock,"inv",NULL,this,ID_INV,BUTTON_NORMAL|LAYOUT_FILL_COLUMN|LAYOUT_FILL_ROW|LAYOUT_FILL_X|LAYOUT_FILL_Y,0,0,0,0, 8,8,1,1);
-  functions[0]=new FXButton(funcblock,"+/-",NULL,this,ID_PLUSMIN,BUTTON_NORMAL|LAYOUT_FILL_COLUMN|LAYOUT_FILL_ROW|LAYOUT_FILL_X|LAYOUT_FILL_Y,0,0,0,0, 8,8,1,1);
-  functions[1]=new FXButton(funcblock,"1/x",NULL,this,ID_RECIP,BUTTON_NORMAL|LAYOUT_FILL_COLUMN|LAYOUT_FILL_ROW|LAYOUT_FILL_X|LAYOUT_FILL_Y,0,0,0,0, 8,8,1,1);
-  functions[2]=new FXButton(funcblock,"x^y",NULL,this,ID_XTOY,BUTTON_NORMAL|LAYOUT_FILL_COLUMN|LAYOUT_FILL_ROW|LAYOUT_FILL_X|LAYOUT_FILL_Y,0,0,0,0, 8,8,1,1);
-  functions[3]=new FXButton(funcblock,"sqrt",NULL,this,ID_SQRT,BUTTON_NORMAL|LAYOUT_FILL_COLUMN|LAYOUT_FILL_ROW|LAYOUT_FILL_X|LAYOUT_FILL_Y,0,0,0,0, 8,8,1,1);
-  functions[4]=new FXButton(funcblock,"2log",NULL,this,ID_2LOG,BUTTON_NORMAL|LAYOUT_FILL_COLUMN|LAYOUT_FILL_ROW|LAYOUT_FILL_X|LAYOUT_FILL_Y,0,0,0,0, 8,8,1,1);
+  inverse=new FXButton(funcblock,"inv",nullptr,this,ID_INV,BUTTON_NORMAL|LAYOUT_FILL_COLUMN|LAYOUT_FILL_ROW|LAYOUT_FILL_X|LAYOUT_FILL_Y,0,0,0,0, 8,8,1,1);
+  functions[0]=new FXButton(funcblock,"+/-",nullptr,this,ID_PLUSMIN,BUTTON_NORMAL|LAYOUT_FILL_COLUMN|LAYOUT_FILL_ROW|LAYOUT_FILL_X|LAYOUT_FILL_Y,0,0,0,0, 8,8,1,1);
+  functions[1]=new FXButton(funcblock,"1/x",nullptr,this,ID_RECIP,BUTTON_NORMAL|LAYOUT_FILL_COLUMN|LAYOUT_FILL_ROW|LAYOUT_FILL_X|LAYOUT_FILL_Y,0,0,0,0, 8,8,1,1);
+  functions[2]=new FXButton(funcblock,"x^y",nullptr,this,ID_XTOY,BUTTON_NORMAL|LAYOUT_FILL_COLUMN|LAYOUT_FILL_ROW|LAYOUT_FILL_X|LAYOUT_FILL_Y,0,0,0,0, 8,8,1,1);
+  functions[3]=new FXButton(funcblock,"sqrt",nullptr,this,ID_SQRT,BUTTON_NORMAL|LAYOUT_FILL_COLUMN|LAYOUT_FILL_ROW|LAYOUT_FILL_X|LAYOUT_FILL_Y,0,0,0,0, 8,8,1,1);
+  functions[4]=new FXButton(funcblock,"2log",nullptr,this,ID_2LOG,BUTTON_NORMAL|LAYOUT_FILL_COLUMN|LAYOUT_FILL_ROW|LAYOUT_FILL_X|LAYOUT_FILL_Y,0,0,0,0, 8,8,1,1);
 
-  functions[5]=new FXButton(funcblock,"pi",NULL,this,ID_PI,BUTTON_NORMAL|LAYOUT_FILL_COLUMN|LAYOUT_FILL_ROW|LAYOUT_FILL_X|LAYOUT_FILL_Y,0,0,0,0, 8,8,1,1);
-  functions[6]=new FXButton(funcblock,"SHL",NULL,this,ID_SHL,BUTTON_NORMAL|LAYOUT_FILL_COLUMN|LAYOUT_FILL_ROW|LAYOUT_FILL_X|LAYOUT_FILL_Y,0,0,0,0, 8,8,1,1);
-  functions[7]=new FXButton(funcblock,"SHR",NULL,this,ID_SHR,BUTTON_NORMAL|LAYOUT_FILL_COLUMN|LAYOUT_FILL_ROW|LAYOUT_FILL_X|LAYOUT_FILL_Y,0,0,0,0, 8,8,1,1);
-  functions[8]=new FXButton(funcblock,"x!",NULL,this,ID_FAC,BUTTON_NORMAL|LAYOUT_FILL_COLUMN|LAYOUT_FILL_ROW|LAYOUT_FILL_X|LAYOUT_FILL_Y,0,0,0,0, 8,8,1,1);
-  functions[9]=new FXButton(funcblock,"nPr",NULL,this,ID_PER,BUTTON_NORMAL|LAYOUT_FILL_COLUMN|LAYOUT_FILL_ROW|LAYOUT_FILL_X|LAYOUT_FILL_Y,0,0,0,0, 8,8,1,1);
-  functions[10]=new FXButton(funcblock,"nCr",NULL,this,ID_COM,BUTTON_NORMAL|LAYOUT_FILL_COLUMN|LAYOUT_FILL_ROW|LAYOUT_FILL_X|LAYOUT_FILL_Y,0,0,0,0, 8,8,1,1);
+  functions[5]=new FXButton(funcblock,"pi",nullptr,this,ID_PI,BUTTON_NORMAL|LAYOUT_FILL_COLUMN|LAYOUT_FILL_ROW|LAYOUT_FILL_X|LAYOUT_FILL_Y,0,0,0,0, 8,8,1,1);
+  functions[6]=new FXButton(funcblock,"SHL",nullptr,this,ID_SHL,BUTTON_NORMAL|LAYOUT_FILL_COLUMN|LAYOUT_FILL_ROW|LAYOUT_FILL_X|LAYOUT_FILL_Y,0,0,0,0, 8,8,1,1);
+  functions[7]=new FXButton(funcblock,"SHR",nullptr,this,ID_SHR,BUTTON_NORMAL|LAYOUT_FILL_COLUMN|LAYOUT_FILL_ROW|LAYOUT_FILL_X|LAYOUT_FILL_Y,0,0,0,0, 8,8,1,1);
+  functions[8]=new FXButton(funcblock,"x!",nullptr,this,ID_FAC,BUTTON_NORMAL|LAYOUT_FILL_COLUMN|LAYOUT_FILL_ROW|LAYOUT_FILL_X|LAYOUT_FILL_Y,0,0,0,0, 8,8,1,1);
+  functions[9]=new FXButton(funcblock,"nPr",nullptr,this,ID_PER,BUTTON_NORMAL|LAYOUT_FILL_COLUMN|LAYOUT_FILL_ROW|LAYOUT_FILL_X|LAYOUT_FILL_Y,0,0,0,0, 8,8,1,1);
+  functions[10]=new FXButton(funcblock,"nCr",nullptr,this,ID_COM,BUTTON_NORMAL|LAYOUT_FILL_COLUMN|LAYOUT_FILL_ROW|LAYOUT_FILL_X|LAYOUT_FILL_Y,0,0,0,0, 8,8,1,1);
 
-  hyper2=new FXButton(funcblock,"hyp",NULL,this,ID_HYP,BUTTON_NORMAL|LAYOUT_FILL_COLUMN|LAYOUT_FILL_ROW|LAYOUT_FILL_X|LAYOUT_FILL_Y,0,0,0,0, 8,8,1,1);
-  functions[11]=new FXButton(funcblock,"sin",NULL,this,ID_SIN,BUTTON_NORMAL|LAYOUT_FILL_COLUMN|LAYOUT_FILL_ROW|LAYOUT_FILL_X|LAYOUT_FILL_Y,0,0,0,0, 8,8,1,1);
-  functions[12]=new FXButton(funcblock,"cos",NULL,this,ID_COS,BUTTON_NORMAL|LAYOUT_FILL_COLUMN|LAYOUT_FILL_ROW|LAYOUT_FILL_X|LAYOUT_FILL_Y,0,0,0,0, 8,8,1,1);
-  functions[13]=new FXButton(funcblock,"tan",NULL,this,ID_TAN,BUTTON_NORMAL|LAYOUT_FILL_COLUMN|LAYOUT_FILL_ROW|LAYOUT_FILL_X|LAYOUT_FILL_Y,0,0,0,0, 8,8,1,1);
-  functions[14]=new FXButton(funcblock,"log",NULL,this,ID_LOG,BUTTON_NORMAL|LAYOUT_FILL_COLUMN|LAYOUT_FILL_ROW|LAYOUT_FILL_X|LAYOUT_FILL_Y,0,0,0,0, 8,8,1,1);
-  functions[15]=new FXButton(funcblock,"ln",NULL,this,ID_LN,BUTTON_NORMAL|LAYOUT_FILL_COLUMN|LAYOUT_FILL_ROW|LAYOUT_FILL_X|LAYOUT_FILL_Y,0,0,0,0, 8,8,1,1);
+  hyper2=new FXButton(funcblock,"hyp",nullptr,this,ID_HYP,BUTTON_NORMAL|LAYOUT_FILL_COLUMN|LAYOUT_FILL_ROW|LAYOUT_FILL_X|LAYOUT_FILL_Y,0,0,0,0, 8,8,1,1);
+  functions[11]=new FXButton(funcblock,"sin",nullptr,this,ID_SIN,BUTTON_NORMAL|LAYOUT_FILL_COLUMN|LAYOUT_FILL_ROW|LAYOUT_FILL_X|LAYOUT_FILL_Y,0,0,0,0, 8,8,1,1);
+  functions[12]=new FXButton(funcblock,"cos",nullptr,this,ID_COS,BUTTON_NORMAL|LAYOUT_FILL_COLUMN|LAYOUT_FILL_ROW|LAYOUT_FILL_X|LAYOUT_FILL_Y,0,0,0,0, 8,8,1,1);
+  functions[13]=new FXButton(funcblock,"tan",nullptr,this,ID_TAN,BUTTON_NORMAL|LAYOUT_FILL_COLUMN|LAYOUT_FILL_ROW|LAYOUT_FILL_X|LAYOUT_FILL_Y,0,0,0,0, 8,8,1,1);
+  functions[14]=new FXButton(funcblock,"log",nullptr,this,ID_LOG,BUTTON_NORMAL|LAYOUT_FILL_COLUMN|LAYOUT_FILL_ROW|LAYOUT_FILL_X|LAYOUT_FILL_Y,0,0,0,0, 8,8,1,1);
+  functions[15]=new FXButton(funcblock,"ln",nullptr,this,ID_LN,BUTTON_NORMAL|LAYOUT_FILL_COLUMN|LAYOUT_FILL_ROW|LAYOUT_FILL_X|LAYOUT_FILL_Y,0,0,0,0, 8,8,1,1);
 
-  digit[10]=new FXButton(funcblock,"A",NULL,this,ID_A,BUTTON_NORMAL|LAYOUT_FILL_COLUMN|LAYOUT_FILL_ROW|LAYOUT_FILL_X|LAYOUT_FILL_Y,0,0,0,0, 8,8,1,1);
-  digit[11]=new FXButton(funcblock,"B",NULL,this,ID_B,BUTTON_NORMAL|LAYOUT_FILL_COLUMN|LAYOUT_FILL_ROW|LAYOUT_FILL_X|LAYOUT_FILL_Y,0,0,0,0, 8,8,1,1);
-  digit[12]=new FXButton(funcblock,"C",NULL,this,ID_C,BUTTON_NORMAL|LAYOUT_FILL_COLUMN|LAYOUT_FILL_ROW|LAYOUT_FILL_X|LAYOUT_FILL_Y,0,0,0,0, 8,8,1,1);
-  digit[13]=new FXButton(funcblock,"D",NULL,this,ID_D,BUTTON_NORMAL|LAYOUT_FILL_COLUMN|LAYOUT_FILL_ROW|LAYOUT_FILL_X|LAYOUT_FILL_Y,0,0,0,0, 8,8,1,1);
-  digit[14]=new FXButton(funcblock,"E",NULL,this,ID_E,BUTTON_NORMAL|LAYOUT_FILL_COLUMN|LAYOUT_FILL_ROW|LAYOUT_FILL_X|LAYOUT_FILL_Y,0,0,0,0, 8,8,1,1);
-  digit[15]=new FXButton(funcblock,"F",NULL,this,ID_F,BUTTON_NORMAL|LAYOUT_FILL_COLUMN|LAYOUT_FILL_ROW|LAYOUT_FILL_X|LAYOUT_FILL_Y,0,0,0,0, 8,8,1,1);
+  digit[10]=new FXButton(funcblock,"A",nullptr,this,ID_A,BUTTON_NORMAL|LAYOUT_FILL_COLUMN|LAYOUT_FILL_ROW|LAYOUT_FILL_X|LAYOUT_FILL_Y,0,0,0,0, 8,8,1,1);
+  digit[11]=new FXButton(funcblock,"B",nullptr,this,ID_B,BUTTON_NORMAL|LAYOUT_FILL_COLUMN|LAYOUT_FILL_ROW|LAYOUT_FILL_X|LAYOUT_FILL_Y,0,0,0,0, 8,8,1,1);
+  digit[12]=new FXButton(funcblock,"C",nullptr,this,ID_C,BUTTON_NORMAL|LAYOUT_FILL_COLUMN|LAYOUT_FILL_ROW|LAYOUT_FILL_X|LAYOUT_FILL_Y,0,0,0,0, 8,8,1,1);
+  digit[13]=new FXButton(funcblock,"D",nullptr,this,ID_D,BUTTON_NORMAL|LAYOUT_FILL_COLUMN|LAYOUT_FILL_ROW|LAYOUT_FILL_X|LAYOUT_FILL_Y,0,0,0,0, 8,8,1,1);
+  digit[14]=new FXButton(funcblock,"E",nullptr,this,ID_E,BUTTON_NORMAL|LAYOUT_FILL_COLUMN|LAYOUT_FILL_ROW|LAYOUT_FILL_X|LAYOUT_FILL_Y,0,0,0,0, 8,8,1,1);
+  digit[15]=new FXButton(funcblock,"F",nullptr,this,ID_F,BUTTON_NORMAL|LAYOUT_FILL_COLUMN|LAYOUT_FILL_ROW|LAYOUT_FILL_X|LAYOUT_FILL_Y,0,0,0,0, 8,8,1,1);
 
   // Main block
   FXMatrix *mainblock=new FXMatrix(buttonframe,5,MATRIX_BY_ROWS|LAYOUT_FILL_X|LAYOUT_FILL_Y|PACK_UNIFORM_WIDTH|PACK_UNIFORM_HEIGHT);
-  memory[0]=new FXButton(mainblock,"MR",NULL,this,ID_MEM_REC,BUTTON_NORMAL|LAYOUT_FILL_COLUMN|LAYOUT_FILL_ROW|LAYOUT_FILL_X|LAYOUT_FILL_Y,0,0,0,0, 1,1,2,2);
-  digit[7]=new FXButton(mainblock,"7",NULL,this,ID_7,BUTTON_NORMAL|LAYOUT_FILL_COLUMN|LAYOUT_FILL_ROW|LAYOUT_FILL_X|LAYOUT_FILL_Y,0,0,0,0, 1,1,2,2);
-  digit[4]=new FXButton(mainblock,"4",NULL,this,ID_4,BUTTON_NORMAL|LAYOUT_FILL_COLUMN|LAYOUT_FILL_ROW|LAYOUT_FILL_X|LAYOUT_FILL_Y,0,0,0,0, 1,1,2,2);
-  digit[1]=new FXButton(mainblock,"1",NULL,this,ID_1,BUTTON_NORMAL|LAYOUT_FILL_COLUMN|LAYOUT_FILL_ROW|LAYOUT_FILL_X|LAYOUT_FILL_Y,0,0,0,0, 1,1,2,2);
-  digit[0]=new FXButton(mainblock,"0",NULL,this,ID_0,BUTTON_NORMAL|LAYOUT_FILL_COLUMN|LAYOUT_FILL_ROW|LAYOUT_FILL_X|LAYOUT_FILL_Y,0,0,0,0, 1,1,2,2);
+  memory[0]=new FXButton(mainblock,"MR",nullptr,this,ID_MEM_REC,BUTTON_NORMAL|LAYOUT_FILL_COLUMN|LAYOUT_FILL_ROW|LAYOUT_FILL_X|LAYOUT_FILL_Y,0,0,0,0, 1,1,2,2);
+  digit[7]=new FXButton(mainblock,"7",nullptr,this,ID_7,BUTTON_NORMAL|LAYOUT_FILL_COLUMN|LAYOUT_FILL_ROW|LAYOUT_FILL_X|LAYOUT_FILL_Y,0,0,0,0, 1,1,2,2);
+  digit[4]=new FXButton(mainblock,"4",nullptr,this,ID_4,BUTTON_NORMAL|LAYOUT_FILL_COLUMN|LAYOUT_FILL_ROW|LAYOUT_FILL_X|LAYOUT_FILL_Y,0,0,0,0, 1,1,2,2);
+  digit[1]=new FXButton(mainblock,"1",nullptr,this,ID_1,BUTTON_NORMAL|LAYOUT_FILL_COLUMN|LAYOUT_FILL_ROW|LAYOUT_FILL_X|LAYOUT_FILL_Y,0,0,0,0, 1,1,2,2);
+  digit[0]=new FXButton(mainblock,"0",nullptr,this,ID_0,BUTTON_NORMAL|LAYOUT_FILL_COLUMN|LAYOUT_FILL_ROW|LAYOUT_FILL_X|LAYOUT_FILL_Y,0,0,0,0, 1,1,2,2);
 
-  memory[1]=new FXButton(mainblock,"M+",NULL,this,ID_MEM_ADD,BUTTON_NORMAL|LAYOUT_FILL_COLUMN|LAYOUT_FILL_ROW|LAYOUT_FILL_X|LAYOUT_FILL_Y,0,0,0,0, 1,1,2,2);
-  digit[8]=new FXButton(mainblock,"8",NULL,this,ID_8,BUTTON_NORMAL|LAYOUT_FILL_COLUMN|LAYOUT_FILL_ROW|LAYOUT_FILL_X|LAYOUT_FILL_Y,0,0,0,0, 1,1,2,2);
-  digit[5]=new FXButton(mainblock,"5",NULL,this,ID_5,BUTTON_NORMAL|LAYOUT_FILL_COLUMN|LAYOUT_FILL_ROW|LAYOUT_FILL_X|LAYOUT_FILL_Y,0,0,0,0, 1,1,2,2);
-  digit[2]=new FXButton(mainblock,"2",NULL,this,ID_2,BUTTON_NORMAL|LAYOUT_FILL_COLUMN|LAYOUT_FILL_ROW|LAYOUT_FILL_X|LAYOUT_FILL_Y,0,0,0,0, 1,1,2,2);
-  operators[0]=new FXButton(mainblock,".",NULL,this,ID_PNT,BUTTON_NORMAL|LAYOUT_FILL_COLUMN|LAYOUT_FILL_ROW|LAYOUT_FILL_X|LAYOUT_FILL_Y,0,0,0,0, 1,1,2,2);
+  memory[1]=new FXButton(mainblock,"M+",nullptr,this,ID_MEM_ADD,BUTTON_NORMAL|LAYOUT_FILL_COLUMN|LAYOUT_FILL_ROW|LAYOUT_FILL_X|LAYOUT_FILL_Y,0,0,0,0, 1,1,2,2);
+  digit[8]=new FXButton(mainblock,"8",nullptr,this,ID_8,BUTTON_NORMAL|LAYOUT_FILL_COLUMN|LAYOUT_FILL_ROW|LAYOUT_FILL_X|LAYOUT_FILL_Y,0,0,0,0, 1,1,2,2);
+  digit[5]=new FXButton(mainblock,"5",nullptr,this,ID_5,BUTTON_NORMAL|LAYOUT_FILL_COLUMN|LAYOUT_FILL_ROW|LAYOUT_FILL_X|LAYOUT_FILL_Y,0,0,0,0, 1,1,2,2);
+  digit[2]=new FXButton(mainblock,"2",nullptr,this,ID_2,BUTTON_NORMAL|LAYOUT_FILL_COLUMN|LAYOUT_FILL_ROW|LAYOUT_FILL_X|LAYOUT_FILL_Y,0,0,0,0, 1,1,2,2);
+  operators[0]=new FXButton(mainblock,".",nullptr,this,ID_PNT,BUTTON_NORMAL|LAYOUT_FILL_COLUMN|LAYOUT_FILL_ROW|LAYOUT_FILL_X|LAYOUT_FILL_Y,0,0,0,0, 1,1,2,2);
 
-  memory[2]=new FXButton(mainblock,"M-",NULL,this,ID_MEM_SUB,BUTTON_NORMAL|LAYOUT_FILL_COLUMN|LAYOUT_FILL_ROW|LAYOUT_FILL_X|LAYOUT_FILL_Y,0,0,0,0, 1,1,2,2);
-  digit[9]=new FXButton(mainblock,"9",NULL,this,ID_9,BUTTON_NORMAL|LAYOUT_FILL_COLUMN|LAYOUT_FILL_ROW|LAYOUT_FILL_X|LAYOUT_FILL_Y,0,0,0,0, 1,1,2,2);
-  digit[6]=new FXButton(mainblock,"6",NULL,this,ID_6,BUTTON_NORMAL|LAYOUT_FILL_COLUMN|LAYOUT_FILL_ROW|LAYOUT_FILL_X|LAYOUT_FILL_Y,0,0,0,0, 1,1,2,2);
-  digit[3]=new FXButton(mainblock,"3",NULL,this,ID_3,BUTTON_NORMAL|LAYOUT_FILL_COLUMN|LAYOUT_FILL_ROW|LAYOUT_FILL_X|LAYOUT_FILL_Y,0,0,0,0, 1,1,2,2);
-  operators[1]=new FXButton(mainblock,"EXP",NULL,this,ID_EXP,BUTTON_NORMAL|LAYOUT_FILL_COLUMN|LAYOUT_FILL_ROW|LAYOUT_FILL_X|LAYOUT_FILL_Y,0,0,0,0, 1,1,2,2);
+  memory[2]=new FXButton(mainblock,"M-",nullptr,this,ID_MEM_SUB,BUTTON_NORMAL|LAYOUT_FILL_COLUMN|LAYOUT_FILL_ROW|LAYOUT_FILL_X|LAYOUT_FILL_Y,0,0,0,0, 1,1,2,2);
+  digit[9]=new FXButton(mainblock,"9",nullptr,this,ID_9,BUTTON_NORMAL|LAYOUT_FILL_COLUMN|LAYOUT_FILL_ROW|LAYOUT_FILL_X|LAYOUT_FILL_Y,0,0,0,0, 1,1,2,2);
+  digit[6]=new FXButton(mainblock,"6",nullptr,this,ID_6,BUTTON_NORMAL|LAYOUT_FILL_COLUMN|LAYOUT_FILL_ROW|LAYOUT_FILL_X|LAYOUT_FILL_Y,0,0,0,0, 1,1,2,2);
+  digit[3]=new FXButton(mainblock,"3",nullptr,this,ID_3,BUTTON_NORMAL|LAYOUT_FILL_COLUMN|LAYOUT_FILL_ROW|LAYOUT_FILL_X|LAYOUT_FILL_Y,0,0,0,0, 1,1,2,2);
+  operators[1]=new FXButton(mainblock,"EXP",nullptr,this,ID_EXP,BUTTON_NORMAL|LAYOUT_FILL_COLUMN|LAYOUT_FILL_ROW|LAYOUT_FILL_X|LAYOUT_FILL_Y,0,0,0,0, 1,1,2,2);
 
-  memory[3]=new FXButton(mainblock,"MC",NULL,this,ID_MEM_CLR,BUTTON_NORMAL|LAYOUT_FILL_COLUMN|LAYOUT_FILL_ROW|LAYOUT_FILL_X|LAYOUT_FILL_Y,0,0,0,0, 1,1,2,2);
-  operators[2]=new FXButton(mainblock,"(",NULL,this,ID_LPAR,BUTTON_NORMAL|LAYOUT_FILL_COLUMN|LAYOUT_FILL_ROW|LAYOUT_FILL_X|LAYOUT_FILL_Y,0,0,0,0, 1,1,2,2);
-  operators[3]=new FXButton(mainblock,"*",NULL,this,ID_MUL,BUTTON_NORMAL|LAYOUT_FILL_COLUMN|LAYOUT_FILL_ROW|LAYOUT_FILL_X|LAYOUT_FILL_Y,0,0,0,0, 1,1,2,2);
-  operators[4]=new FXButton(mainblock,"+",NULL,this,ID_ADD,BUTTON_NORMAL|LAYOUT_FILL_COLUMN|LAYOUT_FILL_ROW|LAYOUT_FILL_X|LAYOUT_FILL_Y,0,0,0,0, 1,1,2,2);
-  operators[5]=new FXButton(mainblock,"=",NULL,this,ID_ENTER,BUTTON_NORMAL|LAYOUT_FILL_COLUMN|LAYOUT_FILL_ROW|LAYOUT_FILL_X|LAYOUT_FILL_Y,0,0,0,0, 1,1,2,2);
+  memory[3]=new FXButton(mainblock,"MC",nullptr,this,ID_MEM_CLR,BUTTON_NORMAL|LAYOUT_FILL_COLUMN|LAYOUT_FILL_ROW|LAYOUT_FILL_X|LAYOUT_FILL_Y,0,0,0,0, 1,1,2,2);
+  operators[2]=new FXButton(mainblock,"(",nullptr,this,ID_LPAR,BUTTON_NORMAL|LAYOUT_FILL_COLUMN|LAYOUT_FILL_ROW|LAYOUT_FILL_X|LAYOUT_FILL_Y,0,0,0,0, 1,1,2,2);
+  operators[3]=new FXButton(mainblock,"*",nullptr,this,ID_MUL,BUTTON_NORMAL|LAYOUT_FILL_COLUMN|LAYOUT_FILL_ROW|LAYOUT_FILL_X|LAYOUT_FILL_Y,0,0,0,0, 1,1,2,2);
+  operators[4]=new FXButton(mainblock,"+",nullptr,this,ID_ADD,BUTTON_NORMAL|LAYOUT_FILL_COLUMN|LAYOUT_FILL_ROW|LAYOUT_FILL_X|LAYOUT_FILL_Y,0,0,0,0, 1,1,2,2);
+  operators[5]=new FXButton(mainblock,"=",nullptr,this,ID_ENTER,BUTTON_NORMAL|LAYOUT_FILL_COLUMN|LAYOUT_FILL_ROW|LAYOUT_FILL_X|LAYOUT_FILL_Y,0,0,0,0, 1,1,2,2);
 
-  clearbtn=new FXButton(mainblock,"C",NULL,this,ID_CLEAR,BUTTON_NORMAL|LAYOUT_FILL_COLUMN|LAYOUT_FILL_ROW|LAYOUT_FILL_X|LAYOUT_FILL_Y,0,0,0,0, 1,1,2,2);
-  operators[6]=new FXButton(mainblock,")",NULL,this,ID_RPAR,BUTTON_NORMAL|LAYOUT_FILL_COLUMN|LAYOUT_FILL_ROW|LAYOUT_FILL_X|LAYOUT_FILL_Y,0,0,0,0, 1,1,2,2);
-  operators[7]=new FXButton(mainblock,"/",NULL,this,ID_DIV,BUTTON_NORMAL|LAYOUT_FILL_COLUMN|LAYOUT_FILL_ROW|LAYOUT_FILL_X|LAYOUT_FILL_Y,0,0,0,0, 1,1,2,2);
-  operators[8]=new FXButton(mainblock,"-",NULL,this,ID_SUB,BUTTON_NORMAL|LAYOUT_FILL_COLUMN|LAYOUT_FILL_ROW|LAYOUT_FILL_X|LAYOUT_FILL_Y,0,0,0,0, 1,1,2,2);
-  operators[9]=new FXButton(mainblock,"mod",NULL,this,ID_MOD,BUTTON_NORMAL|LAYOUT_FILL_COLUMN|LAYOUT_FILL_ROW|LAYOUT_FILL_X|LAYOUT_FILL_Y,0,0,0,0, 1,1,2,2);
+  clearbtn=new FXButton(mainblock,"C",nullptr,this,ID_CLEAR,BUTTON_NORMAL|LAYOUT_FILL_COLUMN|LAYOUT_FILL_ROW|LAYOUT_FILL_X|LAYOUT_FILL_Y,0,0,0,0, 1,1,2,2);
+  operators[6]=new FXButton(mainblock,")",nullptr,this,ID_RPAR,BUTTON_NORMAL|LAYOUT_FILL_COLUMN|LAYOUT_FILL_ROW|LAYOUT_FILL_X|LAYOUT_FILL_Y,0,0,0,0, 1,1,2,2);
+  operators[7]=new FXButton(mainblock,"/",nullptr,this,ID_DIV,BUTTON_NORMAL|LAYOUT_FILL_COLUMN|LAYOUT_FILL_ROW|LAYOUT_FILL_X|LAYOUT_FILL_Y,0,0,0,0, 1,1,2,2);
+  operators[8]=new FXButton(mainblock,"-",nullptr,this,ID_SUB,BUTTON_NORMAL|LAYOUT_FILL_COLUMN|LAYOUT_FILL_ROW|LAYOUT_FILL_X|LAYOUT_FILL_Y,0,0,0,0, 1,1,2,2);
+  operators[9]=new FXButton(mainblock,"mod",nullptr,this,ID_MOD,BUTTON_NORMAL|LAYOUT_FILL_COLUMN|LAYOUT_FILL_ROW|LAYOUT_FILL_X|LAYOUT_FILL_Y,0,0,0,0, 1,1,2,2);
 
-  clearallbtn=new FXButton(mainblock,"AC",NULL,this,ID_CLEARALL,BUTTON_NORMAL|LAYOUT_FILL_COLUMN|LAYOUT_FILL_ROW|LAYOUT_FILL_X|LAYOUT_FILL_Y,0,0,0,0, 1,1,2,2);
-  operators[10]=new FXButton(mainblock,"AND",NULL,this,ID_AND,BUTTON_NORMAL|LAYOUT_FILL_COLUMN|LAYOUT_FILL_ROW|LAYOUT_FILL_X|LAYOUT_FILL_Y,0,0,0,0, 1,1,2,2);
-  operators[11]=new FXButton(mainblock,"OR",NULL,this,ID_OR,BUTTON_NORMAL|LAYOUT_FILL_COLUMN|LAYOUT_FILL_ROW|LAYOUT_FILL_X|LAYOUT_FILL_Y,0,0,0,0, 1,1,2,2);
-  operators[12]=new FXButton(mainblock,"XOR",NULL,this,ID_XOR,BUTTON_NORMAL|LAYOUT_FILL_COLUMN|LAYOUT_FILL_ROW|LAYOUT_FILL_X|LAYOUT_FILL_Y,0,0,0,0, 1,1,2,2);
-  operators[13]=new FXButton(mainblock,"NOT",NULL,this,ID_NOT,BUTTON_NORMAL|LAYOUT_FILL_COLUMN|LAYOUT_FILL_ROW|LAYOUT_FILL_X|LAYOUT_FILL_Y,0,0,0,0, 1,1,2,2);
+  clearallbtn=new FXButton(mainblock,"AC",nullptr,this,ID_CLEARALL,BUTTON_NORMAL|LAYOUT_FILL_COLUMN|LAYOUT_FILL_ROW|LAYOUT_FILL_X|LAYOUT_FILL_Y,0,0,0,0, 1,1,2,2);
+  operators[10]=new FXButton(mainblock,"AND",nullptr,this,ID_AND,BUTTON_NORMAL|LAYOUT_FILL_COLUMN|LAYOUT_FILL_ROW|LAYOUT_FILL_X|LAYOUT_FILL_Y,0,0,0,0, 1,1,2,2);
+  operators[11]=new FXButton(mainblock,"OR",nullptr,this,ID_OR,BUTTON_NORMAL|LAYOUT_FILL_COLUMN|LAYOUT_FILL_ROW|LAYOUT_FILL_X|LAYOUT_FILL_Y,0,0,0,0, 1,1,2,2);
+  operators[12]=new FXButton(mainblock,"XOR",nullptr,this,ID_XOR,BUTTON_NORMAL|LAYOUT_FILL_COLUMN|LAYOUT_FILL_ROW|LAYOUT_FILL_X|LAYOUT_FILL_Y,0,0,0,0, 1,1,2,2);
+  operators[13]=new FXButton(mainblock,"NOT",nullptr,this,ID_NOT,BUTTON_NORMAL|LAYOUT_FILL_COLUMN|LAYOUT_FILL_ROW|LAYOUT_FILL_X|LAYOUT_FILL_Y,0,0,0,0, 1,1,2,2);
 
   // Hot keys for digits
   digit[0]->addHotKey(MKUINT(KEY_0,0));
@@ -1293,11 +1293,11 @@ long Calculator::onCmdExponent(FXObject*,FXSelector sel,void* ptr){
 // Update exponential notation
 long Calculator::onUpdExponent(FXObject* sender,FXSelector sel,void*){
   if(FXSELID(sel)==ID_EXPONENT_ALWAYS && getExponentMode()==EXPONENT_ALWAYS)
-    sender->handle(this,FXSEL(SEL_COMMAND,ID_CHECK),NULL);
+    sender->handle(this,FXSEL(SEL_COMMAND,ID_CHECK),nullptr);
   else if(FXSELID(sel)==ID_EXPONENT_NEVER && getExponentMode()==EXPONENT_NEVER)
-    sender->handle(this,FXSEL(SEL_COMMAND,ID_CHECK),NULL);
+    sender->handle(this,FXSEL(SEL_COMMAND,ID_CHECK),nullptr);
   else
-    sender->handle(this,FXSEL(SEL_COMMAND,ID_UNCHECK),NULL);
+    sender->handle(this,FXSEL(SEL_COMMAND,ID_UNCHECK),nullptr);
   return 1;
   }
 
@@ -1312,9 +1312,9 @@ long Calculator::onCmdEngineeringMode(FXObject*,FXSelector,void*){
 // Update exponential notation
 long Calculator::onUpdEngineeringMode(FXObject* sender,FXSelector,void*){
   if(getEngineeringMode())
-    sender->handle(this,FXSEL(SEL_COMMAND,ID_CHECK),NULL);
+    sender->handle(this,FXSEL(SEL_COMMAND,ID_CHECK),nullptr);
   else
-    sender->handle(this,FXSEL(SEL_COMMAND,ID_UNCHECK),NULL);
+    sender->handle(this,FXSEL(SEL_COMMAND,ID_UNCHECK),nullptr);
   return 1;
   }
 
@@ -1344,7 +1344,7 @@ long Calculator::onCmdBeep(FXObject*,FXSelector,void*){
 
 // Update beep mode
 long Calculator::onUpdBeep(FXObject* sender,FXSelector,void*){
-  sender->handle(this,beep ? FXSEL(SEL_COMMAND,ID_CHECK) : FXSEL(SEL_COMMAND,ID_UNCHECK), NULL);
+  sender->handle(this,beep ? FXSEL(SEL_COMMAND,ID_CHECK) : FXSEL(SEL_COMMAND,ID_UNCHECK), nullptr);
   return 1;
   }
 
@@ -1369,7 +1369,7 @@ long Calculator::onCmdAngle(FXObject*,FXSelector sel,void*){
 
 // Update radio button for angle mode
 long Calculator::onUpdAngle(FXObject* sender,FXSelector sel,void*){
-  sender->handle(this,angles==(FXSELID(sel)-ID_MODE) ? FXSEL(SEL_COMMAND,ID_CHECK) : FXSEL(SEL_COMMAND,ID_UNCHECK), NULL);
+  sender->handle(this,angles==(FXSELID(sel)-ID_MODE) ? FXSEL(SEL_COMMAND,ID_CHECK) : FXSEL(SEL_COMMAND,ID_UNCHECK), nullptr);
   return 1;
   }
 
@@ -1383,14 +1383,14 @@ long Calculator::onCmdBase(FXObject*,FXSelector sel,void*){
 
 // Update radio button for angle mode
 long Calculator::onUpdBase(FXObject* sender,FXSelector sel,void*){
-  sender->handle(this,base==(FXSELID(sel)-ID_BASE) ? FXSEL(SEL_COMMAND,ID_CHECK) : FXSEL(SEL_COMMAND,ID_UNCHECK), NULL);
+  sender->handle(this,base==(FXSELID(sel)-ID_BASE) ? FXSEL(SEL_COMMAND,ID_CHECK) : FXSEL(SEL_COMMAND,ID_UNCHECK), nullptr);
   return 1;
   }
 
 
 // Update digits based on base
 long Calculator::onUpdDigit(FXObject* sender,FXSelector sel,void*){
-  sender->handle(this,(FXSELID(sel)-ID_0)<base ? FXSEL(SEL_COMMAND,ID_ENABLE) : FXSEL(SEL_COMMAND,ID_DISABLE), NULL);
+  sender->handle(this,(FXSELID(sel)-ID_0)<base ? FXSEL(SEL_COMMAND,ID_ENABLE) : FXSEL(SEL_COMMAND,ID_DISABLE), nullptr);
   return 1;
   }
 
@@ -1436,7 +1436,7 @@ long Calculator::onCmdPoint(FXObject*,FXSelector,void*){
 
 // Update decimal point
 long Calculator::onUpdPoint(FXObject* sender,FXSelector,void*){
-  sender->handle(this,(base==10) ? FXSEL(SEL_COMMAND,ID_ENABLE) : FXSEL(SEL_COMMAND,ID_DISABLE),NULL);
+  sender->handle(this,(base==10) ? FXSEL(SEL_COMMAND,ID_ENABLE) : FXSEL(SEL_COMMAND,ID_DISABLE),nullptr);
   return 1;
   }
 
@@ -1455,7 +1455,7 @@ long Calculator::onCmdExp(FXObject*,FXSelector,void*){
 
 // Update exponent
 long Calculator::onUpdExp(FXObject* sender,FXSelector,void*){
-  sender->handle(this,(base==10) ? FXSEL(SEL_COMMAND,ID_ENABLE) : FXSEL(SEL_COMMAND,ID_DISABLE),NULL);
+  sender->handle(this,(base==10) ? FXSEL(SEL_COMMAND,ID_ENABLE) : FXSEL(SEL_COMMAND,ID_DISABLE),nullptr);
   return 1;
   }
 
@@ -1499,7 +1499,7 @@ long Calculator::onCmdDelete(FXObject*,FXSelector,void*){
         }
       else{
         len--;
-        if(isdigit(text[len])) digits--;
+        if(Ascii::isDigit(text[len])) digits--;
         if(0<len && (text[len-1]=='+' || text[len-1]=='-')) len--;
         if(0<len && text[len-1]=='.') len--;
         }
@@ -1561,7 +1561,7 @@ long Calculator::onUpdSin(FXObject* sender,FXSelector,void*){
   if(modifiers&MOD_INV) label.prepend('a');
   if(modifiers&MOD_HYP) label.append('h');
   sender->handle(this,FXSEL(SEL_COMMAND,ID_SETSTRINGVALUE),(void*)&label);
-  sender->handle(this,(base==10) ? FXSEL(SEL_COMMAND,ID_ENABLE) : FXSEL(SEL_COMMAND,ID_DISABLE),NULL);
+  sender->handle(this,(base==10) ? FXSEL(SEL_COMMAND,ID_ENABLE) : FXSEL(SEL_COMMAND,ID_DISABLE),nullptr);
   return 1;
   }
 
@@ -1579,7 +1579,7 @@ long Calculator::onUpdCos(FXObject* sender,FXSelector,void*){
   if(modifiers&MOD_INV) label.prepend('a');
   if(modifiers&MOD_HYP) label.append('h');
   sender->handle(this,FXSEL(SEL_COMMAND,ID_SETSTRINGVALUE),(void*)&label);
-  sender->handle(this,(base==10) ? FXSEL(SEL_COMMAND,ID_ENABLE) : FXSEL(SEL_COMMAND,ID_DISABLE),NULL);
+  sender->handle(this,(base==10) ? FXSEL(SEL_COMMAND,ID_ENABLE) : FXSEL(SEL_COMMAND,ID_DISABLE),nullptr);
   return 1;
   }
 
@@ -1597,7 +1597,7 @@ long Calculator::onUpdTan(FXObject* sender,FXSelector,void*){
   if(modifiers&MOD_INV) label.prepend('a');
   if(modifiers&MOD_HYP) label.append('h');
   sender->handle(this,FXSEL(SEL_COMMAND,ID_SETSTRINGVALUE),(void*)&label);
-  sender->handle(this,(base==10) ? FXSEL(SEL_COMMAND,ID_ENABLE) : FXSEL(SEL_COMMAND,ID_DISABLE),NULL);
+  sender->handle(this,(base==10) ? FXSEL(SEL_COMMAND,ID_ENABLE) : FXSEL(SEL_COMMAND,ID_DISABLE),nullptr);
   return 1;
   }
 
@@ -1613,7 +1613,7 @@ long Calculator::onCmdLog(FXObject*,FXSelector,void*){
 long Calculator::onUpdLog(FXObject* sender,FXSelector,void*){
   FXString label=(modifiers&MOD_INV)?"10^x":"log";
   sender->handle(this,FXSEL(SEL_COMMAND,ID_SETSTRINGVALUE),(void*)&label);
-  sender->handle(this,(base==10) ? FXSEL(SEL_COMMAND,ID_ENABLE) : FXSEL(SEL_COMMAND,ID_DISABLE),NULL);
+  sender->handle(this,(base==10) ? FXSEL(SEL_COMMAND,ID_ENABLE) : FXSEL(SEL_COMMAND,ID_DISABLE),nullptr);
   return 1;
   }
 
@@ -1629,7 +1629,7 @@ long Calculator::onCmdLn(FXObject*,FXSelector,void*){
 long Calculator::onUpdLn(FXObject* sender,FXSelector,void*){
   FXString label=(modifiers&MOD_INV)?"e^x":"ln";
   sender->handle(this,FXSEL(SEL_COMMAND,ID_SETSTRINGVALUE),(void*)&label);
-  sender->handle(this,(base==10) ? FXSEL(SEL_COMMAND,ID_ENABLE) : FXSEL(SEL_COMMAND,ID_DISABLE),NULL);
+  sender->handle(this,(base==10) ? FXSEL(SEL_COMMAND,ID_ENABLE) : FXSEL(SEL_COMMAND,ID_DISABLE),nullptr);
   return 1;
   }
 
@@ -1647,7 +1647,7 @@ long Calculator::onCmdPi(FXObject*,FXSelector,void*){
 long Calculator::onUpdPi(FXObject* sender,FXSelector,void*){
   FXString label=(modifiers&MOD_HYP) ? (modifiers&MOD_INV) ? "1/phi" : "phi" : (modifiers&MOD_INV) ? "e" : "pi";
   sender->handle(this,FXSEL(SEL_COMMAND,ID_SETSTRINGVALUE),(void*)&label);
-  sender->handle(this,(base==10) ? FXSEL(SEL_COMMAND,ID_ENABLE) : FXSEL(SEL_COMMAND,ID_DISABLE),NULL);
+  sender->handle(this,(base==10) ? FXSEL(SEL_COMMAND,ID_ENABLE) : FXSEL(SEL_COMMAND,ID_DISABLE),nullptr);
   return 1;
   }
 
@@ -1661,7 +1661,7 @@ long Calculator::onCmdFac(FXObject*,FXSelector,void*){
 
 // Update factorial
 long Calculator::onUpdFac(FXObject* sender,FXSelector,void*){
-  sender->handle(this,(base==10) ? FXSEL(SEL_COMMAND,ID_ENABLE) : FXSEL(SEL_COMMAND,ID_DISABLE),NULL);
+  sender->handle(this,(base==10) ? FXSEL(SEL_COMMAND,ID_ENABLE) : FXSEL(SEL_COMMAND,ID_DISABLE),nullptr);
   return 1;
   }
 
@@ -1675,7 +1675,7 @@ long Calculator::onCmdPer(FXObject*,FXSelector,void*){
 
 // Update permutations
 long Calculator::onUpdPer(FXObject* sender,FXSelector,void*){
-  sender->handle(this,(base==10) ? FXSEL(SEL_COMMAND,ID_ENABLE) : FXSEL(SEL_COMMAND,ID_DISABLE),NULL);
+  sender->handle(this,(base==10) ? FXSEL(SEL_COMMAND,ID_ENABLE) : FXSEL(SEL_COMMAND,ID_DISABLE),nullptr);
   return 1;
   }
 
@@ -1689,7 +1689,7 @@ long Calculator::onCmdCom(FXObject*,FXSelector,void*){
 
 // Update combinations
 long Calculator::onUpdCom(FXObject* sender,FXSelector,void*){
-  sender->handle(this,(base==10) ? FXSEL(SEL_COMMAND,ID_ENABLE) : FXSEL(SEL_COMMAND,ID_DISABLE),NULL);
+  sender->handle(this,(base==10) ? FXSEL(SEL_COMMAND,ID_ENABLE) : FXSEL(SEL_COMMAND,ID_DISABLE),nullptr);
   return 1;
   }
 
@@ -1703,7 +1703,7 @@ long Calculator::onCmdRecip(FXObject*,FXSelector,void*){
 
 // Update reciprocal
 long Calculator::onUpdRecip(FXObject* sender,FXSelector,void*){
-  sender->handle(this,(base==10) ? FXSEL(SEL_COMMAND,ID_ENABLE) : FXSEL(SEL_COMMAND,ID_DISABLE),NULL);
+  sender->handle(this,(base==10) ? FXSEL(SEL_COMMAND,ID_ENABLE) : FXSEL(SEL_COMMAND,ID_DISABLE),nullptr);
   return 1;
   }
 
@@ -1719,7 +1719,7 @@ long Calculator::onCmdXToY(FXObject*,FXSelector,void*){
 long Calculator::onUpdXToY(FXObject* sender,FXSelector,void*){
   FXString label=(modifiers&MOD_INV)?"x^1/y":"x^y";
   sender->handle(this,FXSEL(SEL_COMMAND,ID_SETSTRINGVALUE),(void*)&label);
-  sender->handle(this,(base==10) ? FXSEL(SEL_COMMAND,ID_ENABLE) : FXSEL(SEL_COMMAND,ID_DISABLE),NULL);
+  sender->handle(this,(base==10) ? FXSEL(SEL_COMMAND,ID_ENABLE) : FXSEL(SEL_COMMAND,ID_DISABLE),nullptr);
   return 1;
   }
 
@@ -1735,7 +1735,7 @@ long Calculator::onCmdSqrt(FXObject*,FXSelector,void*){
 long Calculator::onUpdSqrt(FXObject* sender,FXSelector,void*){
   FXString label=(modifiers&MOD_INV)?"x^2":"sqrt";
   sender->handle(this,FXSEL(SEL_COMMAND,ID_SETSTRINGVALUE),(void*)&label);
-  sender->handle(this,(base==10) ? FXSEL(SEL_COMMAND,ID_ENABLE) : FXSEL(SEL_COMMAND,ID_DISABLE),NULL);
+  sender->handle(this,(base==10) ? FXSEL(SEL_COMMAND,ID_ENABLE) : FXSEL(SEL_COMMAND,ID_DISABLE),nullptr);
   return 1;
   }
 
@@ -1781,7 +1781,7 @@ long Calculator::onCmd2Log(FXObject*,FXSelector,void*){
 long Calculator::onUpd2Log(FXObject* sender,FXSelector,void*){
   FXString label=(modifiers&MOD_INV)?"2^x":"2log";
   sender->handle(this,FXSEL(SEL_COMMAND,ID_SETSTRINGVALUE),(void*)&label);
-  sender->handle(this,(base==10) ? FXSEL(SEL_COMMAND,ID_ENABLE) : FXSEL(SEL_COMMAND,ID_DISABLE),NULL);
+  sender->handle(this,(base==10) ? FXSEL(SEL_COMMAND,ID_ENABLE) : FXSEL(SEL_COMMAND,ID_DISABLE),nullptr);
   return 1;
   }
 
@@ -1853,7 +1853,7 @@ long Calculator::onCmdMod(FXObject*,FXSelector,void*){
 long Calculator::onUpdMod(FXObject* sender,FXSelector,void*){
   FXString label=(modifiers&MOD_INV)?"div":"mod";
   sender->handle(this,FXSEL(SEL_COMMAND,ID_SETSTRINGVALUE),(void*)&label);
-  sender->handle(this,(base==10) ? FXSEL(SEL_COMMAND,ID_ENABLE) : FXSEL(SEL_COMMAND,ID_DISABLE),NULL);
+  sender->handle(this,(base==10) ? FXSEL(SEL_COMMAND,ID_ENABLE) : FXSEL(SEL_COMMAND,ID_DISABLE),nullptr);
   return 1;
   }
 

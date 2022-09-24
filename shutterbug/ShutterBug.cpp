@@ -3,7 +3,7 @@
 *                S h u t t e r   B u g   A p p l i c a t i o n                  *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 2003,2021 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 2003,2022 by Jeroen van der Zijp.   All Rights Reserved.        *
 *********************************************************************************
 * This program is free software: you can redistribute it and/or modify          *
 * it under the terms of the GNU General Public License as published by          *
@@ -169,7 +169,7 @@ ShutterBug::ShutterBug(FXApp* a):FXShell(a,0,0,0,0,0){
   filename="image.gif";
   fileformat=TYPE_GIF;
   filecount=1;
-  clipbuffer=NULL;
+  clipbuffer=nullptr;
   clipwidth=0;
   clipheight=0;
   snapper[0]=new Snapper(getApp(),this,ID_SNAPPER_0);
@@ -389,15 +389,15 @@ long ShutterBug::onBtnRelease(FXObject*,FXSelector,void* ptr){
   FXMenuPane filemenu(this);
   new FXMenuCaption(&filemenu,"ShutterBug",smallicon);
   new FXMenuSeparator(&filemenu);
-  new FXMenuCommand(&filemenu,tr("Snap..."),NULL,this,ID_SNAPSHOT);
-  new FXMenuCommand(&filemenu,tr("Snap delayed..."),NULL,this,ID_SNAPSHOT_DELAYED);
-  new FXMenuCommand(&filemenu,tr("Snap to clipboard..."),NULL,this,ID_SNAPSHOT_CLIPBOARD);
-  new FXMenuCommand(&filemenu,tr("Record movie..."),NULL,this,ID_RECORD_MOVIE);
+  new FXMenuCommand(&filemenu,tr("Snap..."),nullptr,this,ID_SNAPSHOT);
+  new FXMenuCommand(&filemenu,tr("Snap delayed..."),nullptr,this,ID_SNAPSHOT_DELAYED);
+  new FXMenuCommand(&filemenu,tr("Snap to clipboard..."),nullptr,this,ID_SNAPSHOT_CLIPBOARD);
+  new FXMenuCommand(&filemenu,tr("Record movie..."),nullptr,this,ID_RECORD_MOVIE);
   new FXMenuCheck(&filemenu,tr("Show lasso"),this,ID_TOGGLE_LASSO);
   new FXMenuCheck(&filemenu,tr("Lines inside"),this,ID_INSIDE);
-  new FXMenuCommand(&filemenu,tr("Color..."),NULL,this,ID_COLOR);
+  new FXMenuCommand(&filemenu,tr("Color..."),nullptr,this,ID_COLOR);
   FXMenuPane sizemenu(this);
-  new FXMenuCascade(&filemenu,tr("Size"),NULL,&sizemenu);
+  new FXMenuCascade(&filemenu,tr("Size"),nullptr,&sizemenu);
   new FXMenuRadio(&sizemenu,"8x8",this,ID_SIZE_8X8);
   new FXMenuRadio(&sizemenu,"16x16",this,ID_SIZE_16X16);
   new FXMenuRadio(&sizemenu,"24x24",this,ID_SIZE_24X24);
@@ -410,7 +410,7 @@ long ShutterBug::onBtnRelease(FXObject*,FXSelector,void* ptr){
   new FXMenuRadio(&sizemenu,tr("Screen"),this,ID_SIZE_SCREEN);
   new FXMenuRadio(&sizemenu,tr("Custom"),this,ID_SIZE_CUSTOM);
   FXMenuPane weightmenu(this);
-  new FXMenuCascade(&filemenu,tr("Weight"),NULL,&weightmenu);
+  new FXMenuCascade(&filemenu,tr("Weight"),nullptr,&weightmenu);
   new FXMenuCommand(&weightmenu,FXString::null,weighticons[0],this,ID_WEIGHT_1);
   new FXMenuCommand(&weightmenu,FXString::null,weighticons[1],this,ID_WEIGHT_2);
   new FXMenuCommand(&weightmenu,FXString::null,weighticons[2],this,ID_WEIGHT_3);
@@ -418,16 +418,16 @@ long ShutterBug::onBtnRelease(FXObject*,FXSelector,void* ptr){
   new FXMenuCommand(&weightmenu,FXString::null,weighticons[4],this,ID_WEIGHT_5);
   new FXMenuCommand(&weightmenu,FXString::null,weighticons[5],this,ID_WEIGHT_6);
   FXMenuPane optionsmenu(this);
-  new FXMenuCascade(&filemenu,tr("Options"),NULL,&optionsmenu);
-  new FXMenuCommand(&optionsmenu,tr("Delay..."),NULL,this,ID_DELAY);
-  new FXMenuCommand(&optionsmenu,tr("Set number..."),NULL,this,ID_SET_COUNT);
-  new FXMenuCommand(&optionsmenu,tr("Reset number..."),NULL,this,ID_RESET_COUNT);
-  new FXMenuCommand(&optionsmenu,tr("Record Rate..."),NULL,this,ID_RECORD_RATE);
+  new FXMenuCascade(&filemenu,tr("Options"),nullptr,&optionsmenu);
+  new FXMenuCommand(&optionsmenu,tr("Delay..."),nullptr,this,ID_DELAY);
+  new FXMenuCommand(&optionsmenu,tr("Set number..."),nullptr,this,ID_SET_COUNT);
+  new FXMenuCommand(&optionsmenu,tr("Reset number..."),nullptr,this,ID_RESET_COUNT);
+  new FXMenuCommand(&optionsmenu,tr("Record Rate..."),nullptr,this,ID_RECORD_RATE);
   new FXMenuCheck(&optionsmenu,tr("Fast quantization"),this,ID_QUANTIZE);
-  new FXMenuCommand(&filemenu,tr("About..."),NULL,this,ID_ABOUT);
-  new FXMenuCommand(&filemenu,tr("Quit"),NULL,this,ID_QUIT);
+  new FXMenuCommand(&filemenu,tr("About..."),nullptr,this,ID_ABOUT);
+  new FXMenuCommand(&filemenu,tr("Quit"),nullptr,this,ID_QUIT);
   filemenu.create();
-  filemenu.popup(NULL,event->root_x,event->root_y);
+  filemenu.popup(nullptr,event->root_x,event->root_y);
   getApp()->runModalWhileShown(&filemenu);
   return 1;
   }
@@ -522,7 +522,7 @@ void ShutterBug::readPixels(FXImage* image,const FXRectangle& r){
 
 // Just snap a rectangle
 FXbool ShutterBug::grabRectangle(FXColor*& pixels,const FXRectangle& r){
-  pixels=NULL;
+  pixels=nullptr;
   if(1<r.w && 1<r.h){
     if(callocElms(pixels,r.w*r.h)){
       FXImage image(getApp(),pixels,IMAGE_KEEP,r.w,r.h);
@@ -564,7 +564,7 @@ FXbool ShutterBug::snapRectangle(FXColor*& pixels,const FXRectangle& r){
 
 // Restore image from off-screen pixmap
 long ShutterBug::onCmdSnap(FXObject*,FXSelector,void*){
-  FXColor *pixels=NULL;
+  FXColor *pixels=nullptr;
 
   // Try grab pixels
   if(snapRectangle(pixels,rectangle)){
@@ -657,7 +657,7 @@ long ShutterBug::onClipboardRequest(FXObject* sender,FXSelector sel,void* ptr){
       FXMemoryStream ms;
 
       // Open memory stream
-      ms.open(FXStreamSave,NULL,0);
+      ms.open(FXStreamSave,nullptr,0);
 
       // Render image to memory stream
       if(event->target==dndTypes[0]){
@@ -788,7 +788,7 @@ long ShutterBug::onCmdRecordMovie(FXObject*,FXSelector,void*){
 // Record one frame
 long ShutterBug::onCmdRecordFrame(FXObject*,FXSelector,void*){
   FXint curx,cury; FXuint state;
-  FXColor *pointer=NULL;
+  FXColor *pointer=nullptr;
   FXbool ok=false;
   FXWindow *root=getRoot();
   filename=filenameFromFrame(filename,filecount);
@@ -814,7 +814,7 @@ long ShutterBug::onCmdRecordFrame(FXObject*,FXSelector,void*){
 long ShutterBug::onCmdDelay(FXObject*,FXSelector,void*){
   const FXTime milliseconds=1000000;
   FXint ms=(FXint)(delay/milliseconds);
-  if(FXInputDialog::getInteger(ms,this,tr("Snap Shot Delay"),tr("Snapshot delay in milliseconds:"),NULL,100,10000)){
+  if(FXInputDialog::getInteger(ms,this,tr("Snap Shot Delay"),tr("Snapshot delay in milliseconds:"),nullptr,100,10000)){
     delay=ms*milliseconds;
     }
   return 1;
@@ -825,7 +825,7 @@ long ShutterBug::onCmdDelay(FXObject*,FXSelector,void*){
 long ShutterBug::onCmdRecordRate(FXObject*,FXSelector,void*){
   const FXTime milliseconds=1000000;
   FXint ms=(FXint)(rate/milliseconds);
-  if(FXInputDialog::getInteger(ms,this,tr("Record Rate"),tr("Record one frame every milliseconds:"),NULL,10,10000)){
+  if(FXInputDialog::getInteger(ms,this,tr("Record Rate"),tr("Record one frame every milliseconds:"),nullptr,10,10000)){
     rate=ms*milliseconds;
     }
   return 1;
@@ -835,7 +835,7 @@ long ShutterBug::onCmdRecordRate(FXObject*,FXSelector,void*){
 // Set file count for auto-recording
 long ShutterBug::onCmdSetCount(FXObject*,FXSelector,void*){
   FXint count=filecount;
-  if(FXInputDialog::getInteger(count,this,tr("File number"),tr("File number to record next:"),NULL,1,1000000)){
+  if(FXInputDialog::getInteger(count,this,tr("File number"),tr("File number to record next:"),nullptr,1,1000000)){
     filecount=count;
     }
   return 1;
@@ -960,10 +960,10 @@ long ShutterBug::onCmdAbout(FXObject*,FXSelector,void*){
   FXDialogBox about(this,tr("About ShutterBug"),DECOR_TITLE|DECOR_BORDER,0,0,0,0, 10,10,0,0, 0,0);
   new FXLabel(&about,FXString::null,bigicon,FRAME_GROOVE|LAYOUT_SIDE_LEFT|LAYOUT_CENTER_Y|JUSTIFY_CENTER_X|JUSTIFY_CENTER_Y);
   FXVerticalFrame* side=new FXVerticalFrame(&about,LAYOUT_SIDE_RIGHT|LAYOUT_FILL_X|LAYOUT_FILL_Y,0,0,0,0, 10,10,10,10, 0,0);
-  new FXLabel(side,"ShutterBug",NULL,JUSTIFY_LEFT|ICON_BEFORE_TEXT|LAYOUT_FILL_X);
+  new FXLabel(side,"ShutterBug",nullptr,JUSTIFY_LEFT|ICON_BEFORE_TEXT|LAYOUT_FILL_X);
   new FXHorizontalSeparator(side,SEPARATOR_LINE|LAYOUT_FILL_X);
-  new FXLabel(side,FXString::value(tr("\nFOX Screenshot Utility, version %d.%d.%d.\nShutterBug uses the FOX Toolkit version %d.%d.%d.\nCopyright (C) 2003,2020 Jeroen van der Zijp (jeroen@fox-toolkit.com).\n "),VERSION_MAJOR,VERSION_MINOR,VERSION_PATCH,FOX_MAJOR,FOX_MINOR,FOX_LEVEL),NULL,JUSTIFY_LEFT|LAYOUT_FILL_X|LAYOUT_FILL_Y);
-  FXButton *button=new FXButton(side,tr("&OK"),NULL,&about,FXDialogBox::ID_ACCEPT,BUTTON_INITIAL|BUTTON_DEFAULT|FRAME_RAISED|FRAME_THICK|LAYOUT_RIGHT,0,0,0,0,32,32,2,2);
+  new FXLabel(side,FXString::value(tr("\nFOX Screenshot Utility, version %d.%d.%d.\nShutterBug uses the FOX Toolkit version %d.%d.%d.\nCopyright (C) 2003,2022 Jeroen van der Zijp (jeroen@fox-toolkit.net).\n "),VERSION_MAJOR,VERSION_MINOR,VERSION_PATCH,FOX_MAJOR,FOX_MINOR,FOX_LEVEL),nullptr,JUSTIFY_LEFT|LAYOUT_FILL_X|LAYOUT_FILL_Y);
+  FXButton *button=new FXButton(side,tr("&OK"),nullptr,&about,FXDialogBox::ID_ACCEPT,BUTTON_INITIAL|BUTTON_DEFAULT|FRAME_RAISED|FRAME_THICK|LAYOUT_RIGHT,0,0,0,0,32,32,2,2);
   button->setFocus();
   about.execute();
   return 1;
@@ -979,7 +979,7 @@ long ShutterBug::onCmdLasso(FXObject*,FXSelector,void*){
 
 // Update toggle lasso
 long ShutterBug::onUpdLasso(FXObject* sender,FXSelector,void*){
-  sender->handle(this,snapRectangleShown()?FXSEL(SEL_COMMAND,ID_CHECK):FXSEL(SEL_COMMAND,ID_UNCHECK),NULL);
+  sender->handle(this,snapRectangleShown()?FXSEL(SEL_COMMAND,ID_CHECK):FXSEL(SEL_COMMAND,ID_UNCHECK),nullptr);
   return 1;
   }
 
@@ -1011,7 +1011,7 @@ long ShutterBug::onCmdSize(FXObject*,FXSelector sel,void*){
 
 // Update change size mode
 long ShutterBug::onUpdSize(FXObject* sender,FXSelector sel,void*){
-  sender->handle(this,size==FXSELID(sel)-ID_SIZE_CUSTOM?FXSEL(SEL_COMMAND,ID_CHECK):FXSEL(SEL_COMMAND,ID_UNCHECK),NULL);
+  sender->handle(this,size==FXSELID(sel)-ID_SIZE_CUSTOM?FXSEL(SEL_COMMAND,ID_CHECK):FXSEL(SEL_COMMAND,ID_UNCHECK),nullptr);
   return 1;
   }
 
@@ -1050,7 +1050,7 @@ long ShutterBug::onCmdLineInside(FXObject*,FXSelector,void* ptr){
 
 // Update lines inside area
 long ShutterBug::onUpdLineInside(FXObject* sender,FXSelector,void*){
-  sender->handle(this,inside?FXSEL(SEL_COMMAND,ID_CHECK):FXSEL(SEL_COMMAND,ID_UNCHECK),NULL);
+  sender->handle(this,inside?FXSEL(SEL_COMMAND,ID_CHECK):FXSEL(SEL_COMMAND,ID_UNCHECK),nullptr);
   return 1;
   }
 
@@ -1064,7 +1064,7 @@ long ShutterBug::onCmdQuantize(FXObject*,FXSelector,void* ptr){
 
 // Update quantization
 long ShutterBug::onUpdQuantize(FXObject* sender,FXSelector,void*){
-  sender->handle(this,quantize?FXSEL(SEL_COMMAND,ID_CHECK):FXSEL(SEL_COMMAND,ID_UNCHECK),NULL);
+  sender->handle(this,quantize?FXSEL(SEL_COMMAND,ID_CHECK):FXSEL(SEL_COMMAND,ID_UNCHECK),nullptr);
   return 1;
   }
 

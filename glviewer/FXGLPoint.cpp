@@ -3,7 +3,7 @@
 *                           O p e n G L   O b j e c t                           *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 1998,2021 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 1998,2022 by Jeroen van der Zijp.   All Rights Reserved.        *
 *********************************************************************************
 * This library is free software; you can redistribute it and/or modify          *
 * it under the terms of the GNU Lesser General Public License as published by   *
@@ -27,7 +27,7 @@
 /*******************************************************************************/
 
 // Object implementation
-FXIMPLEMENT(FXGLPoint,FXGLObject,NULL,0)
+FXIMPLEMENT(FXGLPoint,FXGLObject,nullptr,0)
 
 
 // Create point

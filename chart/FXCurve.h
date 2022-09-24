@@ -3,7 +3,7 @@
 *                      P l o t - C u r v e   D e s c r i p t i o n              *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 2007,2021 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 2007,2022 by Jeroen van der Zijp.   All Rights Reserved.        *
 *********************************************************************************
 * This library is free software; you can redistribute it and/or modify          *
 * it under the terms of the GNU Lesser General Public License as published by   *

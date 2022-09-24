@@ -3,7 +3,7 @@
 *               O p e n G L   T r i a n g l e   M e s h   O b j e c t           *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 1999,2021 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 1999,2022 by Jeroen van der Zijp.   All Rights Reserved.        *
 *********************************************************************************
 * This library is free software; you can redistribute it and/or modify          *
 * it under the terms of the GNU Lesser General Public License as published by   *
@@ -42,12 +42,11 @@
 /*******************************************************************************/
 
 // Object implementation
-FXIMPLEMENT(FXGLTriangleMesh,FXGLShape,NULL,0)
+FXIMPLEMENT(FXGLTriangleMesh,FXGLShape,nullptr,0)
 
 
 // Create cube
-FXGLTriangleMesh::FXGLTriangleMesh():
-  vertexBuffer(NULL),colorBuffer(NULL),normalBuffer(NULL),textureBuffer(NULL),vertexNumber(0){
+FXGLTriangleMesh::FXGLTriangleMesh():vertexBuffer(nullptr),colorBuffer(nullptr),normalBuffer(nullptr),textureBuffer(nullptr),vertexNumber(0){
   FXTRACE((100,"FXGLTriangleMesh::FXGLTriangleMesh\n"));
   range.lower.x=range.upper.x=0.0f;
   range.lower.y=range.upper.y=0.0f;
@@ -216,10 +215,10 @@ void FXGLTriangleMesh::save(FXStream& store) const {
   FXuchar hadvertices,hadcolors,hadnormals,hadtextures;
   FXGLShape::save(store);
   store << vertexNumber;
-  hadvertices=(vertexBuffer!=NULL);
-  hadcolors=(colorBuffer!=NULL);
-  hadnormals=(normalBuffer!=NULL);
-  hadtextures=(textureBuffer!=NULL);
+  hadvertices=(vertexBuffer!=nullptr);
+  hadcolors=(colorBuffer!=nullptr);
+  hadnormals=(normalBuffer!=nullptr);
+  hadtextures=(textureBuffer!=nullptr);
   store << hadvertices << hadcolors << hadnormals << hadtextures;
   if(hadvertices){ store.save(vertexBuffer,vertexNumber); }
   if(hadcolors){ store.save(colorBuffer,vertexNumber); }

@@ -3,7 +3,7 @@
 *                       H a s h   T a b l e   C l a s s                         *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 2003,2021 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 2003,2022 by Jeroen van der Zijp.   All Rights Reserved.        *
 *********************************************************************************
 * This library is free software; you can redistribute it and/or modify          *
 * it under the terms of the GNU Lesser General Public License as published by   *
@@ -79,7 +79,7 @@
 #define EMPTY     ((Entry*)(__hash__empty__+3))
 #define HASH(x)   ((FXival)(x)^(((FXival)(x))>>13))
 #define VOID      ((FXptr)-1L)
-#define LEGAL(p)  ((p)!=NULL && (p)!=VOID)
+#define LEGAL(p)  ((p)!=nullptr && (p)!=VOID)
 #define BSHIFT    5
 
 
@@ -126,7 +126,7 @@ FXbool FXHash::no(FXival n){
 
     // Allocate new table
     if(1<n){
-      if(__unlikely((p=::calloc(sizeof(FXival)*3+sizeof(Entry)*n,1))==NULL)) return false;
+      if(__unlikely((p=::calloc(sizeof(FXival)*3+sizeof(Entry)*n,1))==nullptr)) return false;
       elbat=(Entry*)(((FXival*)p)+3);
       ((FXival*)elbat)[-3]=n;
       ((FXival*)elbat)[-2]=0;
@@ -230,7 +230,7 @@ y:  used(used()+1);
     table[x].key=ky;
 x:  return table[x].data;
     }
-  return *((FXptr*)NULL);               // Can NOT be referenced; will generate segfault!
+  return *((FXptr*)nullptr);               // Can NOT be referenced; will generate segfault!
   }
 
 
@@ -251,18 +251,18 @@ const FXptr& FXHash::at(FXptr ky) const {
 
 // Remove association from the table
 FXptr FXHash::remove(FXptr ky){
-  FXptr old=NULL;
+  FXptr old=nullptr;
   if(__likely(LEGAL(ky))){
     FXuval p,b,x;
     p=b=HASH(ky);
     while(table[x=p&(no()-1)].key!=ky){
-      if(table[x].key==NULL) return NULL;
+      if(table[x].key==nullptr) return nullptr;
       p=(p<<2)+p+b+1;
       b>>=BSHIFT;
       }
     old=table[x].data;
     table[x].key=VOID;                         // Void the slot (not empty!)
-    table[x].data=NULL;
+    table[x].data=nullptr;
     used(used()-1);
     if(__unlikely(used()<=(no()>>2))) resize(no()>>1);
     }
@@ -272,12 +272,12 @@ FXptr FXHash::remove(FXptr ky){
 
 // Erase data at pos in the table, returning old pointer
 FXptr FXHash::erase(FXival pos){
-  FXptr old=NULL;
+  FXptr old=nullptr;
   if(__unlikely(pos<0 || no()<=pos)){ throw FXRangeException("FXHash::erase: argument out of range\n"); }
   if(__likely(LEGAL(table[pos].key))){
     old=table[pos].data;
     table[pos].key=VOID;                        // Void the slot (not empty!)
-    table[pos].data=NULL;
+    table[pos].data=nullptr;
     used(used()-1);
     if(__unlikely(used()<=(no()>>2))) resize(no()>>1);
     }

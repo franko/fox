@@ -3,7 +3,7 @@
 *         H a s h   T a b l e   O f   P o i n t e r s   T o   T y p e           *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 2003,2021 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 2003,2022 by Jeroen van der Zijp.   All Rights Reserved.        *
 *********************************************************************************
 * This library is free software; you can redistribute it and/or modify          *
 * it under the terms of the GNU Lesser General Public License as published by   *
@@ -62,7 +62,7 @@ public:
   VALUETYPE *const& operator[](KEYTYPE* ky) const { return (VALUETYPE *const&)FXHash::at((FXptr)ky); }
 
   /// Insert association with given key; return old value, if any
-  VALUETYPE* insert(KEYTYPE* ky,VALUETYPE* ptr=NULL){ return (VALUETYPE*)FXHash::insert((FXptr)ky,(FXptr)ptr); }
+  VALUETYPE* insert(KEYTYPE* ky,VALUETYPE* ptr=nullptr){ return (VALUETYPE*)FXHash::insert((FXptr)ky,(FXptr)ptr); }
 
   /// Remove association with given key; return old value, if any
   VALUETYPE* remove(KEYTYPE* ky){ return (VALUETYPE*)FXHash::remove((FXptr)ky); }

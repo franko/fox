@@ -3,7 +3,7 @@
 *                    F i l e   S e l e c t i o n   D i a l o g                  *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 1998,2021 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 1998,2022 by Jeroen van der Zijp.   All Rights Reserved.        *
 *********************************************************************************
 * This library is free software; you can redistribute it and/or modify          *
 * it under the terms of the GNU Lesser General Public License as published by   *
@@ -72,12 +72,12 @@ const FXchar FXFileDialog::sectionName[]="File Dialog";
 
 
 // Object implementation
-FXIMPLEMENT(FXFileDialog,FXDialogBox,NULL,0)
+FXIMPLEMENT(FXFileDialog,FXDialogBox,nullptr,0)
 
 
 // Construct file fialog box
 FXFileDialog::FXFileDialog(FXWindow* own,const FXString& name,FXuint opts,FXint x,FXint y,FXint w,FXint h):FXDialogBox(own,name,opts|DECOR_TITLE|DECOR_BORDER|DECOR_RESIZE|DECOR_CLOSE,x,y,w,h,4,4,4,4,4,4){
-  filebox=new FXFileSelector(this,NULL,0,LAYOUT_FILL_X|LAYOUT_FILL_Y);
+  filebox=new FXFileSelector(this,nullptr,0,LAYOUT_FILL_X|LAYOUT_FILL_Y);
   filebox->acceptButton()->setTarget(this);
   filebox->acceptButton()->setSelector(FXDialogBox::ID_ACCEPT);
   filebox->cancelButton()->setTarget(this);
@@ -88,7 +88,7 @@ FXFileDialog::FXFileDialog(FXWindow* own,const FXString& name,FXuint opts,FXint 
 
 // Construct free-floating file dialog box
 FXFileDialog::FXFileDialog(FXApp* a,const FXString& name,FXuint opts,FXint x,FXint y,FXint w,FXint h):FXDialogBox(a,name,opts|DECOR_TITLE|DECOR_BORDER|DECOR_RESIZE|DECOR_CLOSE,x,y,w,h,4,4,4,4,4,4){
-  filebox=new FXFileSelector(this,NULL,0,LAYOUT_FILL_X|LAYOUT_FILL_Y);
+  filebox=new FXFileSelector(this,nullptr,0,LAYOUT_FILL_X|LAYOUT_FILL_Y);
   filebox->acceptButton()->setTarget(this);
   filebox->acceptButton()->setSelector(FXDialogBox::ID_ACCEPT);
   filebox->cancelButton()->setTarget(this);
@@ -440,7 +440,7 @@ FXString* FXFileDialog::getOpenFilenames(FXWindow* owner,const FXString& caption
   if(opendialog.execute()){
     return opendialog.getFilenames();
     }
-  return NULL;
+  return nullptr;
   }
 
 

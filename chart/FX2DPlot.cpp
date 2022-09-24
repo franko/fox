@@ -3,7 +3,7 @@
 *              T w o - D i m e n s i o n a l   P l o t   W i d g e t            *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 2007,2021 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 2007,2022 by Jeroen van der Zijp.   All Rights Reserved.        *
 *********************************************************************************
 * This library is free software; you can redistribute it and/or modify          *
 * it under the terms of the GNU Lesser General Public License as published by   *
@@ -38,7 +38,7 @@ using namespace FXCHART;
 namespace FXCHART {
 
 // Object implementation
-FXIMPLEMENT(FX2DPlot,FX2DChart,NULL,0)
+FXIMPLEMENT(FX2DPlot,FX2DChart,nullptr,0)
 
 
 // Init

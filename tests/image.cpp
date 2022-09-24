@@ -88,7 +88,7 @@ FXColor blue_ramp[512*50];
 
 
 // Construct ImageWindow
-ImageWindow::ImageWindow(FXApp* a):FXMainWindow(a,"Image Application",NULL,NULL,DECOR_ALL,0,0,900,600){
+ImageWindow::ImageWindow(FXApp* a):FXMainWindow(a,"Image Application",nullptr,nullptr,DECOR_ALL,0,0,900,600){
   FXint x,y;
   FXVerticalFrame *canvasFrame;
   FXVerticalFrame *buttonFrame;
@@ -98,15 +98,15 @@ ImageWindow::ImageWindow(FXApp* a):FXMainWindow(a,"Image Application",NULL,NULL,
 
   FXHorizontalFrame *hf=new FXHorizontalFrame(this,LAYOUT_SIDE_BOTTOM|LAYOUT_FILL_X,0,0,0,0, 0,0,0,0);
 
-  //new FXGradientBar(this,NULL,0,GRADIENTBAR_VERTICAL|GRADIENTBAR_CONTROLS_LEFT|FRAME_SUNKEN|LAYOUT_SIDE_LEFT|LAYOUT_FILL_Y,0,0,0,0, 15,15,15,15);
-  gb2=new FXGradientBar(this,NULL,0,GRADIENTBAR_VERTICAL|GRADIENTBAR_CONTROLS_LEFT|GRADIENTBAR_CONTROLS_RIGHT|FRAME_SUNKEN|LAYOUT_SIDE_LEFT|LAYOUT_FILL_Y,0,0,0,0, 15,15,15,15);
-  //new FXGradientBar(this,NULL,0,GRADIENTBAR_VERTICAL|GRADIENTBAR_CONTROLS_RIGHT|FRAME_SUNKEN|LAYOUT_SIDE_LEFT|LAYOUT_FILL_Y,0,0,0,0, 15,15,15,15);
-  //new FXGradientBar(this,NULL,0,GRADIENTBAR_VERTICAL|FRAME_SUNKEN|LAYOUT_SIDE_LEFT|LAYOUT_FILL_Y,0,0,0,0, 15,15,15,15);
+  //new FXGradientBar(this,nullptr,0,GRADIENTBAR_VERTICAL|GRADIENTBAR_CONTROLS_LEFT|FRAME_SUNKEN|LAYOUT_SIDE_LEFT|LAYOUT_FILL_Y,0,0,0,0, 15,15,15,15);
+  gb2=new FXGradientBar(this,nullptr,0,GRADIENTBAR_VERTICAL|GRADIENTBAR_CONTROLS_LEFT|GRADIENTBAR_CONTROLS_RIGHT|FRAME_SUNKEN|LAYOUT_SIDE_LEFT|LAYOUT_FILL_Y,0,0,0,0, 15,15,15,15);
+  //new FXGradientBar(this,nullptr,0,GRADIENTBAR_VERTICAL|GRADIENTBAR_CONTROLS_RIGHT|FRAME_SUNKEN|LAYOUT_SIDE_LEFT|LAYOUT_FILL_Y,0,0,0,0, 15,15,15,15);
+  //new FXGradientBar(this,nullptr,0,GRADIENTBAR_VERTICAL|FRAME_SUNKEN|LAYOUT_SIDE_LEFT|LAYOUT_FILL_Y,0,0,0,0, 15,15,15,15);
 
-  //new FXGradientBar(this,NULL,0,GRADIENTBAR_HORIZONTAL|GRADIENTBAR_CONTROLS_BOTTOM|FRAME_SUNKEN|LAYOUT_SIDE_BOTTOM|LAYOUT_FILL_X,0,0,0,0, 15,15,15,15);
-  gb=new FXGradientBar(this,NULL,0,GRADIENTBAR_HORIZONTAL|GRADIENTBAR_CONTROLS_TOP|GRADIENTBAR_CONTROLS_BOTTOM|FRAME_SUNKEN|LAYOUT_SIDE_BOTTOM|LAYOUT_FILL_X,0,0,0,0, 15,15,15,15);
-  //new FXGradientBar(this,NULL,0,GRADIENTBAR_HORIZONTAL|GRADIENTBAR_CONTROLS_TOP|GRADIENTBAR_CONTROLS_BOTTOM|FRAME_SUNKEN|LAYOUT_SIDE_BOTTOM|LAYOUT_FILL_X,0,0,0,0, 15,15,15,15);
-  //new FXGradientBar(this,NULL,0,GRADIENTBAR_HORIZONTAL|FRAME_SUNKEN|LAYOUT_SIDE_BOTTOM|LAYOUT_FILL_X,0,0,0,0, 15,15,15,15);
+  //new FXGradientBar(this,nullptr,0,GRADIENTBAR_HORIZONTAL|GRADIENTBAR_CONTROLS_BOTTOM|FRAME_SUNKEN|LAYOUT_SIDE_BOTTOM|LAYOUT_FILL_X,0,0,0,0, 15,15,15,15);
+  gb=new FXGradientBar(this,nullptr,0,GRADIENTBAR_HORIZONTAL|GRADIENTBAR_CONTROLS_TOP|GRADIENTBAR_CONTROLS_BOTTOM|FRAME_SUNKEN|LAYOUT_SIDE_BOTTOM|LAYOUT_FILL_X,0,0,0,0, 15,15,15,15);
+  //new FXGradientBar(this,nullptr,0,GRADIENTBAR_HORIZONTAL|GRADIENTBAR_CONTROLS_TOP|GRADIENTBAR_CONTROLS_BOTTOM|FRAME_SUNKEN|LAYOUT_SIDE_BOTTOM|LAYOUT_FILL_X,0,0,0,0, 15,15,15,15);
+  //new FXGradientBar(this,nullptr,0,GRADIENTBAR_HORIZONTAL|FRAME_SUNKEN|LAYOUT_SIDE_BOTTOM|LAYOUT_FILL_X,0,0,0,0, 15,15,15,15);
 
 
   new FXRadioButton(hf,"Linear blend",gb,FXGradientBar::ID_BLEND_LINEAR,LAYOUT_CENTER_Y|ICON_BEFORE_TEXT);
@@ -116,10 +116,10 @@ ImageWindow::ImageWindow(FXApp* a):FXMainWindow(a,"Image Application",NULL,NULL,
   new FXRadioButton(hf,"Decreasing blend",gb,FXGradientBar::ID_BLEND_DECREASING,LAYOUT_CENTER_Y|ICON_BEFORE_TEXT);
   new FXColorWell(hf,FXRGB(0,0,0),gb,FXGradientBar::ID_LOWER_COLOR,LAYOUT_CENTER_Y|FRAME_SUNKEN|FRAME_THICK);
   new FXColorWell(hf,FXRGB(0,0,0),gb,FXGradientBar::ID_UPPER_COLOR,LAYOUT_CENTER_Y|FRAME_SUNKEN|FRAME_THICK);
-  new FXButton(hf,"Recenter",NULL,gb,FXGradientBar::ID_RECENTER,FRAME_RAISED|FRAME_THICK|LAYOUT_CENTER_Y|ICON_BEFORE_TEXT);
-  new FXButton(hf,"Split",NULL,gb,FXGradientBar::ID_SPLIT,FRAME_RAISED|FRAME_THICK|LAYOUT_CENTER_Y|ICON_BEFORE_TEXT);
-  new FXButton(hf,"Merge",NULL,gb,FXGradientBar::ID_MERGE,FRAME_RAISED|FRAME_THICK|LAYOUT_CENTER_Y|ICON_BEFORE_TEXT);
-  new FXButton(hf,"Uniform",NULL,gb,FXGradientBar::ID_UNIFORM,FRAME_RAISED|FRAME_THICK|LAYOUT_CENTER_Y|ICON_BEFORE_TEXT);
+  new FXButton(hf,"Recenter",nullptr,gb,FXGradientBar::ID_RECENTER,FRAME_RAISED|FRAME_THICK|LAYOUT_CENTER_Y|ICON_BEFORE_TEXT);
+  new FXButton(hf,"Split",nullptr,gb,FXGradientBar::ID_SPLIT,FRAME_RAISED|FRAME_THICK|LAYOUT_CENTER_Y|ICON_BEFORE_TEXT);
+  new FXButton(hf,"Merge",nullptr,gb,FXGradientBar::ID_MERGE,FRAME_RAISED|FRAME_THICK|LAYOUT_CENTER_Y|ICON_BEFORE_TEXT);
+  new FXButton(hf,"Uniform",nullptr,gb,FXGradientBar::ID_UNIFORM,FRAME_RAISED|FRAME_THICK|LAYOUT_CENTER_Y|ICON_BEFORE_TEXT);
 
   contents=new FXHorizontalFrame(this,LAYOUT_SIDE_TOP|LAYOUT_FILL_X|LAYOUT_FILL_Y,0,0,0,0, 0,0,0,0);
 
@@ -127,9 +127,9 @@ ImageWindow::ImageWindow(FXApp* a):FXMainWindow(a,"Image Application",NULL,NULL,
   canvasFrame=new FXVerticalFrame(contents,FRAME_SUNKEN|LAYOUT_FILL_X|LAYOUT_FILL_Y|LAYOUT_TOP|LAYOUT_LEFT,0,0,0,0,10,10,10,10);
 
     // Label above the canvas
-    new FXLabel(canvasFrame,"Canvas Frame",NULL,JUSTIFY_CENTER_X|LAYOUT_FILL_X);
+    new FXLabel(canvasFrame,"Canvas Frame",nullptr,JUSTIFY_CENTER_X|LAYOUT_FILL_X);
 
-    new FXRuler(canvasFrame,NULL,0,RULER_MARKERS|RULER_NUMBERS|RULER_ARROW|RULER_TICKS_CENTER|LAYOUT_FILL_X);
+    new FXRuler(canvasFrame,nullptr,0,RULER_MARKERS|RULER_NUMBERS|RULER_ARROW|RULER_TICKS_CENTER|LAYOUT_FILL_X);
 
     // Horizontal divider line
     new FXHorizontalSeparator(canvasFrame,SEPARATOR_GROOVE|LAYOUT_FILL_X);
@@ -142,28 +142,28 @@ ImageWindow::ImageWindow(FXApp* a):FXMainWindow(a,"Image Application",NULL,NULL,
   buttonFrame=new FXVerticalFrame(contents,FRAME_SUNKEN|LAYOUT_FILL_Y|LAYOUT_TOP|LAYOUT_LEFT,0,0,0,0,10,10,10,10);
 
     // Label above the buttons
-    new FXLabel(buttonFrame,"Button Frame",NULL,JUSTIFY_CENTER_X|LAYOUT_FILL_X);
+    new FXLabel(buttonFrame,"Button Frame",nullptr,JUSTIFY_CENTER_X|LAYOUT_FILL_X);
 
     // Horizontal divider line
     new FXHorizontalSeparator(buttonFrame,SEPARATOR_RIDGE|LAYOUT_FILL_X);
 
-    new FXLabel(buttonFrame,"&Background\nColor well",NULL,JUSTIFY_CENTER_X|LAYOUT_FILL_X);
+    new FXLabel(buttonFrame,"&Background\nColor well",nullptr,JUSTIFY_CENTER_X|LAYOUT_FILL_X);
     backwell=new FXColorWell(buttonFrame,FXRGB(255,255,255),this,ID_WELL,LAYOUT_CENTER_X|LAYOUT_TOP|LAYOUT_LEFT|LAYOUT_FIX_WIDTH|LAYOUT_FIX_HEIGHT|FRAME_SUNKEN|FRAME_THICK,0,0,100,30);
 
-    new FXLabel(buttonFrame,"B&order\nColor well",NULL,JUSTIFY_CENTER_X|LAYOUT_FILL_X);
+    new FXLabel(buttonFrame,"B&order\nColor well",nullptr,JUSTIFY_CENTER_X|LAYOUT_FILL_X);
     borderwell=new FXColorWell(buttonFrame,FXRGB(0,0,0),this,ID_WELL,LAYOUT_CENTER_X|LAYOUT_TOP|LAYOUT_LEFT|LAYOUT_FIX_WIDTH|LAYOUT_FIX_HEIGHT|FRAME_SUNKEN|FRAME_THICK,0,0,100,30);
 
-    new FXLabel(buttonFrame,"&Text\nColor well",NULL,JUSTIFY_CENTER_X|LAYOUT_FILL_X);
+    new FXLabel(buttonFrame,"&Text\nColor well",nullptr,JUSTIFY_CENTER_X|LAYOUT_FILL_X);
     textwell=new FXColorWell(buttonFrame,FXRGB(0,0,0),this,ID_WELL,LAYOUT_CENTER_X|LAYOUT_TOP|LAYOUT_LEFT|LAYOUT_FIX_WIDTH|LAYOUT_FIX_HEIGHT|FRAME_SUNKEN|FRAME_THICK,0,0,100,30);
 
     // Button to draw
-    new FXButton(buttonFrame,"&Colors...\tPop the color dialog",NULL,colordlg,FXWindow::ID_SHOW,FRAME_THICK|FRAME_RAISED|LAYOUT_FILL_X|LAYOUT_TOP|LAYOUT_LEFT,0,0,0,0,10,10,5,5);
+    new FXButton(buttonFrame,"&Colors...\tPop the color dialog",nullptr,colordlg,FXWindow::ID_SHOW,FRAME_THICK|FRAME_RAISED|LAYOUT_FILL_X|LAYOUT_TOP|LAYOUT_LEFT,0,0,0,0,10,10,5,5);
 
     // Button to draw
-    new FXButton(buttonFrame,"Save Image...\tRead back image and save to file",NULL,this,ID_RESTORE,FRAME_THICK|FRAME_RAISED|LAYOUT_FILL_X|LAYOUT_TOP|LAYOUT_LEFT,0,0,0,0,10,10,5,5);
+    new FXButton(buttonFrame,"Save Image...\tRead back image and save to file",nullptr,this,ID_RESTORE,FRAME_THICK|FRAME_RAISED|LAYOUT_FILL_X|LAYOUT_TOP|LAYOUT_LEFT,0,0,0,0,10,10,5,5);
 
     // Exit button
-    new FXButton(buttonFrame,"E&xit\tQuit ImageApp",NULL,getApp(),FXApp::ID_QUIT,FRAME_THICK|FRAME_RAISED|LAYOUT_FILL_X|LAYOUT_TOP|LAYOUT_LEFT,0,0,0,0,10,10,5,5);
+    new FXButton(buttonFrame,"E&xit\tQuit ImageApp",nullptr,getApp(),FXApp::ID_QUIT,FRAME_THICK|FRAME_RAISED|LAYOUT_FILL_X|LAYOUT_TOP|LAYOUT_LEFT,0,0,0,0,10,10,5,5);
 
   // Create images with dithering
   grey=new FXImage(getApp(),grey_ramp,IMAGE_DITHER|IMAGE_SHMI|IMAGE_SHMP,512,50);
@@ -178,17 +178,17 @@ ImageWindow::ImageWindow(FXApp* a):FXMainWindow(a,"Image Application",NULL,NULL,
   blue_nodither=new FXImage(getApp(),blue_ramp,IMAGE_NEAREST|IMAGE_SHMI|IMAGE_SHMP,512,50);
 
   // Result image
-//  picture=new FXBMPImage(getApp(),NULL,IMAGE_SHMI|IMAGE_SHMP,850,600);
-//  picture=new FXXPMImage(getApp(),NULL,IMAGE_SHMI|IMAGE_SHMP,850,600);
-//  picture=new FXGIFImage(getApp(),NULL,IMAGE_SHMI|IMAGE_SHMP,850,600);
-//  picture=new FXPNGImage(getApp(),NULL,IMAGE_SHMI|IMAGE_SHMP,850,600);
-//  picture=new FXRGBImage(getApp(),NULL,IMAGE_SHMI|IMAGE_SHMP,850,600);
-//  picture=new FXPCXImage(getApp(),NULL,IMAGE_SHMI|IMAGE_SHMP,850,600);
-//  picture=new FXTGAImage(getApp(),NULL,IMAGE_SHMI|IMAGE_SHMP,850,600);
-//  picture=new FXICOImage(getApp(),NULL,IMAGE_SHMI|IMAGE_SHMP,64,64);
-//  picture=new FXJPGImage(getApp(),NULL,IMAGE_SHMI|IMAGE_SHMP,850,600);
-//  picture=new FXTIFImage(getApp(),NULL,IMAGE_SHMI|IMAGE_SHMP,850,600);
-  picture=new FXGIFImage(getApp(),NULL,IMAGE_SHMI|IMAGE_SHMP,850,600);
+//  picture=new FXBMPImage(getApp(),nullptr,IMAGE_SHMI|IMAGE_SHMP,850,600);
+//  picture=new FXXPMImage(getApp(),nullptr,IMAGE_SHMI|IMAGE_SHMP,850,600);
+//  picture=new FXGIFImage(getApp(),nullptr,IMAGE_SHMI|IMAGE_SHMP,850,600);
+//  picture=new FXPNGImage(getApp(),nullptr,IMAGE_SHMI|IMAGE_SHMP,850,600);
+//  picture=new FXRGBImage(getApp(),nullptr,IMAGE_SHMI|IMAGE_SHMP,850,600);
+//  picture=new FXPCXImage(getApp(),nullptr,IMAGE_SHMI|IMAGE_SHMP,850,600);
+//  picture=new FXTGAImage(getApp(),nullptr,IMAGE_SHMI|IMAGE_SHMP,850,600);
+//  picture=new FXICOImage(getApp(),nullptr,IMAGE_SHMI|IMAGE_SHMP,64,64);
+//  picture=new FXJPGImage(getApp(),nullptr,IMAGE_SHMI|IMAGE_SHMP,850,600);
+//  picture=new FXTIFImage(getApp(),nullptr,IMAGE_SHMI|IMAGE_SHMP,850,600);
+  picture=new FXGIFImage(getApp(),nullptr,IMAGE_SHMI|IMAGE_SHMP,850,600);
 
   // Fill the ramps
   for(x=0; x<512; x++){

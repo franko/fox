@@ -1,5 +1,5 @@
 %define name fox
-%define version 1.7.77
+%define version 1.7.79
 %define release 1
 
 %global debug_package %{nil}
@@ -10,9 +10,9 @@ Version: %{version}
 Release: %{release}
 License: LGPL+Addendum
 Group: System Environment/Libraries
-Source: ftp://ftp.fox-toolkit.org/pub/fox-1.7.77.tar.gz
+Source: ftp://ftp.fox-toolkit.org/pub/fox-1.7.79.tar.gz
 URL: http://www.fox-toolkit.org
-Packager: Jeroen van der Zijp <jeroen@fox-toolkit.com>
+Packager: Jeroen van der Zijp <jeroen@fox-toolkit.net>
 BuildRoot: %{_tmppath}/%{name}-buildroot
 
 %description
@@ -118,10 +118,10 @@ rm -rf ${RPM_BUILD_ROOT}/usr/fox
 %defattr(-,root,root)
 %{_libdir}/libFOX-1.7.so
 %{_libdir}/libFOX-1.7.so.0
-%{_libdir}/libFOX-1.7.so.0.0.77
+%{_libdir}/libFOX-1.7.so.0.0.79
 %{_libdir}/libCHART-1.7.so
 %{_libdir}/libCHART-1.7.so.0
-%{_libdir}/libCHART-1.7.so.0.0.77
+%{_libdir}/libCHART-1.7.so.0.0.79
 %{_libdir}/pkgconfig/fox17.pc
 
 %doc doc
@@ -168,7 +168,7 @@ rm -rf ${RPM_BUILD_ROOT}/usr/fox
 %{_mandir}/man1/ControlPanel.1*
 
 %changelog
-* Sat Wed 9 2011 Jeroen van der Zijp <jeroen@fox-toolkit.com>
+* Sat Wed 9 2011 Jeroen van der Zijp <jeroen@fox-toolkit.net>
 - Added Control Panel application.
 - Added package config to installed.
 - Deleted very old stuff in change log.

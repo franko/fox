@@ -3,7 +3,7 @@
 *                           Multiple Inheritance Test                           *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 1998,2021 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 1998,2022 by Jeroen van der Zijp.   All Rights Reserved.        *
 ********************************************************************************/
 #include "fx.h"
 #include <stdio.h>
@@ -294,11 +294,11 @@ int main(int,char**){
 
   // Found in TwoBaseOne
   FXTRACE((100,"calling TwoBaseOne\n"));
-  twobase1.handle(NULL,FXSEL(SEL_COMMAND,TwoBaseOne::ID_TWOBASEONE),NULL);
+  twobase1.handle(nullptr,FXSEL(SEL_COMMAND,TwoBaseOne::ID_TWOBASEONE),nullptr);
 
   // Found in Base2
   FXTRACE((100,"calling Base2\n"));
-  twobase1.handle(NULL,FXSEL(SEL_COMMAND,Base2::ID_BASE2),NULL);
+  twobase1.handle(nullptr,FXSEL(SEL_COMMAND,Base2::ID_BASE2),nullptr);
   }
 
   FXTRACE((100,"=============\n"));
@@ -308,11 +308,11 @@ int main(int,char**){
 
   // Found in TwoBaseTwo
   FXTRACE((100,"calling TwoBaseTwo\n"));
-  twobase2.handle(NULL,FXSEL(SEL_COMMAND,TwoBaseTwo::ID_TWOBASETWO),NULL);
+  twobase2.handle(nullptr,FXSEL(SEL_COMMAND,TwoBaseTwo::ID_TWOBASETWO),nullptr);
 
   // Found in Base2
   FXTRACE((100,"calling Base2\n"));
-  twobase2.handle(NULL,FXSEL(SEL_COMMAND,Base2::ID_BASE2),NULL);
+  twobase2.handle(nullptr,FXSEL(SEL_COMMAND,Base2::ID_BASE2),nullptr);
   }
 
   FXTRACE((100,"=============\n"));
@@ -322,23 +322,23 @@ int main(int,char**){
 
   // Found in ThreeBase
   FXTRACE((100,"calling ThreeBase\n"));
-  threebase.handle(NULL,FXSEL(SEL_COMMAND,ThreeBase::ID_THREEBASE),NULL);
+  threebase.handle(nullptr,FXSEL(SEL_COMMAND,ThreeBase::ID_THREEBASE),nullptr);
 
   // Found in TwoBaseOne
   FXTRACE((100,"calling TwoBaseOne\n"));
-  threebase.handle(NULL,FXSEL(SEL_COMMAND,TwoBaseOne::ID_TWOBASEONE),NULL);
+  threebase.handle(nullptr,FXSEL(SEL_COMMAND,TwoBaseOne::ID_TWOBASEONE),nullptr);
 
   // Found in Base2
   FXTRACE((100,"calling Base2\n"));
-  threebase.handle(NULL,FXSEL(SEL_COMMAND,Base2::ID_BASE2),NULL);
+  threebase.handle(nullptr,FXSEL(SEL_COMMAND,Base2::ID_BASE2),nullptr);
 
   // Found in TwoBaseOne
   FXTRACE((100,"calling TwoBaseOne via ThreeBase\n"));
-  threebase.handle(NULL,FXSEL(SEL_COMMAND,ThreeBase::ID_TWOBASEONE),NULL);
+  threebase.handle(nullptr,FXSEL(SEL_COMMAND,ThreeBase::ID_TWOBASEONE),nullptr);
 
   // Found in Base2
   FXTRACE((100,"calling Base2 via ThreeBase\n"));
-  threebase.handle(NULL,FXSEL(SEL_COMMAND,ThreeBase::ID_BASE2),NULL);
+  threebase.handle(nullptr,FXSEL(SEL_COMMAND,ThreeBase::ID_BASE2),nullptr);
   }
 
   return 1;

@@ -3,7 +3,7 @@
 *                      P l o t - C u r v e   D e s c r i p t i o n              *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 2007,2021 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 2007,2022 by Jeroen van der Zijp.   All Rights Reserved.        *
 *********************************************************************************
 * This library is free software; you can redistribute it and/or modify          *
 * it under the terms of the GNU Lesser General Public License as published by   *
@@ -38,7 +38,7 @@ using namespace FXCHART;
 namespace FXCHART {
 
 // Object implementation
-FXIMPLEMENT(FXCurve,FXObject,NULL,0)
+FXIMPLEMENT(FXCurve,FXObject,nullptr,0)
 
 
 class FXData {
@@ -46,12 +46,12 @@ class FXData {
 
 
 // Deserialization
-FXCurve::FXCurve():plot(NULL),xdata(NULL),ydata(NULL),xaxis(0),yaxis(0){
+FXCurve::FXCurve():plot(nullptr),xdata(nullptr),ydata(nullptr),xaxis(0),yaxis(0){
   }
 
 
 // Init
-FXCurve::FXCurve(FX2DPlot* plt,const FXString& nm):plot(plt),xdata(NULL),ydata(NULL),label(nm),xaxis(0),yaxis(0){
+FXCurve::FXCurve(FX2DPlot* plt,const FXString& nm):plot(plt),xdata(nullptr),ydata(nullptr),label(nm),xaxis(0),yaxis(0){
   }
 
 

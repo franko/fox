@@ -3,7 +3,7 @@
 *                          M e m o r y   M a p   T e s t                        *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 2004,2021 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 2004,2022 by Jeroen van der Zijp.   All Rights Reserved.        *
 ********************************************************************************/
 #include "fx.h"
 #include <stdio.h>
@@ -83,7 +83,7 @@ int main(int argc,char** argv){
 
     // Map
     base=(char*)map.openMap(filename,offset,length,FXIO::Reading,FXIO::AllReadWrite);
-    if(base==NULL){
+    if(base==nullptr){
       fprintf(stderr,"openMap returned NULL\n");
       exit(1);
       }
@@ -116,7 +116,7 @@ int main(int argc,char** argv){
 
     // Map
     base=(char*)map.openMap(filename,offset,length,FXIO::Writing,FXIO::AllReadWrite);
-    if(base==NULL){
+    if(base==nullptr){
       fprintf(stderr,"openMap returned NULL\n");
       exit(1);
       }

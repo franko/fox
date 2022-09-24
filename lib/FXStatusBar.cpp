@@ -3,7 +3,7 @@
 *                        S t a t u s   B a r   W i d g e t                      *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 1997,2021 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 1997,2022 by Jeroen van der Zijp.   All Rights Reserved.        *
 *********************************************************************************
 * This library is free software; you can redistribute it and/or modify          *
 * it under the terms of the GNU Lesser General Public License as published by   *
@@ -61,7 +61,7 @@ using namespace FX;
 namespace FX {
 
 // Object implementation
-FXIMPLEMENT(FXStatusBar,FXHorizontalFrame,NULL,0)
+FXIMPLEMENT(FXStatusBar,FXHorizontalFrame,nullptr,0)
 
 
 // Make a status bar

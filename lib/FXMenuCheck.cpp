@@ -3,7 +3,7 @@
 *                          M e n u C h e c k   W i d g e t                      *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 2002,2021 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 2002,2022 by Jeroen van der Zijp.   All Rights Reserved.        *
 *********************************************************************************
 * This library is free software; you can redistribute it and/or modify          *
 * it under the terms of the GNU Lesser General Public License as published by   *
@@ -96,7 +96,7 @@ FXMenuCheck::FXMenuCheck(){
 
 
 // Command menu item
-FXMenuCheck::FXMenuCheck(FXComposite* p,const FXString& text,FXObject* tgt,FXSelector sel,FXuint opts):FXMenuCommand(p,text,NULL,tgt,sel,opts){
+FXMenuCheck::FXMenuCheck(FXComposite* p,const FXString& text,FXObject* tgt,FXSelector sel,FXuint opts):FXMenuCommand(p,text,nullptr,tgt,sel,opts){
   boxColor=getApp()->getBackColor();
   check=false;
   }
@@ -183,7 +183,7 @@ long FXMenuCheck::onButtonPress(FXObject*,FXSelector,void*){
 long FXMenuCheck::onButtonRelease(FXObject*,FXSelector,void*){
   FXbool active=isActive();
   if(!isEnabled()) return 0;
-  getParent()->handle(this,FXSEL(SEL_COMMAND,ID_UNPOST),NULL);
+  getParent()->handle(this,FXSEL(SEL_COMMAND,ID_UNPOST),nullptr);
   if(active){
     setCheck(!check);
     if(target){ target->tryHandle(this,FXSEL(SEL_COMMAND,message),(void*)(FXuval)check); }
@@ -214,7 +214,7 @@ long FXMenuCheck::onKeyRelease(FXObject*,FXSelector,void* ptr){
     if(event->code==KEY_space || event->code==KEY_KP_Space || event->code==KEY_Return || event->code==KEY_KP_Enter){
       flags&=~FLAG_PRESSED;
       setCheck(!check);
-      getParent()->handle(this,FXSEL(SEL_COMMAND,ID_UNPOST),NULL);
+      getParent()->handle(this,FXSEL(SEL_COMMAND,ID_UNPOST),nullptr);
       if(target) target->tryHandle(this,FXSEL(SEL_COMMAND,message),(void*)(FXuval)check);
       return 1;
       }
@@ -240,7 +240,7 @@ long FXMenuCheck::onHotKeyRelease(FXObject*,FXSelector,void*){
   if(isEnabled() && (flags&FLAG_PRESSED)){
     flags&=~FLAG_PRESSED;
     setCheck(!check);
-    getParent()->handle(this,FXSEL(SEL_COMMAND,ID_UNPOST),NULL);
+    getParent()->handle(this,FXSEL(SEL_COMMAND,ID_UNPOST),nullptr);
     if(target) target->tryHandle(this,FXSEL(SEL_COMMAND,message),(void*)(FXuval)check);
     }
   return 1;

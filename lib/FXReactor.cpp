@@ -3,7 +3,7 @@
 *                            R e a c t o r   C l a s s                          *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 2006,2021 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 2006,2022 by Jeroen van der Zijp.   All Rights Reserved.        *
 *********************************************************************************
 * This library is free software; you can redistribute it and/or modify          *
 * it under the terms of the GNU Lesser General Public License as published by   *
@@ -105,6 +105,11 @@
     may be multiple FXReactors, each one handling a different, non-overlapping set of
     signals.
 
+  - Look into whether timerfd_create() may have some advantages for timers, as opposed
+    to falling out of epoll system call after a set time (less checking?).
+
+  - If using epoll() instead of select() or pselect(), we may want to raise
+    RLIMIT_NOFILE as we're able to go beyond FD_SETSIZE.
 */
 
 // Bad handle value
@@ -128,7 +133,7 @@ const FXTime FXReactor::maxwait=86400*seconds;
 
 
 // Construct reactor object
-FXReactor::FXReactor():internals(NULL),sigreceived(0),numhandles(0),numwatched(0),numraised(0){
+FXReactor::FXReactor():internals(nullptr),sigreceived(0),numhandles(0),numwatched(0),numraised(0){
 #if defined(_WIN32)
   current=-1;
 #else
@@ -188,7 +193,7 @@ FXbool FXReactor::addSignal(FXint sig,FXbool async){
   if(internals){
     if(sig<=0) return false;
     if(sig>=64) return false;
-    if(atomicBoolCas(&sigmanager[sig],(FXReactor*)NULL,this)){
+    if(atomicBoolCas(&sigmanager[sig],(FXReactor*)nullptr,this)){
       void (CDECL *handler)(int);
       if(async){
         handler=FXReactor::signalhandlerasync;  // Asynchronous callback
@@ -199,7 +204,7 @@ FXbool FXReactor::addSignal(FXint sig,FXbool async){
       internals->signotified[sig]=0;            // Set non-raised
 #if defined(_WIN32)
       if(signal(sig,handler)==SIG_ERR){         // Set handler
-        sigmanager[sig]=NULL;
+        sigmanager[sig]=nullptr;
         return false;
         }
 #elif defined(_POSIX_SOURCE) || defined(_INCLUDE_POSIX_SOURCE) || defined(_XOPEN_SOURCE)
@@ -207,13 +212,13 @@ FXbool FXReactor::addSignal(FXint sig,FXbool async){
       sigact.sa_handler=handler;
       sigact.sa_flags=0;
       sigfillset(&sigact.sa_mask);              // Block signals while running handler
-      if(sigaction(sig,&sigact,NULL)==-1){      // Set handler
-        sigmanager[sig]=NULL;
+      if(sigaction(sig,&sigact,nullptr)==-1){   // Set handler
+        sigmanager[sig]=nullptr;
         return false;
         }
 #else
       if(signal(sig,handler)==SIG_ERR){         // Set handler
-        sigmanager[sig]=NULL;
+        sigmanager[sig]=nullptr;
         return false;
         }
 #endif
@@ -239,7 +244,7 @@ FXbool FXReactor::remSignal(FXint sig){
       sigact.sa_handler=SIG_DFL;
       sigact.sa_flags=0;
       sigemptyset(&sigact.sa_mask);             // Pass signals while running handler
-      if(sigaction(sig,&sigact,NULL)==-1){      // Unset handler
+      if(sigaction(sig,&sigact,nullptr)==-1){   // Unset handler
         return false;
         }
 #else
@@ -247,7 +252,7 @@ FXbool FXReactor::remSignal(FXint sig){
         return false;
         }
 #endif
-      sigmanager[sig]=NULL;                     // Now release it
+      sigmanager[sig]=nullptr;                  // Now release it
       internals->signotified[sig]=0;            // Set non-raised
       return true;
       }
@@ -528,7 +533,7 @@ FXbool FXReactor::dispatch(FXTime blocking,FXuint flags){
         }
 
       // Select active handles and check signals; don't block
-      numwatched=epoll_pwait(internals->handle,internals->events,ARRAYNUMBER(internals->events),0,NULL);
+      numwatched=epoll_pwait(internals->handle,internals->events,ARRAYNUMBER(internals->events),0,nullptr);
 
       // No active handles yet; need to wait
       if(numwatched==0){
@@ -552,7 +557,7 @@ FXbool FXReactor::dispatch(FXTime blocking,FXuint flags){
           }
 
         // Select active handles and check signals, waiting for timeout or maximum block time
-        numwatched=epoll_pwait(internals->handle,internals->events,ARRAYNUMBER(internals->events),ms,NULL);
+        numwatched=epoll_pwait(internals->handle,internals->events,ARRAYNUMBER(internals->events),ms,nullptr);
 
         // Return if there was no timeout within maximum block time
         if(numwatched==0){
@@ -651,9 +656,9 @@ FXbool FXReactor::dispatch(FXTime blocking,FXuint flags){
 
       // Select active handles and check signals; don't block
 #if (_POSIX_C_SOURCE >= 200112L)
-      numraised=pselect(numhandles,&internals->watched[0],&internals->watched[1],&internals->watched[2],NULL,NULL);
+      numraised=pselect(numhandles,&internals->watched[0],&internals->watched[1],&internals->watched[2],nullptr,nullptr);
 #else
-      numraised=select(numhandles,&internals->watched[0],&internals->watched[1],&internals->watched[2],NULL);
+      numraised=select(numhandles,&internals->watched[0],&internals->watched[1],&internals->watched[2],nullptr);
 #endif
 
       // No handles were active
@@ -682,7 +687,7 @@ FXbool FXReactor::dispatch(FXTime blocking,FXuint flags){
 #if (_POSIX_C_SOURCE >= 200112L)
         delta.tv_sec=interval/seconds;
         delta.tv_nsec=(interval-seconds*delta.tv_sec);
-        numraised=pselect(numhandles,&internals->watched[0],&internals->watched[1],&internals->watched[2],&delta,NULL);
+        numraised=pselect(numhandles,&internals->watched[0],&internals->watched[1],&internals->watched[2],&delta,nullptr);
 #else
         delta.tv_sec=interval/seconds;
         delta.tv_usec=(interval-seconds*delta.tv_sec)/1000;

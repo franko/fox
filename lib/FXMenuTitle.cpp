@@ -3,7 +3,7 @@
 *                       M e n u   T i t l e   W i d g e t                       *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 1997,2021 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 1997,2022 by Jeroen van der Zijp.   All Rights Reserved.        *
 *********************************************************************************
 * This library is free software; you can redistribute it and/or modify          *
 * it under the terms of the GNU Lesser General Public License as published by   *
@@ -187,10 +187,10 @@ long FXMenuTitle::onLeftBtnPress(FXObject*,FXSelector,void* ptr){
   if(isEnabled()){
     if(target && target->tryHandle(this,FXSEL(SEL_LEFTBUTTONPRESS,message),ptr)) return 1;
     if(flags&FLAG_ACTIVE){
-      handle(this,FXSEL(SEL_COMMAND,ID_UNPOST),NULL);
+      handle(this,FXSEL(SEL_COMMAND,ID_UNPOST),nullptr);
       }
     else{
-      handle(this,FXSEL(SEL_COMMAND,ID_POST),NULL);
+      handle(this,FXSEL(SEL_COMMAND,ID_POST),nullptr);
       }
     return 1;
     }
@@ -247,10 +247,10 @@ long FXMenuTitle::onHotKeyRelease(FXObject*,FXSelector,void*){
   FXTRACE((TOPIC_KEYBOARD,"%s::onHotKeyRelease %p\n",getClassName(),this));
   if(isEnabled()){
     if(flags&FLAG_ACTIVE){
-      handle(this,FXSEL(SEL_COMMAND,ID_UNPOST),NULL);
+      handle(this,FXSEL(SEL_COMMAND,ID_UNPOST),nullptr);
       }
     else{
-      handle(this,FXSEL(SEL_COMMAND,ID_POST),NULL);
+      handle(this,FXSEL(SEL_COMMAND,ID_POST),nullptr);
       }
     }
   return 1;
@@ -307,7 +307,7 @@ long FXMenuTitle::onCmdUnpost(FXObject*,FXSelector,void*){
 // Focus moved down
 long FXMenuTitle::onFocusDown(FXObject*,FXSelector,void*){
   if(pane && !pane->shown()){
-    handle(this,FXSEL(SEL_COMMAND,ID_POST),NULL);
+    handle(this,FXSEL(SEL_COMMAND,ID_POST),nullptr);
     return 1;
     }
   return 0;
@@ -317,7 +317,7 @@ long FXMenuTitle::onFocusDown(FXObject*,FXSelector,void*){
 // Focus moved up
 long FXMenuTitle::onFocusUp(FXObject*,FXSelector,void*){
   if(pane && pane->shown()){
-    handle(this,FXSEL(SEL_COMMAND,ID_UNPOST),NULL);
+    handle(this,FXSEL(SEL_COMMAND,ID_UNPOST),nullptr);
     return 1;
     }
   return 0;
@@ -329,14 +329,14 @@ void FXMenuTitle::setFocus(){
   FXWindow *menuitem=getParent()->getFocus();
   FXbool active=menuitem && menuitem->isActive();
   FXMenuCaption::setFocus();
-  if(active) handle(this,FXSEL(SEL_COMMAND,ID_POST),NULL);
+  if(active) handle(this,FXSEL(SEL_COMMAND,ID_POST),nullptr);
   }
 
 
 // Out of focus chain
 void FXMenuTitle::killFocus(){
   FXMenuCaption::killFocus();
-  handle(this,FXSEL(SEL_COMMAND,ID_UNPOST),NULL);
+  handle(this,FXSEL(SEL_COMMAND,ID_UNPOST),nullptr);
   }
 
 

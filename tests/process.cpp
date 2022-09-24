@@ -3,7 +3,7 @@
 *                          P r o c e s s  -  T e s t                            *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 2010,2021 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 2010,2022 by Jeroen van der Zijp.   All Rights Reserved.        *
 ********************************************************************************/
 #include "fx.h"
 
@@ -31,12 +31,12 @@ int main(int argc,char* argv[]){
 
 #if defined(WIN32)
   const FXchar command[]="C:\\Program Files\\Windows NT\\Accessories\\wordpad.exe";
-  const FXchar *const args[]={command,"c:\\WINDOWS\\win.ini",NULL};
+  const FXchar *const args[]={command,"c:\\WINDOWS\\win.ini",nullptr};
 #else
 //  const FXchar command[]="/bin/ls";
-//  const FXchar *const args[]={command,"-l","/usr/bin",NULL};
+//  const FXchar *const args[]={command,"-l","/usr/bin",nullptr};
   const FXchar command[]="/usr/local/bin/adie";
-  const FXchar *const args[]={command,"process.cpp",NULL};
+  const FXchar *const args[]={command,"process.cpp",nullptr};
 #endif
 
   // Kick off

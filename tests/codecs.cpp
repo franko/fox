@@ -3,7 +3,7 @@
 *                                 Codecs Tests                                  *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 2005,2021 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 2005,2022 by Jeroen van der Zijp.   All Rights Reserved.        *
 ********************************************************************************/
 #include "fx.h"
 #include <stdio.h>
@@ -93,6 +93,7 @@ int main(int,char**){
   printf("Testing utf2wccvt(wc2utfcvt(wc)) == wc\n");
 
   // Test utf for codes of 4 bytes
+  printf("4-byte conversions\n");
   beg=fxgetticks();
   for(w1=0x10000; w1<0x110000; w1++){
     m=wcs2utf(buffer,&w1,4,1);
@@ -103,6 +104,7 @@ int main(int,char**){
   printf("4-Byte case: %lld ticks/character\n",(end-beg)/(0x110000-0x10000));
 
   // Test utf for codes of 3 bytes
+  printf("3-byte conversions\n");
   beg=fxgetticks();
   for(w1=0x800; w1<0x10000; w1++){
     m=wcs2utf(buffer,&w1,4,1);
@@ -113,6 +115,7 @@ int main(int,char**){
   printf("3-Byte case: %lld ticks/character\n",(end-beg)/(0x10000-0x800));
 
   // Test utf for codes of 2 bytes
+  printf("2-byte conversions\n");
   beg=fxgetticks();
   for(w1=0x80; w1<0x800; w1++){
     m=wcs2utf(buffer,&w1,4,1);
@@ -123,6 +126,7 @@ int main(int,char**){
   printf("2-Byte case: %lld ticks/character\n",(end-beg)/(0x800-0x80));
 
   // Test utf for codes of 1 byte
+  printf("1-byte conversions\n");
   beg=fxgetticks();
   for(w1=0; w1<0x80; w1++){
     m=wcs2utf(buffer,&w1,4,1);
@@ -131,6 +135,39 @@ int main(int,char**){
     }
   end=fxgetticks();
   printf("1-Byte case: %lld ticks/character\n",(end-beg)/0x80);
+
+  // More tests
+  printf("4-byte conversions\n");
+  for(w1=0x10000; w1<0x110000; w1++){
+    m=wcs2utf(buffer,&w1,4,1);
+    w2=((FXuchar)buffer[0]<<18) ^ ((FXuchar)buffer[1]<<12) ^ ((FXuchar)buffer[2]<<6) ^ (FXuchar)buffer[3] ^ 0x3C82080;
+    if(w1!=w2) printf("%06X: Problem: %06X\n",w1,w2);
+    }
+
+  // Test utf for codes of 3 bytes
+  printf("3-byte conversions\n");
+  for(w1=0x800; w1<0x10000; w1++){
+    m=wcs2utf(buffer,&w1,4,1);
+    w2=((FXuchar)buffer[0]<<12) ^ ((FXuchar)buffer[1]<<6) ^ (FXuchar)buffer[2] ^ 0x0E2080;
+    if(w1!=w2) printf("%06X: Problem: %06X\n",w1,w2);
+    }
+
+  // Test utf for codes of 2 bytes
+  printf("2-byte conversions\n");
+  for(w1=0x80; w1<0x800; w1++){
+    m=wcs2utf(buffer,&w1,4,1);
+    w2=((FXuchar)buffer[0]<<6) ^ (FXuchar)buffer[1] ^ 0x3080;
+    if(w1!=w2) printf("%06X: Problem: %06X\n",w1,w2);
+    }
+
+  // Test utf for codes of 1 byte
+  printf("1-byte conversions\n");
+  for(w1=0; w1<0x80; w1++){
+    m=wcs2utf(buffer,&w1,4,1);
+    w2=(FXuchar)buffer[0];
+    if(w1!=w2) printf("%06X: Problem: %06X\n",w1,w2);
+    }
+
 
 /*
 

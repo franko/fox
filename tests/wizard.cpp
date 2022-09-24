@@ -3,7 +3,7 @@
 *                                 Test Wizard                                   *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 2002,2021 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 2002,2022 by Jeroen van der Zijp.   All Rights Reserved.        *
 ********************************************************************************/
 #include "fx.h"
 #include <stdio.h>
@@ -471,14 +471,14 @@ int main(int argc,char *argv[]){
   FXVerticalFrame *pane2=new FXVerticalFrame(wizard.getContainer(),LAYOUT_FILL_Y|LAYOUT_FILL_X,0,0,0,0, 0,0,0,0);
   new FXLabel(pane2,"Enter some text:");
   FXVerticalFrame *textbox=new FXVerticalFrame(pane2,LAYOUT_FILL_X|LAYOUT_FILL_Y|FRAME_SUNKEN|FRAME_THICK,0,0,0,0, 0,0,0,0);
-  FXText *text=new FXText(textbox,NULL,0,TEXT_SHOWACTIVE|LAYOUT_FILL_X|LAYOUT_FILL_Y);
+  FXText *text=new FXText(textbox,nullptr,0,TEXT_SHOWACTIVE|LAYOUT_FILL_X|LAYOUT_FILL_Y);
   text->setVisibleColumns(60);
 
   // Pane #3
   FXVerticalFrame *pane3=new FXVerticalFrame(wizard.getContainer(),LAYOUT_FILL_Y|LAYOUT_FILL_X,0,0,0,0, 0,0,0,0);
   new FXLabel(pane3,"Pick a file:");
   FXVerticalFrame *filebox=new FXVerticalFrame(pane3,LAYOUT_FILL_X|LAYOUT_FILL_Y|FRAME_SUNKEN|FRAME_THICK,0,0,0,0, 0,0,0,0);
-  FXFileList *filelist=new FXFileList(filebox,NULL,0,ICONLIST_MINI_ICONS|ICONLIST_AUTOSIZE|LAYOUT_FILL_X|LAYOUT_FILL_Y);
+  FXFileList *filelist=new FXFileList(filebox,nullptr,0,ICONLIST_MINI_ICONS|ICONLIST_AUTOSIZE|LAYOUT_FILL_X|LAYOUT_FILL_Y);
   filelist->setDirectory(FXSystem::getCurrentDirectory());
 
   // Create app

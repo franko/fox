@@ -3,7 +3,7 @@
 *       P e r s i s t e n t   S t o r a g e   S t r e a m   C l a s s e s       *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 1997,2021 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 1997,2022 by Jeroen van der Zijp.   All Rights Reserved.        *
 *********************************************************************************
 * This library is free software; you can redistribute it and/or modify          *
 * it under the terms of the GNU Lesser General Public License as published by   *
@@ -63,10 +63,10 @@ namespace FX {
 // Create PersistentStore object
 FXStream::FXStream(const FXObject *cont){
   parent=cont;
-  begptr=NULL;
-  endptr=NULL;
-  wrptr=NULL;
-  rdptr=NULL;
+  begptr=nullptr;
+  endptr=nullptr;
+  wrptr=nullptr;
+  rdptr=nullptr;
   pos=0L;
   dir=FXStreamDead;
   code=FXStreamOK;
@@ -218,10 +218,10 @@ FXbool FXStream::close(){
     hash.clear();
     dir=FXStreamDead;
     if(owns){freeElms(begptr);}
-    begptr=NULL;
-    wrptr=NULL;
-    rdptr=NULL;
-    endptr=NULL;
+    begptr=nullptr;
+    wrptr=nullptr;
+    rdptr=nullptr;
+    endptr=nullptr;
     owns=false;
     return code==FXStreamOK;
     }
@@ -809,7 +809,7 @@ FXStream& FXStream::saveObject(const FXObject* v){
   FXuint tag,zero=0;
   if(dir!=FXStreamSave){ fxerror("FXStream::saveObject: wrong stream direction.\n"); }
   if(code==FXStreamOK){
-    if(v==NULL){                                // Its a NULL
+    if(v==nullptr){                             // Its a NULL
       *this << zero;
       return *this;
       }
@@ -847,7 +847,7 @@ FXStream& FXStream::loadObject(FXObject*& v){
   if(code==FXStreamOK){
     *this >> tag;
     if(tag==0){                                 // Was a NULL
-      v=NULL;
+      v=nullptr;
       return *this;
       }
     if(tag>=0x80000000){
@@ -868,7 +868,7 @@ FXStream& FXStream::loadObject(FXObject*& v){
       }
     load(name,tag);                             // Load name
     cls=FXMetaClass::getMetaClassFromName(name);
-    if(cls==NULL){                              // No FXMetaClass with this class name
+    if(cls==nullptr){                           // No FXMetaClass with this class name
       code=FXStreamUnknown;                     // Unknown class
       return *this;
       }

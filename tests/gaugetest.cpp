@@ -3,7 +3,7 @@
 *                                 Gauge Widget Test                             *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 2010,2021 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 2010,2022 by Jeroen van der Zijp.   All Rights Reserved.        *
 ********************************************************************************/
 #include "fx.h"
 
@@ -49,7 +49,7 @@ FXIMPLEMENT(GaugeWindow,FXMainWindow,GaugeWindowMap,ARRAYNUMBER(GaugeWindowMap))
 
 
 // Make some windows
-GaugeWindow::GaugeWindow(FXApp* a):FXMainWindow(a,"Gauge Widget Test",NULL,NULL,DECOR_ALL,20,20,800,550){
+GaugeWindow::GaugeWindow(FXApp* a):FXMainWindow(a,"Gauge Widget Test",nullptr,nullptr,DECOR_ALL,20,20,800,550){
 
   // Clear value
   value=0.0;
@@ -62,12 +62,12 @@ GaugeWindow::GaugeWindow(FXApp* a):FXMainWindow(a,"Gauge Widget Test",NULL,NULL,
 
   // File menu
   filemenu=new FXMenuPane(this);
-  new FXMenuCommand(filemenu,"&Quit\tCtl-Q",NULL,getApp(),FXApp::ID_QUIT);
-  new FXMenuTitle(menubar,"&File",NULL,filemenu);
+  new FXMenuCommand(filemenu,"&Quit\tCtl-Q",nullptr,getApp(),FXApp::ID_QUIT);
+  new FXMenuTitle(menubar,"&File",nullptr,filemenu);
 
   // Matrix for sliders
   FXMatrix* slidermatrix=new FXMatrix(this,2,MATRIX_BY_COLUMNS|LAYOUT_SIDE_BOTTOM|LAYOUT_FILL_X);
-  new FXLabel(slidermatrix,tr("Gauge value:"),NULL,JUSTIFY_LEFT|JUSTIFY_CENTER_Y|LAYOUT_CENTER_Y);
+  new FXLabel(slidermatrix,tr("Gauge value:"),nullptr,JUSTIFY_LEFT|JUSTIFY_CENTER_Y|LAYOUT_CENTER_Y);
   FXRealSlider *slider=new FXRealSlider(slidermatrix,&valuetarget,FXDataTarget::ID_VALUE,SLIDER_HORIZONTAL|SLIDER_INSIDE_BAR|LAYOUT_FILL_X|LAYOUT_CENTER_Y|LAYOUT_FILL_COLUMN,0,0,0,0);
   slider->setRange(0.0,1.0);
 
@@ -77,7 +77,7 @@ GaugeWindow::GaugeWindow(FXApp* a):FXMainWindow(a,"Gauge Widget Test",NULL,NULL,
   // Arange nicely
   FXMatrix* matrix=new FXMatrix(this,2,MATRIX_BY_COLUMNS|LAYOUT_SIDE_TOP|LAYOUT_FILL_X|LAYOUT_FILL_Y);
 
-  new FXLabel(matrix,"Basic\nClockwise\nArc",NULL,LAYOUT_CENTER_Y|LAYOUT_CENTER_X|JUSTIFY_RIGHT|LAYOUT_FILL_ROW);
+  new FXLabel(matrix,"Basic\nClockwise\nArc",nullptr,LAYOUT_CENTER_Y|LAYOUT_CENTER_X|JUSTIFY_RIGHT|LAYOUT_FILL_ROW);
 
   // Make test gauge
   FXGauge *g1=new FXGauge(matrix,FRAME_SUNKEN|FRAME_THICK|LAYOUT_FILL_COLUMN|LAYOUT_FILL_ROW|LAYOUT_FILL,150,-120,0,0,0,0,DEFAULT_PAD,DEFAULT_PAD,DEFAULT_PAD,DEFAULT_PAD);

@@ -3,7 +3,7 @@
 *                         S y n t a x   P a r s e r                             *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 1998,2021 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 1998,2022 by Jeroen van der Zijp.   All Rights Reserved.        *
 *********************************************************************************
 * This program is free software: you can redistribute it and/or modify          *
 * it under the terms of the GNU General Public License as published by          *
@@ -50,9 +50,10 @@ public:
     TK_CONTEXTLINES=2311868482U,
     TK_CONTEXTCHARS=2319640212U,
     TK_PATTERN=3508332936U,
-    TK_OPENPATTERN=3516757596U,
-    TK_CLOSEPATTERN=2586583262U,
-    TK_STOPPATTERN=3111100176U,
+    TK_CLOSE=116773014U,
+    TK_OPEN=3974612U,
+    TK_STOP=4087960U,
+    TK_SPAN=4083660U,
     TK_GROUP=121469983U,
     TK_STYLE=134930039U,
     TK_AUTOINDENT=3363853907U,

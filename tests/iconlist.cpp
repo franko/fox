@@ -3,7 +3,7 @@
 *                           Test Icon List Widget                               *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 1998,2021 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 1998,2022 by Jeroen van der Zijp.   All Rights Reserved.        *
 ********************************************************************************/
 #include "fx.h"
 #include <stdio.h>
@@ -81,11 +81,11 @@ const unsigned char minifolder[]={
 
 
 // Object implementation
-FXIMPLEMENT(IconListWindow,FXMainWindow,NULL,0)
+FXIMPLEMENT(IconListWindow,FXMainWindow,nullptr,0)
 
 
 // Make some windows
-IconListWindow::IconListWindow(FXApp* a):FXMainWindow(a,"Icon List Test",NULL,NULL,DECOR_ALL,0,0,800,600){
+IconListWindow::IconListWindow(FXApp* a):FXMainWindow(a,"Icon List Test",nullptr,nullptr,DECOR_ALL,0,0,800,600){
   int i;
 
   // Menu bar
@@ -93,8 +93,8 @@ IconListWindow::IconListWindow(FXApp* a):FXMainWindow(a,"Icon List Test",NULL,NU
 
   // File menu
   filemenu=new FXMenuPane(this);
-  new FXMenuCommand(filemenu,"&Quit\tCtl-Q",NULL,getApp(),FXApp::ID_QUIT);
-  new FXMenuTitle(menubar,"&File",NULL,filemenu);
+  new FXMenuCommand(filemenu,"&Quit\tCtl-Q",nullptr,getApp(),FXApp::ID_QUIT);
+  new FXMenuTitle(menubar,"&File",nullptr,filemenu);
 
   // Status bar
   FXStatusBar *status=new FXStatusBar(this,LAYOUT_SIDE_BOTTOM|LAYOUT_FILL_X|STATUSBAR_WITH_DRAGCORNER);
@@ -103,17 +103,17 @@ IconListWindow::IconListWindow(FXApp* a):FXMainWindow(a,"Icon List Test",NULL,NU
   group=new FXVerticalFrame(this,LAYOUT_FILL_X|LAYOUT_FILL_Y, 0,0,0,0, 0,0,0,0);
 
   // Files
-  new FXLabel(group,"Icon List WIdget",NULL,LAYOUT_TOP|LAYOUT_FILL_X|FRAME_SUNKEN);
+  new FXLabel(group,"Icon List WIdget",nullptr,LAYOUT_TOP|LAYOUT_FILL_X|FRAME_SUNKEN);
   subgroup=new FXVerticalFrame(group,FRAME_SUNKEN|FRAME_THICK|LAYOUT_FILL_X|LAYOUT_FILL_Y, 0,0,0,0, 0,0,0,0);
 
   // Icon list on the right
-  iconlist=new FXIconList(subgroup,NULL,0,LAYOUT_FILL_X|LAYOUT_FILL_Y|ICONLIST_DETAILED|ICONLIST_EXTENDEDSELECT);
-  iconlist->appendHeader("Name",NULL,200);
-  iconlist->appendHeader("Type",NULL,100);
-  iconlist->appendHeader("Size",NULL,60);
-  iconlist->appendHeader("Modified Date",NULL,150);
-  iconlist->appendHeader("User",NULL,50);
-  iconlist->appendHeader("Group",NULL,50);
+  iconlist=new FXIconList(subgroup,nullptr,0,LAYOUT_FILL_X|LAYOUT_FILL_Y|ICONLIST_DETAILED|ICONLIST_EXTENDEDSELECT);
+  iconlist->appendHeader("Name",nullptr,200);
+  iconlist->appendHeader("Type",nullptr,100);
+  iconlist->appendHeader("Size",nullptr,60);
+  iconlist->appendHeader("Modified Date",nullptr,150);
+  iconlist->appendHeader("User",nullptr,50);
+  iconlist->appendHeader("Group",nullptr,50);
 
   big_folder=new FXGIFIcon(getApp(),bigfolder);
   mini_folder=new FXGIFIcon(getApp(),minifolder);
@@ -132,20 +132,20 @@ IconListWindow::IconListWindow(FXApp* a):FXMainWindow(a,"Icon List Test",NULL,NU
   new FXMenuSeparator(arrangemenu);
   new FXMenuRadio(arrangemenu,"&Rows",iconlist,FXIconList::ID_ARRANGE_BY_ROWS);
   new FXMenuRadio(arrangemenu,"&Columns",iconlist,FXIconList::ID_ARRANGE_BY_COLUMNS);
-  new FXMenuTitle(menubar,"&Arrange",NULL,arrangemenu);
+  new FXMenuTitle(menubar,"&Arrange",nullptr,arrangemenu);
 
   // Sort menu
   sortmenu=new FXMenuPane(this);
-  new FXMenuCommand(sortmenu,"&Name",NULL,NULL,0);
-  new FXMenuCommand(sortmenu,"&Type",NULL,NULL,0);
-  new FXMenuCommand(sortmenu,"&Size",NULL,NULL,0);
-  new FXMenuCommand(sortmenu,"T&ime",NULL,NULL,0);
-  new FXMenuCommand(sortmenu,"&User",NULL,NULL,0);
-  new FXMenuCommand(sortmenu,"&Group",NULL,NULL,0);
-  new FXMenuCheck(sortmenu,"&Reverse",NULL,0);
-  new FXMenuCommand(sortmenu,"Hide status",NULL,status,FXWindow::ID_HIDE);
-  new FXMenuCommand(sortmenu,"Show status",NULL,status,FXWindow::ID_SHOW);
-  new FXMenuTitle(menubar,"&Sort",NULL,sortmenu);
+  new FXMenuCommand(sortmenu,"&Name",nullptr,nullptr,0);
+  new FXMenuCommand(sortmenu,"&Type",nullptr,nullptr,0);
+  new FXMenuCommand(sortmenu,"&Size",nullptr,nullptr,0);
+  new FXMenuCommand(sortmenu,"T&ime",nullptr,nullptr,0);
+  new FXMenuCommand(sortmenu,"&User",nullptr,nullptr,0);
+  new FXMenuCommand(sortmenu,"&Group",nullptr,nullptr,0);
+  new FXMenuCheck(sortmenu,"&Reverse",nullptr,0);
+  new FXMenuCommand(sortmenu,"Hide status",nullptr,status,FXWindow::ID_HIDE);
+  new FXMenuCommand(sortmenu,"Show status",nullptr,status,FXWindow::ID_SHOW);
+  new FXMenuTitle(menubar,"&Sort",nullptr,sortmenu);
 
   new FXToolTip(getApp());
   }

@@ -3,7 +3,7 @@
 *                      T A R G A   I n p u t / O u t p u t                      *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 2001,2021 by Janusz Ganczarski.   All Rights Reserved.          *
+* Copyright (C) 2001,2022 by Janusz Ganczarski.   All Rights Reserved.          *
 *********************************************************************************
 * This library is free software; you can redistribute it and/or modify          *
 * it under the terms of the GNU Lesser General Public License as published by   *
@@ -738,7 +738,7 @@ FXbool fxloadTGA(FXStream& store,FXColor*& data,FXint& width,FXint& height){
   FXint    i;
 
   // Null out
-  data=NULL;
+  data=nullptr;
   width=0;
   height=0;
 

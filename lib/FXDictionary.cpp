@@ -3,7 +3,7 @@
 *                          D i c t i o n a r y    C l a s s                     *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 1998,2021 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 1998,2022 by Jeroen van der Zijp.   All Rights Reserved.        *
 *********************************************************************************
 * This library is free software; you can redistribute it and/or modify          *
 * it under the terms of the GNU Lesser General Public License as published by   *
@@ -89,7 +89,7 @@ FXbool FXDictionary::no(FXival n){
 
     // Allocate new table
     if(1<n){
-      if(__unlikely((p=::calloc(sizeof(FXival)*3+sizeof(Entry)*n,1))==NULL)) return false;
+      if(__unlikely((p=::calloc(sizeof(FXival)*3+sizeof(Entry)*n,1))==nullptr)) return false;
       elbat=(Entry*)(((FXival*)p)+3);
       ((FXival*)elbat)[-3]=n;
       ((FXival*)elbat)[-2]=0;
@@ -241,20 +241,20 @@ const FXptr& FXDictionary::at(const FXchar* ky) const {
 
 // Remove association with given key; return old value, if any
 FXptr FXDictionary::remove(const FXchar* ky){
-  FXptr old=NULL;
+  FXptr old=nullptr;
   if(__unlikely(!ky || !*ky)){ throw FXRangeException("FXDictionary::remove: null or empty key\n"); }
   if(__likely(!empty())){
     FXuval p,b,h,x;
     p=b=h=FXString::hash(ky);
     FXASSERT(h);
     while(table[x=p&(no()-1)].hash!=h || table[x].key!=ky){
-      if(!table[x].hash) return NULL;
+      if(!table[x].hash) return nullptr;
       p=(p<<2)+p+b+1;
       b>>=BSHIFT;
       }
     table[x].key.clear();                                 // Void the slot (not empty!)
     old=table[x].data;
-    table[x].data=NULL;
+    table[x].data=nullptr;
     used(used()-1);
     if(__unlikely(used()<=(no()>>2))) resize(no()>>1);
     }
@@ -268,12 +268,12 @@ FXptr FXDictionary::erase(FXival pos){
   if(!table[pos].key.empty()){
     FXptr old=table[pos].data;
     table[pos].key.clear();                             // Void the slot (not empty!)
-    table[pos].data=NULL;
+    table[pos].data=nullptr;
     used(used()-1);
     if(__unlikely(used()<=(no()>>2))) resize(no()>>1);
     return old;
     }
-  return NULL;
+  return nullptr;
   }
 
 

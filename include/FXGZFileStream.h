@@ -3,7 +3,7 @@
 *                     G Z F i l e S t r e a m   C l a s s e s                   *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 2002,2021 by Sander Jansen.   All Rights Reserved.              *
+* Copyright (C) 2002,2022 by Sander Jansen.   All Rights Reserved.              *
 *********************************************************************************
 * This library is free software; you can redistribute it and/or modify          *
 * it under the terms of the GNU Lesser General Public License as published by   *
@@ -46,7 +46,7 @@ private:
 public:
 
   /// Create GZIP compressed file stream
-  FXGZFileStream(const FXObject* cont=NULL);
+  FXGZFileStream(const FXObject* cont=nullptr);
 
   /// Create and open GZIP compressed file stream
   FXGZFileStream(const FXString& filename,FXStreamDirection save_or_load=FXStreamLoad,FXuval size=8192UL);

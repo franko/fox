@@ -3,7 +3,7 @@
 *                      U T F - 1 6  T e x t   C o d e c                         *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 2002,2021 by L.Johnson & J.van der Zijp.  All Rights Reserved.  *
+* Copyright (C) 2002,2022 by L.Johnson & J.van der Zijp.  All Rights Reserved.  *
 *********************************************************************************
 * This library is free software; you can redistribute it and/or modify          *
 * it under the terms of the GNU Lesser General Public License as published by   *
@@ -50,7 +50,7 @@ const FXnchar BOM_BE=0xFEFF;
 const FXnchar BOM_LE=0xFFFE;
 
 
-FXIMPLEMENT(FXUTF16BECodec,FXTextCodec,NULL,0)
+FXIMPLEMENT(FXUTF16BECodec,FXTextCodec,nullptr,0)
 
 
 // Convert from utf16be
@@ -113,14 +113,14 @@ FXint FXUTF16BECodec::mibEnum() const {
 
 // Return aliases
 const FXchar* const* FXUTF16BECodec::aliases() const {
-  static const FXchar *const list[]={"iso10646-1","UTF-16BE",NULL};
+  static const FXchar *const list[]={"iso10646-1","UTF-16BE",nullptr};
   return list;
   }
 
 
 /*******************************************************************************/
 
-FXIMPLEMENT(FXUTF16LECodec,FXTextCodec,NULL,0)
+FXIMPLEMENT(FXUTF16LECodec,FXTextCodec,nullptr,0)
 
 
 // Convert from utf16le
@@ -183,13 +183,13 @@ FXint FXUTF16LECodec::mibEnum() const {
 
 // Return aliases
 const FXchar* const* FXUTF16LECodec::aliases() const {
-  static const FXchar *const list[]={"UTF-16LE",NULL};
+  static const FXchar *const list[]={"UTF-16LE",nullptr};
   return list;
   }
 
 /*******************************************************************************/
 
-FXIMPLEMENT(FXUTF16Codec,FXTextCodec,NULL,0)
+FXIMPLEMENT(FXUTF16Codec,FXTextCodec,nullptr,0)
 
 
 // Convert utf16 but strip BOM
@@ -437,7 +437,7 @@ FXint FXUTF16Codec::mibEnum() const {
 
 // Return aliases
 const FXchar* const* FXUTF16Codec::aliases() const {
-  static const FXchar *const list[]={"UTF-16",NULL};
+  static const FXchar *const list[]={"UTF-16",nullptr};
   return list;
   }
 

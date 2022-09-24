@@ -3,7 +3,7 @@
 *                     T A R G A   I c o n   O b j e c t                         *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 2001,2021 by Janusz Ganczarski.   All Rights Reserved.          *
+* Copyright (C) 2001,2022 by Janusz Ganczarski.   All Rights Reserved.          *
 *********************************************************************************
 * This library is free software; you can redistribute it and/or modify          *
 * it under the terms of the GNU Lesser General Public License as published by   *
@@ -79,11 +79,11 @@ const FXchar FXTGAIcon::mimeType[]="image/targa";
 
 
 // Object implementation
-FXIMPLEMENT(FXTGAIcon,FXIcon,NULL,0)
+FXIMPLEMENT(FXTGAIcon,FXIcon,nullptr,0)
 
 
 // Initialize nicely
-FXTGAIcon::FXTGAIcon(FXApp* a,const void *pix,FXColor clr,FXuint opts,FXint w,FXint h):FXIcon(a,NULL,clr,opts,w,h){
+FXTGAIcon::FXTGAIcon(FXApp* a,const void *pix,FXColor clr,FXuint opts,FXint w,FXint h):FXIcon(a,nullptr,clr,opts,w,h){
   if(pix){
     FXMemoryStream ms(FXStreamLoad,(FXuchar*)pix);
     loadPixels(ms);

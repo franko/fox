@@ -3,7 +3,7 @@
 *                          Test 4-Way  Splitter  Widget                         *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 1999,2021 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 1999,2022 by Jeroen van der Zijp.   All Rights Reserved.        *
 ********************************************************************************/
 #include "fx.h"
 
@@ -35,11 +35,11 @@ public:
 
 
 // Object implementation
-FXIMPLEMENT(FourSplitWindow,FXMainWindow,NULL,0)
+FXIMPLEMENT(FourSplitWindow,FXMainWindow,nullptr,0)
 
 
 // Make some windows
-FourSplitWindow::FourSplitWindow(FXApp *a):FXMainWindow(a,"4-Way Splitter Test",NULL,NULL,DECOR_ALL,0,0,900,700,0,0){
+FourSplitWindow::FourSplitWindow(FXApp *a):FXMainWindow(a,"4-Way Splitter Test",nullptr,nullptr,DECOR_ALL,0,0,900,700,0,0){
   FXButton *temp;
 
   // Menu bar
@@ -55,8 +55,8 @@ FourSplitWindow::FourSplitWindow(FXApp *a):FXMainWindow(a,"4-Way Splitter Test",
 
   // File menu
   filemenu=new FXMenuPane(this);
-  new FXMenuCommand(filemenu,"&Quit\tCtl-Q\tQuit the application.",NULL,getApp(),FXApp::ID_QUIT);
-  new FXMenuTitle(menubar,"&File",NULL,filemenu);
+  new FXMenuCommand(filemenu,"&Quit\tCtl-Q\tQuit the application.",nullptr,getApp(),FXApp::ID_QUIT);
+  new FXMenuTitle(menubar,"&File",nullptr,filemenu);
 
   // Expand menu
   expandmenu=new FXMenuPane(this);
@@ -65,35 +65,35 @@ FourSplitWindow::FourSplitWindow(FXApp *a):FXMainWindow(a,"4-Way Splitter Test",
   new FXMenuCheck(expandmenu,"Top/right",splitter,FX4Splitter::ID_EXPAND_TOPRIGHT);
   new FXMenuCheck(expandmenu,"Bottom/left",splitter,FX4Splitter::ID_EXPAND_BOTTOMLEFT);
   new FXMenuCheck(expandmenu,"Bottom/right",splitter,FX4Splitter::ID_EXPAND_BOTTOMRIGHT);
-  new FXMenuTitle(menubar,"&Expand",NULL,expandmenu);
+  new FXMenuTitle(menubar,"&Expand",nullptr,expandmenu);
 
 
   // Four widgets in the four splitter
-  FXButton *tlf=new FXButton(splitter,"Top &Left\tThis splitter tracks",NULL,NULL,0,FRAME_RAISED|FRAME_THICK);
-  FXButton *trt=new FXButton(splitter,"Top &Right\tThis splitter tracks",NULL,NULL,0,FRAME_RAISED|FRAME_THICK);
+  FXButton *tlf=new FXButton(splitter,"Top &Left\tThis splitter tracks",nullptr,nullptr,0,FRAME_RAISED|FRAME_THICK);
+  FXButton *trt=new FXButton(splitter,"Top &Right\tThis splitter tracks",nullptr,nullptr,0,FRAME_RAISED|FRAME_THICK);
 
   // To check bug from Tony <verant@hotpop.com>
   FXSplitter* spl2=new FXSplitter(splitter,SPLITTER_VERTICAL|SPLITTER_TRACKING|LAYOUT_FILL_X|LAYOUT_FILL_Y);
   FXSplitter* spl3=new FXSplitter(spl2,SPLITTER_HORIZONTAL|SPLITTER_TRACKING|LAYOUT_FILL_X|LAYOUT_FILL_Y);
-  new FXButton(spl3,"In SPLITTER_HORIZONTAL",NULL,NULL,0,FRAME_RAISED|FRAME_THICK);
-  new FXButton(spl3,"In SPLITTER_HORIZONTAL",NULL,NULL,0,FRAME_RAISED|FRAME_THICK);
-  new FXButton(spl2,"In SPLITTER_VERTICAL",NULL,NULL,0,FRAME_RAISED|FRAME_THICK);
+  new FXButton(spl3,"In SPLITTER_HORIZONTAL",nullptr,nullptr,0,FRAME_RAISED|FRAME_THICK);
+  new FXButton(spl3,"In SPLITTER_HORIZONTAL",nullptr,nullptr,0,FRAME_RAISED|FRAME_THICK);
+  new FXButton(spl2,"In SPLITTER_VERTICAL",nullptr,nullptr,0,FRAME_RAISED|FRAME_THICK);
 
   subsplitter=new FX4Splitter(splitter,LAYOUT_FILL_X|LAYOUT_FILL_Y);
-  temp=new FXButton(subsplitter,"&Of course\tThis splitter does NOT track",NULL,NULL,0,FRAME_SUNKEN|FRAME_THICK);
+  temp=new FXButton(subsplitter,"&Of course\tThis splitter does NOT track",nullptr,nullptr,0,FRAME_SUNKEN|FRAME_THICK);
   temp->setBackColor(FXRGB(0,128,0));
   temp->setTextColor(FXRGB(255,255,255));
-  temp=new FXButton(subsplitter,"the&y CAN\tThis splitter does NOT track",NULL,NULL,0,FRAME_SUNKEN|FRAME_THICK);
+  temp=new FXButton(subsplitter,"the&y CAN\tThis splitter does NOT track",nullptr,nullptr,0,FRAME_SUNKEN|FRAME_THICK);
   temp->setBackColor(FXRGB(128,0,0));
   temp->setTextColor(FXRGB(255,255,255));
-  temp=new FXButton(subsplitter,"be &NESTED\tThis splitter does NOT track",NULL,NULL,0,FRAME_SUNKEN|FRAME_THICK);
+  temp=new FXButton(subsplitter,"be &NESTED\tThis splitter does NOT track",nullptr,nullptr,0,FRAME_SUNKEN|FRAME_THICK);
   temp->setBackColor(FXRGB(0,0,200));
   temp->setTextColor(FXRGB(255,255,255));
-  temp=new FXButton(subsplitter,"&arbitrarily!\tThis splitter does NOT track",NULL,NULL,0,FRAME_SUNKEN|FRAME_THICK);
+  temp=new FXButton(subsplitter,"&arbitrarily!\tThis splitter does NOT track",nullptr,nullptr,0,FRAME_SUNKEN|FRAME_THICK);
   temp->setBackColor(FXRGB(128,128,0));
   temp->setTextColor(FXRGB(255,255,255));
 
-  new FXLabel(hf,"Hide: ",NULL,LAYOUT_CENTER_Y|LAYOUT_LEFT);
+  new FXLabel(hf,"Hide: ",nullptr,LAYOUT_CENTER_Y|LAYOUT_LEFT);
   new FXCheckButton(hf,"Top Left",tlf,ID_TOGGLESHOWN,ICON_BEFORE_TEXT|LAYOUT_CENTER_Y|LAYOUT_LEFT);
   new FXCheckButton(hf,"Top Right",trt,ID_TOGGLESHOWN,ICON_BEFORE_TEXT|LAYOUT_CENTER_Y|LAYOUT_LEFT);
   new FXCheckButton(hf,"Bottom Left",spl2,ID_TOGGLESHOWN,ICON_BEFORE_TEXT|LAYOUT_CENTER_Y|LAYOUT_LEFT);
@@ -104,7 +104,7 @@ FourSplitWindow::FourSplitWindow(FXApp *a):FXMainWindow(a,"4-Way Splitter Test",
   new FXCheckButton(hf,"Top Right",splitter,FX4Splitter::ID_EXPAND_TOPRIGHT,ICON_BEFORE_TEXT|LAYOUT_CENTER_Y|LAYOUT_RIGHT);
   new FXCheckButton(hf,"Top Left",splitter,FX4Splitter::ID_EXPAND_TOPLEFT,ICON_BEFORE_TEXT|LAYOUT_CENTER_Y|LAYOUT_RIGHT);
   new FXCheckButton(hf,"All",splitter,FX4Splitter::ID_EXPAND_ALL,ICON_BEFORE_TEXT|LAYOUT_CENTER_Y|LAYOUT_RIGHT);
-  new FXLabel(hf,"Expand: ",NULL,LAYOUT_CENTER_Y|LAYOUT_RIGHT);
+  new FXLabel(hf,"Expand: ",nullptr,LAYOUT_CENTER_Y|LAYOUT_RIGHT);
   new FXToolTip(getApp());
   }
 

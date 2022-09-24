@@ -3,7 +3,7 @@
 *                            H e l p   W i n d o w                              *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 1998,2021 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 1998,2022 by Jeroen van der Zijp.   All Rights Reserved.        *
 *********************************************************************************
 * This program is free software: you can redistribute it and/or modify          *
 * it under the terms of the GNU General Public License as published by          *
@@ -25,7 +25,7 @@
 /*******************************************************************************/
 
 
-FXIMPLEMENT(HelpWindow,FXDialogBox,NULL,0)
+FXIMPLEMENT(HelpWindow,FXDialogBox,nullptr,0)
 
 
 // Construct help dialog box
@@ -33,11 +33,11 @@ HelpWindow::HelpWindow(FXWindow *own,const FXString& ttl):FXDialogBox(own,ttl,DE
 
   // Bottom part
   FXHorizontalFrame *closebox=new FXHorizontalFrame(this,LAYOUT_SIDE_BOTTOM|LAYOUT_FILL_X|PACK_UNIFORM_WIDTH);
-  FXButton *button=new FXButton(closebox,tr("&Close"),NULL,this,FXDialogBox::ID_ACCEPT,BUTTON_INITIAL|BUTTON_DEFAULT|LAYOUT_RIGHT|FRAME_RAISED|FRAME_THICK,0,0,0,0, 20,20,5,5);
+  FXButton *button=new FXButton(closebox,tr("&Close"),nullptr,this,FXDialogBox::ID_ACCEPT,BUTTON_INITIAL|BUTTON_DEFAULT|LAYOUT_RIGHT|FRAME_RAISED|FRAME_THICK,0,0,0,0, 20,20,5,5);
 
   // Text part
   FXHorizontalFrame *editbox=new FXHorizontalFrame(this,LAYOUT_SIDE_TOP|LAYOUT_FILL_X|LAYOUT_FILL_Y|FRAME_SUNKEN|FRAME_THICK,0,0,0,0, 0,0,0,0);
-  helptext=new FXText(editbox,NULL,0,TEXT_READONLY|TEXT_WORDWRAP|LAYOUT_FILL_X|LAYOUT_FILL_Y);
+  helptext=new FXText(editbox,nullptr,0,TEXT_READONLY|TEXT_WORDWRAP|LAYOUT_FILL_X|LAYOUT_FILL_Y);
   helptext->setVisibleRows(50);
   helptext->setVisibleColumns(90);
   button->setFocus();

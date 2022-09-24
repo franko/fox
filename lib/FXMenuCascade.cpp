@@ -3,7 +3,7 @@
 *                       M e n u   C a s c a d e   W i d g e t                   *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 1997,2021 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 1997,2022 by Jeroen van der Zijp.   All Rights Reserved.        *
 *********************************************************************************
 * This library is free software; you can redistribute it and/or modify          *
 * it under the terms of the GNU Lesser General Public License as published by   *
@@ -94,7 +94,7 @@ FXIMPLEMENT(FXMenuCascade,FXMenuCaption,FXMenuCascadeMap,ARRAYNUMBER(FXMenuCasca
 // Make cascade menu button
 FXMenuCascade::FXMenuCascade(){
   flags|=FLAG_ENABLED;
-  pane=NULL;
+  pane=nullptr;
   }
 
 
@@ -135,7 +135,7 @@ FXbool FXMenuCascade::canFocus() const { return true; }
 // Pressed button
 long FXMenuCascade::onButtonPress(FXObject*,FXSelector,void*){
   if(!isEnabled()) return 0;
-  handle(this,FXSEL(SEL_COMMAND,ID_POST),NULL);
+  handle(this,FXSEL(SEL_COMMAND,ID_POST),nullptr);
   return 1;
   }
 
@@ -144,7 +144,7 @@ long FXMenuCascade::onButtonPress(FXObject*,FXSelector,void*){
 long FXMenuCascade::onButtonRelease(FXObject*,FXSelector,void* ptr){
   if(!isEnabled()) return 0;
   if(((FXEvent*)ptr)->moved){
-    getParent()->handle(this,FXSEL(SEL_COMMAND,ID_UNPOST),NULL);
+    getParent()->handle(this,FXSEL(SEL_COMMAND,ID_UNPOST),nullptr);
     }
   return 1;
   }
@@ -177,7 +177,7 @@ long FXMenuCascade::onKeyPress(FXObject*,FXSelector sel,void* ptr){
     case KEY_Return:
     case KEY_space:
     case KEY_KP_Space:
-      handle(this,FXSEL(SEL_COMMAND,ID_POST),NULL);
+      handle(this,FXSEL(SEL_COMMAND,ID_POST),nullptr);
       return 1;
     }
   return 0;
@@ -209,7 +209,7 @@ long FXMenuCascade::onHotKeyPress(FXObject*,FXSelector,void* ptr){
   FXTRACE((200,"%s::onHotKeyPress %p\n",getClassName(),this));
   handle(this,FXSEL(SEL_FOCUS_SELF,0),ptr);
   if(isEnabled()){
-    handle(this,FXSEL(SEL_COMMAND,ID_POST),NULL);
+    handle(this,FXSEL(SEL_COMMAND,ID_POST),nullptr);
     }
   return 1;
   }
@@ -256,7 +256,7 @@ void FXMenuCascade::setFocus(){
 // Out of focus chain; hide submenu if it was up
 void FXMenuCascade::killFocus(){
   FXMenuCaption::killFocus();
-  handle(this,FXSEL(SEL_COMMAND,ID_UNPOST),NULL);
+  handle(this,FXSEL(SEL_COMMAND,ID_UNPOST),nullptr);
   flags&=~FLAG_ACTIVE;
   flags|=FLAG_UPDATE;
   update();

@@ -3,7 +3,7 @@
 *                   V a r a r g s   S c a n f   R o u t i n e s                 *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 2002,2021 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 2002,2022 by Jeroen van der Zijp.   All Rights Reserved.        *
 *********************************************************************************
 * This library is free software; you can redistribute it and/or modify          *
 * it under the terms of the GNU Lesser General Public License as published by   *
@@ -109,11 +109,6 @@ using namespace FX;
 namespace FX {
 
 
-// Declarations
-extern FXAPI FXint __sscanf(const FXchar* string,const FXchar* format,...);
-extern FXAPI FXint __vsscanf(const FXchar* string,const FXchar* format,va_list arg_ptr);
-
-
 // Type modifiers
 enum {
   ARG_HALFHALF,         // 'hh'
@@ -134,6 +129,10 @@ const FXint NORMAL=0x100;
 
 // Thousands separator
 const FXint COMMA=',';
+
+// Declarations
+extern FXAPI FXint __sscanf(const FXchar* string,const FXchar* format,...);
+extern FXAPI FXint __vsscanf(const FXchar* string,const FXchar* format,va_list arg_ptr);
 
 /*******************************************************************************/
 
@@ -185,7 +184,6 @@ FXint __vsscanf(const FXchar* string,const FXchar* format,va_list args){
       done=0;
       comma=NORMAL;
       base=0;
-      pos=-1;
 
       // Parse format specifier
 flg:  switch(ch){

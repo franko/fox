@@ -3,7 +3,7 @@
 *                      J S O N   R e a d e r  &  W r i t e r                    *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 2013,2021 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 2013,2022 by Jeroen van der Zijp.   All Rights Reserved.        *
 *********************************************************************************
 * This library is free software; you can redistribute it and/or modify          *
 * it under the terms of the GNU Lesser General Public License as published by   *
@@ -93,12 +93,13 @@ protected:
   FXchar     *wptr;             // Text buffer write ptr
   FXchar     *rptr;             // Text buffer read ptr
   FXchar     *sptr;             // Text buffer scan ptr
+  FXString    value;            // Token value
   FXlong      offset;           // Position from start
+  FXint       token;            // Token
   FXint       column;           // Column number
   FXint       indent;           // Indent level
   FXint       line;             // Line number
   Direction   dir;              // Direction
-  FXint       token;            // Token
   FXint       wrap;             // Line wrap column
   FXuchar     flow;             // Output flow
   FXuchar     prec;             // Float precision
@@ -107,11 +108,12 @@ protected:
   FXuchar     dent;             // Indentation amount
 private:
   FXint next();
+  FXint ident();
+  FXint string();
+  FXint number();
   FXbool need(FXival count);
   FXbool emit(const FXchar* str,FXival count);
   FXbool emit(FXchar ch,FXival count);
-  Error loadString(FXString& str);
-  Error loadIdent(FXString& str);
   Error loadMap(FXVariant& var);
   Error loadArray(FXVariant& var);
   Error loadVariant(FXVariant& var);
@@ -141,7 +143,7 @@ public:
   /**
   * Open JSON parse buffer with size and direction.
   */
-  FXbool open(FXchar* buffer=NULL,FXuval sz=8192,Direction d=Load);
+  FXbool open(FXchar* buffer=nullptr,FXuval sz=8192,Direction d=Load);
 
   /**
   * Return direction in effect.

@@ -3,7 +3,7 @@
 *                      E x p r e s s i o n   E v a l u a t o r                  *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 1998,2021 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 1998,2022 by Jeroen van der Zijp.   All Rights Reserved.        *
 *********************************************************************************
 * This library is free software; you can redistribute it and/or modify          *
 * it under the terms of the GNU Lesser General Public License as published by   *
@@ -64,8 +64,8 @@ namespace FX {
 
 
 // Furnish our own versions
-extern FXAPI FXlong __strtoll(const FXchar *beg,const FXchar** end=NULL,FXint base=0,FXbool* ok=NULL);
-extern FXAPI FXdouble __strtod(const FXchar *beg,const FXchar** end=NULL,FXbool* ok=NULL);
+extern FXAPI FXlong __strtoll(const FXchar *beg,const FXchar** end=nullptr,FXint base=0,FXbool* ok=nullptr);
+extern FXAPI FXdouble __strtod(const FXchar *beg,const FXchar** end=nullptr,FXbool* ok=nullptr);
 
 
 namespace {
@@ -434,31 +434,31 @@ FXExpression::Error FXCompile::element(){
       if(token!=TK_RPAR) return FXExpression::ErrParent;
       break;
     case TK_INT_HEX:
-      num=(FXdouble)__strtoll(head+2,NULL,16,&ok);
+      num=(FXdouble)__strtoll(head+2,nullptr,16,&ok);
       if(!ok) return FXExpression::ErrToken;
       opcode(OP_NUM);
       number(num);
       break;
     case TK_INT_BIN:
-      num=(FXdouble)__strtoll(head+2,NULL,2,&ok);
+      num=(FXdouble)__strtoll(head+2,nullptr,2,&ok);
       if(!ok) return FXExpression::ErrToken;
       opcode(OP_NUM);
       number(num);
       break;
     case TK_INT_OCT:
-      num=(FXdouble)__strtoll(head+1,NULL,8,&ok);
+      num=(FXdouble)__strtoll(head+1,nullptr,8,&ok);
       if(!ok) return FXExpression::ErrToken;
       opcode(OP_NUM);
       number(num);
       break;
     case TK_INT:
-      num=(FXdouble)__strtoll(head,NULL,10,&ok);
+      num=(FXdouble)__strtoll(head,nullptr,10,&ok);
       opcode(OP_NUM);
       if(!ok) return FXExpression::ErrToken;
       number(num);
       break;
     case TK_REAL:
-      num=__strtod(head,NULL,&ok);
+      num=__strtod(head,nullptr,&ok);
       if(!ok) return FXExpression::ErrToken;
       opcode(OP_NUM);
       number(num);
@@ -969,7 +969,7 @@ FXExpression::Error FXExpression::parse(const FXchar* expression,const FXchar* v
   if(expression){
 
     // Create compile engine
-    FXCompile cs(NULL,expression,variables);
+    FXCompile cs(nullptr,expression,variables);
 
     // Parse to check syntax and determine size
     if((err=cs.compile())==ErrOK){

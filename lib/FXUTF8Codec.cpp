@@ -3,7 +3,7 @@
 *                      U T F - 8  T e x t   C o d e c                           *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 2002,2021 by L.Johnson & J.van der Zijp.  All Rights Reserved.  *
+* Copyright (C) 2002,2022 by L.Johnson & J.van der Zijp.  All Rights Reserved.  *
 *********************************************************************************
 * This library is free software; you can redistribute it and/or modify          *
 * it under the terms of the GNU Lesser General Public License as published by   *
@@ -94,7 +94,7 @@ FXint FXUTF8Codec::mibEnum() const {
 
 // Return aliases
 const FXchar* const* FXUTF8Codec::aliases() const {
-  static const FXchar *const list[]={"UTF-8",NULL};
+  static const FXchar *const list[]={"UTF-8",nullptr};
   return list;
   }
 

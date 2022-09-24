@@ -3,7 +3,7 @@
 *                               X M L   T e s t                                 *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 2016,2021 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 2016,2022 by Jeroen van der Zijp.   All Rights Reserved.        *
 ********************************************************************************/
 #include "fx.h"
 
@@ -94,9 +94,9 @@ FXXML::Error endDocument(){
 // Test XML I/O
 int main(int argc,char *argv[]){
   const FXchar* xmltests="xmltests.json";
-  const FXchar* loadfile=NULL;
-  const FXchar* savefile=NULL;
-  const FXchar* oasisdir=NULL;
+  const FXchar* loadfile=nullptr;
+  const FXchar* savefile=nullptr;
+  const FXchar* oasisdir=nullptr;
   FXint verbosity=0;
 
   // Grab a few arguments
@@ -122,7 +122,7 @@ int main(int argc,char *argv[]){
       }
     else if(strcmp(argv[arg],"--tracelevel")==0){
       if(++arg>=argc){ fxmessage("Missing tracelevel number argument.\n"); exit(1); }
-      setTraceLevel(strtoul(argv[arg],NULL,0));
+      setTraceLevel(strtoul(argv[arg],nullptr,0));
       }
     else{
       fxmessage("Bad argument.\n");

@@ -3,7 +3,7 @@
 *                          U t i l i t y   F u n c t i o n s                    *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 1998,2021 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 1998,2022 by Jeroen van der Zijp.   All Rights Reserved.        *
 *********************************************************************************
 * This library is free software; you can redistribute it and/or modify          *
 * it under the terms of the GNU Lesser General Public License as published by   *
@@ -51,7 +51,7 @@ namespace FX {
 
 
 // Furnish our own versions
-extern FXAPI FXuint __strtoul(const FXchar *beg,const FXchar** end=NULL,FXint base=0,FXbool* ok=NULL);
+extern FXAPI FXuint __strtoul(const FXchar *beg,const FXchar** end=nullptr,FXint base=0,FXbool* ok=nullptr);
 
 // Allows GNU autoconfigure to find FOX
 extern "C" FXAPI void fxfindfox(void){ }
@@ -78,11 +78,11 @@ FXbool fxisconsole(const FXchar *path){
   FXbool                flag=false;     // Assume false on Windows is safest!
 
   // Open the application file.
-  hImage=CreateFileA(path,GENERIC_READ,FILE_SHARE_READ,NULL,OPEN_EXISTING,FILE_ATTRIBUTE_NORMAL,NULL);
+  hImage=CreateFileA(path,GENERIC_READ,FILE_SHARE_READ,nullptr,OPEN_EXISTING,FILE_ATTRIBUTE_NORMAL,nullptr);
   if(hImage!=INVALID_HANDLE_VALUE){
 
     // Read MS-Dos image header.
-    if(ReadFile(hImage,&dos_header,sizeof(IMAGE_DOS_HEADER),&dwBytes,NULL)==0) goto x;
+    if(ReadFile(hImage,&dos_header,sizeof(IMAGE_DOS_HEADER),&dwBytes,nullptr)==0) goto x;
 
     // Test bytes read
     if(dwBytes!=sizeof(IMAGE_DOS_HEADER)) goto x;
@@ -91,18 +91,18 @@ FXbool fxisconsole(const FXchar *path){
     if(dos_header.e_magic!=IMAGE_DOS_SIGNATURE) goto x;
 
     // Read more MS-Dos header.
-    if(ReadFile(hImage,dwMoreDosHeader,sizeof(dwMoreDosHeader),&dwBytes,NULL)==0) goto x;
+    if(ReadFile(hImage,dwMoreDosHeader,sizeof(dwMoreDosHeader),&dwBytes,nullptr)==0) goto x;
 
     // Test bytes read
     if(dwBytes!=sizeof(dwMoreDosHeader)) goto x;
 
     // Move the file pointer to get the actual COFF header.
-    dwNewOffset=SetFilePointer(hImage,dos_header.e_lfanew,NULL,FILE_BEGIN);
+    dwNewOffset=SetFilePointer(hImage,dos_header.e_lfanew,nullptr,FILE_BEGIN);
     dwCoffHeaderOffset=dwNewOffset+sizeof(ULONG);
     if(dwCoffHeaderOffset==0xFFFFFFFF) goto x;
 
     // Read NT signature of the file.
-    if(ReadFile(hImage,&ulNTSignature,sizeof(ULONG),&dwBytes,NULL)==0) goto x;
+    if(ReadFile(hImage,&ulNTSignature,sizeof(ULONG),&dwBytes,nullptr)==0) goto x;
 
     // Test bytes read
     if(dwBytes!=sizeof(ULONG)) goto x;
@@ -110,13 +110,13 @@ FXbool fxisconsole(const FXchar *path){
     // Test NT signature
     if(ulNTSignature!=IMAGE_NT_SIGNATURE) goto x;
 
-    if(ReadFile(hImage,&file_header,IMAGE_SIZEOF_FILE_HEADER,&dwBytes,NULL)==0) goto x;
+    if(ReadFile(hImage,&file_header,IMAGE_SIZEOF_FILE_HEADER,&dwBytes,nullptr)==0) goto x;
 
     // Test bytes read
     if(dwBytes!=IMAGE_SIZEOF_FILE_HEADER) goto x;
 
     // Read the optional header of file.
-    if(ReadFile(hImage,&optional_header,sizeof(IMAGE_OPTIONAL_HEADER),&dwBytes,NULL)==0) goto x;
+    if(ReadFile(hImage,&optional_header,sizeof(IMAGE_OPTIONAL_HEADER),&dwBytes,nullptr)==0) goto x;
 
     // Test bytes read
     if(dwBytes!=sizeof(IMAGE_OPTIONAL_HEADER)) goto x;
@@ -190,7 +190,7 @@ void fxerror(const FXchar* format,...){
   OutputDebugStringA(message.text());
   fputs(message.text(),stderr);         // if a console is available
   fflush(stderr);
-  MessageBoxA(NULL,message.text(),NULL,MB_OK|MB_ICONEXCLAMATION|MB_APPLMODAL);
+  MessageBoxA(nullptr,message.text(),nullptr,MB_OK|MB_ICONEXCLAMATION|MB_APPLMODAL);
   DebugBreak();
 #else
   fputs(message.text(),stderr);
@@ -217,7 +217,7 @@ void fxwarning(const FXchar* format,...){
   OutputDebugStringA(message.text());
   fputs(message.text(),stderr);         // if a console is available
   fflush(stderr);
-  MessageBoxA(NULL,message.text(),NULL,MB_OK|MB_ICONINFORMATION|MB_APPLMODAL);
+  MessageBoxA(nullptr,message.text(),nullptr,MB_OK|MB_ICONINFORMATION|MB_APPLMODAL);
 #else
   fputs(message.text(),stderr);
   fflush(stderr);
@@ -262,7 +262,7 @@ void fxverify(const FXchar* expression,const FXchar* filename,unsigned int linen
 /*******************************************************************************/
 
 // Trace level environment variable
-static const FXchar* fxTraceVariable=NULL;
+static const FXchar* fxTraceVariable=nullptr;
 
 // Room for lots of topics
 static FXuchar fxTopicArray[1024];
@@ -333,16 +333,16 @@ FXbool setTraceTopics(const FXchar* topics,FXbool flag){
 
 // Trace printout routine
 void fxtrace(FXuint level,const FXchar* format,...){
-  if(__unlikely(fxTraceVariable==NULL)){
+  if(__unlikely(fxTraceVariable==nullptr)){
     const FXchar* str;
     fxTraceVariable="";
-    if((str=getenv("FOX_TRACE_TOPICS"))!=NULL){
+    if((str=getenv("FOX_TRACE_TOPICS"))!=nullptr){
       fxTraceVariable=str;
       setTraceTopics(fxTraceVariable,true);
       }
-    else if((str=getenv("FOX_TRACE_LEVEL"))!=NULL){
+    else if((str=getenv("FOX_TRACE_LEVEL"))!=nullptr){
       fxTraceVariable=str;
-      setTraceLevel(__strtoul(fxTraceVariable,NULL,10),true);
+      setTraceLevel(__strtoul(fxTraceVariable,nullptr,10),true);
       }
     }
   if(__likely(fxTopicArray[level&(ARRAYNUMBER(fxTopicArray)-1)])){

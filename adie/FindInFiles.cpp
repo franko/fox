@@ -3,7 +3,7 @@
 *                    F i n d   P a t t e r n   I n   F i l e s                  *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 1998,2021 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 1998,2022 by Jeroen van der Zijp.   All Rights Reserved.        *
 *********************************************************************************
 * This program is free software: you can redistribute it and/or modify          *
 * it under the terms of the GNU General Public License as published by          *
@@ -188,12 +188,12 @@ FXlong SearchVisitor::loadFile(const FXString& path,FXString& text) const {
 
 // For deserialization
 FindInFiles::FindInFiles():visitor(this){
-  locations=NULL;
-  findstring=NULL;
-  filefolder=NULL;
-  filefilter=NULL;
-  pausebutton=NULL;
-  searching=NULL;
+  locations=nullptr;
+  findstring=nullptr;
+  filefolder=nullptr;
+  filefilter=nullptr;
+  pausebutton=nullptr;
+  searching=nullptr;
   clearElms(optionsHistory,20);
   clearElms(patternHistory,20);
   searchmode=SearchExact|SearchRecurse;
@@ -210,14 +210,14 @@ FindInFiles::FindInFiles(Adie *a):FXDialogBox(a,"Find In Files",DECOR_TITLE|DECO
 
   // Buttons at bottom
   FXHorizontalFrame* bottomline=new FXHorizontalFrame(this,LAYOUT_SIDE_BOTTOM|LAYOUT_FILL_X,0,0,0,0,0,0,0,0);
-  new FXLabel(bottomline,tr("Searching: "),NULL,LAYOUT_CENTER_Y|LAYOUT_LEFT|JUSTIFY_RIGHT,0,0,0,0,2,2,VERT_PAD,VERT_PAD);
-  searching=new FXLabel(bottomline,tr("<stopped>"),NULL,LAYOUT_CENTER_Y|LAYOUT_FILL_X|JUSTIFY_LEFT,0,0,0,0,2,2,VERT_PAD,VERT_PAD);
+  new FXLabel(bottomline,tr("Searching: "),nullptr,LAYOUT_CENTER_Y|LAYOUT_LEFT|JUSTIFY_RIGHT,0,0,0,0,2,2,VERT_PAD,VERT_PAD);
+  searching=new FXLabel(bottomline,tr("<stopped>"),nullptr,LAYOUT_CENTER_Y|LAYOUT_FILL_X|JUSTIFY_LEFT,0,0,0,0,2,2,VERT_PAD,VERT_PAD);
   FXHorizontalFrame* buttons=new FXHorizontalFrame(bottomline,LAYOUT_RIGHT|PACK_UNIFORM_WIDTH|PACK_UNIFORM_HEIGHT,0,0,0,0,0,0,0,0);
-  new FXButton(buttons,tr("&Close"),NULL,this,ID_CLOSE,BUTTON_DEFAULT|FRAME_RAISED|FRAME_THICK|LAYOUT_CENTER_Y|LAYOUT_RIGHT,0,0,0,0,6,6,VERT_PAD,VERT_PAD);
-  new FXButton(buttons,tr("&Delete"),NULL,this,ID_DELETE,BUTTON_DEFAULT|FRAME_RAISED|FRAME_THICK|LAYOUT_FILL_Y|LAYOUT_RIGHT,0,0,0,0,HORZ_PAD,HORZ_PAD,VERT_PAD,VERT_PAD);
-  new FXButton(buttons,tr("Stop"),NULL,this,ID_STOP,BUTTON_DEFAULT|FRAME_RAISED|FRAME_THICK|LAYOUT_FILL_Y|LAYOUT_RIGHT,0,0,0,0,HORZ_PAD,HORZ_PAD,VERT_PAD,VERT_PAD);
-  pausebutton=new FXToggleButton(buttons,tr("Pause"),tr("Resume"),NULL,NULL,this,ID_PAUSE,FRAME_RAISED|FRAME_THICK|LAYOUT_FILL_Y|LAYOUT_RIGHT,0,0,0,0,HORZ_PAD,HORZ_PAD,VERT_PAD,VERT_PAD);
-  new FXButton(buttons,tr("&Search"),NULL,this,ID_SEARCH,BUTTON_INITIAL|BUTTON_DEFAULT|FRAME_RAISED|FRAME_THICK|LAYOUT_FILL_Y|LAYOUT_RIGHT,0,0,0,0,HORZ_PAD,HORZ_PAD,VERT_PAD,VERT_PAD);
+  new FXButton(buttons,tr("&Close"),nullptr,this,ID_CLOSE,BUTTON_DEFAULT|FRAME_RAISED|FRAME_THICK|LAYOUT_CENTER_Y|LAYOUT_RIGHT,0,0,0,0,6,6,VERT_PAD,VERT_PAD);
+  new FXButton(buttons,tr("&Delete"),nullptr,this,ID_DELETE,BUTTON_DEFAULT|FRAME_RAISED|FRAME_THICK|LAYOUT_FILL_Y|LAYOUT_RIGHT,0,0,0,0,HORZ_PAD,HORZ_PAD,VERT_PAD,VERT_PAD);
+  new FXButton(buttons,tr("Stop"),nullptr,this,ID_STOP,BUTTON_DEFAULT|FRAME_RAISED|FRAME_THICK|LAYOUT_FILL_Y|LAYOUT_RIGHT,0,0,0,0,HORZ_PAD,HORZ_PAD,VERT_PAD,VERT_PAD);
+  pausebutton=new FXToggleButton(buttons,tr("Pause"),tr("Resume"),nullptr,nullptr,this,ID_PAUSE,FRAME_RAISED|FRAME_THICK|LAYOUT_FILL_Y|LAYOUT_RIGHT,0,0,0,0,HORZ_PAD,HORZ_PAD,VERT_PAD,VERT_PAD);
+  new FXButton(buttons,tr("&Search"),nullptr,this,ID_SEARCH,BUTTON_INITIAL|BUTTON_DEFAULT|FRAME_RAISED|FRAME_THICK|LAYOUT_FILL_Y|LAYOUT_RIGHT,0,0,0,0,HORZ_PAD,HORZ_PAD,VERT_PAD,VERT_PAD);
 
   // Above button block
   new FXHorizontalSeparator(this,SEPARATOR_GROOVE|LAYOUT_SIDE_BOTTOM|LAYOUT_FILL_X);
@@ -234,7 +234,7 @@ FindInFiles::FindInFiles(Adie *a):FXDialogBox(a,"Find In Files",DECOR_TITLE|DECO
   FXMatrix *matrix=new FXMatrix(this,3,MATRIX_BY_COLUMNS|LAYOUT_SIDE_BOTTOM|LAYOUT_FILL_X,0,0,0,0,0,0,0,0);
 
   // Text field with history
-  new FXLabel(matrix,tr("S&earch for:"),NULL,JUSTIFY_RIGHT|LAYOUT_FILL_X|LAYOUT_CENTER_Y);
+  new FXLabel(matrix,tr("S&earch for:"),nullptr,JUSTIFY_RIGHT|LAYOUT_FILL_X|LAYOUT_CENTER_Y);
   FXHorizontalFrame* searchbox=new FXHorizontalFrame(matrix,FRAME_SUNKEN|FRAME_THICK|LAYOUT_FILL_X|LAYOUT_CENTER_Y|LAYOUT_FILL_COLUMN,0,0,0,0, 0,0,0,0, 0,0);
   findstring=new FXTextField(searchbox,26,this,ID_SEARCH_TEXT,TEXTFIELD_ENTER_ONLY|LAYOUT_FILL_X|LAYOUT_FILL_Y);
   FXVerticalFrame* searcharrows=new FXVerticalFrame(searchbox,LAYOUT_RIGHT|LAYOUT_FILL_Y|PACK_UNIFORM_HEIGHT,0,0,0,0, 0,0,0,0, 0,0);
@@ -245,12 +245,12 @@ FindInFiles::FindInFiles(Adie *a):FXDialogBox(a,"Find In Files",DECOR_TITLE|DECO
   new FXFrame(matrix,0);
 
   // Folder to search
-  new FXLabel(matrix,tr("In &Folder:"),NULL,JUSTIFY_RIGHT|LAYOUT_FILL_X|LAYOUT_CENTER_Y);
+  new FXLabel(matrix,tr("In &Folder:"),nullptr,JUSTIFY_RIGHT|LAYOUT_FILL_X|LAYOUT_CENTER_Y);
   filefolder=new FXTextField(matrix,40,this,ID_FOLDER_TEXT,JUSTIFY_LEFT|FRAME_SUNKEN|FRAME_THICK|LAYOUT_CENTER_Y|LAYOUT_FILL_COLUMN|LAYOUT_FILL_X);
-  new FXButton(matrix,"...",NULL,this,ID_FOLDER,LAYOUT_CENTER_Y|FRAME_RAISED|FRAME_THICK|LAYOUT_FIX_WIDTH,0,0,20,0);
+  new FXButton(matrix,"...",nullptr,this,ID_FOLDER,LAYOUT_CENTER_Y|FRAME_RAISED|FRAME_THICK|LAYOUT_FIX_WIDTH,0,0,20,0);
 
   // Filter for files
-  new FXLabel(matrix,tr("F&ilter:"),NULL,JUSTIFY_RIGHT|LAYOUT_FILL_X|LAYOUT_CENTER_Y);
+  new FXLabel(matrix,tr("F&ilter:"),nullptr,JUSTIFY_RIGHT|LAYOUT_FILL_X|LAYOUT_CENTER_Y);
   filefilter=new FXComboBox(matrix,10,this,ID_FILTER_TEXT,COMBOBOX_STATIC|LAYOUT_FILL_X|LAYOUT_CENTER_Y|FRAME_SUNKEN|FRAME_THICK|LAYOUT_FILL_COLUMN);
   filefilter->setNumVisible(4);
   new FXFrame(matrix,0);
@@ -258,8 +258,8 @@ FindInFiles::FindInFiles(Adie *a):FXDialogBox(a,"Find In Files",DECOR_TITLE|DECO
   // Matching files
   FXHorizontalFrame* resultbox=new FXHorizontalFrame(this,LAYOUT_SIDE_TOP|LAYOUT_FILL_X|LAYOUT_FILL_Y|FRAME_SUNKEN|FRAME_THICK,0,0,0,0,0,0,0,0);
   locations=new FXIconList(resultbox,this,ID_FILELIST,LAYOUT_FILL_X|LAYOUT_FILL_Y|ICONLIST_DETAILED|ICONLIST_SINGLESELECT);
-  locations->appendHeader(tr("Location"),NULL,200);
-  locations->appendHeader(tr("Context"),NULL,800);
+  locations->appendHeader(tr("Location"),nullptr,200);
+  locations->appendHeader(tr("Context"),nullptr,800);
 
   // Clean array
   clearElms(optionsHistory,20);
@@ -267,6 +267,10 @@ FindInFiles::FindInFiles(Adie *a):FXDialogBox(a,"Find In Files",DECOR_TITLE|DECO
 
   // Set title
   setTitle(tr("Find In Files"));
+
+  // Set icons
+  setIcon(getApp()->bigicon);
+  setMiniIcon(getApp()->smallicon);
 
   // Initial pattern
   setPatternList(tr("All Files (*)"));
@@ -501,7 +505,7 @@ FXString FindInFiles::getSearchingText() const {
 
 // Update stop button
 long FindInFiles::onUpdStop(FXObject* sender,FXSelector,void*){
-  sender->handle(this,proceed?FXSEL(SEL_COMMAND,ID_DISABLE):FXSEL(SEL_COMMAND,ID_ENABLE),NULL);
+  sender->handle(this,proceed?FXSEL(SEL_COMMAND,ID_DISABLE):FXSEL(SEL_COMMAND,ID_ENABLE),nullptr);
   return 1;
   }
 
@@ -515,8 +519,8 @@ long FindInFiles::onCmdStop(FXObject*,FXSelector,void*){
 
 // Update pause/resume button
 long FindInFiles::onUpdPause(FXObject* sender,FXSelector,void*){
-  sender->handle(this,(proceed==0)?FXSEL(SEL_COMMAND,ID_CHECK):FXSEL(SEL_COMMAND,ID_UNCHECK),NULL);
-  sender->handle(this,visitor.visiting()?FXSEL(SEL_COMMAND,ID_ENABLE):FXSEL(SEL_COMMAND,ID_DISABLE),NULL);
+  sender->handle(this,(proceed==0)?FXSEL(SEL_COMMAND,ID_CHECK):FXSEL(SEL_COMMAND,ID_UNCHECK),nullptr);
+  sender->handle(this,visitor.visiting()?FXSEL(SEL_COMMAND,ID_ENABLE):FXSEL(SEL_COMMAND,ID_DISABLE),nullptr);
   return 1;
   }
 
@@ -530,7 +534,7 @@ long FindInFiles::onCmdPause(FXObject*,FXSelector,void*){
 
 // Grey out delete if no results
 long FindInFiles::onUpdDelete(FXObject* sender,FXSelector,void*){
-  sender->handle(this,locations->getNumItems()?FXSEL(SEL_COMMAND,ID_ENABLE):FXSEL(SEL_COMMAND,ID_DISABLE),NULL);
+  sender->handle(this,locations->getNumItems()?FXSEL(SEL_COMMAND,ID_ENABLE):FXSEL(SEL_COMMAND,ID_DISABLE),nullptr);
   return 1;
   }
 
@@ -545,7 +549,7 @@ long FindInFiles::onCmdDelete(FXObject*,FXSelector,void*){
 // Grey out buttons if no search text
 long FindInFiles::onUpdSearch(FXObject* sender,FXSelector,void*){
   FXbool enabled=!visitor.visiting() && !findstring->getText().empty();
-  sender->handle(this,enabled?FXSEL(SEL_COMMAND,ID_ENABLE):FXSEL(SEL_COMMAND,ID_DISABLE),NULL);
+  sender->handle(this,enabled?FXSEL(SEL_COMMAND,ID_ENABLE):FXSEL(SEL_COMMAND,ID_DISABLE),nullptr);
   return 1;
   }
 
@@ -585,7 +589,7 @@ long FindInFiles::onUpdFlags(FXObject* sender,FXSelector sel,void*){
     case ID_RECURSIVE: value=(searchmode&SearchRecurse); break;
     case ID_HIDDEN: value=(searchmode&SeachHidden); break;
     }
-  sender->handle(this,value?FXSEL(SEL_COMMAND,FXWindow::ID_CHECK):FXSEL(SEL_COMMAND,FXWindow::ID_UNCHECK),NULL);
+  sender->handle(this,value?FXSEL(SEL_COMMAND,FXWindow::ID_CHECK):FXSEL(SEL_COMMAND,FXWindow::ID_UNCHECK),nullptr);
   return 1;
   }
 
@@ -604,7 +608,7 @@ long FindInFiles::onCmdFlags(FXObject*,FXSelector sel,void*){
 
 // Update all hits check button
 long FindInFiles::onUpdFirstHit(FXObject* sender,FXSelector,void*){
-  sender->handle(this,firsthit?FXSEL(SEL_COMMAND,FXWindow::ID_CHECK):FXSEL(SEL_COMMAND,FXWindow::ID_UNCHECK),NULL);
+  sender->handle(this,firsthit?FXSEL(SEL_COMMAND,FXWindow::ID_CHECK):FXSEL(SEL_COMMAND,FXWindow::ID_UNCHECK),nullptr);
   return 1;
   }
 
@@ -628,14 +632,14 @@ long FindInFiles::onCmdFolder(FXObject*,FXSelector,void*){
 
 // Update arrows
 long FindInFiles::onUpdHistoryUp(FXObject* sender,FXSelector,void*){
-  sender->handle(this,(index<19 && !searchHistory[index+1].empty())?FXSEL(SEL_COMMAND,ID_ENABLE):FXSEL(SEL_COMMAND,ID_DISABLE),NULL);
+  sender->handle(this,(index<19 && !searchHistory[index+1].empty())?FXSEL(SEL_COMMAND,ID_ENABLE):FXSEL(SEL_COMMAND,ID_DISABLE),nullptr);
   return 1;
   }
 
 
 // Update arrows
 long FindInFiles::onUpdHistoryDn(FXObject* sender,FXSelector,void*){
-  sender->handle(this,(-1<index)?FXSEL(SEL_COMMAND,ID_ENABLE):FXSEL(SEL_COMMAND,ID_DISABLE),NULL);
+  sender->handle(this,(-1<index)?FXSEL(SEL_COMMAND,ID_ENABLE):FXSEL(SEL_COMMAND,ID_DISABLE),nullptr);
   return 1;
   }
 
@@ -684,10 +688,10 @@ long FindInFiles::onArrowKey(FXObject*,FXSelector,void* ptr){
   switch(((FXEvent*)ptr)->code){
     case KEY_Up:
     case KEY_KP_Up:
-      return onCmdHistoryUp(this,FXSEL(SEL_COMMAND,ID_HIST_UP),NULL);
+      return onCmdHistoryUp(this,FXSEL(SEL_COMMAND,ID_HIST_UP),nullptr);
     case KEY_Down:
     case KEY_KP_Down:
-      return onCmdHistoryDn(this,FXSEL(SEL_COMMAND,ID_HIST_DN),NULL);
+      return onCmdHistoryDn(this,FXSEL(SEL_COMMAND,ID_HIST_DN),nullptr);
     }
   return 0;
   }
@@ -696,10 +700,10 @@ long FindInFiles::onArrowKey(FXObject*,FXSelector,void* ptr){
 // Wheeling in text field scrolls through history
 long FindInFiles::onMouseWheel(FXObject*,FXSelector,void* ptr){
   if(((FXEvent*)ptr)->code>0){
-    return onCmdHistoryUp(this,FXSEL(SEL_COMMAND,ID_HIST_UP),NULL);
+    return onCmdHistoryUp(this,FXSEL(SEL_COMMAND,ID_HIST_UP),nullptr);
     }
   if(((FXEvent*)ptr)->code<0){
-    return onCmdHistoryDn(this,FXSEL(SEL_COMMAND,ID_HIST_DN),NULL);
+    return onCmdHistoryDn(this,FXSEL(SEL_COMMAND,ID_HIST_DN),nullptr);
     }
   return 1;
   }

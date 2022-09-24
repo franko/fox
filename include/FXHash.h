@@ -3,7 +3,7 @@
 *                       H a s h   T a b l e   C l a s s                         *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 2003,2021 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 2003,2022 by Jeroen van der Zijp.   All Rights Reserved.        *
 *********************************************************************************
 * This library is free software; you can redistribute it and/or modify          *
 * it under the terms of the GNU Lesser General Public License as published by   *
@@ -122,7 +122,7 @@ public:
   * Replace key in table, overwriting the old value if the
   * given key already exists.  Returns the old value of the key.
   */
-  FXptr insert(FXptr ky,FXptr ptr=NULL){ return swap(ptr,at(ky)); }
+  FXptr insert(FXptr ky,FXptr ptr=nullptr){ return swap(ptr,at(ky)); }
 
   /**
   * Remove key from the table. Returns the old value of the key.

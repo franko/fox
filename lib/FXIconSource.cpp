@@ -3,7 +3,7 @@
 *                            I c o n   S o u r c e                              *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 2005,2021 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 2005,2022 by Jeroen van der Zijp.   All Rights Reserved.        *
 *********************************************************************************
 * This library is free software; you can redistribute it and/or modify          *
 * it under the terms of the GNU Lesser General Public License as published by   *
@@ -108,7 +108,7 @@ FXIconSource FXIconSource::defaultIconSource;
 
 
 // Object implementation
-FXIMPLEMENT(FXIconSource,FXObject,NULL,0)
+FXIMPLEMENT(FXIconSource,FXObject,nullptr,0)
 
 
 // Scale image or icon to size
@@ -130,7 +130,7 @@ FXImage* FXIconSource::scaleToSize(FXImage *image,FXint size,FXint qual) const {
 // Create icon from file type
 FXIcon *FXIconSource::iconFromType(FXApp* app,const FXString& type) const {
   if(comparecase(FXBMPIcon::fileExt,type)==0){
-    return new FXBMPIcon(app,NULL,0,IMAGE_ALPHAGUESS);
+    return new FXBMPIcon(app,nullptr,0,IMAGE_ALPHAGUESS);
     }
   if(comparecase(FXGIFIcon::fileExt,type)==0){
     return new FXGIFIcon(app);
@@ -195,7 +195,7 @@ FXIcon *FXIconSource::iconFromType(FXApp* app,const FXString& type) const {
     }
 #endif
 #endif
-  return NULL;
+  return nullptr;
   }
 
 
@@ -267,14 +267,14 @@ FXImage *FXIconSource::imageFromType(FXApp* app,const FXString& type) const {
     }
 #endif
 #endif
-  return NULL;
+  return nullptr;
   }
 
 
 // Determine icon type from first header bytes in stream
 FXIcon *FXIconSource::iconFromStream(FXApp* app,FXStream& store) const {
   if(fxcheckBMP(store)){
-    return new FXBMPIcon(app,NULL,0,IMAGE_ALPHAGUESS);
+    return new FXBMPIcon(app,nullptr,0,IMAGE_ALPHAGUESS);
     }
   if(fxcheckGIF(store)){
     return new FXGIFIcon(app);
@@ -339,7 +339,7 @@ FXIcon *FXIconSource::iconFromStream(FXApp* app,FXStream& store) const {
   if(fxcheckTGA(store)){
     return new FXTGAIcon(app);
     }
-  return NULL;
+  return nullptr;
   }
 
 
@@ -411,13 +411,13 @@ FXImage *FXIconSource::imageFromStream(FXApp* app,FXStream& store) const {
   if(fxcheckTGA(store)){
     return new FXTGAImage(app);
     }
-  return NULL;
+  return nullptr;
   }
 
 
 // Load from file
 FXIcon *FXIconSource::loadIconFile(FXApp* app,const FXString& filename,const FXString& type) const {
-  FXIcon *icon=NULL;
+  FXIcon *icon=nullptr;
   FXTRACE((150,"FXIconSource loadIcon(%s)\n",filename.text()));
   if(!filename.empty()){
     FXFileStream store;
@@ -437,7 +437,7 @@ FXIcon *FXIconSource::loadIconFile(FXApp* app,const FXString& filename,const FXS
 
 // Load from data array
 FXIcon *FXIconSource::loadIconData(FXApp* app,const void *pixels,const FXString& type) const {
-  FXIcon *icon=NULL;
+  FXIcon *icon=nullptr;
   if(pixels){
     FXMemoryStream store;
     store.open(FXStreamLoad,(FXuchar*)pixels);
@@ -450,7 +450,7 @@ FXIcon *FXIconSource::loadIconData(FXApp* app,const void *pixels,const FXString&
 
 // Load from already open stream
 FXIcon *FXIconSource::loadIconStream(FXApp* app,FXStream& store,const FXString& type) const {
-  FXIcon *icon=NULL;
+  FXIcon *icon=nullptr;
   if(!type.empty()){
     icon=iconFromType(app,type);
     }
@@ -461,13 +461,13 @@ FXIcon *FXIconSource::loadIconStream(FXApp* app,FXStream& store,const FXString& 
     if(icon->loadPixels(store)) return icon;
     delete icon;
     }
-  return NULL;
+  return nullptr;
   }
 
 
 // Load from file
 FXImage *FXIconSource::loadImageFile(FXApp* app,const FXString& filename,const FXString& type) const {
-  FXImage *image=NULL;
+  FXImage *image=nullptr;
   FXTRACE((150,"FXIconSource loadImage(%s)\n",filename.text()));
   if(!filename.empty()){
     FXFileStream store;
@@ -487,7 +487,7 @@ FXImage *FXIconSource::loadImageFile(FXApp* app,const FXString& filename,const F
 
 // Load from data array
 FXImage *FXIconSource::loadImageData(FXApp* app,const void *pixels,const FXString& type) const {
-  FXImage *image=NULL;
+  FXImage *image=nullptr;
   if(pixels){
     FXMemoryStream store;
     store.open(FXStreamLoad,(FXuchar*)pixels);
@@ -500,7 +500,7 @@ FXImage *FXIconSource::loadImageData(FXApp* app,const void *pixels,const FXStrin
 
 // Load from already open stream
 FXImage *FXIconSource::loadImageStream(FXApp* app,FXStream& store,const FXString& type) const {
-  FXImage *image=NULL;
+  FXImage *image=nullptr;
   if(!type.empty()){
     image=imageFromType(app,type);
     }
@@ -511,7 +511,7 @@ FXImage *FXIconSource::loadImageStream(FXApp* app,FXStream& store,const FXString
     if(image->loadPixels(store)) return image;
     delete image;
     }
-  return NULL;
+  return nullptr;
   }
 
 

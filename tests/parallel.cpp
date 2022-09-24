@@ -3,7 +3,7 @@
 *                P a r a l l e l   P r o g r a m m i n g   T e s t              *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 2012,2021 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 2012,2022 by Jeroen van der Zijp.   All Rights Reserved.        *
 ********************************************************************************/
 #include "xincs.h"
 #include "fx.h"
@@ -21,36 +21,36 @@ volatile FXbool stopit=false;
 // a number close to 1 is drawn.
 void churn(){
   FXRandom random(FXThread::time()+FXLONG(128628761545));
-  fxmessage("Churn start th %p core %d/%d\n",FXThread::current(),FXThread::processor(),FXThread::processors());
+  fxmessage("Churn start th %p core %d/%d\n",(void*)FXThread::current(),FXThread::processor(),FXThread::processors());
   while(random.randDouble()<0.99999999){ }
-  fxmessage("Churn done  th %p core %d/%d\n",FXThread::current(),FXThread::processor(),FXThread::processors());
+  fxmessage("Churn done  th %p core %d/%d\n",(void*)FXThread::current(),FXThread::processor(),FXThread::processors());
   }
 
 
 // Make-work procedure does a nested parallel call to churn, then returns.
 // This is to illustrate arbitrary nesting of parallelism.
 void churn2(){
-  fxmessage("Churn2 start th %p core %d/%d\n",FXThread::current(),FXThread::processor(),FXThread::processors());
+  fxmessage("Churn2 start th %p core %d/%d\n",(void*)FXThread::current(),FXThread::processor(),FXThread::processors());
   FXParallelInvoke(churn,churn,churn,churn);
-  fxmessage("Churn2 done  th %p core %d/%d\n",FXThread::current(),FXThread::processor(),FXThread::processors());
+  fxmessage("Churn2 done  th %p core %d/%d\n",(void*)FXThread::current(),FXThread::processor(),FXThread::processors());
   }
 
 
 // Make-work procedure does a nested parallel call to churn, then returns.
 // This is to illustrate arbitrary nesting of parallelism.
 void churn3(){
-  fxmessage("Churn3 start th %p core %d/%d\n",FXThread::current(),FXThread::processor(),FXThread::processors());
+  fxmessage("Churn3 start th %p core %d/%d\n",(void*)FXThread::current(),FXThread::processor(),FXThread::processors());
   FXParallelInvoke(churn2,churn2,churn2);
-  fxmessage("Churn3 done  th %p core %d/%d\n",FXThread::current(),FXThread::processor(),FXThread::processors());
+  fxmessage("Churn3 done  th %p core %d/%d\n",(void*)FXThread::current(),FXThread::processor(),FXThread::processors());
   }
 
 
 // Make-work procedure like the ones above, this one depending on loop index i.
 void looping(FXint i){
   FXRandom random(FXThread::time()+FXLONG(128628761545));
-  fxmessage("Looping %05d begin th %p core %d/%d\n",i,FXThread::current(),FXThread::processor(),FXThread::processors());
+  fxmessage("Looping %05d begin th %p core %d/%d\n",i,(void*)FXThread::current(),FXThread::processor(),FXThread::processors());
   while(random.randDouble()<0.9999999){ }
-  fxmessage("Looping %05d finis th %p core %d/%d\n",i,FXThread::current(),FXThread::processor(),FXThread::processors());
+  fxmessage("Looping %05d finis th %p core %d/%d\n",i,(void*)FXThread::current(),FXThread::processor(),FXThread::processors());
   }
 
 
@@ -122,34 +122,34 @@ int main(int argc,char* argv[]){
       }
     else if(strcmp(argv[arg],"--threads")==0){
       if(++arg>=argc){ fxmessage("Missing threads number argument.\n"); exit(1); }
-      nthreads=strtoul(argv[arg],NULL,0);
+      nthreads=strtoul(argv[arg],nullptr,0);
       if(nthreads<1){ fxmessage("Value for threads (%d) too small.\n",nthreads); exit(1); }
       }
     else if(strcmp(argv[arg],"--pieces")==0){
       if(++arg>=argc){ fxmessage("Missing pieces number argument.\n"); exit(1); }
-      pieces=strtoul(argv[arg],NULL,0);
+      pieces=strtoul(argv[arg],nullptr,0);
       if(pieces<1){ fxmessage("Value for pieces number of pieces (%d) too small.\n",pieces); exit(1); }
       if(pieces>FXParallelMax){ fxmessage("Value for pieces number of pieces (%d) too large (%d).\n",pieces,FXParallelMax); exit(1); }
       }
     else if(strcmp(argv[arg],"--minimum")==0){
       if(++arg>=argc){ fxmessage("Missing threads number argument.\n"); exit(1); }
-      minimum=strtoul(argv[arg],NULL,0);
+      minimum=strtoul(argv[arg],nullptr,0);
       if(minimum<1){ fxmessage("Value for minimum number of threads (%d) too small.\n",minimum); exit(1); }
       }
     else if(strcmp(argv[arg],"--maximum")==0){
       if(++arg>=argc){ fxmessage("Missing threads number argument.\n"); exit(1); }
-      maximum=strtoul(argv[arg],NULL,0);
+      maximum=strtoul(argv[arg],nullptr,0);
       if(maximum<2){ fxmessage("Value for maximum number of threads (%d) too small.\n",minimum); exit(1); }
       }
     else if(strcmp(argv[arg],"--size")==0){
       if(++arg>=argc){ fxmessage("Missing size argument.\n"); exit(1); }
-      size=strtoul(argv[arg],NULL,0);
+      size=strtoul(argv[arg],nullptr,0);
       size=powoftwo(size);
       if(size<4){ fxmessage("Value for size (%d) too small.\n",size); }
       }
     else if(strcmp(argv[arg],"--jobs")==0){
       if(++arg>=argc){ fxmessage("Missing jobs count argument.\n"); exit(1); }
-      njobs=strtoul(argv[arg],NULL,0);
+      njobs=strtoul(argv[arg],nullptr,0);
       if(njobs<1){ fxmessage("Value for njobs (%d) too small.\n",njobs); exit(1); }
       }
     else if(strcmp(argv[arg],"-W")==0 || strcmp(argv[arg],"--wait")==0){
@@ -169,7 +169,7 @@ int main(int argc,char* argv[]){
       }
     else if(strcmp(argv[arg],"-tracelevel")==0){
       if(++arg>=argc){ fxmessage("Missing tracelevel argument.\n"); exit(1); }
-      setTraceLevel(strtoul(argv[arg],NULL,0));
+      setTraceLevel(strtoul(argv[arg],nullptr,0));
       }
     else{
       fxmessage("Bad argument.\n");
@@ -178,7 +178,7 @@ int main(int argc,char* argv[]){
       }
     }
 
-  fxmessage("main thread %p\n",FXThread::current());
+  fxmessage("main thread %p\n",(void*)FXThread::current());
 
   // Create thread pool with queue size
   FXThreadPool pool(size);

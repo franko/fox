@@ -3,7 +3,7 @@
 *                            L i s t   O b j e c t                              *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 1997,2021 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 1997,2022 by Jeroen van der Zijp.   All Rights Reserved.        *
 *********************************************************************************
 * This library is free software; you can redistribute it and/or modify          *
 * it under the terms of the GNU Lesser General Public License as published by   *
@@ -113,7 +113,7 @@ namespace FX {
 
 
 // Object implementation
-FXIMPLEMENT(FXListItem,FXObject,NULL,0)
+FXIMPLEMENT(FXListItem,FXObject,nullptr,0)
 
 
 // Draw item
@@ -352,7 +352,7 @@ FXList::FXList(){
   listWidth=0;
   listHeight=0;
   visible=0;
-  sortfunc=NULL;
+  sortfunc=nullptr;
   grabx=0;
   graby=0;
   state=false;
@@ -375,7 +375,7 @@ FXList::FXList(FXComposite *p,FXObject* tgt,FXSelector sel,FXuint opts,FXint x,F
   listWidth=0;
   listHeight=0;
   visible=0;
-  sortfunc=NULL;
+  sortfunc=nullptr;
   grabx=0;
   graby=0;
   state=false;

@@ -3,7 +3,7 @@
 *                           Device Context Tester                               *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 1999,2021 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 1999,2022 by Jeroen van der Zijp.   All Rights Reserved.        *
 ********************************************************************************/
 #include "fx.h"
 #include <string.h>
@@ -654,7 +654,7 @@ FXIMPLEMENT(DCTestWindow,FXMainWindow,DCTestWindowMap,ARRAYNUMBER(DCTestWindowMa
 
 
 // Make some windows
-DCTestWindow::DCTestWindow(FXApp *ap):FXMainWindow(ap,"Device Context Test",NULL,NULL,DECOR_ALL,0,0,1400,1080){
+DCTestWindow::DCTestWindow(FXApp *ap):FXMainWindow(ap,"Device Context Test",nullptr,nullptr,DECOR_ALL,0,0,1400,1080){
 
   // Preferred line attributes
   lineStyle=LINE_SOLID;
@@ -686,36 +686,36 @@ DCTestWindow::DCTestWindow(FXApp *ap):FXMainWindow(ap,"Device Context Test",NULL
   FXVerticalFrame *controls=new FXVerticalFrame(contents,LAYOUT_RIGHT|LAYOUT_FILL_Y);
 
   // Block for blit modes
-  new FXLabel(controls,"BLIT Function:",NULL,LAYOUT_LEFT);
+  new FXLabel(controls,"BLIT Function:",nullptr,LAYOUT_LEFT);
   FXMatrix *blitgrid=new FXMatrix(controls,4,FRAME_RIDGE|MATRIX_BY_COLUMNS|LAYOUT_FILL_X|PACK_UNIFORM_WIDTH, 0,0,0,0, 2,2,2,2, 0,0);
 
   // One button for each mode
-  new FXButton(blitgrid,"Clear\tBLT_CLR",NULL,this,ID_CLR,BUTTON_TOOLBAR|FRAME_RAISED|LAYOUT_FILL_X|LAYOUT_FILL_Y|LAYOUT_FILL_COLUMN);
-  new FXButton(blitgrid,"And\tBLT_SRC_AND_DST",NULL,this,ID_SRC_AND_DST,BUTTON_TOOLBAR|FRAME_RAISED|LAYOUT_FILL_X|LAYOUT_FILL_Y|LAYOUT_FILL_COLUMN);
-  new FXButton(blitgrid,"AndRev\tBLT_SRC_AND_NOT_DST",NULL,this,ID_SRC_AND_NOT_DST,BUTTON_TOOLBAR|FRAME_RAISED|LAYOUT_FILL_X|LAYOUT_FILL_Y|LAYOUT_FILL_COLUMN);
-  new FXButton(blitgrid,"Copy\tBLT_SRC",NULL,this,ID_SRC,BUTTON_TOOLBAR|FRAME_RAISED|LAYOUT_FILL_X|LAYOUT_FILL_Y|LAYOUT_FILL_COLUMN);
+  new FXButton(blitgrid,"Clear\tBLT_CLR",nullptr,this,ID_CLR,BUTTON_TOOLBAR|FRAME_RAISED|LAYOUT_FILL_X|LAYOUT_FILL_Y|LAYOUT_FILL_COLUMN);
+  new FXButton(blitgrid,"And\tBLT_SRC_AND_DST",nullptr,this,ID_SRC_AND_DST,BUTTON_TOOLBAR|FRAME_RAISED|LAYOUT_FILL_X|LAYOUT_FILL_Y|LAYOUT_FILL_COLUMN);
+  new FXButton(blitgrid,"AndRev\tBLT_SRC_AND_NOT_DST",nullptr,this,ID_SRC_AND_NOT_DST,BUTTON_TOOLBAR|FRAME_RAISED|LAYOUT_FILL_X|LAYOUT_FILL_Y|LAYOUT_FILL_COLUMN);
+  new FXButton(blitgrid,"Copy\tBLT_SRC",nullptr,this,ID_SRC,BUTTON_TOOLBAR|FRAME_RAISED|LAYOUT_FILL_X|LAYOUT_FILL_Y|LAYOUT_FILL_COLUMN);
 
-  new FXButton(blitgrid,"AndInv\tBLT_NOT_SRC_AND_DST",NULL,this,ID_NOT_SRC_AND_DST,BUTTON_TOOLBAR|FRAME_RAISED|LAYOUT_FILL_X|LAYOUT_FILL_Y|LAYOUT_FILL_COLUMN);
-  new FXButton(blitgrid,"NoOp\tBLT_DST",NULL,this,ID_DST,BUTTON_TOOLBAR|FRAME_RAISED|LAYOUT_FILL_X|LAYOUT_FILL_Y|LAYOUT_FILL_COLUMN);
-  new FXButton(blitgrid,"Xor\tBLT_SRC_XOR_DST",NULL,this,ID_SRC_XOR_DST,BUTTON_TOOLBAR|FRAME_RAISED|LAYOUT_FILL_X|LAYOUT_FILL_Y|LAYOUT_FILL_COLUMN);
-  new FXButton(blitgrid,"Or\tBLT_SRC_OR_DST",NULL,this,ID_SRC_OR_DST,BUTTON_TOOLBAR|FRAME_RAISED|LAYOUT_FILL_X|LAYOUT_FILL_Y|LAYOUT_FILL_COLUMN);
+  new FXButton(blitgrid,"AndInv\tBLT_NOT_SRC_AND_DST",nullptr,this,ID_NOT_SRC_AND_DST,BUTTON_TOOLBAR|FRAME_RAISED|LAYOUT_FILL_X|LAYOUT_FILL_Y|LAYOUT_FILL_COLUMN);
+  new FXButton(blitgrid,"NoOp\tBLT_DST",nullptr,this,ID_DST,BUTTON_TOOLBAR|FRAME_RAISED|LAYOUT_FILL_X|LAYOUT_FILL_Y|LAYOUT_FILL_COLUMN);
+  new FXButton(blitgrid,"Xor\tBLT_SRC_XOR_DST",nullptr,this,ID_SRC_XOR_DST,BUTTON_TOOLBAR|FRAME_RAISED|LAYOUT_FILL_X|LAYOUT_FILL_Y|LAYOUT_FILL_COLUMN);
+  new FXButton(blitgrid,"Or\tBLT_SRC_OR_DST",nullptr,this,ID_SRC_OR_DST,BUTTON_TOOLBAR|FRAME_RAISED|LAYOUT_FILL_X|LAYOUT_FILL_Y|LAYOUT_FILL_COLUMN);
 
-  new FXButton(blitgrid,"Nor\tBLT_NOT_SRC_AND_NOT_DST",NULL,this,ID_NOT_SRC_AND_NOT_DST,BUTTON_TOOLBAR|FRAME_RAISED|LAYOUT_FILL_X|LAYOUT_FILL_Y|LAYOUT_FILL_COLUMN);
-  new FXButton(blitgrid,"Equiv\tBLT_NOT_SRC_XOR_DST",NULL,this,ID_NOT_SRC_XOR_DST,BUTTON_TOOLBAR|FRAME_RAISED|LAYOUT_FILL_X|LAYOUT_FILL_Y|LAYOUT_FILL_COLUMN);
-  new FXButton(blitgrid,"Invert\tBLT_NOT_DST",NULL,this,ID_NOT_DST,BUTTON_TOOLBAR|FRAME_RAISED|LAYOUT_FILL_X|LAYOUT_FILL_Y|LAYOUT_FILL_COLUMN);
-  new FXButton(blitgrid,"OrRev\tBLT_SRC_OR_NOT_DST",NULL,this,ID_SRC_OR_NOT_DST,BUTTON_TOOLBAR|FRAME_RAISED|LAYOUT_FILL_X|LAYOUT_FILL_Y|LAYOUT_FILL_COLUMN);
+  new FXButton(blitgrid,"Nor\tBLT_NOT_SRC_AND_NOT_DST",nullptr,this,ID_NOT_SRC_AND_NOT_DST,BUTTON_TOOLBAR|FRAME_RAISED|LAYOUT_FILL_X|LAYOUT_FILL_Y|LAYOUT_FILL_COLUMN);
+  new FXButton(blitgrid,"Equiv\tBLT_NOT_SRC_XOR_DST",nullptr,this,ID_NOT_SRC_XOR_DST,BUTTON_TOOLBAR|FRAME_RAISED|LAYOUT_FILL_X|LAYOUT_FILL_Y|LAYOUT_FILL_COLUMN);
+  new FXButton(blitgrid,"Invert\tBLT_NOT_DST",nullptr,this,ID_NOT_DST,BUTTON_TOOLBAR|FRAME_RAISED|LAYOUT_FILL_X|LAYOUT_FILL_Y|LAYOUT_FILL_COLUMN);
+  new FXButton(blitgrid,"OrRev\tBLT_SRC_OR_NOT_DST",nullptr,this,ID_SRC_OR_NOT_DST,BUTTON_TOOLBAR|FRAME_RAISED|LAYOUT_FILL_X|LAYOUT_FILL_Y|LAYOUT_FILL_COLUMN);
 
-  new FXButton(blitgrid,"CopyInv\tBLT_NOT_SRC",NULL,this,ID_NOT_SRC,BUTTON_TOOLBAR|FRAME_RAISED|LAYOUT_FILL_X|LAYOUT_FILL_Y|LAYOUT_FILL_COLUMN);
-  new FXButton(blitgrid,"OrInv\tBLT_NOT_SRC_OR_DST",NULL,this,ID_NOT_SRC_OR_DST,BUTTON_TOOLBAR|FRAME_RAISED|LAYOUT_FILL_X|LAYOUT_FILL_Y|LAYOUT_FILL_COLUMN);
-  new FXButton(blitgrid,"Nand\tBLT_NOT_SRC_OR_NOT_DST",NULL,this,ID_NOT_SRC_OR_NOT_DST,BUTTON_TOOLBAR|FRAME_RAISED|LAYOUT_FILL_X|LAYOUT_FILL_Y|LAYOUT_FILL_COLUMN);
-  new FXButton(blitgrid,"Set\tBLT_SET",NULL,this,ID_SET,BUTTON_TOOLBAR|FRAME_RAISED|LAYOUT_FILL_X|LAYOUT_FILL_Y|LAYOUT_FILL_COLUMN);
+  new FXButton(blitgrid,"CopyInv\tBLT_NOT_SRC",nullptr,this,ID_NOT_SRC,BUTTON_TOOLBAR|FRAME_RAISED|LAYOUT_FILL_X|LAYOUT_FILL_Y|LAYOUT_FILL_COLUMN);
+  new FXButton(blitgrid,"OrInv\tBLT_NOT_SRC_OR_DST",nullptr,this,ID_NOT_SRC_OR_DST,BUTTON_TOOLBAR|FRAME_RAISED|LAYOUT_FILL_X|LAYOUT_FILL_Y|LAYOUT_FILL_COLUMN);
+  new FXButton(blitgrid,"Nand\tBLT_NOT_SRC_OR_NOT_DST",nullptr,this,ID_NOT_SRC_OR_NOT_DST,BUTTON_TOOLBAR|FRAME_RAISED|LAYOUT_FILL_X|LAYOUT_FILL_Y|LAYOUT_FILL_COLUMN);
+  new FXButton(blitgrid,"Set\tBLT_SET",nullptr,this,ID_SET,BUTTON_TOOLBAR|FRAME_RAISED|LAYOUT_FILL_X|LAYOUT_FILL_Y|LAYOUT_FILL_COLUMN);
 
   lssolid=new FXGIFIcon(getApp(),solid_line,0,IMAGE_OPAQUE);
   lsonoffdash=new FXGIFIcon(getApp(),onoff_dash,FXRGB(0xb2,0xc0,0xdc),IMAGE_ALPHACOLOR);
   lsdoubledash=new FXGIFIcon(getApp(),double_dash,0,IMAGE_OPAQUE);
 
   // Line Dash Style
-  new FXLabel(controls,"Line Style:",NULL,LAYOUT_LEFT);
+  new FXLabel(controls,"Line Style:",nullptr,LAYOUT_LEFT);
   FXMatrix *linestyle=new FXMatrix(controls,3,FRAME_RIDGE|MATRIX_BY_COLUMNS|LAYOUT_FILL_X, 0,0,0,0, 2,2,2,2, 0,0);
   new FXButton(linestyle,"\tLINE_SOLID",lssolid,this,ID_LINE_SOLID,BUTTON_TOOLBAR|JUSTIFY_CENTER_X|FRAME_RAISED|LAYOUT_FILL_X|LAYOUT_FILL_Y|LAYOUT_FILL_COLUMN);
   new FXButton(linestyle,"\tLINE_ONOFF_DASH",lsonoffdash,this,ID_LINE_ONOFF_DASH,BUTTON_TOOLBAR|JUSTIFY_CENTER_X|FRAME_RAISED|LAYOUT_FILL_X|LAYOUT_FILL_Y|LAYOUT_FILL_COLUMN);
@@ -727,7 +727,7 @@ DCTestWindow::DCTestWindow(FXApp *ap):FXMainWindow(ap,"Device Context Test",NULL
   cscapproj=new FXGIFIcon(getApp(),capproj);
 
   // Line Cap Style
-  new FXLabel(controls,"Cap Style:",NULL,LAYOUT_LEFT);
+  new FXLabel(controls,"Cap Style:",nullptr,LAYOUT_LEFT);
   FXMatrix *capstyle=new FXMatrix(controls,4,FRAME_RIDGE|MATRIX_BY_COLUMNS|LAYOUT_FILL_X, 0,0,0,0, 2,2,2,2, 0,0);
   new FXButton(capstyle,"\tCAP_NOT_LAST",cscapnotlast,this,ID_CAP_NOT_LAST,BUTTON_TOOLBAR|JUSTIFY_CENTER_X|FRAME_RAISED|LAYOUT_FILL_X|LAYOUT_FILL_Y|LAYOUT_FILL_COLUMN);
   new FXButton(capstyle,"\tCAP_BUTT",cscapbutt,this,ID_CAP_BUTT,BUTTON_TOOLBAR|JUSTIFY_CENTER_X|FRAME_RAISED|LAYOUT_FILL_X|LAYOUT_FILL_Y|LAYOUT_FILL_COLUMN);
@@ -739,14 +739,14 @@ DCTestWindow::DCTestWindow(FXApp *ap):FXMainWindow(ap,"Device Context Test",NULL
   jsbevel=new FXGIFIcon(getApp(),jbevel);
 
   // Line Join Style
-  new FXLabel(controls,"Join Style:",NULL,LAYOUT_LEFT);
+  new FXLabel(controls,"Join Style:",nullptr,LAYOUT_LEFT);
   FXMatrix *joinstyle=new FXMatrix(controls,3,FRAME_RIDGE|MATRIX_BY_COLUMNS|LAYOUT_FILL_X, 0,0,0,0, 2,2,2,2, 0,0);
   new FXButton(joinstyle,"\tJOIN_MITER",jsmiter,this,ID_JOIN_MITER,BUTTON_TOOLBAR|JUSTIFY_CENTER_X|FRAME_RAISED|LAYOUT_FILL_X|LAYOUT_FILL_Y|LAYOUT_FILL_COLUMN);
   new FXButton(joinstyle,"\tJOIN_ROUND",jsround,this,ID_JOIN_ROUND,BUTTON_TOOLBAR|JUSTIFY_CENTER_X|FRAME_RAISED|LAYOUT_FILL_X|LAYOUT_FILL_Y|LAYOUT_FILL_COLUMN);
   new FXButton(joinstyle,"\tJOIN_BEVEL",jsbevel,this,ID_JOIN_BEVEL,BUTTON_TOOLBAR|JUSTIFY_CENTER_X|FRAME_RAISED|LAYOUT_FILL_X|LAYOUT_FILL_Y|LAYOUT_FILL_COLUMN);
 
   // Colors
-  new FXLabel(controls,"Colors:",NULL,LAYOUT_LEFT);
+  new FXLabel(controls,"Colors:",nullptr,LAYOUT_LEFT);
   FXMatrix *pairs=new FXMatrix(controls,2,FRAME_RIDGE|MATRIX_BY_COLUMNS|LAYOUT_FILL_X, 0,0,0,0, 2,2,2,2, 5,5);
 
   // Back Color
@@ -772,89 +772,89 @@ DCTestWindow::DCTestWindow(FXApp *ap):FXMainWindow(ap,"Device Context Test",NULL
   FXMatrix *stip=new FXMatrix(controls,2,FRAME_RIDGE|MATRIX_BY_COLUMNS|LAYOUT_FILL_X, 0,0,0,0, 2,2,2,2, 0,0);
   new FXLabel(stip, "Stipples:");
   pop=new FXPopup(this);
-  new FXOption(pop,"NONE\tSTIPPLE_NONE",NULL,this,ID_STIPPLE_NONE,JUSTIFY_HZ_APART|ICON_AFTER_TEXT);
-  new FXOption(pop,"BLACK\tSTIPPLE_BLACK",NULL,this,ID_STIPPLE_BLACK,JUSTIFY_HZ_APART|ICON_AFTER_TEXT);
-  new FXOption(pop,"GRAY\tSTIPPLE_GRAY",NULL,this,ID_STIPPLE_GRAY,JUSTIFY_HZ_APART|ICON_AFTER_TEXT);
-  new FXOption(pop,"WHITE\tSTIPPLE_WHITE",NULL,this,ID_STIPPLE_WHITE,JUSTIFY_HZ_APART|ICON_AFTER_TEXT);
-  new FXOption(pop,"0\tSTIPPLE_0",NULL,this,ID_STIPPLE_0,JUSTIFY_HZ_APART|ICON_AFTER_TEXT);
-  new FXOption(pop,"1\tSTIPPLE_1",NULL,this,ID_STIPPLE_1,JUSTIFY_HZ_APART|ICON_AFTER_TEXT);
-  new FXOption(pop,"2\tSTIPPLE_2",NULL,this,ID_STIPPLE_2,JUSTIFY_HZ_APART|ICON_AFTER_TEXT);
-  new FXOption(pop,"3\tSTIPPLE_3",NULL,this,ID_STIPPLE_3,JUSTIFY_HZ_APART|ICON_AFTER_TEXT);
-  new FXOption(pop,"4\tSTIPPLE_4",NULL,this,ID_STIPPLE_4,JUSTIFY_HZ_APART|ICON_AFTER_TEXT);
-  new FXOption(pop,"5\tSTIPPLE_5",NULL,this,ID_STIPPLE_5,JUSTIFY_HZ_APART|ICON_AFTER_TEXT);
-  new FXOption(pop,"6\tSTIPPLE_6",NULL,this,ID_STIPPLE_6,JUSTIFY_HZ_APART|ICON_AFTER_TEXT);
-  new FXOption(pop,"7\tSTIPPLE_7",NULL,this,ID_STIPPLE_7,JUSTIFY_HZ_APART|ICON_AFTER_TEXT);
-  new FXOption(pop,"8\tSTIPPLE_8",NULL,this,ID_STIPPLE_8,JUSTIFY_HZ_APART|ICON_AFTER_TEXT);
-  new FXOption(pop,"9\tSTIPPLE_9",NULL,this,ID_STIPPLE_9,JUSTIFY_HZ_APART|ICON_AFTER_TEXT);
-  new FXOption(pop,"10\tSTIPPLE_10",NULL,this,ID_STIPPLE_10,JUSTIFY_HZ_APART|ICON_AFTER_TEXT);
-  new FXOption(pop,"11\tSTIPPLE_11",NULL,this,ID_STIPPLE_11,JUSTIFY_HZ_APART|ICON_AFTER_TEXT);
-  new FXOption(pop,"12\tSTIPPLE_12",NULL,this,ID_STIPPLE_12,JUSTIFY_HZ_APART|ICON_AFTER_TEXT);
-  new FXOption(pop,"13\tSTIPPLE_13",NULL,this,ID_STIPPLE_13,JUSTIFY_HZ_APART|ICON_AFTER_TEXT);
-  new FXOption(pop,"14\tSTIPPLE_14",NULL,this,ID_STIPPLE_14,JUSTIFY_HZ_APART|ICON_AFTER_TEXT);
-  new FXOption(pop,"15\tSTIPPLE_15",NULL,this,ID_STIPPLE_15,JUSTIFY_HZ_APART|ICON_AFTER_TEXT);
-  new FXOption(pop,"16\tSTIPPLE_16",NULL,this,ID_STIPPLE_16,JUSTIFY_HZ_APART|ICON_AFTER_TEXT);
-  new FXOption(pop,"HORZ\tSTIPPLE_HORZ",NULL,this,ID_STIPPLE_HORZ,JUSTIFY_HZ_APART|ICON_AFTER_TEXT);
-  new FXOption(pop,"VERT\tSTIPPLE_VERT",NULL,this,ID_STIPPLE_VERT,JUSTIFY_HZ_APART|ICON_AFTER_TEXT);
-  new FXOption(pop,"CROSS\tSTIPPLE_CROSS",NULL,this,ID_STIPPLE_CROSS,JUSTIFY_HZ_APART|ICON_AFTER_TEXT);
-  new FXOption(pop,"DIAG\tSTIPPLE_DIAG",NULL,this,ID_STIPPLE_DIAG,JUSTIFY_HZ_APART|ICON_AFTER_TEXT);
-  new FXOption(pop,"REVDIAG\tSTIPPLE_REVDIAG",NULL,this,ID_STIPPLE_REVDIAG,JUSTIFY_HZ_APART|ICON_AFTER_TEXT);
-  new FXOption(pop,"CROSSDIAG\tSTIPPLE_CROSSDIAG",NULL,this,ID_STIPPLE_CROSSDIAG,JUSTIFY_HZ_APART|ICON_AFTER_TEXT);
+  new FXOption(pop,"NONE\tSTIPPLE_NONE",nullptr,this,ID_STIPPLE_NONE,JUSTIFY_HZ_APART|ICON_AFTER_TEXT);
+  new FXOption(pop,"BLACK\tSTIPPLE_BLACK",nullptr,this,ID_STIPPLE_BLACK,JUSTIFY_HZ_APART|ICON_AFTER_TEXT);
+  new FXOption(pop,"GRAY\tSTIPPLE_GRAY",nullptr,this,ID_STIPPLE_GRAY,JUSTIFY_HZ_APART|ICON_AFTER_TEXT);
+  new FXOption(pop,"WHITE\tSTIPPLE_WHITE",nullptr,this,ID_STIPPLE_WHITE,JUSTIFY_HZ_APART|ICON_AFTER_TEXT);
+  new FXOption(pop,"0\tSTIPPLE_0",nullptr,this,ID_STIPPLE_0,JUSTIFY_HZ_APART|ICON_AFTER_TEXT);
+  new FXOption(pop,"1\tSTIPPLE_1",nullptr,this,ID_STIPPLE_1,JUSTIFY_HZ_APART|ICON_AFTER_TEXT);
+  new FXOption(pop,"2\tSTIPPLE_2",nullptr,this,ID_STIPPLE_2,JUSTIFY_HZ_APART|ICON_AFTER_TEXT);
+  new FXOption(pop,"3\tSTIPPLE_3",nullptr,this,ID_STIPPLE_3,JUSTIFY_HZ_APART|ICON_AFTER_TEXT);
+  new FXOption(pop,"4\tSTIPPLE_4",nullptr,this,ID_STIPPLE_4,JUSTIFY_HZ_APART|ICON_AFTER_TEXT);
+  new FXOption(pop,"5\tSTIPPLE_5",nullptr,this,ID_STIPPLE_5,JUSTIFY_HZ_APART|ICON_AFTER_TEXT);
+  new FXOption(pop,"6\tSTIPPLE_6",nullptr,this,ID_STIPPLE_6,JUSTIFY_HZ_APART|ICON_AFTER_TEXT);
+  new FXOption(pop,"7\tSTIPPLE_7",nullptr,this,ID_STIPPLE_7,JUSTIFY_HZ_APART|ICON_AFTER_TEXT);
+  new FXOption(pop,"8\tSTIPPLE_8",nullptr,this,ID_STIPPLE_8,JUSTIFY_HZ_APART|ICON_AFTER_TEXT);
+  new FXOption(pop,"9\tSTIPPLE_9",nullptr,this,ID_STIPPLE_9,JUSTIFY_HZ_APART|ICON_AFTER_TEXT);
+  new FXOption(pop,"10\tSTIPPLE_10",nullptr,this,ID_STIPPLE_10,JUSTIFY_HZ_APART|ICON_AFTER_TEXT);
+  new FXOption(pop,"11\tSTIPPLE_11",nullptr,this,ID_STIPPLE_11,JUSTIFY_HZ_APART|ICON_AFTER_TEXT);
+  new FXOption(pop,"12\tSTIPPLE_12",nullptr,this,ID_STIPPLE_12,JUSTIFY_HZ_APART|ICON_AFTER_TEXT);
+  new FXOption(pop,"13\tSTIPPLE_13",nullptr,this,ID_STIPPLE_13,JUSTIFY_HZ_APART|ICON_AFTER_TEXT);
+  new FXOption(pop,"14\tSTIPPLE_14",nullptr,this,ID_STIPPLE_14,JUSTIFY_HZ_APART|ICON_AFTER_TEXT);
+  new FXOption(pop,"15\tSTIPPLE_15",nullptr,this,ID_STIPPLE_15,JUSTIFY_HZ_APART|ICON_AFTER_TEXT);
+  new FXOption(pop,"16\tSTIPPLE_16",nullptr,this,ID_STIPPLE_16,JUSTIFY_HZ_APART|ICON_AFTER_TEXT);
+  new FXOption(pop,"HORZ\tSTIPPLE_HORZ",nullptr,this,ID_STIPPLE_HORZ,JUSTIFY_HZ_APART|ICON_AFTER_TEXT);
+  new FXOption(pop,"VERT\tSTIPPLE_VERT",nullptr,this,ID_STIPPLE_VERT,JUSTIFY_HZ_APART|ICON_AFTER_TEXT);
+  new FXOption(pop,"CROSS\tSTIPPLE_CROSS",nullptr,this,ID_STIPPLE_CROSS,JUSTIFY_HZ_APART|ICON_AFTER_TEXT);
+  new FXOption(pop,"DIAG\tSTIPPLE_DIAG",nullptr,this,ID_STIPPLE_DIAG,JUSTIFY_HZ_APART|ICON_AFTER_TEXT);
+  new FXOption(pop,"REVDIAG\tSTIPPLE_REVDIAG",nullptr,this,ID_STIPPLE_REVDIAG,JUSTIFY_HZ_APART|ICON_AFTER_TEXT);
+  new FXOption(pop,"CROSSDIAG\tSTIPPLE_CROSSDIAG",nullptr,this,ID_STIPPLE_CROSSDIAG,JUSTIFY_HZ_APART|ICON_AFTER_TEXT);
   new FXOptionMenu(stip,pop,LAYOUT_TOP|FRAME_RAISED|FRAME_THICK|JUSTIFY_HZ_APART|ICON_AFTER_TEXT);
 
   // Fill Style
-  new FXLabel(controls,"Fill Style:",NULL,LAYOUT_LEFT);
+  new FXLabel(controls,"Fill Style:",nullptr,LAYOUT_LEFT);
   FXMatrix *fillstyle=new FXMatrix(controls,2,FRAME_RIDGE|MATRIX_BY_COLUMNS|LAYOUT_FILL_X, 0,0,0,0, 2,2,2,2, 0,0);
-  new FXButton(fillstyle,"FILL_SOLID",NULL,this,ID_FILL_SOLID,BUTTON_TOOLBAR|JUSTIFY_CENTER_X|FRAME_RAISED|LAYOUT_FILL_X|LAYOUT_FILL_Y|LAYOUT_FILL_COLUMN);
-  new FXButton(fillstyle,"FILL_TILED",NULL,this,ID_FILL_TILED,BUTTON_TOOLBAR|JUSTIFY_CENTER_X|FRAME_RAISED|LAYOUT_FILL_X|LAYOUT_FILL_Y|LAYOUT_FILL_COLUMN);
-  new FXButton(fillstyle,"FILL_STIPPLED",NULL,this,ID_FILL_STIPPLED,BUTTON_TOOLBAR|JUSTIFY_CENTER_X|FRAME_RAISED|LAYOUT_FILL_X|LAYOUT_FILL_Y|LAYOUT_FILL_COLUMN);
-  new FXButton(fillstyle,"FILL_OPAQUESTIPPLED",NULL,this,ID_FILL_OPAQUESTIPPLED,BUTTON_TOOLBAR|JUSTIFY_CENTER_X|FRAME_RAISED|LAYOUT_FILL_X|LAYOUT_FILL_Y|LAYOUT_FILL_COLUMN);
+  new FXButton(fillstyle,"FILL_SOLID",nullptr,this,ID_FILL_SOLID,BUTTON_TOOLBAR|JUSTIFY_CENTER_X|FRAME_RAISED|LAYOUT_FILL_X|LAYOUT_FILL_Y|LAYOUT_FILL_COLUMN);
+  new FXButton(fillstyle,"FILL_TILED",nullptr,this,ID_FILL_TILED,BUTTON_TOOLBAR|JUSTIFY_CENTER_X|FRAME_RAISED|LAYOUT_FILL_X|LAYOUT_FILL_Y|LAYOUT_FILL_COLUMN);
+  new FXButton(fillstyle,"FILL_STIPPLED",nullptr,this,ID_FILL_STIPPLED,BUTTON_TOOLBAR|JUSTIFY_CENTER_X|FRAME_RAISED|LAYOUT_FILL_X|LAYOUT_FILL_Y|LAYOUT_FILL_COLUMN);
+  new FXButton(fillstyle,"FILL_OPAQUESTIPPLED",nullptr,this,ID_FILL_OPAQUESTIPPLED,BUTTON_TOOLBAR|JUSTIFY_CENTER_X|FRAME_RAISED|LAYOUT_FILL_X|LAYOUT_FILL_Y|LAYOUT_FILL_COLUMN);
 
   // Angles for arcs
-  new FXLabel(controls,"Arc angles:",NULL,LAYOUT_LEFT);
+  new FXLabel(controls,"Arc angles:",nullptr,LAYOUT_LEFT);
   FXMatrix *arcangles=new FXMatrix(controls,3,FRAME_RIDGE|MATRIX_BY_COLUMNS|LAYOUT_FILL_X, 0,0,0,0, 2,2,2,2, 4,4);
 
-  new FXLabel(arcangles,"Ang1:",NULL,LAYOUT_LEFT);
+  new FXLabel(arcangles,"Ang1:",nullptr,LAYOUT_LEFT);
   new FXTextField(arcangles,4,&ang1_target,FXDataTarget::ID_VALUE,TEXTFIELD_INTEGER|JUSTIFY_RIGHT|FRAME_SUNKEN|FRAME_THICK);
   FXSlider* sang1=new FXSlider(arcangles,&ang1_target,FXDataTarget::ID_VALUE,LAYOUT_CENTER_Y|LAYOUT_FILL_X|SLIDER_INSIDE_BAR|LAYOUT_FILL_COLUMN);
   sang1->setRange(-360,360);
 
-  new FXLabel(arcangles,"Ang2:",NULL,LAYOUT_LEFT);
+  new FXLabel(arcangles,"Ang2:",nullptr,LAYOUT_LEFT);
   new FXTextField(arcangles,4,&ang2_target,FXDataTarget::ID_VALUE,TEXTFIELD_INTEGER|JUSTIFY_RIGHT|FRAME_SUNKEN|FRAME_THICK);
   FXSlider* sang2=new FXSlider(arcangles,&ang2_target,FXDataTarget::ID_VALUE,LAYOUT_CENTER_Y|LAYOUT_FILL_X|SLIDER_INSIDE_BAR|LAYOUT_FILL_COLUMN);
   sang2->setRange(-360,360);
 
   // Radii for rounded rectangles
-  new FXLabel(controls,"Radii:",NULL,LAYOUT_LEFT);
+  new FXLabel(controls,"Radii:",nullptr,LAYOUT_LEFT);
   FXMatrix *radii=new FXMatrix(controls,3,FRAME_RIDGE|MATRIX_BY_COLUMNS|LAYOUT_FILL_X, 0,0,0,0, 2,2,2,2, 4,4);
 
-  new FXLabel(radii,"Crnw:",NULL,LAYOUT_LEFT);
+  new FXLabel(radii,"Crnw:",nullptr,LAYOUT_LEFT);
   new FXTextField(radii,4,&cornerw_target,FXDataTarget::ID_VALUE,TEXTFIELD_INTEGER|JUSTIFY_RIGHT|FRAME_SUNKEN|FRAME_THICK);
   FXSlider* scornw=new FXSlider(radii,&cornerw_target,FXDataTarget::ID_VALUE,LAYOUT_CENTER_Y|LAYOUT_FILL_X|SLIDER_INSIDE_BAR|LAYOUT_FILL_COLUMN);
   scornw->setRange(0,100);
 
-  new FXLabel(radii,"Crnh:",NULL,LAYOUT_LEFT);
+  new FXLabel(radii,"Crnh:",nullptr,LAYOUT_LEFT);
   new FXTextField(radii,4,&cornerh_target,FXDataTarget::ID_VALUE,TEXTFIELD_INTEGER|JUSTIFY_RIGHT|FRAME_SUNKEN|FRAME_THICK);
   FXSlider* scornh=new FXSlider(radii,&cornerh_target,FXDataTarget::ID_VALUE,LAYOUT_CENTER_Y|LAYOUT_FILL_X|SLIDER_INSIDE_BAR|LAYOUT_FILL_COLUMN);
   scornh->setRange(0,100);
 
   // Font
   FXHorizontalFrame *fonts=new FXHorizontalFrame(controls,FRAME_RIDGE|LAYOUT_FILL_X|PACK_UNIFORM_WIDTH, 0,0,0,0, 2,2,2,2, 0,0);
-  new FXButton(fonts,"Font Dialog...\tChange the text font",NULL,this,ID_FONT,BUTTON_TOOLBAR|JUSTIFY_CENTER_X|FRAME_RAISED|LAYOUT_FILL_X|LAYOUT_FILL_Y);
+  new FXButton(fonts,"Font Dialog...\tChange the text font",nullptr,this,ID_FONT,BUTTON_TOOLBAR|JUSTIFY_CENTER_X|FRAME_RAISED|LAYOUT_FILL_X|LAYOUT_FILL_Y);
 
   // Printing
   FXHorizontalFrame *printer=new FXHorizontalFrame(controls,FRAME_RIDGE|LAYOUT_FILL_X|PACK_UNIFORM_WIDTH, 0,0,0,0, 2,2,2,2, 0,0);
-  new FXButton(printer,"Print Dialog...\tPrint it out",NULL,this,ID_PRINT,BUTTON_TOOLBAR|JUSTIFY_CENTER_X|FRAME_RAISED|LAYOUT_FILL_X|LAYOUT_FILL_Y);
+  new FXButton(printer,"Print Dialog...\tPrint it out",nullptr,this,ID_PRINT,BUTTON_TOOLBAR|JUSTIFY_CENTER_X|FRAME_RAISED|LAYOUT_FILL_X|LAYOUT_FILL_Y);
 
   // Quit
   FXHorizontalFrame *quitter=new FXHorizontalFrame(controls,FRAME_RIDGE|LAYOUT_FILL_X|PACK_UNIFORM_WIDTH, 0,0,0,0, 2,2,2,2, 0,0);
-  new FXButton(quitter,"Bye Bye!",NULL,getApp(),FXApp::ID_QUIT,BUTTON_TOOLBAR|JUSTIFY_CENTER_X|FRAME_RAISED|LAYOUT_FILL_X|LAYOUT_FILL_Y);
+  new FXButton(quitter,"Bye Bye!",nullptr,getApp(),FXApp::ID_QUIT,BUTTON_TOOLBAR|JUSTIFY_CENTER_X|FRAME_RAISED|LAYOUT_FILL_X|LAYOUT_FILL_Y);
 
 
   // Switcher
-  FXTabBook *tabbook=new FXTabBook(contents,NULL,0,LAYOUT_FILL_X|LAYOUT_FILL_Y|LAYOUT_RIGHT);
+  FXTabBook *tabbook=new FXTabBook(contents,nullptr,0,LAYOUT_FILL_X|LAYOUT_FILL_Y|LAYOUT_RIGHT);
 
   // First page shows various line styles
-  new FXTabItem(tabbook,"&Lines",NULL);
+  new FXTabItem(tabbook,"&Lines",nullptr);
   FXPacker *linesPage=new FXPacker(tabbook,FRAME_THICK|FRAME_RAISED);
 
 
@@ -866,7 +866,7 @@ DCTestWindow::DCTestWindow(FXApp *ap):FXMainWindow(ap,"Device Context Test",NULL
   linesCanvas->setDragCursor(alphacursor);
 
   // Second page shows different shapes
-  new FXTabItem(tabbook,"&Shapes",NULL);
+  new FXTabItem(tabbook,"&Shapes",nullptr);
   FXPacker *shapesPage=new FXPacker(tabbook,FRAME_THICK|FRAME_RAISED);
   frame=new FXHorizontalFrame(shapesPage,FRAME_SUNKEN|FRAME_THICK|LAYOUT_FILL_X|LAYOUT_FILL_Y,0,0,0,0, 0,0,0,0);
   shapesCanvas=new FXCanvas(frame,this,ID_SHAPES,LAYOUT_FILL_X|LAYOUT_FILL_Y);
@@ -876,7 +876,7 @@ DCTestWindow::DCTestWindow(FXApp *ap):FXMainWindow(ap,"Device Context Test",NULL
   shapesCanvas->setDragCursor(gifcursor);
 
   // Third page shows images
-  new FXTabItem(tabbook,"&Images",NULL);
+  new FXTabItem(tabbook,"&Images",nullptr);
   FXPacker *imagesPage=new FXPacker(tabbook,FRAME_THICK|FRAME_RAISED);
   frame=new FXHorizontalFrame(imagesPage,FRAME_SUNKEN|FRAME_THICK|LAYOUT_FILL_X|LAYOUT_FILL_Y,0,0,0,0, 0,0,0,0);
   imagesCanvas=new FXCanvas(frame,this,ID_IMAGES,LAYOUT_FILL_X|LAYOUT_FILL_Y);
@@ -887,10 +887,10 @@ DCTestWindow::DCTestWindow(FXApp *ap):FXMainWindow(ap,"Device Context Test",NULL
 
   // File Menu
   filemenu=new FXMenuPane(this);
-  new FXMenuCommand(filemenu,"&Print...\tCtl-P",NULL,this,ID_PRINT);
-  new FXMenuCommand(filemenu,"&Font...\tCtl-F",NULL,this,ID_FONT);
-  new FXMenuCommand(filemenu,"&Quit\tCtl-Q",NULL,getApp(),FXApp::ID_QUIT);
-  new FXMenuTitle(menubar,"&File",NULL,filemenu);
+  new FXMenuCommand(filemenu,"&Print...\tCtl-P",nullptr,this,ID_PRINT);
+  new FXMenuCommand(filemenu,"&Font...\tCtl-F",nullptr,this,ID_FONT);
+  new FXMenuCommand(filemenu,"&Quit\tCtl-Q",nullptr,getApp(),FXApp::ID_QUIT);
+  new FXMenuTitle(menubar,"&File",nullptr,filemenu);
 
   birdImage=new FXGIFImage(getApp(),dippy);
   textureImage=new FXGIFImage(getApp(),slate);
@@ -994,9 +994,9 @@ long DCTestWindow::onCmdFunction(FXObject*,FXSelector sel,void*){
 long DCTestWindow::onUpdFunction(FXObject* sender,FXSelector sel,void*){
   FXFunction ff=(FXFunction)(BLT_CLR+FXSELID(sel)-ID_CLR);
   if(ff==function)
-    sender->handle(this,FXSEL(SEL_COMMAND,ID_CHECK),NULL);
+    sender->handle(this,FXSEL(SEL_COMMAND,ID_CHECK),nullptr);
   else
-    sender->handle(this,FXSEL(SEL_COMMAND,ID_UNCHECK),NULL);
+    sender->handle(this,FXSEL(SEL_COMMAND,ID_UNCHECK),nullptr);
   return 1;
   }
 
@@ -1012,9 +1012,9 @@ long DCTestWindow::onCmdLineStyle(FXObject*,FXSelector sel,void*){
 long DCTestWindow::onUpdLineStyle(FXObject* sender,FXSelector sel,void*){
   FXLineStyle ff=(FXLineStyle)(LINE_SOLID+FXSELID(sel)-ID_LINE_SOLID);
   if(ff==lineStyle)
-    sender->handle(this,FXSEL(SEL_COMMAND,ID_CHECK),NULL);
+    sender->handle(this,FXSEL(SEL_COMMAND,ID_CHECK),nullptr);
   else
-    sender->handle(this,FXSEL(SEL_COMMAND,ID_UNCHECK),NULL);
+    sender->handle(this,FXSEL(SEL_COMMAND,ID_UNCHECK),nullptr);
   return 1;
   }
 
@@ -1030,9 +1030,9 @@ long DCTestWindow::onCmdCapStyle(FXObject*,FXSelector sel,void*){
 long DCTestWindow::onUpdCapStyle(FXObject* sender,FXSelector sel,void*){
   FXCapStyle ff=(FXCapStyle)(CAP_NOT_LAST+FXSELID(sel)-ID_CAP_NOT_LAST);
   if(ff==capStyle)
-    sender->handle(this,FXSEL(SEL_COMMAND,ID_CHECK),NULL);
+    sender->handle(this,FXSEL(SEL_COMMAND,ID_CHECK),nullptr);
   else
-    sender->handle(this,FXSEL(SEL_COMMAND,ID_UNCHECK),NULL);
+    sender->handle(this,FXSEL(SEL_COMMAND,ID_UNCHECK),nullptr);
   return 1;
   }
 
@@ -1047,9 +1047,9 @@ long DCTestWindow::onCmdJoinStyle(FXObject*,FXSelector sel,void*){
 long DCTestWindow::onUpdJoinStyle(FXObject* sender,FXSelector sel,void*){
   FXJoinStyle ff=(FXJoinStyle)(JOIN_MITER+FXSELID(sel)-ID_JOIN_MITER);
   if(ff==joinStyle)
-    sender->handle(this,FXSEL(SEL_COMMAND,ID_CHECK),NULL);
+    sender->handle(this,FXSEL(SEL_COMMAND,ID_CHECK),nullptr);
   else
-    sender->handle(this,FXSEL(SEL_COMMAND,ID_UNCHECK),NULL);
+    sender->handle(this,FXSEL(SEL_COMMAND,ID_UNCHECK),nullptr);
   return 1;
   }
 
@@ -1151,9 +1151,9 @@ long DCTestWindow::onCmdFillStyle(FXObject*,FXSelector sel,void*){
 long DCTestWindow::onUpdFillStyle(FXObject* sender,FXSelector sel,void*){
   FXFillStyle ff=(FXFillStyle)(FILL_SOLID+FXSELID(sel)-ID_FILL_SOLID);
   if(ff==fillStyle)
-    sender->handle(this,FXSEL(SEL_COMMAND,ID_CHECK),NULL);
+    sender->handle(this,FXSEL(SEL_COMMAND,ID_CHECK),nullptr);
   else
-    sender->handle(this,FXSEL(SEL_COMMAND,ID_UNCHECK),NULL);
+    sender->handle(this,FXSEL(SEL_COMMAND,ID_UNCHECK),nullptr);
   return 1;
   }
 

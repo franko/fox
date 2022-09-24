@@ -3,7 +3,7 @@
 *                             Regular Expression Test                           *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 1999,2021 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 1999,2022 by Jeroen van der Zijp.   All Rights Reserved.        *
 ********************************************************************************/
 #include "fx.h"
 
@@ -86,6 +86,11 @@ int main(int argc,char** argv){
     else if(compare(argv[arg],"-?")==0 || compare(argv[arg],"-h")==0 || compare(argv[arg],"--help")==0){
       printusage();
       return 0;
+      }
+    else if(compare(argv[arg],"-tracetopics")==0){
+      if(++arg>=argc){ fxwarning("rex: missing argument for -tracetopics.\n"); return 0; }
+      setTraceTopics(argv[arg++]);
+      continue;
       }
     arg++;
     }

@@ -3,7 +3,7 @@
 *                             S h e l l - C o m m a n d                         *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 2014,2021 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 2014,2022 by Jeroen van der Zijp.   All Rights Reserved.        *
 *********************************************************************************
 * This program is free software: you can redistribute it and/or modify          *
 * it under the terms of the GNU General Public License as published by          *
@@ -137,7 +137,7 @@ long ShellCommand::onCmdInput(FXObject*,FXSelector,void*){
       return 1;
       }
     if(count!=FXIO::Again){
-      if(target && seldone){ target->handle(this,seldone,NULL); }
+      if(target && seldone){ target->handle(this,seldone,nullptr); }
       stop();
       }
     return 1;
@@ -161,7 +161,7 @@ long ShellCommand::onCmdOutput(FXObject*,FXSelector,void*){
   if(count<0){
     if(count!=FXIO::Again){
       stop();
-      if(target && seldone){ target->handle(this,seldone,NULL); }
+      if(target && seldone){ target->handle(this,seldone,nullptr); }
       }
     return 1;
     }
@@ -170,7 +170,7 @@ long ShellCommand::onCmdOutput(FXObject*,FXSelector,void*){
     opipe.close();
     if(!epipe.isOpen()){
       stop();
-      if(target && seldone){ target->handle(this,seldone,NULL); }
+      if(target && seldone){ target->handle(this,seldone,nullptr); }
       }
     return 1;
     }
@@ -190,7 +190,7 @@ long ShellCommand::onCmdError(FXObject*,FXSelector,void*){
   if(count<0){
     if(count!=FXIO::Again){
       stop();
-      if(target && seldone){ target->handle(this,seldone,NULL); }
+      if(target && seldone){ target->handle(this,seldone,nullptr); }
       }
     return 1;
     }
@@ -199,7 +199,7 @@ long ShellCommand::onCmdError(FXObject*,FXSelector,void*){
     epipe.close();
     if(!opipe.isOpen()){
       stop();
-      if(target && seldone){ target->handle(this,seldone,NULL); }
+      if(target && seldone){ target->handle(this,seldone,nullptr); }
       }
     return 1;
     }

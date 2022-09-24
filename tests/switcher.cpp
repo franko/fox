@@ -3,7 +3,7 @@
 *                                 Test Switcher                                 *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 1997,2021 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 1997,2022 by Jeroen van der Zijp.   All Rights Reserved.        *
 ********************************************************************************/
 #include "fx.h"
 #include <stdio.h>
@@ -72,7 +72,7 @@ const unsigned char minifolder[]={
 
 
 // SwitcherApp implementation
-FXIMPLEMENT(SwitcherTest,FXMainWindow,NULL,0)
+FXIMPLEMENT(SwitcherTest,FXMainWindow,nullptr,0)
 
 
 
@@ -80,7 +80,7 @@ FXIMPLEMENT(SwitcherTest,FXMainWindow,NULL,0)
 
 
 // Make some windows
-SwitcherTest::SwitcherTest(FXApp *a):FXMainWindow(a,"Switcher Test",NULL,NULL,DECOR_ALL,0,0,600,400){
+SwitcherTest::SwitcherTest(FXApp *a):FXMainWindow(a,"Switcher Test",nullptr,nullptr,DECOR_ALL,0,0,600,400){
 
   // Tooltip
   new FXToolTip(getApp());
@@ -105,7 +105,7 @@ SwitcherTest::SwitcherTest(FXApp *a):FXMainWindow(a,"Switcher Test",NULL,NULL,DE
   switcher=new FXSwitcher(contents,LAYOUT_FILL_X|LAYOUT_FILL_Y|LAYOUT_RIGHT|FRAME_THICK|FRAME_RAISED);
 
   // First item in switcher is a list
-  simplelist=new FXList(switcher,NULL,0,LIST_EXTENDEDSELECT);
+  simplelist=new FXList(switcher,nullptr,0,LIST_EXTENDEDSELECT);
   simplelist->appendItem("First Entry",mini_folder);
   simplelist->appendItem("Second Entry",big_folder);
   simplelist->appendItem("Third Entry",mini_folder);
@@ -114,25 +114,25 @@ SwitcherTest::SwitcherTest(FXApp *a):FXMainWindow(a,"Switcher Test",NULL,NULL,DE
   simplelist->appendItem("Sixth Entry",mini_folder);
 
   // Second item is a file list
-  filelist=new FXFileList(switcher,NULL,0,ICONLIST_EXTENDEDSELECT);
+  filelist=new FXFileList(switcher,nullptr,0,ICONLIST_EXTENDEDSELECT);
 
   // Third item is a directory list
-  dirlist=new FXDirList(switcher,NULL,0,TREELIST_SHOWS_LINES|TREELIST_SHOWS_BOXES);
+  dirlist=new FXDirList(switcher,nullptr,0,TREELIST_SHOWS_LINES|TREELIST_SHOWS_BOXES);
 
   // Add buttons
-  new FXLabel(buttons,"These buttons below\nare connected to the\nFXSwitcher Control.\nSo they are checked\nautomatically depending\non the active page\nof the switcher.",NULL,LAYOUT_FILL_Y|JUSTIFY_LEFT|JUSTIFY_TOP);
-  new FXButton(buttons,"&Simple List\tMake Switcher go to list",NULL,switcher,FXSwitcher::ID_OPEN_FIRST+0,FRAME_THICK|FRAME_RAISED);
-  new FXButton(buttons,"&File List\tMake Switcher go to files",NULL,switcher,FXSwitcher::ID_OPEN_FIRST+1,FRAME_THICK|FRAME_RAISED);
-  new FXButton(buttons,"&Tree List\tMake Switcher go to tree",NULL,switcher,FXSwitcher::ID_OPEN_FIRST+2,FRAME_THICK|FRAME_RAISED);
+  new FXLabel(buttons,"These buttons below\nare connected to the\nFXSwitcher Control.\nSo they are checked\nautomatically depending\non the active page\nof the switcher.",nullptr,LAYOUT_FILL_Y|JUSTIFY_LEFT|JUSTIFY_TOP);
+  new FXButton(buttons,"&Simple List\tMake Switcher go to list",nullptr,switcher,FXSwitcher::ID_OPEN_FIRST+0,FRAME_THICK|FRAME_RAISED);
+  new FXButton(buttons,"&File List\tMake Switcher go to files",nullptr,switcher,FXSwitcher::ID_OPEN_FIRST+1,FRAME_THICK|FRAME_RAISED);
+  new FXButton(buttons,"&Tree List\tMake Switcher go to tree",nullptr,switcher,FXSwitcher::ID_OPEN_FIRST+2,FRAME_THICK|FRAME_RAISED);
 
   // File Menu
   filemenu=new FXMenuPane(this);
-  new FXMenuCommand(filemenu,"&Simple List",NULL,switcher,FXSwitcher::ID_OPEN_FIRST+0);
-  new FXMenuCommand(filemenu,"&File List",NULL,switcher,FXSwitcher::ID_OPEN_FIRST+1);
-  new FXMenuCommand(filemenu,"&Tree List",NULL,switcher,FXSwitcher::ID_OPEN_FIRST+2);
-  new FXMenuCommand(filemenu,"Dump widgets",NULL,getApp(),FXApp::ID_DUMP);
-  new FXMenuCommand(filemenu,"&Quit\tCtl-Q",NULL,getApp(),FXApp::ID_QUIT,0);
-  new FXMenuTitle(menubar,"&File",NULL,filemenu);
+  new FXMenuCommand(filemenu,"&Simple List",nullptr,switcher,FXSwitcher::ID_OPEN_FIRST+0);
+  new FXMenuCommand(filemenu,"&File List",nullptr,switcher,FXSwitcher::ID_OPEN_FIRST+1);
+  new FXMenuCommand(filemenu,"&Tree List",nullptr,switcher,FXSwitcher::ID_OPEN_FIRST+2);
+  new FXMenuCommand(filemenu,"Dump widgets",nullptr,getApp(),FXApp::ID_DUMP);
+  new FXMenuCommand(filemenu,"&Quit\tCtl-Q",nullptr,getApp(),FXApp::ID_QUIT,0);
+  new FXMenuTitle(menubar,"&File",nullptr,filemenu);
   }
 
 

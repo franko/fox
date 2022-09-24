@@ -3,7 +3,7 @@
 *                            V i s u a l   C l a s s                            *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 1999,2021 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 1999,2022 by Jeroen van der Zijp.   All Rights Reserved.        *
 *********************************************************************************
 * This library is free software; you can redistribute it and/or modify          *
 * it under the terms of the GNU Lesser General Public License as published by   *
@@ -109,11 +109,11 @@ using namespace FX;
 namespace FX {
 
 // Object implementation
-FXIMPLEMENT(FXVisual,FXId,NULL,0)
+FXIMPLEMENT(FXVisual,FXId,nullptr,0)
 
 
 // Deserialization
-FXVisual::FXVisual():visual(NULL),colormap(0),maxcolors(1000000),numcolors(0),numred(0),numgreen(0),numblue(0),depth(0),flags(VISUAL_DEFAULT),hint(32),type(Unknown),freemap(false){
+FXVisual::FXVisual():visual(nullptr),colormap(0),maxcolors(1000000),numcolors(0),numred(0),numgreen(0),numblue(0),depth(0),flags(VISUAL_DEFAULT),hint(32),type(Unknown),freemap(false){
   FXTRACE((TOPIC_CONSTRUCT,"FXVisual::FXVisual %p\n",this));
 #ifndef WIN32
   scrollgc=0;
@@ -123,7 +123,7 @@ FXVisual::FXVisual():visual(NULL),colormap(0),maxcolors(1000000),numcolors(0),nu
 
 
 // Construct
-FXVisual::FXVisual(FXApp* a,FXuint flgs,FXuint hnt):FXId(a),visual(NULL),colormap(0),maxcolors(1000000),numcolors(0),numred(0),numgreen(0),numblue(0),depth(0),flags(flgs),hint(hnt),type(Unknown),freemap(false){
+FXVisual::FXVisual(FXApp* a,FXuint flgs,FXuint hnt):FXId(a),visual(nullptr),colormap(0),maxcolors(1000000),numcolors(0),numred(0),numgreen(0),numblue(0),depth(0),flags(flgs),hint(hnt),type(Unknown),freemap(false){
   FXTRACE((TOPIC_CONSTRUCT,"FXVisual::FXVisual %p\n",this));
 #ifndef WIN32
   scrollgc=0;
@@ -230,8 +230,8 @@ void FXVisual::create(){
         // twice: the first call just fills in the BITMAPINFOHEADER; the
         // second fills in the bitfields or palette.
         hbm=CreateCompatibleBitmap(hdc,1,1);
-        GetDIBits(hdc,hbm,0,1,NULL,(LPBITMAPINFO)&bmi,DIB_RGB_COLORS);
-        GetDIBits(hdc,hbm,0,1,NULL,(LPBITMAPINFO)&bmi,DIB_RGB_COLORS);
+        GetDIBits(hdc,hbm,0,1,nullptr,(LPBITMAPINFO)&bmi,DIB_RGB_COLORS);
+        GetDIBits(hdc,hbm,0,1,nullptr,(LPBITMAPINFO)&bmi,DIB_RGB_COLORS);
         DeleteObject(hbm);
         if(bmi.bmiHeader.biCompression==BI_BITFIELDS){
           redmask=bmi.bmiColors[0];
@@ -917,7 +917,7 @@ void FXVisual::setuppixmapmono(){
 /*
 // Try determine standard colormap
 static FXbool getstdcolormap(Display *dpy,VisualID visualid,XStandardColormap& map){
-  XStandardColormap *stdmaps=NULL;
+  XStandardColormap *stdmaps=nullptr;
   FXbool status=false;
   int count;
   if(XGetRGBColormaps(dpy,RootWindow(dpy,DefaultScreen(dpy)),&stdmaps,&count,XA_RGB_DEFAULT_MAP)){

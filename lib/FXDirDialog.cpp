@@ -3,7 +3,7 @@
 *                D i r e c t o r y   S e l e c t i o n   D i a l o g            *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 2000,2021 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 2000,2022 by Jeroen van der Zijp.   All Rights Reserved.        *
 *********************************************************************************
 * This library is free software; you can redistribute it and/or modify          *
 * it under the terms of the GNU Lesser General Public License as published by   *
@@ -68,7 +68,7 @@ using namespace FX;
 namespace FX {
 
 // Object implementation
-FXIMPLEMENT(FXDirDialog,FXDialogBox,NULL,0)
+FXIMPLEMENT(FXDirDialog,FXDialogBox,nullptr,0)
 
 
 // Construct directory dialog box
@@ -85,7 +85,7 @@ FXDirDialog::FXDirDialog(FXApp* a,const FXString& name,FXuint opts,FXint x,FXint
 
 // Initialize dialog and load settings
 void FXDirDialog::initdialog(){
-  dirbox=new FXDirSelector(this,NULL,0,LAYOUT_FILL_X|LAYOUT_FILL_Y);
+  dirbox=new FXDirSelector(this,nullptr,0,LAYOUT_FILL_X|LAYOUT_FILL_Y);
   dirbox->acceptButton()->setTarget(this);
   dirbox->acceptButton()->setSelector(FXDialogBox::ID_ACCEPT);
   dirbox->cancelButton()->setTarget(this);

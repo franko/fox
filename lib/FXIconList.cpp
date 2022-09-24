@@ -3,7 +3,7 @@
 *                          I c o n L i s t   O b j e c t                        *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 1997,2021 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 1997,2022 by Jeroen van der Zijp.   All Rights Reserved.        *
 *********************************************************************************
 * This library is free software; you can redistribute it and/or modify          *
 * it under the terms of the GNU Lesser General Public License as published by   *
@@ -103,7 +103,7 @@ namespace FX {
 
 
 // Object implementation
-FXIMPLEMENT(FXIconItem,FXObject,NULL,0)
+FXIMPLEMENT(FXIconItem,FXObject,nullptr,0)
 
 
 // Draw item
@@ -574,7 +574,7 @@ FXIconList::FXIconList(){
   extent=-1;
   viewable=-1;
   font=(FXFont*)-1L;
-  sortfunc=NULL;
+  sortfunc=nullptr;
   textColor=0;
   selbackColor=0;
   seltextColor=0;
@@ -604,7 +604,7 @@ FXIconList::FXIconList(FXComposite *p,FXObject* tgt,FXSelector sel,FXuint opts,F
   extent=-1;
   viewable=-1;
   font=getApp()->getNormalFont();
-  sortfunc=NULL;
+  sortfunc=nullptr;
   textColor=getApp()->getForeColor();
   selbackColor=getApp()->getSelbackColor();
   seltextColor=getApp()->getSelforeColor();
@@ -871,14 +871,14 @@ long FXIconList::onClkHeader(FXObject*,FXSelector,void* ptr){
 // Set headers from array of strings
 void FXIconList::setHeaders(const FXchar** strings,FXint size){
   header->clearItems();
-  header->fillItems(strings,NULL,size);
+  header->fillItems(strings,nullptr,size);
   }
 
 
 // Set headers from newline separated strings
 void FXIconList::setHeaders(const FXString& strings,FXint size){
   header->clearItems();
-  header->fillItems(strings,NULL,size);
+  header->fillItems(strings,nullptr,size);
   }
 
 
@@ -1819,8 +1819,8 @@ long FXIconList::onCmdArrangeByRows(FXObject*,FXSelector,void*){
 
 // Update sender
 long FXIconList::onUpdArrangeByRows(FXObject* sender,FXSelector,void*){
-  sender->handle(this,(options&ICONLIST_COLUMNS)?FXSEL(SEL_COMMAND,ID_UNCHECK):FXSEL(SEL_COMMAND,ID_CHECK),NULL);
-  sender->handle(this,(options&(ICONLIST_MINI_ICONS|ICONLIST_BIG_ICONS))?FXSEL(SEL_COMMAND,ID_ENABLE):FXSEL(SEL_COMMAND,ID_DISABLE),NULL);
+  sender->handle(this,(options&ICONLIST_COLUMNS)?FXSEL(SEL_COMMAND,ID_UNCHECK):FXSEL(SEL_COMMAND,ID_CHECK),nullptr);
+  sender->handle(this,(options&(ICONLIST_MINI_ICONS|ICONLIST_BIG_ICONS))?FXSEL(SEL_COMMAND,ID_ENABLE):FXSEL(SEL_COMMAND,ID_DISABLE),nullptr);
   return 1;
   }
 
@@ -1835,8 +1835,8 @@ long FXIconList::onCmdArrangeByColumns(FXObject*,FXSelector,void*){
 
 // Update sender
 long FXIconList::onUpdArrangeByColumns(FXObject* sender,FXSelector,void*){
-  sender->handle(this,(options&ICONLIST_COLUMNS)?FXSEL(SEL_COMMAND,ID_CHECK):FXSEL(SEL_COMMAND,ID_UNCHECK),NULL);
-  sender->handle(this,(options&(ICONLIST_MINI_ICONS|ICONLIST_BIG_ICONS))?FXSEL(SEL_COMMAND,ID_ENABLE):FXSEL(SEL_COMMAND,ID_DISABLE),NULL);
+  sender->handle(this,(options&ICONLIST_COLUMNS)?FXSEL(SEL_COMMAND,ID_CHECK):FXSEL(SEL_COMMAND,ID_UNCHECK),nullptr);
+  sender->handle(this,(options&(ICONLIST_MINI_ICONS|ICONLIST_BIG_ICONS))?FXSEL(SEL_COMMAND,ID_ENABLE):FXSEL(SEL_COMMAND,ID_DISABLE),nullptr);
   return 1;
   }
 
@@ -1852,7 +1852,7 @@ long FXIconList::onCmdShowDetails(FXObject*,FXSelector,void*){
 
 // Update sender
 long FXIconList::onUpdShowDetails(FXObject* sender,FXSelector,void*){
-  sender->handle(this,(options&(ICONLIST_MINI_ICONS|ICONLIST_BIG_ICONS))?FXSEL(SEL_COMMAND,ID_UNCHECK):FXSEL(SEL_COMMAND,ID_CHECK),NULL);
+  sender->handle(this,(options&(ICONLIST_MINI_ICONS|ICONLIST_BIG_ICONS))?FXSEL(SEL_COMMAND,ID_UNCHECK):FXSEL(SEL_COMMAND,ID_CHECK),nullptr);
   return 1;
   }
 
@@ -1868,7 +1868,7 @@ long FXIconList::onCmdShowBigIcons(FXObject*,FXSelector,void*){
 
 // Update sender
 long FXIconList::onUpdShowBigIcons(FXObject* sender,FXSelector,void*){
-  sender->handle(this,(options&ICONLIST_BIG_ICONS)?FXSEL(SEL_COMMAND,ID_CHECK):FXSEL(SEL_COMMAND,ID_UNCHECK),NULL);
+  sender->handle(this,(options&ICONLIST_BIG_ICONS)?FXSEL(SEL_COMMAND,ID_CHECK):FXSEL(SEL_COMMAND,ID_UNCHECK),nullptr);
   return 1;
   }
 
@@ -1884,7 +1884,7 @@ long FXIconList::onCmdShowMiniIcons(FXObject*,FXSelector,void*){
 
 // Update sender
 long FXIconList::onUpdShowMiniIcons(FXObject* sender,FXSelector,void*){
-  sender->handle(this,(options&ICONLIST_MINI_ICONS)?FXSEL(SEL_COMMAND,ID_CHECK):FXSEL(SEL_COMMAND,ID_UNCHECK),NULL);
+  sender->handle(this,(options&ICONLIST_MINI_ICONS)?FXSEL(SEL_COMMAND,ID_CHECK):FXSEL(SEL_COMMAND,ID_UNCHECK),nullptr);
   return 1;
   }
 

@@ -3,7 +3,7 @@
 *                            H e l p   W i n d o w                              *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 1998,2021 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 1998,2022 by Jeroen van der Zijp.   All Rights Reserved.        *
 *********************************************************************************
 * This program is free software: you can redistribute it and/or modify          *
 * it under the terms of the GNU General Public License as published by          *
@@ -37,11 +37,11 @@
 /*******************************************************************************/
 
 
-FXIMPLEMENT(HelpWindow,FXTopWindow,NULL,0)
+FXIMPLEMENT(HelpWindow,FXTopWindow,nullptr,0)
 
 
 // Construct help dialog box
-HelpWindow::HelpWindow(Adie *a):FXTopWindow(a,"Help on Adie",NULL,NULL,DECOR_TITLE|DECOR_BORDER|DECOR_RESIZE,0,0,0,0, 6,6,6,6, 4,4){
+HelpWindow::HelpWindow(Adie *a):FXTopWindow(a,"Help on Adie",nullptr,nullptr,DECOR_TITLE|DECOR_BORDER|DECOR_RESIZE,0,0,0,0, 6,6,6,6, 4,4){
 
   // Set title
   setTitle(tr("Help on Adie"));
@@ -50,11 +50,11 @@ HelpWindow::HelpWindow(Adie *a):FXTopWindow(a,"Help on Adie",NULL,NULL,DECOR_TIT
   FXHorizontalFrame *closebox=new FXHorizontalFrame(this,LAYOUT_SIDE_BOTTOM|LAYOUT_FILL_X|PACK_UNIFORM_WIDTH);
 
   // Destroy window when closed
-  FXButton *button=new FXButton(closebox,tr("&Close"),NULL,this,FXDialogBox::ID_CLOSE,BUTTON_INITIAL|BUTTON_DEFAULT|LAYOUT_RIGHT|FRAME_RAISED|FRAME_THICK,0,0,0,0, 20,20,5,5);
+  FXButton *button=new FXButton(closebox,tr("&Close"),nullptr,this,FXDialogBox::ID_CLOSE,BUTTON_INITIAL|BUTTON_DEFAULT|LAYOUT_RIGHT|FRAME_RAISED|FRAME_THICK,0,0,0,0, 20,20,5,5);
 
   // Editor part
   FXHorizontalFrame *editbox=new FXHorizontalFrame(this,LAYOUT_SIDE_TOP|LAYOUT_FILL_X|LAYOUT_FILL_Y|FRAME_SUNKEN|FRAME_THICK,0,0,0,0, 0,0,0,0);
-  helptext=new FXText(editbox,NULL,0,TEXT_READONLY|TEXT_WORDWRAP|LAYOUT_FILL_X|LAYOUT_FILL_Y);
+  helptext=new FXText(editbox,nullptr,0,TEXT_READONLY|TEXT_WORDWRAP|LAYOUT_FILL_X|LAYOUT_FILL_Y);
   helptext->setVisibleRows(40);
   helptext->setVisibleColumns(90);
 

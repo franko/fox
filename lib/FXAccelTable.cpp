@@ -3,7 +3,7 @@
 *                   A c c e l e r a t o r   T a b l e   C l a s s               *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 1998,2021 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 1998,2022 by Jeroen van der Zijp.   All Rights Reserved.        *
 *********************************************************************************
 * This library is free software; you can redistribute it and/or modify          *
 * it under the terms of the GNU Lesser General Public License as published by   *
@@ -90,7 +90,7 @@ FXAccelTable::FXAccelTable(){
   FXTRACE((TOPIC_CONSTRUCT,"%p->FXAccelTable::FXAccelTable\n",this));
   allocElms(key,1);
   key[0].code=UNUSEDSLOT;
-  key[0].target=NULL;
+  key[0].target=nullptr;
   key[0].messagedn=0;
   key[0].messageup=0;
   max=0;
@@ -105,7 +105,7 @@ void FXAccelTable::resize(FXuint m){
   allocElms(newkey,m+1);
   for(i=0; i<=m; i++){
     newkey[i].code=UNUSEDSLOT;
-    newkey[i].target=NULL;
+    newkey[i].target=nullptr;
     newkey[i].messagedn=0;
     newkey[i].messageup=0;
     }
@@ -180,7 +180,7 @@ void FXAccelTable::removeAccel(FXHotKey hotkey){
     else{                               // Middle of chain
       key[p].code=EMPTYSLOT;
       }
-    key[p].target=NULL;
+    key[p].target=nullptr;
     key[p].messagedn=0;
     key[p].messageup=0;
     if(max>=(num<<2)) resize(max>>1);
@@ -241,12 +241,12 @@ FXObject* FXAccelTable::targetOfAccel(FXHotKey hotkey) const {
     FXASSERT(hotkey!=UNUSEDSLOT);
     FXASSERT(hotkey!=EMPTYSLOT);
     while((c=key[p].code)!=hotkey){
-      if(c==UNUSEDSLOT) return NULL;
+      if(c==UNUSEDSLOT) return nullptr;
       p=(p+1)&max;
       }
     return key[p].target;
     }
-  return NULL;
+  return nullptr;
   }
 
 

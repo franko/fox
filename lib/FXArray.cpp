@@ -3,7 +3,7 @@
 *                          G e n e r i c   A r r a y                            *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 1997,2021 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 1997,2022 by Jeroen van der Zijp.   All Rights Reserved.        *
 *********************************************************************************
 * This library is free software; you can redistribute it and/or modify          *
 * it under the terms of the GNU Lesser General Public License as published by   *
@@ -68,10 +68,10 @@ FXbool FXArrayBase::resize(FXival num,FXival sz){
     FXptr p;
     if(0<num){
       if(ptr!=EMPTY){
-        if(__unlikely((p=::realloc(((FXival*)ptr)-1,sizeof(FXival)+num*sz))==NULL)) return false;
+        if(__unlikely((p=::realloc(((FXival*)ptr)-1,sizeof(FXival)+num*sz))==nullptr)) return false;
         }
       else{
-        if(__unlikely((p=::malloc(sizeof(FXival)+num*sz))==NULL)) return false;
+        if(__unlikely((p=::malloc(sizeof(FXival)+num*sz))==nullptr)) return false;
         }
       ptr=((FXival*)p)+1;
       *(((FXival*)ptr)-1)=num;

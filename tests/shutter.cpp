@@ -92,12 +92,12 @@ public:
 
 
 // Macro class hierarchy implementation
-FXIMPLEMENT(ShutterWindow,FXMainWindow,NULL,0)
+FXIMPLEMENT(ShutterWindow,FXMainWindow,nullptr,0)
 
 
 
 // Construct an application
-ShutterWindow::ShutterWindow(FXApp* a):FXMainWindow(a,"Shutter Widget Test",NULL,NULL,DECOR_ALL,0,0,600,600){
+ShutterWindow::ShutterWindow(FXApp* a):FXMainWindow(a,"Shutter Widget Test",nullptr,nullptr,DECOR_ALL,0,0,600,600){
   FXHorizontalFrame *contents;
   foldericon=new FXGIFIcon(getApp(),folder0a);
   compressicon=new FXGIFIcon(getApp(),compress0c);
@@ -105,31 +105,31 @@ ShutterWindow::ShutterWindow(FXApp* a):FXMainWindow(a,"Shutter Widget Test",NULL
 
   contents=new FXHorizontalFrame(this,LAYOUT_FILL_X|LAYOUT_FILL_Y);
   listFrame = new FXVerticalFrame(contents,LAYOUT_FILL_X|LAYOUT_FILL_Y|LAYOUT_TOP|LAYOUT_LEFT,0,0,0,0,10,10,10,10);
-  new FXLabel(listFrame,"Tree List",NULL,JUSTIFY_CENTER_X|LAYOUT_FILL_X);
+  new FXLabel(listFrame,"Tree List",nullptr,JUSTIFY_CENTER_X|LAYOUT_FILL_X);
   new FXHorizontalSeparator(listFrame,SEPARATOR_GROOVE|LAYOUT_FILL_X);
-  tree = new FXTreeList(listFrame,NULL,0,FRAME_SUNKEN|FRAME_THICK|LAYOUT_FILL_X|LAYOUT_FILL_Y|LAYOUT_TOP|LAYOUT_RIGHT|TREELIST_SHOWS_LINES|TREELIST_SHOWS_BOXES);
+  tree = new FXTreeList(listFrame,nullptr,0,FRAME_SUNKEN|FRAME_THICK|LAYOUT_FILL_X|LAYOUT_FILL_Y|LAYOUT_TOP|LAYOUT_RIGHT|TREELIST_SHOWS_LINES|TREELIST_SHOWS_BOXES);
 
   buttonFrame=new FXVerticalFrame(contents,FRAME_RAISED|LAYOUT_FILL_Y|LAYOUT_TOP|LAYOUT_LEFT,0,0,0,0,10,10,10,10);
-  new FXLabel(buttonFrame,"Button Frame",NULL,JUSTIFY_CENTER_X|LAYOUT_FILL_X);
+  new FXLabel(buttonFrame,"Button Frame",nullptr,JUSTIFY_CENTER_X|LAYOUT_FILL_X);
   new FXHorizontalSeparator(buttonFrame,SEPARATOR_RIDGE|LAYOUT_FILL_X);
 
-  shutterFrame = new FXShutter(buttonFrame,NULL,0,FRAME_SUNKEN|LAYOUT_FILL_Y|LAYOUT_FILL_X|LAYOUT_TOP|LAYOUT_LEFT,0,0,0,0,0,0,0,0,0,0);
-  shutterItem = new FXShutterItem(shutterFrame,"Test 1",NULL,LAYOUT_FILL_X|LAYOUT_FILL_Y,0,0,0,0,10,10,10,10,10,10);
+  shutterFrame = new FXShutter(buttonFrame,nullptr,0,FRAME_SUNKEN|LAYOUT_FILL_Y|LAYOUT_FILL_X|LAYOUT_TOP|LAYOUT_LEFT,0,0,0,0,0,0,0,0,0,0);
+  shutterItem = new FXShutterItem(shutterFrame,"Test 1",nullptr,LAYOUT_FILL_X|LAYOUT_FILL_Y,0,0,0,0,10,10,10,10,10,10);
   new FXButton(shutterItem->getContent(),FXString::null,foldericon,getApp(),FXApp::ID_QUIT,FRAME_THICK|FRAME_RAISED|LAYOUT_FILL_X|LAYOUT_TOP|LAYOUT_CENTER_X,0,0,0,0,10,10,5,5);
   new FXButton(shutterItem->getContent(),FXString::null,compressicon,getApp(),FXApp::ID_QUIT,FRAME_THICK|FRAME_RAISED|LAYOUT_FILL_X|LAYOUT_TOP|LAYOUT_CENTER_X,0,0,0,0,10,10,5,5);
   new FXButton(shutterItem->getContent(),FXString::null,compressicon,getApp(),FXApp::ID_QUIT,FRAME_THICK|FRAME_RAISED|LAYOUT_FILL_X|LAYOUT_TOP|LAYOUT_CENTER_X,0,0,0,0,10,10,5,5);
   new FXButton(shutterItem->getContent(),FXString::null,foldericon,getApp(),FXApp::ID_QUIT,FRAME_THICK|FRAME_RAISED|LAYOUT_FILL_X|LAYOUT_TOP|LAYOUT_CENTER_X,0,0,0,0,10,10,5,5);
 
-  shutterItem = new FXShutterItem(shutterFrame,"Test 2",NULL,LAYOUT_FILL_X,0,0,0,0,10,10,10,10,10,10);
+  shutterItem = new FXShutterItem(shutterFrame,"Test 2",nullptr,LAYOUT_FILL_X,0,0,0,0,10,10,10,10,10,10);
   new FXButton(shutterItem->getContent(),FXString::null,foldericon,getApp(),FXApp::ID_QUIT,FRAME_THICK|FRAME_RAISED|LAYOUT_FILL_X|LAYOUT_TOP|LAYOUT_CENTER_X,0,0,0,0,10,10,5,5);
   new FXButton(shutterItem->getContent(),FXString::null,compressicon,getApp(),FXApp::ID_QUIT,FRAME_THICK|FRAME_RAISED|LAYOUT_FILL_X|LAYOUT_TOP|LAYOUT_CENTER_X,0,0,0,0,10,10,5,5);
   new FXButton(shutterItem->getContent(),FXString::null,foldericon,getApp(),FXApp::ID_QUIT,FRAME_THICK|FRAME_RAISED|LAYOUT_FILL_X|LAYOUT_TOP|LAYOUT_CENTER_X,0,0,0,0,10,10,5,5);
 
-  shutterItem = new FXShutterItem(shutterFrame,"Test 3",NULL,LAYOUT_FILL_X,0,0,0,0,10,10,10,10,10,10);
+  shutterItem = new FXShutterItem(shutterFrame,"Test 3",nullptr,LAYOUT_FILL_X,0,0,0,0,10,10,10,10,10,10);
   new FXButton(shutterItem->getContent(),FXString::null,foldericon,getApp(),FXApp::ID_QUIT,FRAME_THICK|FRAME_RAISED|LAYOUT_FILL_X|LAYOUT_TOP|LAYOUT_CENTER_X,0,0,0,0,10,10,5,5);
   new FXButton(shutterItem->getContent(),FXString::null,compressicon,getApp(),FXApp::ID_QUIT,FRAME_THICK|FRAME_RAISED|LAYOUT_FILL_X|LAYOUT_TOP|LAYOUT_CENTER_X,0,0,0,0,10,10,5,5);
 
-  shutterItem = new FXShutterItem(shutterFrame,"Test 4",NULL,LAYOUT_FILL_X,0,0,0,0,10,10,10,10,10,10);
+  shutterItem = new FXShutterItem(shutterFrame,"Test 4",nullptr,LAYOUT_FILL_X,0,0,0,0,10,10,10,10,10,10);
   new FXButton(shutterItem->getContent(),FXString::null,compressicon,getApp(),FXApp::ID_QUIT,FRAME_THICK|FRAME_RAISED|LAYOUT_FILL_X|LAYOUT_TOP|LAYOUT_CENTER_X,0,0,0,0,10,10,5,5);
   new FXButton(shutterItem->getContent(),FXString::null,compressicon,getApp(),FXApp::ID_QUIT,FRAME_THICK|FRAME_RAISED|LAYOUT_FIX_WIDTH|LAYOUT_FIX_HEIGHT|LAYOUT_TOP|LAYOUT_CENTER_X,0,0,120,120,10,10,5,5);
   }

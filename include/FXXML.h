@@ -3,7 +3,7 @@
 *                       X M L   R e a d e r  &  W r i t e r                     *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 2016,2021 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 2016,2022 by Jeroen van der Zijp.   All Rights Reserved.        *
 *********************************************************************************
 * This library is free software; you can redistribute it and/or modify          *
 * it under the terms of the GNU Lesser General Public License as published by   *
@@ -149,7 +149,7 @@ public:
   * Open XML stream for given direction d.
   * Use given buffer data of size sz, or allocate a local buffer.
   */
-  FXbool open(FXchar* buffer=NULL,FXuval sz=4096,Direction d=Load);
+  FXbool open(FXchar* buffer=nullptr,FXuval sz=4096,Direction d=Load);
 
   /**
   * Return size of parse buffer.
