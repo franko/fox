@@ -536,9 +536,6 @@ public:
   /// Remove the focus from this window
   virtual void killFocus();
 
-  /// Notification that focus moved to new child
-  virtual void changeFocus(FXWindow *child);
-
   /// Return button in the top/left corner
   FXButton* getCornerButton() const { return cornerButton; }
 

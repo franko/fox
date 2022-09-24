@@ -45,9 +45,9 @@
 
   - Syntax Rules:
 
-    o  Four types of rules at this time:
+    o  Five types of rules at this time:
 
-       1  DefaultRule (new).  This rule colorizes everything.  By default,
+       1  DefaultRule.  This rule colorizes everything.  By default,
           a top-level DefaultRule is automatically created in the Language,
           corresponding to style index 0 in text editor (default style).
           In some cases, you may want to create another DefaultRule under
@@ -69,6 +69,10 @@
           The extra clause provides a safety back-stop against matching a
           potentially huge portion of text in the event that the user is
           editing the text and no text currently matches the closing pattern.
+
+       5  NestedRule.  This rule matches a single regex pattern. The subrules
+          of the NestedRule are applied only to the range matched by their
+          parent; thus, there is no need for a closing regex.
 
     o The pattern in a SimpleRule must be non-empty, i.e. it must match a non-zero
       number of characters.  The other rules may match zero characters (e.g.
@@ -118,13 +122,14 @@
 
 /*******************************************************************************/
 
-
-FXIMPLEMENT(Rule,FXObject,nullptr,0)
-
-
 // Fill textstyle with style, returns position of last change+1
 static inline void fillstyle(FXchar* textstyle,FXchar style,FXint f,FXint t){
   while(f<t) textstyle[f++]=style;
+  }
+
+
+// Constructor
+Rule::Rule(const FXString& nam,const FXString& sty,FXint par,FXint idx):name(nam),style(sty),parent(par),index(idx){
   }
 
 
@@ -139,144 +144,240 @@ FXbool Rule::stylizeBody(const FXchar*,FXchar*,FXint,FXint,FXint&,FXint&) const 
   return false;
   }
 
-/*******************************************************************************/
 
-FXIMPLEMENT(SimpleRule,Rule,nullptr,0)
-
-
-// Stylize complex recursive expression
-FXbool SimpleRule::stylizeBody(const FXchar* text,FXchar *textstyle,FXint fm,FXint to,FXint& start,FXint& stop) const {
-  if(pat.amatch(text,to,fm,FXRex::Normal,&start,&stop,1)){
-    fillstyle(textstyle,index,start,stop);
-    return true;
-    }
-  return false;
-  }
-
-
-// Stylize simple expression
-FXbool SimpleRule::stylize(const FXchar* text,FXchar *textstyle,FXint fm,FXint to,FXint& start,FXint& stop) const {
-  if(pat.amatch(text,to,fm,FXRex::Normal,&start,&stop,1)){
-    fillstyle(textstyle,index,start,stop);
-    return true;
-    }
-  return false;
+// Destructor
+Rule::~Rule(){
   }
 
 /*******************************************************************************/
 
-FXIMPLEMENT(BracketRule,Rule,nullptr,0)
-
-
-// Stylize complex recursive expression
-FXbool BracketRule::stylizeBody(const FXchar* text,FXchar *textstyle,FXint fm,FXint to,FXint& start,FXint& stop) const {
-  FXint head,tail,node;
-  start=fm;
-  while(fm<to){
-    for(node=0; node<rules.no(); node++){
-      if(rules[node]->stylize(text,textstyle,fm,to,head,tail)){
-        fm=tail;
-        goto nxt;
-        }
-      }
-    if(end.amatch(text,to,fm,FXRex::Normal,&head,&stop,1)){
-      fillstyle(textstyle,index,head,stop);
-      return true;
-      }
-    textstyle[fm++]=index;
-nxt:continue;
-    }
-  stop=fm;
-  return true;
-  }
-
-
-// Stylize complex recursive expression
-FXbool BracketRule::stylize(const FXchar* text,FXchar *textstyle,FXint fm,FXint to,FXint& start,FXint& stop) const {
-  FXint head,tail;
-  if(beg.amatch(text,to,fm,FXRex::Normal,&start,&tail,1)){
-    fillstyle(textstyle,index,start,tail);
-    BracketRule::stylizeBody(text,textstyle,tail,to,head,stop);
-    return true;
-    }
-  return false;
-  }
-
-/*******************************************************************************/
-
-FXIMPLEMENT(SafeBracketRule,BracketRule,nullptr,0)
-
-
-// Stylize complex recursive expression with termination pattern
-FXbool SafeBracketRule::stylizeBody(const FXchar* text,FXchar *textstyle,FXint fm,FXint to,FXint& start,FXint& stop) const {
-  FXint head,tail,node;
-  start=fm;
-  while(fm<to){
-    if(esc.amatch(text,to,fm,FXRex::Normal,&head,&stop,1)){     // Each time around, check stop pattern (changed from old method!)
-      fillstyle(textstyle,index,head,stop);
-      return true;
-      }
-    for(node=0; node<rules.no(); node++){
-      if(rules[node]->stylize(text,textstyle,fm,to,head,tail)){
-        fm=tail;
-        goto nxt;
-        }
-      }
-    if(end.amatch(text,to,fm,FXRex::Normal,&head,&stop,1)){
-      fillstyle(textstyle,index,head,stop);
-      return true;
-      }
-    textstyle[fm++]=index;
-nxt:continue;
-    }
-  stop=fm;
-  return true;
-  }
-
-
-// Stylize complex recursive expression with termination pattern
-FXbool SafeBracketRule::stylize(const FXchar* text,FXchar *textstyle,FXint fm,FXint to,FXint& start,FXint& stop) const {
-  FXint head,tail;
-  if(beg.amatch(text,to,fm,FXRex::Normal,&start,&tail,1)){
-    fillstyle(textstyle,index,start,tail);
-    SafeBracketRule::stylizeBody(text,textstyle,tail,to,head,stop);
-    return true;
-    }
-  return false;
-  }
-
-/*******************************************************************************/
-
-FXIMPLEMENT(DefaultRule,Rule,nullptr,0)
-
-
-// Stylize body
-FXbool DefaultRule::stylizeBody(const FXchar* text,FXchar *textstyle,FXint fm,FXint to,FXint& start,FXint& stop) const {
-  FXint head,tail,node;
-  start=fm;
-  while(fm<to){
-    for(node=0; node<rules.no(); node++){
-      if(rules[node]->stylize(text,textstyle,fm,to,head,tail)){
-        fm=tail;
-        goto nxt;
-        }
-      }
-    textstyle[fm++]=index;
-nxt:continue;
-    }
-  stop=to;
-  return true;
+// Constructor
+DefaultRule::DefaultRule(const FXString& nam,const FXString& sty,FXint par,FXint idx):Rule(nam,sty,par,idx){
+  FXTRACE((10,"DefaultRule::DefaultRule(\"%s\",\"%s\",%d,%d)\n",nam.text(),sty.text(),parent,index));
   }
 
 
 // Stylize text
-FXbool DefaultRule::stylize(const FXchar* text,FXchar *textstyle,FXint fm,FXint to,FXint& start,FXint& stop) const {
-  return DefaultRule::stylizeBody(text,textstyle,fm,to,start,stop);
+FXbool DefaultRule::stylize(const FXchar* text,FXchar *textstyle,FXint len,FXint pos,FXint& head,FXint& tail) const {
+  return DefaultRule::stylizeBody(text,textstyle,len,pos,head,tail);
+  }
+
+
+// Stylize body, i.e. after begin pattern has been seen
+FXbool DefaultRule::stylizeBody(const FXchar* text,FXchar* textstyle,FXint len,FXint pos,FXint& head,FXint& tail) const {
+  FXint begin,end; FXuchar c;
+  head=pos;
+  while(pos<len){
+    for(FXint node=0; node<rules.no(); node++){
+      if(rules[node]->stylize(text,textstyle,len,pos,begin,end)){ pos=end; goto nxt; }
+      }
+    c=text[pos];
+    textstyle[pos++]=index;
+    if(c<0xC0) continue;
+    textstyle[pos++]=index;
+    if(c<0xE0) continue;
+    textstyle[pos++]=index;
+    if(c<0xF0) continue;
+    textstyle[pos++]=index;
+nxt:continue;
+    }
+  tail=len;
+  return true;
+  }
+
+
+// Destructor
+DefaultRule::~DefaultRule(){
+  FXTRACE((10,"DefaultRule::~DefaultRule()\n"));
   }
 
 /*******************************************************************************/
 
-FXIMPLEMENT(Syntax,FXObject,nullptr,0)
+// Constructor
+SimpleRule::SimpleRule(const FXString& nam,const FXString& sty,const FXString& rex,FXint par,FXint idx):Rule(nam,sty,par,idx),pattern(rex,FXRex::Newline|FXRex::NotEmpty){
+  FXTRACE((10,"SimpleRule::SimpleRule(\"%s\",\"%s\",\"%s\",%d,%d)\n",nam.text(),sty.text(),rex.text(),parent,index));
+  }
+
+
+// Stylize text; a match always non-empty
+FXbool SimpleRule::stylize(const FXchar* text,FXchar *textstyle,FXint len,FXint pos,FXint& head,FXint& tail) const {
+  return SimpleRule::stylizeBody(text,textstyle,len,pos,head,tail);
+  }
+
+
+// Stylize body, i.e. after begin pattern has been seen
+FXbool SimpleRule::stylizeBody(const FXchar* text,FXchar* textstyle,FXint len,FXint pos,FXint& head,FXint& tail) const {
+  if(pattern.amatch(text,len,pos,FXRex::Normal,&head,&tail,1)){
+    fillstyle(textstyle,index,head,tail);
+    return true;
+    }
+  return false;
+  }
+
+
+// Destructor
+SimpleRule::~SimpleRule(){
+  FXTRACE((10,"SimpleRule::~SimpleRule()\n"));
+  }
+
+/*******************************************************************************/
+
+// Constructor
+BracketRule::BracketRule(const FXString& nam,const FXString& sty,const FXString& brex,const FXString& erex,FXint par,FXint idx):Rule(nam,sty,par,idx),open(brex,FXRex::Newline),close(erex,FXRex::Newline){
+  FXTRACE((10,"BracketRule::BracketRule(\"%s\",\"%s\",\"%s\",\"%s\",%d,%d)\n",nam.text(),sty.text(),brex.text(),erex.text(),parent,index));
+  }
+
+
+// Stylize text; only report success if non-empty
+FXbool BracketRule::stylize(const FXchar* text,FXchar *textstyle,FXint len,FXint pos,FXint& head,FXint& tail) const {
+  FXint end;
+  if(open.amatch(text,len,pos,FXRex::Normal,&head,&end,1)){
+    fillstyle(textstyle,index,head,end);
+    BracketRule::stylizeBody(text,textstyle,len,end,end,tail);
+    return head<tail;
+    }
+  return false;
+  }
+
+
+// Stylize body, i.e. after begin pattern has been seen
+FXbool BracketRule::stylizeBody(const FXchar* text,FXchar* textstyle,FXint len,FXint pos,FXint& head,FXint& tail) const {
+  FXint begin,end; FXuchar c;
+  head=pos;
+  while(pos<len){
+    for(FXint node=0; node<rules.no(); node++){
+      if(rules[node]->stylize(text,textstyle,len,pos,begin,end)){ pos=end; goto nxt; }
+      }
+    if(close.amatch(text,len,pos,FXRex::Normal,&begin,&tail,1)){
+      fillstyle(textstyle,index,begin,tail);
+      return true;
+      }
+    c=text[pos];
+    textstyle[pos++]=index;
+    if(c<0xC0) continue;
+    textstyle[pos++]=index;
+    if(c<0xE0) continue;
+    textstyle[pos++]=index;
+    if(c<0xF0) continue;
+    textstyle[pos++]=index;
+nxt:continue;
+    }
+  tail=len;
+  return true;
+  }
+
+
+// Destructor
+BracketRule::~BracketRule(){
+  FXTRACE((10,"BracketRule::~BracketRule()\n"));
+  }
+
+/*******************************************************************************/
+
+// Constructor
+SafeBracketRule::SafeBracketRule(const FXString& nam,const FXString& sty,const FXString& brex,const FXString& erex,const FXString& srex,FXint par,FXint idx):BracketRule(nam,sty,brex,erex,par,idx),stop(srex,FXRex::Newline){
+  FXTRACE((10,"SafeBracketRule::SafeBracketRule(\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",%d,%d)\n",nam.text(),sty.text(),brex.text(),erex.text(),srex.text(),parent,index));
+  }
+
+
+// Stylize text; only report success if non-empty
+FXbool SafeBracketRule::stylize(const FXchar* text,FXchar *textstyle,FXint len,FXint pos,FXint& head,FXint& tail) const {
+  FXint end;
+  if(open.amatch(text,len,pos,FXRex::Normal,&head,&end,1)){
+    fillstyle(textstyle,index,head,end);
+    SafeBracketRule::stylizeBody(text,textstyle,len,end,end,tail);
+    return head<tail;
+    }
+  return false;
+  }
+
+
+// Stylize body, i.e. after begin pattern has been seen
+FXbool SafeBracketRule::stylizeBody(const FXchar* text,FXchar* textstyle,FXint len,FXint pos,FXint& head,FXint& tail) const {
+  FXint begin,end; FXuchar c;
+  head=pos;
+  while(pos<len){
+    if(stop.amatch(text,len,pos,FXRex::Normal,&begin,&tail,1)){
+      fillstyle(textstyle,index,begin,tail);
+      return true;
+      }
+    for(FXint node=0; node<rules.no(); node++){
+      if(rules[node]->stylize(text,textstyle,len,pos,begin,end)){ pos=end; goto nxt; }
+      }
+    if(close.amatch(text,len,pos,FXRex::Normal,&begin,&tail,1)){
+      fillstyle(textstyle,index,begin,tail);
+      return true;
+      }
+    c=text[pos];
+    textstyle[pos++]=index;
+    if(c<0xC0) continue;
+    textstyle[pos++]=index;
+    if(c<0xE0) continue;
+    textstyle[pos++]=index;
+    if(c<0xF0) continue;
+    textstyle[pos++]=index;
+nxt:continue;
+    }
+  tail=len;
+  return true;
+  }
+
+
+// Destructor
+SafeBracketRule::~SafeBracketRule(){
+  FXTRACE((10,"BracketRule::~BracketRule()\n"));
+  }
+
+/*******************************************************************************/
+
+// Constructor
+SpanRule::SpanRule(const FXString& nam,const FXString& sty,const FXString& rex,FXint par,FXint idx):Rule(nam,sty,par,idx),pattern(rex,FXRex::Newline|FXRex::NotEmpty){
+  FXTRACE((10,"SpanRule::SpanRule(\"%s\",\"%s\",\"%s\",%d,%d)\n",nam.text(),sty.text(),rex.text(),parent,index));
+  }
+
+
+// Stylize text; a match always non-empty
+FXbool SpanRule::stylize(const FXchar* text,FXchar *textstyle,FXint len,FXint pos,FXint& head,FXint& tail) const {
+  FXint begin,end;
+  if(pattern.amatch(text,len,pos,FXRex::Normal,&head,&tail,1)){
+    fillstyle(textstyle,index,head,tail);
+    SpanRule::stylizeBody(text,textstyle,tail,head,begin,end);
+    return head<tail;
+    }
+  return false;
+  }
+
+
+// Stylize body, i.e. after begin pattern has been seen
+FXbool SpanRule::stylizeBody(const FXchar* text,FXchar* textstyle,FXint len,FXint pos,FXint& head,FXint& tail) const {
+  FXint begin,end; FXuchar c;
+  head=pos;
+  while(pos<len){
+    for(FXint node=0; node<rules.no(); node++){
+      if(rules[node]->stylize(text,textstyle,len,pos,begin,end)){ pos=end; goto nxt; }
+      }
+    c=text[pos];
+    textstyle[pos++]=index;
+    if(c<0xC0) continue;
+    textstyle[pos++]=index;
+    if(c<0xE0) continue;
+    textstyle[pos++]=index;
+    if(c<0xF0) continue;
+    textstyle[pos++]=index;
+nxt:continue;
+    }
+  tail=len;
+  return true;
+  }
+
+
+// Destructor
+SpanRule::~SpanRule(){
+  FXTRACE((10,"SpanRule::~SpanRule()\n"));
+  }
+
+
+/*******************************************************************************/
 
 
 // Construct syntax object; needs at least one master rule
@@ -303,14 +404,13 @@ FXbool Syntax::matchFilename(const FXString& name) const {
 
 // Match contents against regular expression
 FXbool Syntax::matchContents(const FXString& text) const {
-  FXRex rex(contents);
+  FXRex rex(contents,FXRex::NotEmpty);
   return rex.search(text,0,text.length(),FXRex::Normal)>=0;
   }
 
 
 // Append default rule
 FXint Syntax::appendDefault(const FXString& name,const FXString& style,FXint parent){
-  FXTRACE((10,"Syntax::appendDefault(\"%s\",\"%s\",%d)\n",name.text(),style.text(),parent));
   FXint index=rules.no();
   FXASSERT(0<=parent && parent<rules.no());
   DefaultRule *rule=new DefaultRule(name,style,parent,index);
@@ -322,7 +422,6 @@ FXint Syntax::appendDefault(const FXString& name,const FXString& style,FXint par
 
 // Append simple rule
 FXint Syntax::appendSimple(const FXString& name,const FXString& style,const FXString& rex,FXint parent){
-  FXTRACE((10,"Syntax::appendSimple(\"%s\",\"%s\",\"%s\",%d)\n",name.text(),style.text(),rex.text(),parent));
   FXint index=rules.no();
   FXASSERT(0<=parent && parent<rules.no());
   SimpleRule *rule=new SimpleRule(name,style,rex,parent,index);
@@ -332,9 +431,19 @@ FXint Syntax::appendSimple(const FXString& name,const FXString& style,const FXSt
   }
 
 
+// Append span rule
+FXint Syntax::appendSpan(const FXString& name,const FXString& style,const FXString& rex,FXint parent){
+  FXint index=rules.no();
+  FXASSERT(0<=parent && parent<rules.no());
+  SpanRule *rule=new SpanRule(name,style,rex,parent,index);
+  rules.append(rule);
+  rules[parent]->rules.append(rule);
+  return index;
+  }
+
+
 // Append bracket rule
 FXint Syntax::appendBracket(const FXString& name,const FXString& style,const FXString& brex,const FXString& erex,FXint parent){
-  FXTRACE((10,"Syntax::appendBracket(\"%s\",\"%s\",\"%s\",\"%s\",%d)\n",name.text(),style.text(),brex.text(),erex.text(),parent));
   FXint index=rules.no();
   FXASSERT(0<=parent && parent<rules.no());
   BracketRule *rule=new BracketRule(name,style,brex,erex,parent,index);
@@ -346,20 +455,12 @@ FXint Syntax::appendBracket(const FXString& name,const FXString& style,const FXS
 
 // Append safe bracket rule
 FXint Syntax::appendSafeBracket(const FXString& name,const FXString& style,const FXString& brex,const FXString& erex,const FXString& srex,FXint parent){
-  FXTRACE((10,"Syntax::appendSafeBracket(\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",%d)\n",name.text(),style.text(),brex.text(),erex.text(),srex.text(),parent));
   FXint index=rules.no();
   FXASSERT(0<=parent && parent<rules.no());
   SafeBracketRule *rule=new SafeBracketRule(name,style,brex,erex,srex,parent,index);
   rules.append(rule);
   rules[parent]->rules.append(rule);
   return index;
-  }
-
-
-// Return true if toplevel rule
-FXbool Syntax::isRoot(FXint rule) const {
-  FXASSERT(0<=rule && rule<rules.no());
-  return rule==0 || rules[rule]->parent==0;
   }
 
 
@@ -396,5 +497,6 @@ FXint Syntax::commonAncestor(FXint a,FXint b) const {
 
 // Clean up
 Syntax::~Syntax(){
-  for(FXint i=0; i<rules.no(); i++){ delete rules[i]; }
+  FXTRACE((10,"Syntax::~Syntax()\n"));
+  for(FXint node=0; node<rules.no(); node++){ delete rules[node]; }
   }

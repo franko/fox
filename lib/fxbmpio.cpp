@@ -50,7 +50,7 @@
 #define BIH_ALPHABITFIELDS 6    // RGBA bit field masks
 #define BIH_CMYK           11   // none
 #define BIH_CMYKRLE8       12   // RLE-8
-#define BIH_CMYKRLE8       13   // RLE-4
+#define BIH_CMYKRLE4       13   // RLE-4
 
 #define RLE_ESC       0         // RLE escape sequence
 #define RLE_LINE      0         // RLE end of line

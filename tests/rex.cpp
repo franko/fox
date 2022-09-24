@@ -87,6 +87,11 @@ int main(int argc,char** argv){
       printusage();
       return 0;
       }
+    else if(compare(argv[arg],"-tracetopics")==0){
+      if(++arg>=argc){ fxwarning("rex: missing argument for -tracetopics.\n"); return 0; }
+      setTraceTopics(argv[arg++]);
+      continue;
+      }
     arg++;
     }
 

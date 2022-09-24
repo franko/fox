@@ -569,9 +569,6 @@ public:
   /// Remove the focus from this window
   virtual void killFocus();
 
-  /// Notification that focus moved to new child
-  virtual void changeFocus(FXWindow *child);
-
   /// Return true if this is the default window
   FXbool isDefault() const;
 

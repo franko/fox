@@ -503,7 +503,7 @@
 */
 
 #define TOPIC_CONSTRUCT 1000
-//#define TOPIC_REXDUMP   1014          // Debugging regex code
+#define TOPIC_REXDUMP   1014          // Debugging regex code
 
 
 // As close to infinity as we're going to get; this seems big enough.  We can not make
@@ -1381,7 +1381,7 @@ FXRex::Error FXCompile::piece(FXshort& flags,FXshort& smin,FXshort& smax){
             }
           }
         else{
-          if(rep_min==0 && rep_max==ONEINDIG){        // (...)*
+          if(rep_min==0 && rep_max==ONEINDIG){          // (...)*
             /*    ________
             **   |        \
             ** --B--(...)--J--+--
@@ -1390,7 +1390,7 @@ FXRex::Error FXCompile::piece(FXshort& flags,FXshort& smin,FXshort& smax){
             insert(ptr,greediness?OP_BRANCHREV:OP_BRANCH,pc-ptr+5);
             append(OP_JUMP,ptr-pc-1);
             }
-          else if(rep_min==1 && rep_max==ONEINDIG){   // (...)+
+          else if(rep_min==1 && rep_max==ONEINDIG){     // (...)+
             /*    ________
             **   |        \
             ** --+--(...)--B--
@@ -1398,7 +1398,7 @@ FXRex::Error FXCompile::piece(FXshort& flags,FXshort& smin,FXshort& smax){
             */
             append(greediness?OP_BRANCH:OP_BRANCHREV,ptr-pc-1);
             }
-          else if(rep_min==0 && rep_max==1){          // (...)?
+          else if(rep_min==0 && rep_max==1){            // (...)?
             /*
             **
             ** --B--(...)--+--
@@ -1406,7 +1406,7 @@ FXRex::Error FXCompile::piece(FXshort& flags,FXshort& smin,FXshort& smax){
             */
             insert(ptr,greediness?OP_BRANCHREV:OP_BRANCH,pc-ptr+2);
             }
-          else if(0<rep_min && rep_min==rep_max){     // (...){M,N}, where M>0
+          else if(0<rep_min && rep_min==rep_max){       // (...){M,N}, where M>0
             /*       ___________
             **      |           \
             ** --Z--+--(...)--I--L--
@@ -1418,7 +1418,7 @@ FXRex::Error FXCompile::piece(FXshort& flags,FXshort& smin,FXshort& smax){
             append(OP_JUMPLT_0+nbra,rep_min,ptr-pc-2);
             nbra++;
             }
-          else if(rep_min==0 && rep_max<ONEINDIG){    // (...){0,N}, while N finite
+          else if(rep_min==0 && rep_max<ONEINDIG){      // (...){0,N}, while N finite
             /*       ___________
             **      |           \
             ** --Z--B--(...)--I--L--+--
@@ -1431,7 +1431,7 @@ FXRex::Error FXCompile::piece(FXshort& flags,FXshort& smin,FXshort& smax){
             append(OP_JUMPLT_0+nbra,rep_max,ptr-pc-2);
             nbra++;
             }
-          else if(0<rep_min && rep_max==ONEINDIG){    // (...){M,}, where M>0
+          else if(0<rep_min && rep_max==ONEINDIG){      // (...){M,}, where M>0
             /*       ________________
             **      |   ___________  \
             **      |  |           \  \
@@ -4349,7 +4349,7 @@ f:  --recs;
 
 /*******************************************************************************/
 
-// Structure used during pattern reveral adjustment
+// Structure used during pattern reversal adjustment
 class FXReverse {
   const FXchar *src;    // Original pattern source
   FXchar       *dst;    // Adjusted pattern destination
@@ -4748,26 +4748,25 @@ FXbool FXRex::amatch(const FXchar* string,FXint len,FXint pos,FXint mode,FXint* 
 
 // Match pattern in string at position pos
 FXbool FXRex::amatch(const FXString& string,FXint pos,FXint mode,FXint* beg,FXint* end,FXint npar) const {
-  return amatch(string.text(),string.length(),pos,mode,beg,end,npar);
+  FXExecute ms(string.text(),string.text()+string.length(),beg,end,npar,mode);
+  return ms.attempt(code+2,&string[pos]);
   }
 
 /*******************************************************************************/
 
 // Search for pattern in string, starting at fm; return position or -1
 FXint FXRex::search(const FXchar* string,FXint len,FXint fm,FXint to,FXint mode,FXint* beg,FXint* end,FXint npar) const {
-  if(__unlikely(NSUBEXP<npar || fm<0 || to<0 || len<fm || len<to)){ fxerror("FXRex::search: bad argument.\n"); }
   FXExecute ms(string,string+len,beg,end,npar,mode);
-  const FXchar* result;
-  if((result=ms.search(code+2,&string[fm],&string[to]))!=nullptr){
-    return result-string;
-    }
-  return -1;
+  const FXchar* result=ms.search(code+2,&string[fm],&string[to]);
+  return result ? (result-string) : -1;
   }
 
 
 // Search for pattern in string, starting at fm; return position or -1
 FXint FXRex::search(const FXString& string,FXint fm,FXint to,FXint mode,FXint* beg,FXint* end,FXint npar) const {
-  return search(string.text(),string.length(),fm,to,mode,beg,end,npar);
+  FXExecute ms(string.text(),string.text()+string.length(),beg,end,npar,mode);
+  const FXchar* result=ms.search(code+2,&string[fm],&string[to]);
+  return result ? (result-string.text()) : -1;
   }
 
 /*******************************************************************************/

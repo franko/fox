@@ -187,15 +187,17 @@ void FXRealSpinner::layout(){
   }
 
 
-// Notification that focus moved to new child
-void FXRealSpinner::changeFocus(FXWindow *child){
-  FXPacker::changeFocus(child);
-  if(child){
-    flags&=~FLAG_UPDATE;
-    }
-  else{
-    flags|=FLAG_UPDATE;
-    }
+// Move the focus to this window
+void FXRealSpinner::setFocus(){
+  FXPacker::setFocus();
+  flags&=~FLAG_UPDATE;
+  }
+
+
+// Remove the focus from this window
+void FXRealSpinner::killFocus(){
+  FXPacker::killFocus();
+  flags|=FLAG_UPDATE;
   }
 
 

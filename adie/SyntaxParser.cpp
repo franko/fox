@@ -55,11 +55,12 @@
                            { RuleDefinition }*
                            "end"
 
-      RuleDefinition =     "style"        String
-                     |     "pattern"      String
-                     |     "openpattern"  String
-                     |     "closepattern" String
-                     |     "stoppattern"  String
+      RuleDefinition =     "style"         String
+                     |     "pattern"       String
+                     |     "span"          String
+                     |     "open"          String
+                     |     "close"         String
+                     |     "stop"          String
                      |     { Rule }*
 
       YesNo          =     "yes" | "no"
@@ -72,14 +73,24 @@
 
   - Note that only quotes (") need to be escaped; this is because otherwise, patterns
     get really complicated as the regular expression engine also needs special characters
-    to be quoted.
+    to be escaped.
 */
 
 /*******************************************************************************/
 
+// Rule types
+enum {
+  RULETYPE_SIMPLE,
+  RULETYPE_DEFAULT,
+  RULETYPE_BRACKET,
+  RULETYPE_SAFE_BRACKET,
+  RULETYPE_SPAN
+  };
+
 
 // Initialize parser
 SyntaxParser::SyntaxParser(const FXchar* pat,const FXchar* frm):from(frm),head(pat),tail(pat),token(TK_END),line(1){
+  FXTRACE((10,"SyntaxParser::SyntaxParser(%p,%p)\n",pat,frm));
   }
 
 
@@ -88,7 +99,13 @@ FXuint SyntaxParser::gettok(){
   FXuint tok;
   while(*tail){
     head=tail;
-    if(*tail=='\n'){                    // End of line
+    if(*tail=='\r'){                    // Carriage return
+      tail++;
+      if(*tail=='\n') tail++;
+      line++;
+      continue;
+      }
+    if(*tail=='\n'){                    // New line
       tail++;
       line++;
       continue;
@@ -121,7 +138,7 @@ FXuint SyntaxParser::gettok(){
       }
     if(Ascii::isLetter(*tail)){         // Keyword
       tok=(FXuchar)*tail++;
-      while(Ascii::isAlphaNumeric(*tail)){
+      while(Ascii::isWord(*tail)){
         tok=((tok<<5)+tok) ^ (FXuchar)*tail++;
         }
       FXTRACE((20,"hash(%s) = %u\n",FXString(head,tail-head).text(),tok));
@@ -141,11 +158,13 @@ static FXRex::Error checkRexSyntax(const FXString& text){
   }
 
 
+
 // Parse rule and sub rules
 FXbool SyntaxParser::parseRule(Syntax *syntax,FXint parent){
-  FXString name,style,openpat,clospat,stoppat;
+  FXString name,style,pat,openpat,clospat,stoppat;
+  FXint ruletype=RULETYPE_DEFAULT;
   FXRex::Error error;
-  FXint index;
+  FXint index=-1;
   if(token==TK_RULE){
     token=gettok();
 
@@ -162,93 +181,127 @@ FXbool SyntaxParser::parseRule(Syntax *syntax,FXint parent){
     // Parse various features
     while(1){
       switch(token){
-        case TK_PATTERN:                // Simple pattern
-          token=gettok();
-          if(token!=TK_STRING){
-            fxwarning("%s:%d: error: expected 'pattern' <regex>.\n",from,line);
-            return false;
-            }
-          openpat.assign(head+1,tail-head-2);
-          openpat.substitute("\\\"","\"",true);
-          if((error=checkRexSyntax(openpat))!=FXRex::ErrOK){
-            fxwarning("%s:%d: bad pattern: %s.\n",from,line,FXRex::getError(error));
-            return false;
-            }
-          token=gettok();
-          continue;
-        case TK_OPENPATTERN:            // Open pattern
-          token=gettok();
-          if(token!=TK_STRING){
-            fxwarning("%s:%d: error: expected 'openpattern' <regex>.\n",from,line);
-            return false;
-            }
-          openpat.assign(head+1,tail-head-2);
-          openpat.substitute("\\\"","\"",true);
-          if((error=checkRexSyntax(openpat))!=FXRex::ErrOK){
-            fxwarning("%s:%d: bad openpattern: %s.\n",from,line,FXRex::getError(error));
-            return false;
-            }
-          token=gettok();
-          continue;
-        case TK_CLOSEPATTERN:           // Close pattern
-          token=gettok();
-          if(token!=TK_STRING){
-            fxwarning("%s:%d: error: expected 'closepattern' <regex>.\n",from,line);
-            return false;
-            }
-          clospat.assign(head+1,tail-head-2);
-          clospat.substitute("\\\"","\"",true);
-          if((error=checkRexSyntax(clospat))!=FXRex::ErrOK){
-            fxwarning("%s:%d: bad closepattern: %s.\n",from,line,FXRex::getError(error));
-            return false;
-            }
-          token=gettok();
-          continue;
-        case TK_STOPPATTERN:            // Stop pattern
-          token=gettok();
-          if(token!=TK_STRING){
-            fxwarning("%s:%d: error: expected 'stoppattern' <regex>.\n",from,line);
-            return false;
-            }
-          stoppat.assign(head+1,tail-head-2);
-          stoppat.substitute("\\\"","\"",true);
-          if((error=checkRexSyntax(stoppat))!=FXRex::ErrOK){
-            fxwarning("%s:%d: bad stoppattern: %s.\n",from,line,FXRex::getError(error));
-            return false;
-            }
-          token=gettok();
-          continue;
-        case TK_STYLE:                  // Default style
-          token=gettok();
-          if(token!=TK_STRING){
-            fxwarning("%s:%d: error: expected 'style' colors.\n",from,line);
-            return false;
-            }
-          style.assign(head+1,tail-head-2);
-          style.substitute("\\\"","\"",true);
-          token=gettok();
-          continue;
+      case TK_PATTERN:                  // Simple pattern
+        token=gettok();
+        if(token!=TK_STRING){
+          fxwarning("%s:%d: error: expected 'pattern' <regex>.\n",from,line);
+          return false;
+          }
+        pat.assign(head+1,tail-head-2);
+        pat.substitute("\\\"","\"",true);
+        if((error=checkRexSyntax(pat))!=FXRex::ErrOK){
+          fxwarning("%s:%d: bad pattern: %s.\n",from,line,FXRex::getError(error));
+          return false;
+          }
+        token=gettok();
+        ruletype=RULETYPE_SIMPLE;
+        continue;
+      case TK_OPEN:                     // Open pattern
+        token=gettok();
+        if(token!=TK_STRING){
+          fxwarning("%s:%d: error: expected 'open' <regex>.\n",from,line);
+          return false;
+          }
+        openpat.assign(head+1,tail-head-2);
+        openpat.substitute("\\\"","\"",true);
+        if((error=checkRexSyntax(openpat))!=FXRex::ErrOK){
+          fxwarning("%s:%d: bad 'open' pattern: %s.\n",from,line,FXRex::getError(error));
+          return false;
+          }
+        token=gettok();
+        ruletype=RULETYPE_BRACKET;
+        continue;
+      case TK_CLOSE:                    // Close pattern
+        token=gettok();
+        if(token!=TK_STRING){
+          fxwarning("%s:%d: error: expected 'close' <regex>.\n",from,line);
+          return false;
+          }
+        clospat.assign(head+1,tail-head-2);
+        clospat.substitute("\\\"","\"",true);
+        if((error=checkRexSyntax(clospat))!=FXRex::ErrOK){
+          fxwarning("%s:%d: bad 'close' pattern: %s.\n",from,line,FXRex::getError(error));
+          return false;
+          }
+        token=gettok();
+        ruletype=RULETYPE_BRACKET;
+        continue;
+      case TK_STOP:                     // Stop pattern
+        token=gettok();
+        if(token!=TK_STRING){
+          fxwarning("%s:%d: error: expected 'stop' <regex>.\n",from,line);
+          return false;
+          }
+        stoppat.assign(head+1,tail-head-2);
+        stoppat.substitute("\\\"","\"",true);
+        if((error=checkRexSyntax(stoppat))!=FXRex::ErrOK){
+          fxwarning("%s:%d: bad 'stop' pattern: %s.\n",from,line,FXRex::getError(error));
+          return false;
+          }
+        token=gettok();
+        ruletype=RULETYPE_SAFE_BRACKET;
+        continue;
+      case TK_SPAN:                     // Span pattern
+        token=gettok();
+        if(token!=TK_STRING){
+          fxwarning("%s:%d: error: expected 'span' <regex>.\n",from,line);
+          return false;
+          }
+        pat.assign(head+1,tail-head-2);
+        pat.substitute("\\\"","\"",true);
+        if((error=checkRexSyntax(pat))!=FXRex::ErrOK){
+          fxwarning("%s:%d: bad span pattern: %s.\n",from,line,FXRex::getError(error));
+          return false;
+          }
+        token=gettok();
+        ruletype=RULETYPE_SPAN;
+        continue;
+      case TK_STYLE:                    // Default style
+        token=gettok();
+        if(token!=TK_STRING){
+          fxwarning("%s:%d: error: expected 'style' colors.\n",from,line);
+          return false;
+          }
+        style.assign(head+1,tail-head-2);
+        style.substitute("\\\"","\"",true);
+        token=gettok();
+        continue;
         }
       break;
       }
 
-    // Create rule
-    if(openpat.empty()){
-      index=syntax->appendDefault(name,style,parent);
-      }
-    else if(clospat.empty()){
-      index=syntax->appendSimple(name,style,openpat,parent);
-      }
-    else if(stoppat.empty()){
+    // Create rules
+    switch(ruletype){
+    case RULETYPE_SIMPLE:
+      index=syntax->appendSimple(name,style,pat,parent);
+      break;
+    case RULETYPE_BRACKET:
+      if(openpat.empty() || clospat.empty()){
+        fxwarning("%s:%d: error: both 'openpattern' and 'closepattern' must be specified.\n",from,line);
+        return false;
+        }
       index=syntax->appendBracket(name,style,openpat,clospat,parent);
-      }
-    else{
+      break;
+    case RULETYPE_SAFE_BRACKET:
+      if(openpat.empty() || clospat.empty()){
+        fxwarning("%s:%d: error: both 'openpattern', 'closepattern', and 'stoppattern' must be specified.\n",from,line);
+        return false;
+        }
       index=syntax->appendSafeBracket(name,style,openpat,clospat,stoppat,parent);
+      break;
+    case RULETYPE_SPAN:
+      index=syntax->appendSpan(name,style,pat,parent);
+      break;
+    default:
+      index=syntax->appendDefault(name,style,parent);
+      break;
       }
 
-    // Parse subrules, if any
-    while(token==TK_RULE){
-      if(!parseRule(syntax,index)) return false;
+    // Parse subrules
+    if(RULETYPE_SIMPLE<ruletype){
+      while(token==TK_RULE){
+        if(!parseRule(syntax,index)) return false;
+        }
       }
 
     // Check end
@@ -424,18 +477,18 @@ FXbool SyntaxParser::parseLanguage(SyntaxList& syntaxes){
     syntax->setWrapMode(wrapmode);
     syntax->setTabMode(tabmode);
 
-    FXTRACE((10,"name=%s\n",name.text()));
-    FXTRACE((10,"group=%s\n",group.text()));
-    FXTRACE((10,"filesmatch=%s\n",filesmatch.text()));
-    FXTRACE((10,"contentsmatch=%s\n",contentsmatch.text()));
-    FXTRACE((10,"delimiters=%s\n",delimiters.text()));
-    FXTRACE((10,"contextlines=%d\n",contextlines));
-    FXTRACE((10,"contextchars=%d\n",contextchars));
-    FXTRACE((10,"autoindent=%d\n",autoindent));
-    FXTRACE((10,"wrapwidth=%d\n",wrapwidth));
-    FXTRACE((10,"tabwidth=%d\n",tabwidth));
-    FXTRACE((10,"wrapmode=%d\n",wrapmode));
-    FXTRACE((10,"tabmode=%d\n",tabmode));
+    FXTRACE((11,"name=%s\n",name.text()));
+    FXTRACE((11,"group=%s\n",group.text()));
+    FXTRACE((11,"filesmatch=%s\n",filesmatch.text()));
+    FXTRACE((11,"contentsmatch=%s\n",contentsmatch.text()));
+    FXTRACE((11,"delimiters=%s\n",delimiters.text()));
+    FXTRACE((11,"contextlines=%d\n",contextlines));
+    FXTRACE((11,"contextchars=%d\n",contextchars));
+    FXTRACE((11,"autoindent=%d\n",autoindent));
+    FXTRACE((11,"wrapwidth=%d\n",wrapwidth));
+    FXTRACE((11,"tabwidth=%d\n",tabwidth));
+    FXTRACE((11,"wrapmode=%d\n",wrapmode));
+    FXTRACE((11,"tabmode=%d\n",tabmode));
 
     // Add new syntax to list
     syntaxes.append(syntax);
@@ -451,7 +504,7 @@ FXbool SyntaxParser::parseLanguage(SyntaxList& syntaxes){
       return false;
       }
     token=gettok();
-    FXTRACE((10,"\n\n"));
+    FXTRACE((11,"\n\n"));
     return true;
     }
   return false;
@@ -484,7 +537,7 @@ FXbool SyntaxParser::parse(SyntaxList& syntaxes,const FXString& patterns){
 // Parse file and return syntaxes found in it; return false if problem.
 FXbool SyntaxParser::parseFile(SyntaxList& syntaxes,const FXString& filename){
   FXFile file(filename,FXIO::Reading);
-  FXTRACE((10,"SyntaxParser::parseFile(%s)\n",filename.text()));
+  FXTRACE((11,"SyntaxParser::parseFile(%s)\n",filename.text()));
   if(file.isOpen()){
     FXString patterns;
     patterns.length(file.size());
@@ -499,4 +552,5 @@ FXbool SyntaxParser::parseFile(SyntaxList& syntaxes,const FXString& filename){
 
 // Clean up
 SyntaxParser::~SyntaxParser(){
+  FXTRACE((10,"SyntaxParser::~SyntaxParser()\n"));
   }

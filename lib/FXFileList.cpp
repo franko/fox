@@ -961,7 +961,7 @@ long FXFileList::onEndDrag(FXObject* sender,FXSelector sel,void* ptr){
 long FXFileList::onPreviewChore(FXObject*,FXSelector,void* ptr){
   FXint index=(FXint)(FXival)ptr;
   if(showImages() && iconloader && index<getNumItems()){
-    FXIcon *icon=iconloader->loadScaledIconFile(getApp(),getItemPathname(index),imagesize);;
+    FXIcon *icon=iconloader->loadScaledIconFile(getApp(),getItemPathname(index),imagesize);
     if(icon){
       icon->create();
       setItemBigIcon(index,icon,true);

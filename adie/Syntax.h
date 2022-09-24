@@ -26,23 +26,22 @@ class Syntax;
 
 
 // List of syntax rules
-typedef FXObjectListOf<Rule> RuleList;
+typedef FXPtrListOf<Rule> RuleList;
 
 
 // List of syntaxes
-typedef FXObjectListOf<Syntax> SyntaxList;
+typedef FXPtrListOf<Syntax> SyntaxList;
 
 
 // Highlight node
-class Rule : public FXObject {
-  FXDECLARE(Rule)
+class Rule {
   friend class Syntax;
 protected:
-  FXString      name;   // Name of rule
-  FXString      style;  // Colors for highlighting (default)
-  RuleList      rules;  // Subrules
-  FXint         parent; // Parent style index
-  FXint         index;  // Own style index
+  FXString      name;           // Name of rule
+  FXString      style;          // Colors for highlighting (default)
+  RuleList      rules;          // Subrules
+  FXint         parent;         // Parent rule
+  FXint         index;          // Own style index
 protected:
   Rule(){}
 private:
@@ -51,21 +50,19 @@ private:
 public:
 
   // Construct node
-  Rule(const FXString& nm,const FXString& st,FXint p,FXint s):name(nm),style(st),parent(p),index(s){}
+  Rule(const FXString& nam,const FXString& sty,FXint par,FXint idx);
 
-  // Get number of child rules
-  FXint getNumRules() const { return rules.no(); }
-
-  // Get child rule
-  Rule* getRule(FXint inx) const { return rules[inx]; }
-
-  // Rule name
-  const FXString& getName() const { return name; }
+  // Set rule name
   void setName(const FXString& nm){ name=nm; }
 
-  // Style coloring, if not changed
-  const FXString& getStyle() const { return style; }
+  // Get rule name
+  const FXString& getName() const { return name; }
+
+  // Set style name
   void setStyle(const FXString& st){ style=st; }
+
+  // Get style name
+  const FXString& getStyle() const { return style; }
 
   // Get parent index
   FXint getParent() const { return parent; }
@@ -73,87 +70,25 @@ public:
   // Get style index
   FXint getIndex() const { return index; }
 
-  // Stylize text
-  virtual FXbool stylize(const FXchar* text,FXchar *textstyle,FXint fm,FXint to,FXint& start,FXint& stop) const;
+  // Get number of child rules
+  FXint getNumRules() const { return rules.no(); }
 
-  // Stylize body, i.e. after begin pattern has been seen
-  virtual FXbool stylizeBody(const FXchar* text,FXchar *textstyle,FXint fm,FXint to,FXint& start,FXint& stop) const;
-  };
-
-
-// Simple highlight node
-class SimpleRule : public Rule {
-  FXDECLARE(SimpleRule)
-protected:
-  FXRex pat;            // Pattern to match
-protected:
-  SimpleRule(){ }
-private:
-  SimpleRule(const SimpleRule&);
-  SimpleRule &operator=(const SimpleRule&);
-public:
-
-  // Construct node
-  SimpleRule(const FXString& nm,const FXString& st,const FXString& rex,FXint p,FXint s):Rule(nm,st,p,s),pat(rex,FXRex::Newline|FXRex::NotEmpty){ }
+  // Get child rule
+  Rule* getRule(FXint inx) const { return rules[inx]; }
 
   // Stylize text
-  virtual FXbool stylize(const FXchar* text,FXchar *textstyle,FXint fm,FXint to,FXint& start,FXint& stop) const;
+  virtual FXbool stylize(const FXchar* text,FXchar* textstyle,FXint len,FXint pos,FXint& head,FXint& tail) const;
 
   // Stylize body, i.e. after begin pattern has been seen
-  virtual FXbool stylizeBody(const FXchar* text,FXchar *textstyle,FXint fm,FXint to,FXint& start,FXint& stop) const;
-  };
+  virtual FXbool stylizeBody(const FXchar* text,FXchar* textstyle,FXint len,FXint pos,FXint& head,FXint& tail) const;
 
-
-// Bracketed highlight node
-class BracketRule : public Rule {
-  FXDECLARE(BracketRule)
-protected:
-  FXRex beg;            // Beginning pattern
-  FXRex end;            // Ending pattern
-protected:
-  BracketRule(){ }
-private:
-  BracketRule(const BracketRule&);
-  BracketRule &operator=(const BracketRule&);
-public:
-
-  // Construct node
-  BracketRule(const FXString& nm,const FXString& st,const FXString& brex,const FXString& erex,FXint p,FXint s):Rule(nm,st,p,s),beg(brex,FXRex::Newline),end(erex,FXRex::Newline){ }
-
-  // Stylize text
-  virtual FXbool stylize(const FXchar* text,FXchar *textstyle,FXint fm,FXint to,FXint& start,FXint& stop) const;
-
-  // Stylize body, i.e. after begin pattern has been seen
-  virtual FXbool stylizeBody(const FXchar* text,FXchar *textstyle,FXint fm,FXint to,FXint& start,FXint& stop) const;
-  };
-
-
-// Bracketed highlight node with termination
-class SafeBracketRule : public BracketRule {
-  FXDECLARE(SafeBracketRule)
-protected:
-  FXRex esc;           // Termination pattern
-protected:
-  SafeBracketRule(){ }
-private:
-  SafeBracketRule(const SafeBracketRule&);
-  SafeBracketRule &operator=(const SafeBracketRule&);
-public:
-
-  // Construct node
-  SafeBracketRule(const FXString& nm,const FXString& st,const FXString& brex,const FXString& erex,const FXString& srex,FXint p,FXint s):BracketRule(nm,st,brex,erex,p,s),esc(srex,FXRex::Newline){ }
-
-  // Stylize text
-  virtual FXbool stylize(const FXchar* text,FXchar *textstyle,FXint fm,FXint to,FXint& start,FXint& stop) const;
-
-  // Stylize body, i.e. after begin pattern has been seen
-  virtual FXbool stylizeBody(const FXchar* text,FXchar *textstyle,FXint fm,FXint to,FXint& start,FXint& stop) const;
+  // Destructor
+  virtual ~Rule();
   };
 
 
 // Default highlight node
 class DefaultRule : public Rule {
-  FXDECLARE(DefaultRule)
 protected:
   DefaultRule(){ }
 private:
@@ -162,19 +97,122 @@ private:
 public:
 
   // Construct node
-  DefaultRule(const FXString& nm,const FXString& st,FXint p,FXint s):Rule(nm,st,p,s){ }
+  DefaultRule(const FXString& nam,const FXString& sty,FXint par,FXint idx);
 
   // Stylize text
-  virtual FXbool stylize(const FXchar* text,FXchar *textstyle,FXint fm,FXint to,FXint& start,FXint& stop) const;
+  virtual FXbool stylize(const FXchar* text,FXchar *textstyle,FXint len,FXint pos,FXint& head,FXint& tail) const;
 
   // Stylize body, i.e. after begin pattern has been seen
-  virtual FXbool stylizeBody(const FXchar* text,FXchar *textstyle,FXint fm,FXint to,FXint& start,FXint& stop) const;
+  virtual FXbool stylizeBody(const FXchar* text,FXchar* textstyle,FXint len,FXint pos,FXint& head,FXint& tail) const;
+
+  // Destructor
+  virtual ~DefaultRule();
+  };
+
+
+// Simple highlight node
+class SimpleRule : public Rule {
+protected:
+  FXRex         pattern;        // Pattern to match
+protected:
+  SimpleRule(){ }
+private:
+  SimpleRule(const SimpleRule&);
+  SimpleRule &operator=(const SimpleRule&);
+public:
+
+  // Construct node
+  SimpleRule(const FXString& nam,const FXString& sty,const FXString& rex,FXint par,FXint idx);
+
+  // Stylize text
+  virtual FXbool stylize(const FXchar* text,FXchar *textstyle,FXint len,FXint pos,FXint& head,FXint& tail) const;
+
+  // Stylize body, i.e. after begin pattern has been seen
+  virtual FXbool stylizeBody(const FXchar* text,FXchar* textstyle,FXint len,FXint pos,FXint& head,FXint& tail) const;
+
+  // Destructor
+  virtual ~SimpleRule();
+  };
+
+
+// Bracketed highlight node
+class BracketRule : public Rule {
+protected:
+  FXRex         open;           // Beginning pattern
+  FXRex         close;          // Ending pattern
+protected:
+  BracketRule(){ }
+private:
+  BracketRule(const BracketRule&);
+  BracketRule &operator=(const BracketRule&);
+public:
+
+  // Construct node
+  BracketRule(const FXString& nam,const FXString& sty,const FXString& brex,const FXString& erex,FXint par,FXint idx);
+
+  // Stylize text
+  virtual FXbool stylize(const FXchar* text,FXchar *textstyle,FXint len,FXint pos,FXint& head,FXint& tail) const;
+
+  // Stylize body, i.e. after begin pattern has been seen
+  virtual FXbool stylizeBody(const FXchar* text,FXchar* textstyle,FXint len,FXint pos,FXint& head,FXint& tail) const;
+
+  // Destructor
+  virtual ~BracketRule();
+  };
+
+
+// Bracketed highlight node with termination
+class SafeBracketRule : public BracketRule {
+protected:
+  FXRex         stop;           // Termination pattern
+protected:
+  SafeBracketRule(){ }
+private:
+  SafeBracketRule(const SafeBracketRule&);
+  SafeBracketRule &operator=(const SafeBracketRule&);
+public:
+
+  // Construct node
+  SafeBracketRule(const FXString& nam,const FXString& sty,const FXString& brex,const FXString& erex,const FXString& srex,FXint par,FXint idx);
+
+  // Stylize text
+  virtual FXbool stylize(const FXchar* text,FXchar *textstyle,FXint len,FXint pos,FXint& head,FXint& tail) const;
+
+  // Stylize body, i.e. after begin pattern has been seen
+  virtual FXbool stylizeBody(const FXchar* text,FXchar* textstyle,FXint len,FXint pos,FXint& head,FXint& tail) const;
+
+  // Destructor
+  virtual ~SafeBracketRule();
+  };
+
+
+// Span pattern rule
+class SpanRule : public Rule {
+protected:
+  FXRex         pattern;        // Pattern to match
+protected:
+  SpanRule(){ }
+private:
+  SpanRule(const SpanRule&);
+  SpanRule &operator=(const SpanRule&);
+public:
+
+  // Construct node
+  SpanRule(const FXString& nam,const FXString& sty,const FXString& rex,FXint par,FXint idx);
+
+  // Stylize text
+  virtual FXbool stylize(const FXchar* text,FXchar *textstyle,FXint len,FXint pos,FXint& head,FXint& tail) const;
+
+  // Stylize body, i.e. after begin pattern has been seen
+  virtual FXbool stylizeBody(const FXchar* text,FXchar* textstyle,FXint len,FXint pos,FXint& head,FXint& tail) const;
+
+  // Destructor
+  virtual ~SpanRule();
   };
 
 
 // Syntax for a language
 class Syntax : public FXObject {
-  FXDECLARE(Syntax)
 protected:
   RuleList      rules;          // Highlight rules
   FXString      language;       // Language name
@@ -204,9 +242,6 @@ public:
 
   // Get rule
   Rule* getRule(FXint rule) const { return rules[rule]; }
-
-  // Return true if toplevel rule
-  FXbool isRoot(FXint rule) const;
 
   // Return true if p is ancestor of c
   FXbool isAncestor(FXint p,FXint c) const;
@@ -276,6 +311,9 @@ public:
 
   // Append simple rule
   FXint appendSimple(const FXString& name,const FXString& style,const FXString& rex,FXint parent=0);
+
+  // Append span rule
+  FXint appendSpan(const FXString& name,const FXString& style,const FXString& rex,FXint parent=0);
 
   // Append bracket rule
   FXint appendBracket(const FXString& name,const FXString& style,const FXString& brex,const FXString& erex,FXint parent=0);

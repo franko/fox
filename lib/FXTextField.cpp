@@ -239,7 +239,7 @@ FXint FXTextField::getDefaultHeight(){
 FXbool FXTextField::canFocus() const { return true; }
 
 
-// Into focus chain
+// Move the focus to this window
 void FXTextField::setFocus(){
   FXFrame::setFocus();
   setDefault(true);
@@ -256,7 +256,7 @@ void FXTextField::setFocus(){
   }
 
 
-// Out of focus chain
+// Remove the focus from this window
 void FXTextField::killFocus(){
   FXFrame::killFocus();
   setDefault(maybe);

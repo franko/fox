@@ -208,10 +208,10 @@ extern FXAPI FXint fpSign(FXfloat x);
 /// Sign of double precision float point number (0..1)
 extern FXAPI FXlong fpSign(FXdouble x);
 
-/// Signed exponent of single precision float point number (-127..128)
+/// Signed exponent of single precision float point number (-126..128)
 extern FXAPI FXint fpExponent(FXfloat x);
 
-/// Signed exponent of double precision float point number (-1023..1023)
+/// Signed exponent of double precision float point number (-1022..1024)
 extern FXAPI FXlong fpExponent(FXdouble x);
 
 /// Mantissa of single precision float point number (including hidden bit)

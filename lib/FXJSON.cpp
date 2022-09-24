@@ -881,6 +881,7 @@ FXint FXJSON::number(){
 
 // Identifier
 FXint FXJSON::ident(){
+  FXint size=0;
   FXuchar c,cc;
   value=FXString::null;
   while(need(MAXTOKEN)){
@@ -954,6 +955,7 @@ FXint FXJSON::ident(){
         column++;                                       // Add legal identifier characters
         offset++;
         sptr++;
+        size++;
 chk:    if(sptr+MAXTOKEN>wptr && wptr==endptr){         // Big token
           value.append(rptr,sptr-rptr);
           rptr=sptr;
@@ -1000,6 +1002,7 @@ chk:    if(sptr+MAXTOKEN>wptr && wptr==endptr){         // Big token
         column++;
         offset+=2;
         sptr+=2;
+        size+=2;
         goto chk;
       case 0xE0:                                        // 3-byte UTF8 sequences
       case 0xE1:
@@ -1027,6 +1030,7 @@ chk:    if(sptr+MAXTOKEN>wptr && wptr==endptr){         // Big token
         column++;
         offset+=3;
         sptr+=3;
+        size+=3;
         goto chk;
       case 0xF0:                                        // 4-byte UTF8 sequences
       case 0xF1:
@@ -1047,14 +1051,15 @@ chk:    if(sptr+MAXTOKEN>wptr && wptr==endptr){         // Big token
         column++;
         offset+=4;
         sptr+=4;
+        size+=4;
         goto chk;
       default:                                          // End of identifier
-        if(rptr+4==sptr && rptr[0]=='n' && rptr[1]=='u' && rptr[2]=='l' && rptr[3]=='l') return TK_NULL;
-        if(rptr+4==sptr && rptr[0]=='t' && rptr[1]=='r' && rptr[2]=='u' && rptr[3]=='e') return TK_TRUE;
-        if(rptr+5==sptr && rptr[0]=='f' && rptr[1]=='a' && rptr[2]=='l' && rptr[3]=='s' && rptr[4]=='e') return TK_FALSE;
-        if(rptr+3==sptr && (rptr[0]|0x20)=='n' && (rptr[1]|0x20)=='a' && (rptr[2]|0x20)=='n') return TK_NAN;
-        if(rptr+3==sptr && (rptr[0]|0x20)=='i' && (rptr[1]|0x20)=='n' && (rptr[2]|0x20)=='f') return TK_INF;
-        if(rptr+8==sptr && (rptr[0]|0x20)=='i' && (rptr[1]|0x20)=='n' && (rptr[2]|0x20)=='f' && (rptr[3]|0x20)=='i' && (rptr[4]|0x20)=='n' && (rptr[5]|0x20)=='i' && (rptr[6]|0x20)=='t' && (rptr[7]|0x20)=='y') return TK_INF;
+        if(rptr[0]=='n' && rptr[1]=='u' && rptr[2]=='l' && rptr[3]=='l' && size==4) return TK_NULL;
+        if(rptr[0]=='t' && rptr[1]=='r' && rptr[2]=='u' && rptr[3]=='e' && size==4) return TK_TRUE;
+        if(rptr[0]=='f' && rptr[1]=='a' && rptr[2]=='l' && rptr[3]=='s' && rptr[4]=='e' && size==5) return TK_FALSE;
+        if((rptr[0]|0x20)=='n' && (rptr[1]|0x20)=='a' && (rptr[2]|0x20)=='n' && size==3) return TK_NAN;
+        if((rptr[0]|0x20)=='i' && (rptr[1]|0x20)=='n' && (rptr[2]|0x20)=='f' && size==3) return TK_INF;
+        if((rptr[0]|0x20)=='i' && (rptr[1]|0x20)=='n' && (rptr[2]|0x20)=='f' && (rptr[3]|0x20)=='i' && (rptr[4]|0x20)=='n' && (rptr[5]|0x20)=='i' && (rptr[6]|0x20)=='t' && (rptr[7]|0x20)=='y' && size==8) return TK_INF;
 end:    value.append(rptr,sptr-rptr);
         rptr=sptr;
         return TK_IDENT;                                // Identifier

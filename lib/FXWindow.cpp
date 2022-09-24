@@ -1069,7 +1069,7 @@ void FXWindow::setFocus(){
   FXTRACE((140,"%s::setFocus %p\n",getClassName(),this));
   if(parent && parent->focus!=this){
     if(parent->focus) parent->focus->killFocus(); else parent->setFocus();
-    parent->changeFocus(this);
+    parent->focus=this;
     if(parent->hasFocus()) handle(this,FXSEL(SEL_FOCUSIN,0),nullptr);
     }
   flags|=FLAG_HELP;
@@ -1082,16 +1082,9 @@ void FXWindow::killFocus(){
   if(parent && parent->focus==this){
     if(focus) focus->killFocus();
     if(hasFocus()) handle(this,FXSEL(SEL_FOCUSOUT,0),nullptr);
-    parent->changeFocus(nullptr);
+    parent->focus=nullptr;
     }
   flags&=~FLAG_HELP;
-  }
-
-
-// Notification that focus moved to new child
-void FXWindow::changeFocus(FXWindow *child){
-  FXTRACE((140,"%s::changeFocus: from %p to %p\n",getClassName(),focus,child));
-  focus=child;
   }
 
 
@@ -3542,7 +3535,7 @@ FXWindow::~FXWindow(){
   delete composeContext;
   if(prev) prev->next=next; else if(parent) parent->first=next;
   if(next) next->prev=prev; else if(parent) parent->last=prev;
-  if(parent && parent->focus==this) parent->changeFocus(nullptr);
+  if(parent && parent->focus==this) parent->focus=nullptr;
   if(getApp()->activeWindow==this) getApp()->activeWindow=nullptr;
   if(getApp()->cursorWindow==this) getApp()->cursorWindow=parent;
   if(getApp()->mouseGrabWindow==this) getApp()->mouseGrabWindow=nullptr;

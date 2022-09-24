@@ -1006,12 +1006,12 @@ void FXTable::killFocus(){
   acceptInput(true);
   }
 
+/*
 
 // Notification that focus moved to new child
 void FXTable::changeFocus(FXWindow *child){
   FXWindow::changeFocus(child);
 
-/*
   // Focus on child
   if(child){
 
@@ -1064,8 +1064,8 @@ FXTRACE((100,"changeFocus: xx=%d\n",colHeader->getX()+colHeader->getItemOffset(c
         }
       }
     }
-*/
   }
+*/
 
 
 // Propagate size change

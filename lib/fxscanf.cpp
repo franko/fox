@@ -109,11 +109,6 @@ using namespace FX;
 namespace FX {
 
 
-// Declarations
-extern FXAPI FXint __sscanf(const FXchar* string,const FXchar* format,...);
-extern FXAPI FXint __vsscanf(const FXchar* string,const FXchar* format,va_list arg_ptr);
-
-
 // Type modifiers
 enum {
   ARG_HALFHALF,         // 'hh'
@@ -134,6 +129,10 @@ const FXint NORMAL=0x100;
 
 // Thousands separator
 const FXint COMMA=',';
+
+// Declarations
+extern FXAPI FXint __sscanf(const FXchar* string,const FXchar* format,...);
+extern FXAPI FXint __vsscanf(const FXchar* string,const FXchar* format,va_list arg_ptr);
 
 /*******************************************************************************/
 

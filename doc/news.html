@@ -18,6 +18,32 @@ News  <A href='news.html' target="_top" align=left><font  size=-2>[Remove Frame]
 <!--- TOPIC TITLE -->
 <p>
 <table width=100% cellpadding=0 cellspacing=2><tr><td width=100% valign=bottom id=HEADLINE><b>
+March 11 - FOX DEVELOPMENT 1.7.79
+<br><img src='art/line.gif' width=100% height=1></b></td></tr></table>
+<p>
+<!--- TOPIC TITLE -->
+<ul>
+<li>FXJSON parser fix identifier recognition issue.</li>
+<li>Added Adie syntax colorizer for data tables.</li>
+<li>New rule type in Adie syntax colorizer: span rule.</li>
+<li>Changed keywords in Adie syntax colorizer: more succint.</li>
+<li>Syntax colorizer now UTF8 aware.</li>
+<li>Some speed-ups in FXRex.</li>
+<li>Adie syntax patterns for C++ have been sped up with use of possessive match where possible.</li>
+<li>More checks in Syntax Parser.</li>
+<li>Math implementation updates: faster pow10i(), fpMantissa().</li>
+<li>The function fpExponent() in Math has been fixed to return correct exponent for denormal floats.</li>
+<li>Internal number formatting routine __snprintf() and __vsnprintf() bug fixes for hexadecimal float conversion.</li>
+<li>Also __snprintf() and __vsnprintf() now handle denormal floats even when library was compiled for release (with FTZ/DAZ).</li>
+<li>In addition __snprintf() and __vsnprintf() more spiffy formatting options for "engineering mode" with exponent mode enabled, and nice columnar formatting also supported.</li>
+<li>The __snprintf() and __vsnprintf() now use substantially less stack space for conversion.</li>
+<li>The __snprintf() and __vsnprintf() properly handle zero-precision case for integer conversions.</li>
+</ul>
+
+
+<!--- TOPIC TITLE -->
+<p>
+<table width=100% cellpadding=0 cellspacing=2><tr><td width=100% valign=bottom id=HEADLINE><b>
 February 15 - FOX DEVELOPMENT 1.7.78
 <br><img src='art/line.gif' width=100% height=1></b></td></tr></table>
 <p>

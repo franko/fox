@@ -60,6 +60,7 @@ FXIMPLEMENT(Adie,FXApp,AdieMap,ARRAYNUMBER(AdieMap))
 
 // Make some windows
 Adie::Adie(const FXString& name):FXApp(name){
+  FXTRACE((10,"Adie::Adie(%s)\n",name.text()));
 
   // Make some icons; these are shared between all text windows
   bigicon=new FXGIFIcon(this,big_gif);
@@ -216,22 +217,22 @@ FXint Adie::start(int argc,char** argv){
   // Exec path is default for syntax path
   execpath=FXSystem::getExecPath();
 
-  FXTRACE((10,"execpath=%s\n",execpath.text()));
+  FXTRACE((11,"execpath=%s\n",execpath.text()));
 
   // See if override paths are provided in the registry
   syntaxpaths=reg().readStringEntry("SETTINGS","syntaxpaths",execpath.text());
 
-  FXTRACE((10,"syntaxpaths=%s\n",syntaxpaths.text()));
+  FXTRACE((11,"syntaxpaths=%s\n",syntaxpaths.text()));
 
   // Look for syntax file in the syntax paths
   syntaxfile=FXPath::search(syntaxpaths,"Adie.stx");
 
-  FXTRACE((10,"syntaxfile=%s\n",syntaxfile.text()));
+  FXTRACE((11,"syntaxfile=%s\n",syntaxfile.text()));
 
   // Get icon search path
   iconpath=reg().readStringEntry("SETTINGS","iconpath",FXIconCache::defaultIconPath);
 
-  FXTRACE((10,"iconpath=%s\n",iconpath.text()));
+  FXTRACE((11,"iconpath=%s\n",iconpath.text()));
 
   // Change icon search path
   associations->setIconPath(iconpath);
@@ -391,7 +392,7 @@ TextWindow* Adie::findWindow(const FXString& file) const {
 TextWindow* Adie::openFileWindow(const FXString& file,FXint lineno,FXint column){
   TextWindow *window=nullptr;
 
-  FXTRACE((1,"Adie::openFileWindow(%s,%d,%d)\n",file.text(),lineno,column));
+  FXTRACE((11,"Adie::openFileWindow(%s,%d,%d)\n",file.text(),lineno,column));
 
   // See if we already have this file
   window=findWindow(file);
@@ -427,11 +428,11 @@ TextWindow* Adie::openFileWindow(const FXString& file,FXint lineno,FXint column)
 
 // Get syntax for language name
 Syntax* Adie::getSyntaxByName(const FXString& lang){
-  FXTRACE((10,"Adie::getSyntaxByName(%s)\n",lang.text()));
+  FXTRACE((11,"Adie::getSyntaxByName(%s)\n",lang.text()));
   if(!lang.empty()){
     for(FXint syn=0; syn<syntaxes.no(); syn++){
       if(syntaxes[syn]->getName()==lang){
-        FXTRACE((10,"syntaxes[%d]: language: %s matched name: %s!\n",syn,syntaxes[syn]->getName().text(),lang.text()));
+        FXTRACE((11,"syntaxes[%d]: language: %s matched name: %s!\n",syn,syntaxes[syn]->getName().text(),lang.text()));
         return syntaxes[syn];
         }
       }
@@ -442,7 +443,7 @@ Syntax* Adie::getSyntaxByName(const FXString& lang){
 
 // Get syntax by consulting registry
 Syntax* Adie::getSyntaxByRegistry(const FXString& file){
-  FXTRACE((10,"Adie::getSyntaxByRegistry(%s)\n",file.text()));
+  FXTRACE((11,"Adie::getSyntaxByRegistry(%s)\n",file.text()));
   if(!file.empty()){
     FXString name=FXPath::name(file);
     FXString lang=reg().readStringEntry("SYNTAX",name);
@@ -454,11 +455,11 @@ Syntax* Adie::getSyntaxByRegistry(const FXString& file){
 
 // Get syntax by matching file patterns
 Syntax* Adie::getSyntaxByPattern(const FXString& file){
-  FXTRACE((10,"Adie::getSyntaxByPattern(%s)\n",file.text()));
+  FXTRACE((11,"Adie::getSyntaxByPattern(%s)\n",file.text()));
   if(!file.empty()){
     for(FXint syn=0; syn<syntaxes.no(); syn++){
       if(syntaxes[syn]->matchFilename(file)){
-        FXTRACE((10,"syntaxes[%d]: language: %s matched file: %s!\n",syn,syntaxes[syn]->getName().text(),file.text()));
+        FXTRACE((11,"syntaxes[%d]: language: %s matched file: %s!\n",syn,syntaxes[syn]->getName().text(),file.text()));
         return syntaxes[syn];
         }
       }
@@ -469,11 +470,11 @@ Syntax* Adie::getSyntaxByPattern(const FXString& file){
 
 // Get syntax by matching file contents
 Syntax* Adie::getSyntaxByContents(const FXString& contents){
-  FXTRACE((10,"Adie::getSyntaxByContents(%s)\n",contents.text()));
+  FXTRACE((11,"Adie::getSyntaxByContents(%s)\n",contents.text()));
   if(!contents.empty()){
     for(FXint syn=0; syn<syntaxes.no(); syn++){
       if(syntaxes[syn]->matchContents(contents)){
-        FXTRACE((10,"syntaxes[%d]: language: %s matched contents: %s!\n",syn,syntaxes[syn]->getName().text(),contents.text()));
+        FXTRACE((11,"syntaxes[%d]: language: %s matched contents: %s!\n",syn,syntaxes[syn]->getName().text(),contents.text()));
         return syntaxes[syn];
         }
       }
@@ -486,6 +487,7 @@ Syntax* Adie::getSyntaxByContents(const FXString& contents){
 
 // Clean up the mess
 Adie::~Adie(){
+  FXTRACE((10,"Adie::~Adie()\n"));
   for(int i=0; i<syntaxes.no(); i++) delete syntaxes[i];
   FXASSERT(windowlist.no()==0);
   delete associations;

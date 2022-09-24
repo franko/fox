@@ -4640,15 +4640,13 @@ void TextWindow::writeStyleForRule(const FXString& group,const FXString& name,co
 // Restyle entire text
 void TextWindow::restyleText(){
   if(colorize && syntax){
-    FXint head,tail,len;
+    FXint length=editor->getLength();
     FXchar *text;
-    FXchar *style;
-    len=editor->getLength();
-    if(allocElms(text,len+len)){
-      style=text+len;
-      editor->extractText(text,0,len);
-      syntax->getRule(0)->stylize(text,style,0,len,head,tail);
-      editor->changeStyle(0,style,len);
+    if(allocElms(text,length+length)){
+      FXint head,tail;
+      editor->extractText(text,0,length);
+      syntax->getRule(0)->stylize(text,text+length,length,0,head,tail);
+      editor->changeStyle(0,text+length,length);
       freeElms(text);
       }
     }
@@ -4689,7 +4687,7 @@ FXint TextWindow::forwardByContext(FXint pos) const {
 
 // Find restyle point
 FXint TextWindow::findRestylePoint(FXint pos,FXint& style) const {
-  FXint probepos,safepos,beforesafepos,runstyle,s;
+  FXint probepos,prevprobepos,safepos,beforesafepos,runstyle,s;
 
   // Return 0 for style unless we found something else
   style=0;
@@ -4715,8 +4713,11 @@ FXint TextWindow::findRestylePoint(FXint pos,FXint& style) const {
   // Scan back for style change
   while(0<probepos){
 
+    // Go back one character (not byte)
+    prevprobepos=editor->dec(probepos);
+
     // Style prior to probe position
-    s=editor->getStyle(probepos-1);
+    s=editor->getStyle(prevprobepos);
 
     // Style change?
     if(runstyle!=s){
@@ -4739,7 +4740,7 @@ FXint TextWindow::findRestylePoint(FXint pos,FXint& style) const {
       }
 
     // Scan back
-    --probepos;
+    probepos=prevprobepos;
 
     // Further back
     if(probepos<beforesafepos){
@@ -4754,20 +4755,19 @@ FXint TextWindow::findRestylePoint(FXint pos,FXint& style) const {
 // Restyle range; returns affected style end, i.e. one beyond
 // the last position where the style changed from the original style
 FXint TextWindow::restyleRange(FXint beg,FXint end,FXint& head,FXint& tail,FXint rule){
-  FXchar *text,*newstyle,*oldstyle;
-  FXint len=end-beg;
+  FXint length=end-beg;
   FXint delta=0;
+  FXchar *text;
   head=0;
   tail=0;
   FXASSERT(0<=rule && rule<syntax->getNumRules());
   FXASSERT(0<=beg && beg<=end && end<=editor->getLength());
-  if(allocElms(text,len+len+len)){
-    newstyle=text+len;
-    oldstyle=text+len+len;
-    editor->extractText(text,beg,len);
-    editor->extractStyle(oldstyle,beg,len);
-    syntax->getRule(rule)->stylizeBody(text,newstyle,0,len,head,tail);
-    FXASSERT(0<=head && head<=tail && tail<=len);
+  if(allocElms(text,length+length+length)){
+    FXchar *oldstyle=text+length;
+    FXchar *newstyle=oldstyle+length;
+    editor->extractText(text,beg,length);
+    editor->extractStyle(oldstyle,beg,length);
+    syntax->getRule(rule)->stylizeBody(text,newstyle,length,0,head,tail);
     editor->changeStyle(beg,newstyle,tail);
     for(delta=tail; 0<delta && oldstyle[delta-1]==newstyle[delta-1]; --delta){ }
     freeElms(text);
@@ -4781,9 +4781,9 @@ FXint TextWindow::restyleRange(FXint beg,FXint end,FXint& head,FXint& tail,FXint
 
 // Restyle text after change in buffer
 void TextWindow::restyleText(FXint pos,FXint del,FXint ins){
-  FXint head,tail,changed,affected,beg,end,len,rule,restylejump;
   FXTRACE((100,"restyleText(pos=%d,del=%d,ins=%d)\n",pos,del,ins));
   if(colorize && syntax){
+    FXint head,tail,changed,affected,beg,end,len,rule,restylejump;
 
     // Length of text
     len=editor->getLength();
@@ -4808,6 +4808,7 @@ void TextWindow::restyleText(FXint pos,FXint del,FXint ins){
 
       // Restyle [beg,end> using rule, return matched range in [head,tail>
       affected=restyleRange(beg,end,head,tail,rule);
+
       FXTRACE((110,"affected=%d beg=%d end=%d head=%d tail=%d, rule=%d (%s) \n",affected,beg,end,head,tail,rule,syntax->getRule(rule)->getName().text()));
 
       // Not all colored yet, continue coloring with parent rule from
@@ -4837,7 +4838,7 @@ void TextWindow::restyleText(FXint pos,FXint del,FXint ins){
 
 // Toggle syntax coloring
 long TextWindow::onCmdSyntax(FXObject*,FXSelector,void* ptr){
-  colorize=(FXbool)(FXuval)ptr;
+  colorize=!!ptr;
   if(syntax && colorize){
     editor->setStyled(true);
     restyleText();
@@ -4871,8 +4872,6 @@ long TextWindow::onUpdRestyle(FXObject* sender,FXSelector,void*){
 
 
 // Show syntax in tooltip
-// FIXME for now, we show the syntax rule; but in the future,
-// we will show more interesting stuff than that.
 long TextWindow::onQueryTextTip(FXObject* sender,FXSelector,void*){
   if(getSyntax() && editor->isStyled()){
     FXint vx=editor->getVisibleX();

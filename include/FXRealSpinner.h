@@ -108,8 +108,11 @@ public:
   /// Return default height
   virtual FXint getDefaultHeight();
 
-  /// Notification that focus moved to new child
-  virtual void changeFocus(FXWindow *child);
+  /// Move the focus to this window
+  virtual void setFocus();
+
+  /// Remove the focus from this window
+  virtual void killFocus();
 
   /// Increment spinner
   void increment(FXbool notify=false);
