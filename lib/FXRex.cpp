@@ -503,7 +503,7 @@
 */
 
 #define TOPIC_CONSTRUCT 1000
-#define TOPIC_REXDUMP   1014          // Debugging regex code
+// #define TOPIC_REXDUMP   1014          // Debugging regex code
 
 
 // As close to infinity as we're going to get; this seems big enough.  We can not make
