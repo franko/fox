@@ -3,7 +3,7 @@
 *                           S n a p p e r   W i d g e t                         *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 2003,2021 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 2003,2022 by Jeroen van der Zijp.   All Rights Reserved.        *
 *********************************************************************************
 * This program is free software: you can redistribute it and/or modify          *
 * it under the terms of the GNU General Public License as published by          *
@@ -32,7 +32,7 @@ private:
   Snapper(const Snapper&);
   Snapper& operator=(const Snapper&);
 public:
-  Snapper(FXApp* a,FXObject* tgt=NULL,FXSelector sel=0,FXuint opts=0,FXint x=0,FXint y=0,FXint w=0,FXint h=0);
+  Snapper(FXApp* a,FXObject* tgt=nullptr,FXSelector sel=0,FXuint opts=0,FXint x=0,FXint y=0,FXint w=0,FXint h=0);
   virtual FXint getDefaultWidth();
   virtual FXint getDefaultHeight();
   virtual FXbool doesSaveUnder() const;

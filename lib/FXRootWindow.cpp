@@ -3,7 +3,7 @@
 *                       R o o t   W i n d o w   O b j e c t                     *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 1997,2021 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 1997,2022 by Jeroen van der Zijp.   All Rights Reserved.        *
 *********************************************************************************
 * This library is free software; you can redistribute it and/or modify          *
 * it under the terms of the GNU Lesser General Public License as published by   *
@@ -58,7 +58,7 @@ using namespace FX;
 namespace FX {
 
 // Object implementation
-FXIMPLEMENT(FXRootWindow,FXComposite,NULL,0)
+FXIMPLEMENT(FXRootWindow,FXComposite,nullptr,0)
 
 
 // Construct root window
@@ -71,14 +71,14 @@ FXRootWindow::FXRootWindow(FXApp* a,FXVisual *vis):FXComposite(a,vis){
 // Returns device context
 FXID FXRootWindow::GetDC() const {
   LockWindowUpdate(GetDesktopWindow());
-  return GetDCEx(GetDesktopWindow(),NULL,DCX_CACHE|DCX_LOCKWINDOWUPDATE);
+  return GetDCEx(GetDesktopWindow(),nullptr,DCX_CACHE|DCX_LOCKWINDOWUPDATE);
   }
 
 
 // Release DC
 int FXRootWindow::ReleaseDC(FXID hdc) const {
   int status=::ReleaseDC(GetDesktopWindow(),(HDC)hdc);
-  LockWindowUpdate(NULL);
+  LockWindowUpdate(nullptr);
   return status;
   }
 
@@ -101,7 +101,7 @@ static BOOL maxScreenSizeCallback(HMONITOR hmon,HDC hdc,LPRECT rect,LPARAM args)
 // Obtain largest dimensions of all screens (bounding box)
 static FXbool getMaxScreenSize(FXint& width,FXint& height){
   FXint args[2]={0,0};
-  if(EnumDisplayMonitors(NULL,NULL,(MONITORENUMPROC)maxScreenSizeCallback,(LPARAM)args)){
+  if(EnumDisplayMonitors(nullptr,nullptr,(MONITORENUMPROC)maxScreenSizeCallback,(LPARAM)args)){
     width=args[0];
     height=args[1];
     return true;

@@ -3,7 +3,7 @@
 *                   S y n t a x   H i g h l i g h t   E n g i n e               *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 2002,2021 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 2002,2022 by Jeroen van der Zijp.   All Rights Reserved.        *
 *********************************************************************************
 * This program is free software: you can redistribute it and/or modify          *
 * it under the terms of the GNU General Public License as published by          *
@@ -119,7 +119,7 @@
 /*******************************************************************************/
 
 
-FXIMPLEMENT(Rule,FXObject,NULL,0)
+FXIMPLEMENT(Rule,FXObject,nullptr,0)
 
 
 // Fill textstyle with style, returns position of last change+1
@@ -141,7 +141,7 @@ FXbool Rule::stylizeBody(const FXchar*,FXchar*,FXint,FXint,FXint&,FXint&) const 
 
 /*******************************************************************************/
 
-FXIMPLEMENT(SimpleRule,Rule,NULL,0)
+FXIMPLEMENT(SimpleRule,Rule,nullptr,0)
 
 
 // Stylize complex recursive expression
@@ -165,7 +165,7 @@ FXbool SimpleRule::stylize(const FXchar* text,FXchar *textstyle,FXint fm,FXint t
 
 /*******************************************************************************/
 
-FXIMPLEMENT(BracketRule,Rule,NULL,0)
+FXIMPLEMENT(BracketRule,Rule,nullptr,0)
 
 
 // Stylize complex recursive expression
@@ -204,7 +204,7 @@ FXbool BracketRule::stylize(const FXchar* text,FXchar *textstyle,FXint fm,FXint 
 
 /*******************************************************************************/
 
-FXIMPLEMENT(SafeBracketRule,BracketRule,NULL,0)
+FXIMPLEMENT(SafeBracketRule,BracketRule,nullptr,0)
 
 
 // Stylize complex recursive expression with termination pattern
@@ -247,7 +247,7 @@ FXbool SafeBracketRule::stylize(const FXchar* text,FXchar *textstyle,FXint fm,FX
 
 /*******************************************************************************/
 
-FXIMPLEMENT(DefaultRule,Rule,NULL,0)
+FXIMPLEMENT(DefaultRule,Rule,nullptr,0)
 
 
 // Stylize body
@@ -276,7 +276,7 @@ FXbool DefaultRule::stylize(const FXchar* text,FXchar *textstyle,FXint fm,FXint 
 
 /*******************************************************************************/
 
-FXIMPLEMENT(Syntax,FXObject,NULL,0)
+FXIMPLEMENT(Syntax,FXObject,nullptr,0)
 
 
 // Construct syntax object; needs at least one master rule

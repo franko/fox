@@ -3,7 +3,7 @@
 *                                 Test Table Widget                             *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 1997,2021 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 1997,2022 by Jeroen van der Zijp.   All Rights Reserved.        *
 ********************************************************************************/
 #include "fx.h"
 #include <stdio.h>
@@ -102,7 +102,7 @@ extern const unsigned char penguin[]={
 
 
 // Make some windows
-TableWindow::TableWindow(FXApp* a):FXMainWindow(a,"Table Widget Test",NULL,NULL,DECOR_ALL,0,0,0,0){
+TableWindow::TableWindow(FXApp* a):FXMainWindow(a,"Table Widget Test",nullptr,nullptr,DECOR_ALL,0,0,0,0){
   static const FXchar *months[]={"January","February","March","April","May","June","July","August","September","October","November","December"};
   FXint r,c;
 
@@ -191,7 +191,7 @@ TableWindow::TableWindow(FXApp* a):FXMainWindow(a,"Table Widget Test",NULL,NULL,
 //  table->setRowHeight(10,35);
   table->setItemJustify(10,10,FXTableItem::CENTER_X|FXTableItem::CENTER_Y);
 
-  table->setItem(3,3,NULL);
+  table->setItem(3,3,nullptr);
   table->setItem(5,6,table->getItem(5,5));      // FIXME this is not the right way to make spanning cells
   table->setItem(5,7,table->getItem(5,5));
   table->setItemText(5,5,"Spanning Item");
@@ -219,37 +219,37 @@ TableWindow::TableWindow(FXApp* a):FXMainWindow(a,"Table Widget Test",NULL,NULL,
 
   // File Menu
   filemenu=new FXMenuPane(this);
-  new FXMenuCommand(filemenu,"&Quit\tCtl-Q",NULL,getApp(),FXApp::ID_QUIT);
-  new FXMenuTitle(menubar,"&File",NULL,filemenu);
+  new FXMenuCommand(filemenu,"&Quit\tCtl-Q",nullptr,getApp(),FXApp::ID_QUIT);
+  new FXMenuTitle(menubar,"&File",nullptr,filemenu);
 
   // Tab side
   tablemenu=new FXMenuPane(this);
   new FXMenuCheck(tablemenu,"Horizontal grid",table,FXTable::ID_HORZ_GRID);
   new FXMenuCheck(tablemenu,"Vertical grid",table,FXTable::ID_VERT_GRID);
   new FXMenuCheck(tablemenu,"Editable",table,FXTable::ID_TOGGLE_EDITABLE);
-  new FXMenuTitle(menubar,"&Options",NULL,tablemenu);
+  new FXMenuTitle(menubar,"&Options",nullptr,tablemenu);
 
   manipmenu=new FXMenuPane(this);
-  new FXMenuCommand(manipmenu,"Edit Cell",NULL,table,FXTable::ID_START_INPUT);
-  new FXMenuCommand(manipmenu,"Delete Column",NULL,table,FXTable::ID_DELETE_COLUMN);
-  new FXMenuCommand(manipmenu,"Delete Row",NULL,table,FXTable::ID_DELETE_ROW);
-  new FXMenuCommand(manipmenu,"Insert Column",NULL,table,FXTable::ID_INSERT_COLUMN);
-  new FXMenuCommand(manipmenu,"Insert Row",NULL,table,FXTable::ID_INSERT_ROW);
-  new FXMenuCommand(manipmenu,"Resize table...",NULL,this,TableWindow::ID_RESIZETABLE);
-  new FXMenuCommand(manipmenu,"Test",NULL,this,TableWindow::ID_TEST);
-  new FXMenuTitle(menubar,"&Manipulations",NULL,manipmenu);
+  new FXMenuCommand(manipmenu,"Edit Cell",nullptr,table,FXTable::ID_START_INPUT);
+  new FXMenuCommand(manipmenu,"Delete Column",nullptr,table,FXTable::ID_DELETE_COLUMN);
+  new FXMenuCommand(manipmenu,"Delete Row",nullptr,table,FXTable::ID_DELETE_ROW);
+  new FXMenuCommand(manipmenu,"Insert Column",nullptr,table,FXTable::ID_INSERT_COLUMN);
+  new FXMenuCommand(manipmenu,"Insert Row",nullptr,table,FXTable::ID_INSERT_ROW);
+  new FXMenuCommand(manipmenu,"Resize table...",nullptr,this,TableWindow::ID_RESIZETABLE);
+  new FXMenuCommand(manipmenu,"Test",nullptr,this,TableWindow::ID_TEST);
+  new FXMenuTitle(menubar,"&Manipulations",nullptr,manipmenu);
 
   selectmenu=new FXMenuPane(this);
-  new FXMenuCommand(selectmenu,"Select All",NULL,table,FXTable::ID_SELECT_ALL);
-  new FXMenuCommand(selectmenu,"Select Cell",NULL,table,FXTable::ID_SELECT_CELL);
-  new FXMenuCommand(selectmenu,"Select Row",NULL,table,FXTable::ID_SELECT_ROW);
-  new FXMenuCommand(selectmenu,"Select Column",NULL,table,FXTable::ID_SELECT_COLUMN);
-  new FXMenuCommand(selectmenu,"Deselect All",NULL,table,FXTable::ID_DESELECT_ALL);
-  new FXMenuCommand(selectmenu,"Cut to clipboard",NULL,table,FXTable::ID_CUT_SEL);
-  new FXMenuCommand(selectmenu,"Copy to clipboard",NULL,table,FXTable::ID_COPY_SEL);
-  new FXMenuCommand(selectmenu,"Paste from clipboard",NULL,table,FXTable::ID_PASTE_SEL);
-  new FXMenuCommand(selectmenu,"Delete",NULL,table,FXTable::ID_DELETE_SEL);
-  new FXMenuTitle(menubar,"&Selection",NULL,selectmenu);
+  new FXMenuCommand(selectmenu,"Select All",nullptr,table,FXTable::ID_SELECT_ALL);
+  new FXMenuCommand(selectmenu,"Select Cell",nullptr,table,FXTable::ID_SELECT_CELL);
+  new FXMenuCommand(selectmenu,"Select Row",nullptr,table,FXTable::ID_SELECT_ROW);
+  new FXMenuCommand(selectmenu,"Select Column",nullptr,table,FXTable::ID_SELECT_COLUMN);
+  new FXMenuCommand(selectmenu,"Deselect All",nullptr,table,FXTable::ID_DESELECT_ALL);
+  new FXMenuCommand(selectmenu,"Cut to clipboard",nullptr,table,FXTable::ID_CUT_SEL);
+  new FXMenuCommand(selectmenu,"Copy to clipboard",nullptr,table,FXTable::ID_COPY_SEL);
+  new FXMenuCommand(selectmenu,"Paste from clipboard",nullptr,table,FXTable::ID_PASTE_SEL);
+  new FXMenuCommand(selectmenu,"Delete",nullptr,table,FXTable::ID_DELETE_SEL);
+  new FXMenuTitle(menubar,"&Selection",nullptr,selectmenu);
   }
 
 
@@ -276,12 +276,12 @@ long TableWindow::onCmdResizeTable(FXObject*,FXSelector,void*){
   FXDialogBox dlg(this,"Resize Table");
   FXint nr,nc,r,c;
   FXHorizontalFrame *hframe=new FXHorizontalFrame(&dlg,LAYOUT_FILL_X|LAYOUT_FILL_Y);
-  new FXLabel(hframe,"Rows:",NULL,LAYOUT_SIDE_LEFT|LAYOUT_CENTER_Y);
-  FXTextField* rows=new FXTextField(hframe,5,NULL,0,JUSTIFY_RIGHT|FRAME_SUNKEN|FRAME_THICK|LAYOUT_SIDE_LEFT|LAYOUT_CENTER_Y);
-  new FXLabel(hframe,"Columns:",NULL,LAYOUT_SIDE_LEFT|LAYOUT_CENTER_Y);
-  FXTextField* cols=new FXTextField(hframe,5,NULL,0,JUSTIFY_RIGHT|FRAME_SUNKEN|FRAME_THICK|LAYOUT_SIDE_LEFT|LAYOUT_CENTER_Y);
-  new FXButton(hframe,"Cancel",NULL,&dlg,FXDialogBox::ID_CANCEL,FRAME_RAISED|FRAME_THICK|LAYOUT_SIDE_LEFT|LAYOUT_CENTER_Y);
-  new FXButton(hframe,"  OK  ",NULL,&dlg,FXDialogBox::ID_ACCEPT,FRAME_RAISED|FRAME_THICK|LAYOUT_SIDE_LEFT|LAYOUT_CENTER_Y);
+  new FXLabel(hframe,"Rows:",nullptr,LAYOUT_SIDE_LEFT|LAYOUT_CENTER_Y);
+  FXTextField* rows=new FXTextField(hframe,5,nullptr,0,JUSTIFY_RIGHT|FRAME_SUNKEN|FRAME_THICK|LAYOUT_SIDE_LEFT|LAYOUT_CENTER_Y);
+  new FXLabel(hframe,"Columns:",nullptr,LAYOUT_SIDE_LEFT|LAYOUT_CENTER_Y);
+  FXTextField* cols=new FXTextField(hframe,5,nullptr,0,JUSTIFY_RIGHT|FRAME_SUNKEN|FRAME_THICK|LAYOUT_SIDE_LEFT|LAYOUT_CENTER_Y);
+  new FXButton(hframe,"Cancel",nullptr,&dlg,FXDialogBox::ID_CANCEL,FRAME_RAISED|FRAME_THICK|LAYOUT_SIDE_LEFT|LAYOUT_CENTER_Y);
+  new FXButton(hframe,"  OK  ",nullptr,&dlg,FXDialogBox::ID_ACCEPT,FRAME_RAISED|FRAME_THICK|LAYOUT_SIDE_LEFT|LAYOUT_CENTER_Y);
   FXint oldnr,oldnc;
   oldnr=table->getNumRows();
   oldnc=table->getNumColumns();

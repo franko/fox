@@ -3,7 +3,7 @@
 *                 R e g u l a r   E x p r e s s i o n   C l a s s               *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 1999,2021 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 1999,2022 by Jeroen van der Zijp.   All Rights Reserved.        *
 *********************************************************************************
 * This library is free software; you can redistribute it and/or modify          *
 * it under the terms of the GNU Lesser General Public License as published by   *
@@ -1107,7 +1107,7 @@ public:
 /*******************************************************************************/
 
 // Construct compile engine
-FXCompile::FXCompile():code(NULL),pc(NULL),pat(NULL),mode(0),nbra(0),npar(0){
+FXCompile::FXCompile():code(nullptr),pc(nullptr),pat(nullptr),mode(0),nbra(0),npar(0){
   }
 
 
@@ -1187,7 +1187,7 @@ FXRex::Error FXCompile::expression(FXshort& flags,FXshort& smin,FXshort& smax){
   FXshort  smn=0;
   FXshort  smx=0;
   FXuchar* at=pc;
-  FXuchar* jp=NULL;
+  FXuchar* jp=nullptr;
 
   // Parse branch
   if((err=branch(flags,smin,smax))!=FXRex::ErrOK) return err;
@@ -2171,17 +2171,17 @@ public:
 /*******************************************************************************/
 
 // Construct match engine
-FXExecute::FXExecute(const FXchar *sbeg,const FXchar *send,FXint* b,FXint* e,FXint p,FXint m):anc(NULL),str(NULL),str_beg(sbeg),str_end(send),sub_beg(b),sub_end(e),npar(p),recs(0),mode(m){
-  bak_beg[0]=bak_end[0]=NULL;
-  bak_beg[1]=bak_end[1]=NULL;
-  bak_beg[2]=bak_end[2]=NULL;
-  bak_beg[3]=bak_end[3]=NULL;
-  bak_beg[4]=bak_end[4]=NULL;
-  bak_beg[5]=bak_end[5]=NULL;
-  bak_beg[6]=bak_end[6]=NULL;
-  bak_beg[7]=bak_end[7]=NULL;
-  bak_beg[8]=bak_end[8]=NULL;
-  bak_beg[9]=bak_end[9]=NULL;
+FXExecute::FXExecute(const FXchar *sbeg,const FXchar *send,FXint* b,FXint* e,FXint p,FXint m):anc(nullptr),str(nullptr),str_beg(sbeg),str_end(send),sub_beg(b),sub_end(e),npar(p),recs(0),mode(m){
+  bak_beg[0]=bak_end[0]=nullptr;
+  bak_beg[1]=bak_end[1]=nullptr;
+  bak_beg[2]=bak_end[2]=nullptr;
+  bak_beg[3]=bak_end[3]=nullptr;
+  bak_beg[4]=bak_end[4]=nullptr;
+  bak_beg[5]=bak_end[5]=nullptr;
+  bak_beg[6]=bak_end[6]=nullptr;
+  bak_beg[7]=bak_end[7]=nullptr;
+  bak_beg[8]=bak_end[8]=nullptr;
+  bak_beg[9]=bak_end[9]=nullptr;
   switch(npar){
     case 10: sub_beg[9]=sub_end[9]=-1;
     case  9: sub_beg[8]=sub_end[8]=-1;
@@ -2228,7 +2228,7 @@ const FXchar* FXExecute::search(const FXuchar* prog,const FXchar* fm,const FXcha
       // Anchored at string start
       if(prog[0]==OP_STR_BEG){
         if((to==str_beg) && attempt(prog,to)) return to;
-        return NULL;
+        return nullptr;
         }
 
       // Anchored at BOL
@@ -2237,7 +2237,7 @@ const FXchar* FXExecute::search(const FXuchar* prog,const FXchar* fm,const FXcha
           if(((str_beg==fm) || (*(fm-1)=='\n')) && attempt(prog,fm)) return fm;
           fm=wcdec(fm);
           }
-        return NULL;
+        return nullptr;
         }
 
       // General case
@@ -2253,7 +2253,7 @@ const FXchar* FXExecute::search(const FXuchar* prog,const FXchar* fm,const FXcha
       // Anchored at string start
       if(prog[0]==OP_STR_BEG){
         if((fm==str_beg) && attempt(prog,fm)) return fm;
-        return NULL;
+        return nullptr;
         }
 
       // Anchored at BOL
@@ -2262,7 +2262,7 @@ const FXchar* FXExecute::search(const FXuchar* prog,const FXchar* fm,const FXcha
           if(((str_beg==fm) || (*(fm-1)=='\n')) && attempt(prog,fm)) return fm;
           fm=wcinc(fm);
           }
-        return NULL;
+        return nullptr;
         }
 
       // General case
@@ -2282,7 +2282,7 @@ const FXchar* FXExecute::search(const FXuchar* prog,const FXchar* fm,const FXcha
       // Anchored at string start
       if(prog[0]==OP_STR_BEG){
         if((to==str_beg) && attempt(prog,to)) return to;
-        return NULL;
+        return nullptr;
         }
 
       // Anchored at BOL
@@ -2291,7 +2291,7 @@ const FXchar* FXExecute::search(const FXuchar* prog,const FXchar* fm,const FXcha
           if(((str_beg==fm) || (*(fm-1)=='\n')) && attempt(prog,fm)) return fm;
           fm--;
           }
-        return NULL;
+        return nullptr;
         }
 
       // Known starting character
@@ -2302,7 +2302,7 @@ const FXchar* FXExecute::search(const FXuchar* prog,const FXchar* fm,const FXcha
           if((*fm==ch) && attempt(prog,fm)) return fm;
           fm--;
           }
-        return NULL;
+        return nullptr;
         }
 
       // Known starting character, ignoring case
@@ -2313,7 +2313,7 @@ const FXchar* FXExecute::search(const FXuchar* prog,const FXchar* fm,const FXcha
           if((Ascii::toLower(*fm)==ch) && attempt(prog,fm)) return fm;
           fm--;
           }
-        return NULL;
+        return nullptr;
         }
 
       // General case
@@ -2329,7 +2329,7 @@ const FXchar* FXExecute::search(const FXuchar* prog,const FXchar* fm,const FXcha
       // Anchored at string start
       if(prog[0]==OP_STR_BEG){
         if((fm==str_beg) && attempt(prog,fm)) return fm;
-        return NULL;
+        return nullptr;
         }
 
       // Anchored at BOL
@@ -2338,7 +2338,7 @@ const FXchar* FXExecute::search(const FXuchar* prog,const FXchar* fm,const FXcha
           if(((str_beg==fm) || (*(fm-1)=='\n')) && attempt(prog,fm)) return fm;
           fm++;
           }
-        return NULL;
+        return nullptr;
         }
 
       // Known starting character
@@ -2349,7 +2349,7 @@ const FXchar* FXExecute::search(const FXuchar* prog,const FXchar* fm,const FXcha
           if((*fm==ch) && attempt(prog,fm)) return fm;
           fm++;
           }
-        return NULL;
+        return nullptr;
         }
 
       // Known starting character, ignoring case
@@ -2360,7 +2360,7 @@ const FXchar* FXExecute::search(const FXuchar* prog,const FXchar* fm,const FXcha
           if((Ascii::toLower(*fm)==ch) && attempt(prog,fm)) return fm;
           fm++;
           }
-        return NULL;
+        return nullptr;
         }
 
       // General case
@@ -2370,7 +2370,7 @@ const FXchar* FXExecute::search(const FXuchar* prog,const FXchar* fm,const FXcha
         }
       }
     }
-  return NULL;
+  return nullptr;
   }
 
 /*******************************************************************************/
@@ -3200,7 +3200,7 @@ asc:    if(no<rep_min) goto f;
         beg=bak_beg[no];                        // Save old backrefs
         end=bak_end[no];
         bak_beg[no]=save=str;                   // New backref start
-        bak_end[no]=NULL;
+        bak_end[no]=nullptr;
         if(match(prog)){
           if(no<npar && sub_beg[no]==-1){ sub_beg[no]=save-str_beg; }
           goto t;
@@ -4200,7 +4200,7 @@ asc:    if(no<rep_min) goto f;
         beg=bak_beg[no];                        // Save old backrefs
         end=bak_end[no];
         bak_beg[no]=save=str;                   // New backref start
-        bak_end[no]=NULL;
+        bak_end[no]=nullptr;
         if(revmatch(prog)){
           if(no<npar && sub_beg[no]==-1){ sub_beg[no]=save-str_beg; }
           goto t;
@@ -4697,7 +4697,7 @@ FXRex::Error FXRex::parse(const FXchar* pattern,FXint mode){
         FXCompile cs;
 
         // Check syntax and count the bytes
-        if((err=cs.compile(NULL,adjustedpattern,mode))==ErrOK){
+        if((err=cs.compile(nullptr,adjustedpattern,mode))==ErrOK){
 
           // Compile code if we want to
           if(!(mode&FXRex::Syntax)){
@@ -4758,7 +4758,7 @@ FXint FXRex::search(const FXchar* string,FXint len,FXint fm,FXint to,FXint mode,
   if(__unlikely(NSUBEXP<npar || fm<0 || to<0 || len<fm || len<to)){ fxerror("FXRex::search: bad argument.\n"); }
   FXExecute ms(string,string+len,beg,end,npar,mode);
   const FXchar* result;
-  if((result=ms.search(code+2,&string[fm],&string[to]))!=NULL){
+  if((result=ms.search(code+2,&string[fm],&string[to]))!=nullptr){
     return result-string;
     }
   return -1;

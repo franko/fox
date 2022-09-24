@@ -3,7 +3,7 @@
 *                                 Test Dialog Box                               *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 1997,2021 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 1997,2022 by Jeroen van der Zijp.   All Rights Reserved.        *
 ********************************************************************************/
 #include "fx.h"
 #include <stdio.h>
@@ -72,7 +72,7 @@ public:
 
 
 // FXTestDialog implementation
-FXIMPLEMENT(FXTestDialog,FXDialogBox,NULL,0)
+FXIMPLEMENT(FXTestDialog,FXDialogBox,nullptr,0)
 
 
 // Construct a dialog box
@@ -94,25 +94,25 @@ FXTestDialog::FXTestDialog(FXWindow* own):FXDialogBox(own,"Test of Dialog Box",D
 
   // Menu
   menu=new FXMenuPane(this);
-  new FXMenuCommand(menu,"&Accept",NULL,this,ID_ACCEPT);
-  new FXMenuCommand(menu,"&Cancel",NULL,this,ID_CANCEL);
-  new FXMenuCascade(menu,"Submenu",NULL,submenu);
-  new FXMenuCommand(menu,"&Quit\tCtl-Q",NULL,getApp(),FXApp::ID_QUIT);
+  new FXMenuCommand(menu,"&Accept",nullptr,this,ID_ACCEPT);
+  new FXMenuCommand(menu,"&Cancel",nullptr,this,ID_CANCEL);
+  new FXMenuCascade(menu,"Submenu",nullptr,submenu);
+  new FXMenuCommand(menu,"&Quit\tCtl-Q",nullptr,getApp(),FXApp::ID_QUIT);
 
   // Popup menu
   pane=new FXPopup(this);
-  new FXOption(pane,"One",NULL,NULL,0,JUSTIFY_HZ_APART|ICON_AFTER_TEXT);
-  new FXOption(pane,"Two",NULL,NULL,0,JUSTIFY_HZ_APART|ICON_AFTER_TEXT);
-  new FXOption(pane,"Three",NULL,NULL,0,JUSTIFY_HZ_APART|ICON_AFTER_TEXT);
-  new FXOption(pane,"Four",NULL,NULL,0,JUSTIFY_HZ_APART|ICON_AFTER_TEXT);
-  new FXOption(pane,"Five",NULL,NULL,0,JUSTIFY_HZ_APART|ICON_AFTER_TEXT);
-  new FXOption(pane,"Six",NULL,NULL,0,JUSTIFY_HZ_APART|ICON_AFTER_TEXT);
-  new FXOption(pane,"Seven",NULL,NULL,0,JUSTIFY_HZ_APART|ICON_AFTER_TEXT);
-  new FXOption(pane,"Eight",NULL,NULL,0,JUSTIFY_HZ_APART|ICON_AFTER_TEXT);
-  new FXOption(pane,"Nine",NULL,NULL,0,JUSTIFY_HZ_APART|ICON_AFTER_TEXT);
-  new FXOption(pane,"Ten",NULL,NULL,0,JUSTIFY_HZ_APART|ICON_AFTER_TEXT);
+  new FXOption(pane,"One",nullptr,nullptr,0,JUSTIFY_HZ_APART|ICON_AFTER_TEXT);
+  new FXOption(pane,"Two",nullptr,nullptr,0,JUSTIFY_HZ_APART|ICON_AFTER_TEXT);
+  new FXOption(pane,"Three",nullptr,nullptr,0,JUSTIFY_HZ_APART|ICON_AFTER_TEXT);
+  new FXOption(pane,"Four",nullptr,nullptr,0,JUSTIFY_HZ_APART|ICON_AFTER_TEXT);
+  new FXOption(pane,"Five",nullptr,nullptr,0,JUSTIFY_HZ_APART|ICON_AFTER_TEXT);
+  new FXOption(pane,"Six",nullptr,nullptr,0,JUSTIFY_HZ_APART|ICON_AFTER_TEXT);
+  new FXOption(pane,"Seven",nullptr,nullptr,0,JUSTIFY_HZ_APART|ICON_AFTER_TEXT);
+  new FXOption(pane,"Eight",nullptr,nullptr,0,JUSTIFY_HZ_APART|ICON_AFTER_TEXT);
+  new FXOption(pane,"Nine",nullptr,nullptr,0,JUSTIFY_HZ_APART|ICON_AFTER_TEXT);
+  new FXOption(pane,"Ten",nullptr,nullptr,0,JUSTIFY_HZ_APART|ICON_AFTER_TEXT);
 
-  FXComboBox* combobox=new FXComboBox(contents,10,NULL,0,COMBOBOX_STATIC|FRAME_SUNKEN|FRAME_THICK|LAYOUT_SIDE_TOP);
+  FXComboBox* combobox=new FXComboBox(contents,10,nullptr,0,COMBOBOX_STATIC|FRAME_SUNKEN|FRAME_THICK|LAYOUT_SIDE_TOP);
   combobox->setNumVisible(4);
   combobox->appendItem("One");
   combobox->appendItem("Two");
@@ -123,13 +123,13 @@ FXTestDialog::FXTestDialog(FXWindow* own):FXDialogBox(own,"Test of Dialog Box",D
   new FXOptionMenu(contents,pane,FRAME_RAISED|FRAME_THICK|JUSTIFY_HZ_APART|ICON_AFTER_TEXT|LAYOUT_CENTER_X|LAYOUT_CENTER_Y);
 
   // Button to pop menu
-  new FXMenuButton(contents,"&Menu",NULL,menu,MENUBUTTON_DOWN|JUSTIFY_LEFT|LAYOUT_TOP|FRAME_RAISED|FRAME_THICK|ICON_AFTER_TEXT|LAYOUT_CENTER_X|LAYOUT_CENTER_Y);
+  new FXMenuButton(contents,"&Menu",nullptr,menu,MENUBUTTON_DOWN|JUSTIFY_LEFT|LAYOUT_TOP|FRAME_RAISED|FRAME_THICK|ICON_AFTER_TEXT|LAYOUT_CENTER_X|LAYOUT_CENTER_Y);
 
   // Accept
- new FXButton(buttons,"&Accept",NULL,this,ID_ACCEPT,BUTTON_DEFAULT|BUTTON_INITIAL|FRAME_RAISED|FRAME_THICK|LAYOUT_RIGHT|LAYOUT_CENTER_Y);
+ new FXButton(buttons,"&Accept",nullptr,this,ID_ACCEPT,BUTTON_DEFAULT|BUTTON_INITIAL|FRAME_RAISED|FRAME_THICK|LAYOUT_RIGHT|LAYOUT_CENTER_Y);
 
   // Cancel
-  new FXButton(buttons,"&Cancel",NULL,this,ID_CANCEL,BUTTON_DEFAULT|FRAME_RAISED|FRAME_THICK|LAYOUT_RIGHT|LAYOUT_CENTER_Y);
+  new FXButton(buttons,"&Cancel",nullptr,this,ID_CANCEL,BUTTON_DEFAULT|FRAME_RAISED|FRAME_THICK|LAYOUT_RIGHT|LAYOUT_CENTER_Y);
   }
 
 
@@ -158,7 +158,7 @@ FXIMPLEMENT(DialogTester,FXMainWindow,DialogTesterMap,ARRAYNUMBER(DialogTesterMa
 
 
 // Make some windows
-DialogTester::DialogTester(FXApp* a):FXMainWindow(a,"Group Box Test",NULL,NULL,DECOR_ALL,0,0,400,200){
+DialogTester::DialogTester(FXApp* a):FXMainWindow(a,"Group Box Test",nullptr,nullptr,DECOR_ALL,0,0,400,200){
 
   // Tooltip
   new FXToolTip(getApp());
@@ -168,8 +168,8 @@ DialogTester::DialogTester(FXApp* a):FXMainWindow(a,"Group Box Test",NULL,NULL,D
 
   // File Menu
   filemenu=new FXMenuPane(this);
-  new FXMenuCommand(filemenu,"&Quit\tCtl-Q",NULL,getApp(),FXApp::ID_QUIT,0);
-  new FXMenuTitle(menubar,"&File",NULL,filemenu);
+  new FXMenuCommand(filemenu,"&Quit\tCtl-Q",nullptr,getApp(),FXApp::ID_QUIT,0);
+  new FXMenuTitle(menubar,"&File",nullptr,filemenu);
 
   // Separator
   new FXHorizontalSeparator(this,LAYOUT_SIDE_TOP|LAYOUT_FILL_X|SEPARATOR_GROOVE);
@@ -178,10 +178,10 @@ DialogTester::DialogTester(FXApp* a):FXMainWindow(a,"Group Box Test",NULL,NULL,D
   contents=new FXHorizontalFrame(this,LAYOUT_SIDE_BOTTOM|FRAME_NONE|LAYOUT_FILL_X|PACK_UNIFORM_WIDTH);
 
   // Button to pop normal dialog
-  new FXButton(contents,"&Non-Modal Dialog...\tDisplay normal dialog",NULL,this,ID_SHOWDIALOG,FRAME_RAISED|FRAME_THICK|LAYOUT_CENTER_X|LAYOUT_CENTER_Y);
+  new FXButton(contents,"&Non-Modal Dialog...\tDisplay normal dialog",nullptr,this,ID_SHOWDIALOG,FRAME_RAISED|FRAME_THICK|LAYOUT_CENTER_X|LAYOUT_CENTER_Y);
 
   // Button to pop modal dialog
-  new FXButton(contents,"&Modal Dialog...\tDisplay modal dialog",NULL,this,ID_SHOWDIALOGMODAL,FRAME_RAISED|FRAME_THICK|LAYOUT_CENTER_X|LAYOUT_CENTER_Y);
+  new FXButton(contents,"&Modal Dialog...\tDisplay modal dialog",nullptr,this,ID_SHOWDIALOGMODAL,FRAME_RAISED|FRAME_THICK|LAYOUT_CENTER_X|LAYOUT_CENTER_Y);
 
   // Build a dialog box
   dialog=new FXTestDialog(this);

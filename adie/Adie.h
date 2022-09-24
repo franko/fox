@@ -3,7 +3,7 @@
 *                     T h e   A d i e   T e x t   E d i t o r                   *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 1998,2021 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 1998,2022 by Jeroen van der Zijp.   All Rights Reserved.        *
 *********************************************************************************
 * This program is free software: you can redistribute it and/or modify          *
 * it under the terms of the GNU General Public License as published by          *
@@ -31,6 +31,7 @@
 class HelpWindow;
 class Preferences;
 class TextWindow;
+class FindInFiles;
 struct ParseInfo;
 
 
@@ -38,6 +39,7 @@ struct ParseInfo;
 class Adie : public FXApp {
   FXDECLARE(Adie)
   friend class TextWindow;
+  friend class FindInFiles;
 protected:
   TextWindowList      windowlist;               // Window list
   FXFileAssociations *associations;             // File association table

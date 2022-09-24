@@ -3,7 +3,7 @@
 *                                 Test MDI Widgets                              *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 1998,2021 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 1998,2022 by Jeroen van der Zijp.   All Rights Reserved.        *
 ********************************************************************************/
 #include "fx.h"
 #include <stdio.h>
@@ -798,7 +798,7 @@ FXIMPLEMENT(MDITestWindow,FXMainWindow,MDITestWindowMap,ARRAYNUMBER(MDITestWindo
 
 
 // Make some windows
-MDITestWindow::MDITestWindow(FXApp* a):FXMainWindow(a,"MDI Widget Test",NULL,NULL,DECOR_ALL,0,0,800,600){
+MDITestWindow::MDITestWindow(FXApp* a):FXMainWindow(a,"MDI Widget Test",nullptr,nullptr,DECOR_ALL,0,0,800,600){
   FXMDIChild *mdichild;
   FXScrollWindow *scrollwindow;
   FXButton *btn;
@@ -837,7 +837,7 @@ MDITestWindow::MDITestWindow(FXApp* a):FXMainWindow(a,"MDI Widget Test",NULL,NUL
   // Test window #1
   mdichild=new FXMDIChild(mdiclient,"Child",mdiicon,mdimenu,MDI_NORMAL|MDI_TRACKING,10,10,400,300);
   scrollwindow=new FXScrollWindow(mdichild,0);
-  btn=new FXButton(scrollwindow,tyger,NULL,NULL,0,LAYOUT_BOTTOM|LAYOUT_RIGHT);
+  btn=new FXButton(scrollwindow,tyger,nullptr,nullptr,0,LAYOUT_BOTTOM|LAYOUT_RIGHT);
   btn->setBackColor(FXRGB(255,255,255));
   btn->setFont(font);
   mdiclient->setActiveChild(mdichild);
@@ -845,42 +845,42 @@ MDITestWindow::MDITestWindow(FXApp* a):FXMainWindow(a,"MDI Widget Test",NULL,NUL
   // Test window #2
   mdichild=new FXMDIChild(mdiclient,"Child",mdiicon,mdimenu,MDI_NORMAL|MDI_TRACKING,20,20,400,300);
   scrollwindow=new FXScrollWindow(mdichild,0);
-  btn=new FXButton(scrollwindow,unicode,NULL,NULL,0,JUSTIFY_LEFT|LAYOUT_CENTER_Y|LAYOUT_CENTER_X);
+  btn=new FXButton(scrollwindow,unicode,nullptr,nullptr,0,JUSTIFY_LEFT|LAYOUT_CENTER_Y|LAYOUT_CENTER_X);
   btn->setFont(font);
   btn->setBackColor(FXRGB(255,255,255));
 
   // Test window #3
   mdichild=new FXMDIChild(mdiclient,"Child",mdiicon,mdimenu,MDI_NORMAL|MDI_TRACKING,30,30,400,300);
   scrollwindow=new FXScrollWindow(mdichild,0);
-  btn=new FXButton(scrollwindow,tyger,NULL,NULL,0,LAYOUT_FIX_WIDTH|LAYOUT_FIX_HEIGHT,0,0,600,1000);
+  btn=new FXButton(scrollwindow,tyger,nullptr,nullptr,0,LAYOUT_FIX_WIDTH|LAYOUT_FIX_HEIGHT,0,0,600,1000);
   btn->setFont(font);
   btn->setBackColor(FXRGB(255,255,255));
 
   // File menu
   filemenu=new FXMenuPane(this);
-  new FXMenuCommand(filemenu,"&New\tCtl-N\tCreate new document.",NULL,this,ID_NEW);
+  new FXMenuCommand(filemenu,"&New\tCtl-N\tCreate new document.",nullptr,this,ID_NEW);
   new FXMenuCommand(filemenu,"&Open\tCtl-O\tOpen document.");
-  new FXMenuCommand(filemenu,"&Quit\tCtl-Q\tQuit application.",NULL,getApp(),FXApp::ID_QUIT,0);
-  new FXMenuTitle(menubar,"&File",NULL,filemenu);
+  new FXMenuCommand(filemenu,"&Quit\tCtl-Q\tQuit application.",nullptr,getApp(),FXApp::ID_QUIT,0);
+  new FXMenuTitle(menubar,"&File",nullptr,filemenu);
 
   // Window menu
   windowmenu=new FXMenuPane(this);
-  new FXMenuCommand(windowmenu,"Tile &Horizontally",NULL,mdiclient,FXMDIClient::ID_MDI_TILEHORIZONTAL);
-  new FXMenuCommand(windowmenu,"Tile &Vertically",NULL,mdiclient,FXMDIClient::ID_MDI_TILEVERTICAL);
-  new FXMenuCommand(windowmenu,"C&ascade",NULL,mdiclient,FXMDIClient::ID_MDI_CASCADE);
-  new FXMenuCommand(windowmenu,"&Close",NULL,mdiclient,FXMDIClient::ID_MDI_CLOSE);
+  new FXMenuCommand(windowmenu,"Tile &Horizontally",nullptr,mdiclient,FXMDIClient::ID_MDI_TILEHORIZONTAL);
+  new FXMenuCommand(windowmenu,"Tile &Vertically",nullptr,mdiclient,FXMDIClient::ID_MDI_TILEVERTICAL);
+  new FXMenuCommand(windowmenu,"C&ascade",nullptr,mdiclient,FXMDIClient::ID_MDI_CASCADE);
+  new FXMenuCommand(windowmenu,"&Close",nullptr,mdiclient,FXMDIClient::ID_MDI_CLOSE);
   new FXMenuSeparator(windowmenu,mdiclient,FXMDIClient::ID_MDI_ANY);
-  new FXMenuCommand(windowmenu,FXString::null,NULL,mdiclient,FXMDIClient::ID_MDI_1);
-  new FXMenuCommand(windowmenu,FXString::null,NULL,mdiclient,FXMDIClient::ID_MDI_2);
-  new FXMenuCommand(windowmenu,FXString::null,NULL,mdiclient,FXMDIClient::ID_MDI_3);
-  new FXMenuCommand(windowmenu,FXString::null,NULL,mdiclient,FXMDIClient::ID_MDI_4);
-  new FXMenuCommand(windowmenu,"&Others...",NULL,mdiclient,FXMDIClient::ID_MDI_OVER_5);
-  new FXMenuTitle(menubar,"&Window",NULL,windowmenu);
+  new FXMenuCommand(windowmenu,"&1",nullptr,mdiclient,FXMDIClient::ID_MDI_1);
+  new FXMenuCommand(windowmenu,"&2",nullptr,mdiclient,FXMDIClient::ID_MDI_2);
+  new FXMenuCommand(windowmenu,"&3",nullptr,mdiclient,FXMDIClient::ID_MDI_3);
+  new FXMenuCommand(windowmenu,"&4",nullptr,mdiclient,FXMDIClient::ID_MDI_4);
+  new FXMenuCommand(windowmenu,"&Others...",nullptr,mdiclient,FXMDIClient::ID_MDI_OVER_5);
+  new FXMenuTitle(menubar,"&Window",nullptr,windowmenu);
 
   // Help menu
   helpmenu=new FXMenuPane(this);
-  new FXMenuCommand(helpmenu,"&About FOX...",NULL,this,ID_ABOUT,0);
-  new FXMenuTitle(menubar,"&Help",NULL,helpmenu,LAYOUT_RIGHT);
+  new FXMenuCommand(helpmenu,"&About FOX...",nullptr,this,ID_ABOUT,0);
+  new FXMenuTitle(menubar,"&Help",nullptr,helpmenu,LAYOUT_RIGHT);
 
   }
 
@@ -906,7 +906,7 @@ long MDITestWindow::onCmdAbout(FXObject*,FXSelector,void*){
 long MDITestWindow::onCmdNew(FXObject*,FXSelector,void*){
   FXMDIChild *mdichild=new FXMDIChild(mdiclient,"Child",mdiicon,mdimenu,MDI_NORMAL|MDI_TRACKING,20,20,300,200);
   FXScrollWindow *scrollwindow=new FXScrollWindow(mdichild,0);
-  FXButton* btn=new FXButton(scrollwindow,tyger,NULL,NULL,0,LAYOUT_CENTER_X|LAYOUT_FILL_Y);
+  FXButton* btn=new FXButton(scrollwindow,tyger,nullptr,nullptr,0,LAYOUT_CENTER_X|LAYOUT_FILL_Y);
   btn->setBackColor(FXRGB(255,255,255));
   mdichild->create();
   return 1;

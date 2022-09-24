@@ -3,7 +3,7 @@
 *                     U n d o a b l e   C o m m a n d s                         *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 1998,2021 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 1998,2022 by Jeroen van der Zijp.   All Rights Reserved.        *
 *********************************************************************************
 * This program is free software: you can redistribute it and/or modify          *
 * it under the terms of the GNU General Public License as published by          *
@@ -39,7 +39,7 @@
 
 /*******************************************************************************/
 
-FXIMPLEMENT_ABSTRACT(FXTextCommand,FXCommand,NULL,0)
+FXIMPLEMENT_ABSTRACT(FXTextCommand,FXCommand,nullptr,0)
 
 
 // Return size of record plus any data kept here
@@ -54,12 +54,12 @@ FXTextCommand::~FXTextCommand(){
   }
 
 
-FXIMPLEMENT_ABSTRACT(FXTextInsert,FXTextCommand,NULL,0)
+FXIMPLEMENT_ABSTRACT(FXTextInsert,FXTextCommand,nullptr,0)
 
 // Insert command
 FXTextInsert::FXTextInsert(FXText* txt,FXint p,FXint ni,const FXchar* ins):FXTextCommand(txt,p,0,ni){
   allocElms(buffer,ni);
-  memcpy(buffer,ins,ni);
+  copyElms(buffer,ins,ni);
   }
 
 
@@ -79,12 +79,12 @@ void FXTextInsert::redo(){
   }
 
 
-FXIMPLEMENT_ABSTRACT(FXTextDelete,FXTextCommand,NULL,0)
+FXIMPLEMENT_ABSTRACT(FXTextDelete,FXTextCommand,nullptr,0)
 
 // Delete command
 FXTextDelete::FXTextDelete(FXText* txt,FXint p,FXint nd,const FXchar* del):FXTextCommand(txt,p,nd,0){
   allocElms(buffer,nd);
-  memcpy(buffer,del,nd);
+  copyElms(buffer,del,nd);
   }
 
 
@@ -104,13 +104,13 @@ void FXTextDelete::redo(){
   }
 
 
-FXIMPLEMENT_ABSTRACT(FXTextReplace,FXTextCommand,NULL,0)
+FXIMPLEMENT_ABSTRACT(FXTextReplace,FXTextCommand,nullptr,0)
 
 // Replace command
 FXTextReplace::FXTextReplace(FXText* txt,FXint p,FXint nd,FXint ni,const FXchar* del,const FXchar* ins):FXTextCommand(txt,p,nd,ni){
   allocElms(buffer,nd+ni);
-  memcpy(buffer,del,nd);
-  memcpy(buffer+nd,ins,ni);
+  copyElms(buffer,del,nd);
+  copyElms(buffer+nd,ins,ni);
   }
 
 

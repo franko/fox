@@ -3,7 +3,7 @@
 *                         S y n t a x   P a r s e r                             *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 1998,2021 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 1998,2022 by Jeroen van der Zijp.   All Rights Reserved.        *
 *********************************************************************************
 * This program is free software: you can redistribute it and/or modify          *
 * it under the terms of the GNU General Public License as published by          *
@@ -340,7 +340,7 @@ FXbool SyntaxParser::parseLanguage(SyntaxList& syntaxes){
             fxwarning("%s:%d: error: expected 'contextlines' <number>.\n",from,line);
             return false;
             }
-          contextlines=strtol(head,NULL,0);
+          contextlines=strtol(head,nullptr,0);
           token=gettok();
           continue;
         case TK_CONTEXTCHARS:           // Context chars
@@ -349,7 +349,7 @@ FXbool SyntaxParser::parseLanguage(SyntaxList& syntaxes){
             fxwarning("%s:%d: error: expected 'contextchars' <number>.\n",from,line);
             return false;
             }
-          contextchars=strtol(head,NULL,0);
+          contextchars=strtol(head,nullptr,0);
           token=gettok();
           continue;
         case TK_AUTOINDENT:             // Set autoindent mode (0,1)
@@ -367,7 +367,7 @@ FXbool SyntaxParser::parseLanguage(SyntaxList& syntaxes){
             fxwarning("%s:%d: error: expected 'wrapwidth' <number>.\n",from,line);
             return false;
             }
-          wrapwidth=strtol(head,NULL,0);
+          wrapwidth=strtol(head,nullptr,0);
           token=gettok();
           continue;
         case TK_TABWIDTH:               // Set tab width for language
@@ -376,7 +376,7 @@ FXbool SyntaxParser::parseLanguage(SyntaxList& syntaxes){
             fxwarning("%s:%d: error: expected 'tabwidth' <number>.\n",from,line);
             return false;
             }
-          tabwidth=strtol(head,NULL,0);
+          tabwidth=strtol(head,nullptr,0);
           token=gettok();
           continue;
         case TK_WORDWRAP:               // Word wrap mode

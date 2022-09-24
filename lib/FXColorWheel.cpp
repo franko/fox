@@ -3,7 +3,7 @@
 *                        C o l o r W h e e l   W i d g e t                      *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 2001,2021 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 2001,2022 by Jeroen van der Zijp.   All Rights Reserved.        *
 *********************************************************************************
 * This library is free software; you can redistribute it and/or modify          *
 * it under the terms of the GNU Lesser General Public License as published by   *
@@ -97,7 +97,7 @@ FXColorWheel::FXColorWheel(FXComposite* p,FXObject* tgt,FXSelector sel,FXuint op
   flags|=FLAG_ENABLED;
   target=tgt;
   message=sel;
-  dial=new FXImage(getApp(),NULL,IMAGE_DITHER|IMAGE_KEEP|IMAGE_OWNED|IMAGE_SHMI|IMAGE_SHMP,WHEELDIAMETER,WHEELDIAMETER);
+  dial=new FXImage(getApp(),nullptr,IMAGE_DITHER|IMAGE_KEEP|IMAGE_OWNED|IMAGE_SHMI|IMAGE_SHMP,WHEELDIAMETER,WHEELDIAMETER);
   hsv[0]=0.0f;
   hsv[1]=0.0f;
   hsv[2]=1.0f;

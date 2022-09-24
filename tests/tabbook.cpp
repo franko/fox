@@ -3,7 +3,7 @@
 *                                 Test Tab Book                                 *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 1997,2021 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 1997,2022 by Jeroen van der Zijp.   All Rights Reserved.        *
 ********************************************************************************/
 #include "fx.h"
 
@@ -85,7 +85,7 @@ FXIMPLEMENT(TabBookWindow,FXMainWindow,TabBookWindowMap,ARRAYNUMBER(TabBookWindo
 
 
 // Make some windows
-TabBookWindow::TabBookWindow(FXApp *a):FXMainWindow(a,"Tab Book Test",NULL,NULL,DECOR_ALL,0,0,600,400){
+TabBookWindow::TabBookWindow(FXApp *a):FXMainWindow(a,"Tab Book Test",nullptr,nullptr,DECOR_ALL,0,0,600,400){
   FXHorizontalFrame *boxframe;
 
   // Tooltip
@@ -104,52 +104,52 @@ TabBookWindow::TabBookWindow(FXApp *a):FXMainWindow(a,"Tab Book Test",NULL,NULL,
   tabbook=new FXTabBook(contents,this,ID_PANEL,PACK_UNIFORM_WIDTH|PACK_UNIFORM_HEIGHT|LAYOUT_FILL_X|LAYOUT_FILL_Y|LAYOUT_RIGHT);
 
   // First item is a list
-  tab1=new FXTabItem(tabbook,"&Simple List\tSwitch to first panel",NULL);
+  tab1=new FXTabItem(tabbook,"&Simple List\tSwitch to first panel",nullptr);
 
   listframe=new FXHorizontalFrame(tabbook,FRAME_THICK|FRAME_RAISED);
   boxframe=new FXHorizontalFrame(listframe,FRAME_THICK|FRAME_SUNKEN|LAYOUT_FILL_X|LAYOUT_FILL_Y, 0,0,0,0, 0,0,0,0);
-  simplelist=new FXList(boxframe,NULL,0,LIST_EXTENDEDSELECT|LAYOUT_FILL_X|LAYOUT_FILL_Y);
+  simplelist=new FXList(boxframe,nullptr,0,LIST_EXTENDEDSELECT|LAYOUT_FILL_X|LAYOUT_FILL_Y);
   simplelist->appendItem("First Entry");
   simplelist->appendItem("Second Entry");
   simplelist->appendItem("Third Entry");
   simplelist->appendItem("Fourth Entry");
 
   // Second item is a file list
-  tab2=new FXTabItem(tabbook,"F&ile List\tSwitch to second panel",NULL);
+  tab2=new FXTabItem(tabbook,"F&ile List\tSwitch to second panel",nullptr);
   fileframe=new FXHorizontalFrame(tabbook,FRAME_THICK|FRAME_RAISED);
   boxframe=new FXHorizontalFrame(fileframe,FRAME_THICK|FRAME_SUNKEN|LAYOUT_FILL_X|LAYOUT_FILL_Y, 0,0,0,0, 0,0,0,0);
-  filelist=new FXFileList(boxframe,NULL,0,ICONLIST_EXTENDEDSELECT|LAYOUT_FILL_X|LAYOUT_FILL_Y);
+  filelist=new FXFileList(boxframe,nullptr,0,ICONLIST_EXTENDEDSELECT|LAYOUT_FILL_X|LAYOUT_FILL_Y);
 
   // Third item is a directory list
-  tab3=new FXTabItem(tabbook,"T&ree List\tSwitch to third panel",NULL);
+  tab3=new FXTabItem(tabbook,"T&ree List\tSwitch to third panel",nullptr);
   dirframe=new FXHorizontalFrame(tabbook,FRAME_THICK|FRAME_RAISED);
   boxframe=new FXHorizontalFrame(dirframe,FRAME_THICK|FRAME_SUNKEN|LAYOUT_FILL_X|LAYOUT_FILL_Y, 0,0,0,0, 0,0,0,0);
-  dirlist=new FXDirList(boxframe,NULL,0,DIRLIST_SHOWFILES|TREELIST_SHOWS_LINES|TREELIST_SHOWS_BOXES|LAYOUT_FILL_X|LAYOUT_FILL_Y);
+  dirlist=new FXDirList(boxframe,nullptr,0,DIRLIST_SHOWFILES|TREELIST_SHOWS_LINES|TREELIST_SHOWS_BOXES|LAYOUT_FILL_X|LAYOUT_FILL_Y);
 
   // Fourth item is text
-  tab4=new FXTabItem(tabbook,"Text\tSwitch to fourth panel",NULL);
+  tab4=new FXTabItem(tabbook,"Text\tSwitch to fourth panel",nullptr);
   textframe=new FXHorizontalFrame(tabbook,FRAME_THICK|FRAME_RAISED);
   boxframe=new FXHorizontalFrame(textframe,FRAME_THICK|FRAME_SUNKEN|LAYOUT_FILL_X|LAYOUT_FILL_Y, 0,0,0,0, 0,0,0,0);
-  text=new FXText(boxframe,NULL,0,LAYOUT_FILL_X|LAYOUT_FILL_Y);
+  text=new FXText(boxframe,nullptr,0,LAYOUT_FILL_X|LAYOUT_FILL_Y);
 
   // File Menu
   filemenu=new FXMenuPane(this);
-  new FXMenuCommand(filemenu,"&Simple List",NULL,tabbook,FXTabBar::ID_OPEN_FIRST+0);
-  new FXMenuCommand(filemenu,"F&ile List",NULL,tabbook,FXTabBar::ID_OPEN_FIRST+1);
-  new FXMenuCommand(filemenu,"T&ree List",NULL,tabbook,FXTabBar::ID_OPEN_FIRST+2);
-  new FXMenuCommand(filemenu,"&Quit\tCtl-Q",NULL,getApp(),FXApp::ID_QUIT);
-  new FXMenuTitle(menubar,"&File",NULL,filemenu);
+  new FXMenuCommand(filemenu,"&Simple List",nullptr,tabbook,FXTabBar::ID_OPEN_FIRST+0);
+  new FXMenuCommand(filemenu,"F&ile List",nullptr,tabbook,FXTabBar::ID_OPEN_FIRST+1);
+  new FXMenuCommand(filemenu,"T&ree List",nullptr,tabbook,FXTabBar::ID_OPEN_FIRST+2);
+  new FXMenuCommand(filemenu,"&Quit\tCtl-Q",nullptr,getApp(),FXApp::ID_QUIT);
+  new FXMenuTitle(menubar,"&File",nullptr,filemenu);
 
   // Tab side
   tabmenu=new FXMenuPane(this);
-  new FXMenuCommand(tabmenu,"Hide/Show Tab 2",NULL,this,TabBookWindow::ID_HIDESHOW);
-  new FXMenuCommand(tabmenu,"&Top Tabs",NULL,this,TabBookWindow::ID_TABS_TOP);
-  new FXMenuCommand(tabmenu,"&Bottom Tabs",NULL,this,TabBookWindow::ID_TABS_BOTTOM);
-  new FXMenuCommand(tabmenu,"&Left Tabs",NULL,this,TabBookWindow::ID_TABS_LEFT);
-  new FXMenuCommand(tabmenu,"&Right Tabs",NULL,this,TabBookWindow::ID_TABS_RIGHT);
-  new FXMenuCommand(tabmenu,"&Uniform Width Tabs",NULL,this,TabBookWindow::ID_PACK_UNIFORM_WIDTH);
-  new FXMenuCommand(tabmenu,"&Nonuniform Width Tabs",NULL,this,TabBookWindow::ID_PACK_NON_UNIFORM_WIDTH);
-  new FXMenuTitle(menubar,"&Tab Placement",NULL,tabmenu);
+  new FXMenuCommand(tabmenu,"Hide/Show Tab 2",nullptr,this,TabBookWindow::ID_HIDESHOW);
+  new FXMenuCommand(tabmenu,"&Top Tabs",nullptr,this,TabBookWindow::ID_TABS_TOP);
+  new FXMenuCommand(tabmenu,"&Bottom Tabs",nullptr,this,TabBookWindow::ID_TABS_BOTTOM);
+  new FXMenuCommand(tabmenu,"&Left Tabs",nullptr,this,TabBookWindow::ID_TABS_LEFT);
+  new FXMenuCommand(tabmenu,"&Right Tabs",nullptr,this,TabBookWindow::ID_TABS_RIGHT);
+  new FXMenuCommand(tabmenu,"&Uniform Width Tabs",nullptr,this,TabBookWindow::ID_PACK_UNIFORM_WIDTH);
+  new FXMenuCommand(tabmenu,"&Nonuniform Width Tabs",nullptr,this,TabBookWindow::ID_PACK_NON_UNIFORM_WIDTH);
+  new FXMenuTitle(menubar,"&Tab Placement",nullptr,tabmenu);
 
   }
 

@@ -3,7 +3,7 @@
 *                               Test Splitter Window                            *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 1997,2021 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 1997,2022 by Jeroen van der Zijp.   All Rights Reserved.        *
 ********************************************************************************/
 #include "fx.h"
 #include <stdio.h>
@@ -137,7 +137,7 @@ FXIMPLEMENT(SplitterWindow,FXMainWindow,SplitterWindowMap,ARRAYNUMBER(SplitterWi
 
 
 // Make some windows
-SplitterWindow::SplitterWindow(FXApp* a):FXMainWindow(a,"Splitter Test",NULL,NULL,DECOR_ALL,0,0,800,600){
+SplitterWindow::SplitterWindow(FXApp* a):FXMainWindow(a,"Splitter Test",nullptr,nullptr,DECOR_ALL,0,0,800,600){
   int i;
 
   // Folder open icon
@@ -159,8 +159,8 @@ SplitterWindow::SplitterWindow(FXApp* a):FXMainWindow(a,"Splitter Test",NULL,NUL
 
   // File menu
   filemenu=new FXMenuPane(this);
-  new FXMenuCommand(filemenu,"Quit\tCtl-Q",NULL,getApp(),FXApp::ID_QUIT);
-  new FXMenuTitle(menubar,"&File",NULL,filemenu);
+  new FXMenuCommand(filemenu,"Quit\tCtl-Q",nullptr,getApp(),FXApp::ID_QUIT);
+  new FXMenuTitle(menubar,"&File",nullptr,filemenu);
 
   // Main window interior
   splitter=new FXSplitter(this,LAYOUT_SIDE_TOP|LAYOUT_FILL_X|LAYOUT_FILL_Y|SPLITTER_REVERSED|SPLITTER_TRACKING);
@@ -179,9 +179,9 @@ SplitterWindow::SplitterWindow(FXApp* a):FXMainWindow(a,"Splitter Test",NULL,NUL
   new FXMenuCheck(modemenu,"Toggle pane 2",group2,FXWindow::ID_TOGGLESHOWN);
   new FXMenuCheck(modemenu,"Toggle pane 3",group3,FXWindow::ID_TOGGLESHOWN);
 
-  new FXMenuTitle(menubar,"&Mode",NULL,modemenu);
+  new FXMenuTitle(menubar,"&Mode",nullptr,modemenu);
 
-  FXTreeList *tree=new FXTreeList(group1,NULL,0,FRAME_SUNKEN|FRAME_THICK|LAYOUT_FILL_X|LAYOUT_FILL_Y|LAYOUT_TOP|LAYOUT_RIGHT|TREELIST_SHOWS_BOXES|TREELIST_SHOWS_LINES|TREELIST_EXTENDEDSELECT);
+  FXTreeList *tree=new FXTreeList(group1,nullptr,0,FRAME_SUNKEN|FRAME_THICK|LAYOUT_FILL_X|LAYOUT_FILL_Y|LAYOUT_TOP|LAYOUT_RIGHT|TREELIST_SHOWS_BOXES|TREELIST_SHOWS_LINES|TREELIST_EXTENDEDSELECT);
   FXTreeItem *branch,*twig,*leaf,*topmost;
 
   topmost=tree->appendItem(0,"Top",folder_open,folder_closed);
@@ -226,34 +226,34 @@ SplitterWindow::SplitterWindow(FXApp* a):FXMainWindow(a,"Splitter Test",NULL,NUL
     tree->appendItem(topmost,"Eighth",doc,doc);
 
 
-  new FXLabel(group2,"Matrix",NULL,LAYOUT_CENTER_X);
+  new FXLabel(group2,"Matrix",nullptr,LAYOUT_CENTER_X);
   new FXHorizontalSeparator(group2,SEPARATOR_GROOVE|LAYOUT_FILL_X);
   FXMatrix* matrix=new FXMatrix(group2,2,MATRIX_BY_COLUMNS|LAYOUT_FILL_X);
 
-  new FXLabel(matrix,"Alpha:",NULL,JUSTIFY_RIGHT|LAYOUT_FILL_X|LAYOUT_CENTER_Y);
-  new FXTextField(matrix,2,NULL,0,FRAME_SUNKEN|FRAME_THICK|LAYOUT_FILL_X|LAYOUT_CENTER_Y|LAYOUT_FILL_COLUMN);
-  new FXLabel(matrix,"Beta:",NULL,JUSTIFY_RIGHT|LAYOUT_FILL_X|LAYOUT_CENTER_Y);
-  new FXTextField(matrix,2,NULL,0,FRAME_SUNKEN|FRAME_THICK|LAYOUT_FILL_X|LAYOUT_CENTER_Y|LAYOUT_FILL_COLUMN);
-  new FXLabel(matrix,"Gamma:",NULL,JUSTIFY_RIGHT|LAYOUT_FILL_X|LAYOUT_CENTER_Y);
-  new FXTextField(matrix,2,NULL,0,FRAME_SUNKEN|FRAME_THICK|LAYOUT_FILL_X|LAYOUT_CENTER_Y|LAYOUT_FILL_COLUMN);
+  new FXLabel(matrix,"Alpha:",nullptr,JUSTIFY_RIGHT|LAYOUT_FILL_X|LAYOUT_CENTER_Y);
+  new FXTextField(matrix,2,nullptr,0,FRAME_SUNKEN|FRAME_THICK|LAYOUT_FILL_X|LAYOUT_CENTER_Y|LAYOUT_FILL_COLUMN);
+  new FXLabel(matrix,"Beta:",nullptr,JUSTIFY_RIGHT|LAYOUT_FILL_X|LAYOUT_CENTER_Y);
+  new FXTextField(matrix,2,nullptr,0,FRAME_SUNKEN|FRAME_THICK|LAYOUT_FILL_X|LAYOUT_CENTER_Y|LAYOUT_FILL_COLUMN);
+  new FXLabel(matrix,"Gamma:",nullptr,JUSTIFY_RIGHT|LAYOUT_FILL_X|LAYOUT_CENTER_Y);
+  new FXTextField(matrix,2,nullptr,0,FRAME_SUNKEN|FRAME_THICK|LAYOUT_FILL_X|LAYOUT_CENTER_Y|LAYOUT_FILL_COLUMN);
 
   new FXCheckButton(group2,"Continuous Tracking\tSplitter continuously tracks split changes",this,ID_TRACKING);
 
-  new FXLabel(group3,"Quite a Stretch",NULL,LAYOUT_CENTER_X);
+  new FXLabel(group3,"Quite a Stretch",nullptr,LAYOUT_CENTER_X);
   new FXHorizontalSeparator(group3,SEPARATOR_GROOVE|LAYOUT_FILL_X);
   FXMatrix* mat=new FXMatrix(group3,3,LAYOUT_FILL_X|LAYOUT_FILL_Y);
 
-  new FXButton(mat,"One\nStretch the row\nStretch in Y\nStretch in X\tThe possibilities are endless..",NULL,NULL,0,FRAME_RAISED|FRAME_THICK|LAYOUT_FILL_X|LAYOUT_FILL_Y|LAYOUT_FILL_ROW);
-  new FXButton(mat,"Two\nStretch in X\tThe possibilities are endless..",NULL,NULL,0,FRAME_RAISED|FRAME_THICK|LAYOUT_FILL_X);
-  new FXButton(mat,"Three\nStretch the row\nStretch in Y\nStretch in X\tThe possibilities are endless..",NULL,NULL,0,FRAME_RAISED|FRAME_THICK|LAYOUT_FILL_X|LAYOUT_FILL_Y|LAYOUT_FILL_ROW);
+  new FXButton(mat,"One\nStretch the row\nStretch in Y\nStretch in X\tThe possibilities are endless..",nullptr,nullptr,0,FRAME_RAISED|FRAME_THICK|LAYOUT_FILL_X|LAYOUT_FILL_Y|LAYOUT_FILL_ROW);
+  new FXButton(mat,"Two\nStretch in X\tThe possibilities are endless..",nullptr,nullptr,0,FRAME_RAISED|FRAME_THICK|LAYOUT_FILL_X);
+  new FXButton(mat,"Three\nStretch the row\nStretch in Y\nStretch in X\tThe possibilities are endless..",nullptr,nullptr,0,FRAME_RAISED|FRAME_THICK|LAYOUT_FILL_X|LAYOUT_FILL_Y|LAYOUT_FILL_ROW);
 
-  new FXButton(mat,"Four\nStretch the column\nStretch the row\nStretch in Y\nStretch in X\tThe possibilities are endless..",NULL,NULL,0,FRAME_RAISED|FRAME_THICK|LAYOUT_FILL_X|LAYOUT_FILL_Y|LAYOUT_FILL_ROW|LAYOUT_FILL_COLUMN);
-  new FXButton(mat,"Five\nStretch the column\nStretch in Y\nStretch in X\tThe possibilities are endless..",NULL,NULL,0,FRAME_RAISED|FRAME_THICK|LAYOUT_FILL_X|LAYOUT_FILL_Y|LAYOUT_FILL_COLUMN);
-  new FXButton(mat,"Six\nStretch the column\nStretch the row\nStretch in Y\nStretch in X\tThe possibilities are endless..",NULL,NULL,0,FRAME_RAISED|FRAME_THICK|LAYOUT_FILL_X|LAYOUT_FILL_Y|LAYOUT_FILL_COLUMN|LAYOUT_FILL_ROW);
+  new FXButton(mat,"Four\nStretch the column\nStretch the row\nStretch in Y\nStretch in X\tThe possibilities are endless..",nullptr,nullptr,0,FRAME_RAISED|FRAME_THICK|LAYOUT_FILL_X|LAYOUT_FILL_Y|LAYOUT_FILL_ROW|LAYOUT_FILL_COLUMN);
+  new FXButton(mat,"Five\nStretch the column\nStretch in Y\nStretch in X\tThe possibilities are endless..",nullptr,nullptr,0,FRAME_RAISED|FRAME_THICK|LAYOUT_FILL_X|LAYOUT_FILL_Y|LAYOUT_FILL_COLUMN);
+  new FXButton(mat,"Six\nStretch the column\nStretch the row\nStretch in Y\nStretch in X\tThe possibilities are endless..",nullptr,nullptr,0,FRAME_RAISED|FRAME_THICK|LAYOUT_FILL_X|LAYOUT_FILL_Y|LAYOUT_FILL_COLUMN|LAYOUT_FILL_ROW);
 
-  new FXButton(mat,"Seven\nStretch the column\nStretch the row\nCenter in Y\nCenter in X\tThe possibilities are endless..",NULL,NULL,0,FRAME_RAISED|FRAME_THICK|LAYOUT_CENTER_Y|LAYOUT_CENTER_X|LAYOUT_FILL_ROW|LAYOUT_FILL_COLUMN);
-  new FXButton(mat,"Eight\nStretch the column\tThe possibilities are endless..",NULL,NULL,0,FRAME_RAISED|FRAME_THICK|LAYOUT_FILL_COLUMN);
-  new FXButton(mat,"Nine\nStretch the column\nStretch the row\nStretch in Y\tThe possibilities are endless..",NULL,NULL,0,FRAME_RAISED|FRAME_THICK|LAYOUT_RIGHT|LAYOUT_FILL_Y|LAYOUT_FILL_ROW|LAYOUT_FILL_COLUMN);
+  new FXButton(mat,"Seven\nStretch the column\nStretch the row\nCenter in Y\nCenter in X\tThe possibilities are endless..",nullptr,nullptr,0,FRAME_RAISED|FRAME_THICK|LAYOUT_CENTER_Y|LAYOUT_CENTER_X|LAYOUT_FILL_ROW|LAYOUT_FILL_COLUMN);
+  new FXButton(mat,"Eight\nStretch the column\tThe possibilities are endless..",nullptr,nullptr,0,FRAME_RAISED|FRAME_THICK|LAYOUT_FILL_COLUMN);
+  new FXButton(mat,"Nine\nStretch the column\nStretch the row\nStretch in Y\tThe possibilities are endless..",nullptr,nullptr,0,FRAME_RAISED|FRAME_THICK|LAYOUT_RIGHT|LAYOUT_FILL_Y|LAYOUT_FILL_ROW|LAYOUT_FILL_COLUMN);
 
   // Make a tool tip
   new FXToolTip(getApp(),0);
@@ -277,7 +277,7 @@ long SplitterWindow::onCmdReverse(FXObject*,FXSelector,void*){
   }
 
 long SplitterWindow::onUpdReverse(FXObject* sender,FXSelector,void*){
-  sender->handle(this,(splitter->getSplitterStyle()&SPLITTER_REVERSED)?FXSEL(SEL_COMMAND,ID_CHECK):FXSEL(SEL_COMMAND,ID_UNCHECK),NULL);
+  sender->handle(this,(splitter->getSplitterStyle()&SPLITTER_REVERSED)?FXSEL(SEL_COMMAND,ID_CHECK):FXSEL(SEL_COMMAND,ID_UNCHECK),nullptr);
   return 1;
   }
 
@@ -287,7 +287,7 @@ long SplitterWindow::onCmdNormal(FXObject*,FXSelector,void*){
   }
 
 long SplitterWindow::onUpdNormal(FXObject* sender,FXSelector,void*){
-  sender->handle(this,(splitter->getSplitterStyle()&SPLITTER_REVERSED)?FXSEL(SEL_COMMAND,ID_UNCHECK):FXSEL(SEL_COMMAND,ID_CHECK),NULL);
+  sender->handle(this,(splitter->getSplitterStyle()&SPLITTER_REVERSED)?FXSEL(SEL_COMMAND,ID_UNCHECK):FXSEL(SEL_COMMAND,ID_CHECK),nullptr);
   return 1;
   }
 
@@ -297,7 +297,7 @@ long SplitterWindow::onCmdHorizontal(FXObject*,FXSelector,void*){
   }
 
 long SplitterWindow::onUpdHorizontal(FXObject* sender,FXSelector,void*){
-  sender->handle(this,(splitter->getSplitterStyle()&SPLITTER_VERTICAL)?FXSEL(SEL_COMMAND,ID_UNCHECK):FXSEL(SEL_COMMAND,ID_CHECK),NULL);
+  sender->handle(this,(splitter->getSplitterStyle()&SPLITTER_VERTICAL)?FXSEL(SEL_COMMAND,ID_UNCHECK):FXSEL(SEL_COMMAND,ID_CHECK),nullptr);
   return 1;
   }
 long SplitterWindow::onCmdVectical(FXObject*,FXSelector,void*){
@@ -306,7 +306,7 @@ long SplitterWindow::onCmdVectical(FXObject*,FXSelector,void*){
   }
 
 long SplitterWindow::onUpdVectical(FXObject* sender,FXSelector,void*){
-  sender->handle(this,(splitter->getSplitterStyle()&SPLITTER_VERTICAL)?FXSEL(SEL_COMMAND,ID_CHECK):FXSEL(SEL_COMMAND,ID_UNCHECK),NULL);
+  sender->handle(this,(splitter->getSplitterStyle()&SPLITTER_VERTICAL)?FXSEL(SEL_COMMAND,ID_CHECK):FXSEL(SEL_COMMAND,ID_UNCHECK),nullptr);
   return 1;
   }
 
@@ -317,10 +317,10 @@ long SplitterWindow::onCmdTracking(FXObject*,FXSelector,void*){
 
 long SplitterWindow::onUpdTracking(FXObject* sender,FXSelector,void*){
   if(splitter->getSplitterStyle()&SPLITTER_TRACKING){
-    sender->handle(this,FXSEL(SEL_COMMAND,ID_CHECK),NULL);
+    sender->handle(this,FXSEL(SEL_COMMAND,ID_CHECK),nullptr);
     }
   else{
-    sender->handle(this,FXSEL(SEL_COMMAND,ID_UNCHECK),NULL);
+    sender->handle(this,FXSEL(SEL_COMMAND,ID_UNCHECK),nullptr);
     }
   return 1;
   }

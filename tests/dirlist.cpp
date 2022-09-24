@@ -3,7 +3,7 @@
 *                  D i r e c t o r y   L i s t   C o n t r o l                  *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 1998,2021 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 1998,2022 by Jeroen van der Zijp.   All Rights Reserved.        *
 ********************************************************************************/
 #include "fx.h"
 #include <stdio.h>
@@ -58,22 +58,22 @@ FXIMPLEMENT(DirListWindow,FXMainWindow,DirListWindowMap,ARRAYNUMBER(DirListWindo
 
 
 // Make some windows
-DirListWindow::DirListWindow(FXApp* a):FXMainWindow(a,"Directory List",NULL,NULL,DECOR_ALL,0,0,800,600){
+DirListWindow::DirListWindow(FXApp* a):FXMainWindow(a,"Directory List",nullptr,nullptr,DECOR_ALL,0,0,800,600){
 
   // Make menu bar
   menubar=new FXMenuBar(this,LAYOUT_FILL_X);
   filemenu=new FXMenuPane(this);
-    new FXMenuCommand(filemenu,"&Quit\tCtl-Q",NULL,getApp(),FXApp::ID_QUIT);
-    new FXMenuTitle(menubar,"&File",NULL,filemenu);
+    new FXMenuCommand(filemenu,"&Quit\tCtl-Q",nullptr,getApp(),FXApp::ID_QUIT);
+    new FXMenuTitle(menubar,"&File",nullptr,filemenu);
   helpmenu=new FXMenuPane(this);
-    new FXMenuCommand(helpmenu,"&About FOX...",NULL,this,ID_ABOUT,0);
-    new FXMenuTitle(menubar,"&Help",NULL,helpmenu,LAYOUT_RIGHT);
+    new FXMenuCommand(helpmenu,"&About FOX...",nullptr,this,ID_ABOUT,0);
+    new FXMenuTitle(menubar,"&Help",nullptr,helpmenu,LAYOUT_RIGHT);
 
   // Text field at bottom
-  text=new FXTextField(this,10,NULL,0,LAYOUT_SIDE_BOTTOM|LAYOUT_FILL_X|FRAME_SUNKEN|FRAME_THICK);
+  text=new FXTextField(this,10,nullptr,0,LAYOUT_SIDE_BOTTOM|LAYOUT_FILL_X|FRAME_SUNKEN|FRAME_THICK);
 
   // Make contents
-  contents=new FXDirList(this,NULL,0,HSCROLLING_OFF|TREELIST_SHOWS_LINES|TREELIST_SHOWS_BOXES|TREELIST_BROWSESELECT|FRAME_SUNKEN|FRAME_THICK|LAYOUT_FILL_X|LAYOUT_FILL_Y,0,0,0,0);
+  contents=new FXDirList(this,nullptr,0,HSCROLLING_OFF|TREELIST_SHOWS_LINES|TREELIST_SHOWS_BOXES|TREELIST_BROWSESELECT|FRAME_SUNKEN|FRAME_THICK|LAYOUT_FILL_X|LAYOUT_FILL_Y,0,0,0,0);
 
   text->setTarget(contents);
   text->setSelector(FXWindow::ID_SETVALUE);

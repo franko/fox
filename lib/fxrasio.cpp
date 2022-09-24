@@ -3,7 +3,7 @@
 *             S U N   R A S T E R   I M A G E   I n p u t / O u t p u t         *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 2004,2021 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 2004,2022 by Jeroen van der Zijp.   All Rights Reserved.        *
 *********************************************************************************
 * This library is free software; you can redistribute it and/or modify          *
 * it under the terms of the GNU Lesser General Public License as published by   *
@@ -206,8 +206,8 @@ FXbool fxloadRAS(FXStream& store,FXColor*& data,FXint& width,FXint& height){
   FXbool  ok=false;
 
   // Null out
-  data=NULL;
-  line=NULL;
+  data=nullptr;
+  line=nullptr;
   width=0;
   height=0;
 

@@ -3,7 +3,7 @@
 *                         OpenGL Application coding sample                      *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 1998,2021 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 1998,2022 by Jeroen van der Zijp.   All Rights Reserved.        *
 ********************************************************************************/
 #include "fx.h"
 #include "fx3d.h"
@@ -451,7 +451,7 @@ FXIMPLEMENT(GLViewWindow,FXMainWindow,GLViewWindowMap,ARRAYNUMBER(GLViewWindowMa
 /*******************************************************************************/
 
 // Construct a GLViewWindow
-GLViewWindow::GLViewWindow(FXApp* a):FXMainWindow(a,"OpenGL Test Application",NULL,NULL,DECOR_ALL,0,0,800,600){
+GLViewWindow::GLViewWindow(FXApp* a):FXMainWindow(a,"OpenGL Test Application",nullptr,nullptr,DECOR_ALL,0,0,800,600){
   penguinicon=new FXGIFIcon(getApp(),penguin);
 
   setIcon(penguinicon);
@@ -483,7 +483,7 @@ GLViewWindow::GLViewWindow(FXApp* a):FXMainWindow(a,"OpenGL Test Application",NU
   new FXToolBarGrip(toolbar2,toolbar2,FXToolBar::ID_TOOLBARGRIP,TOOLBARGRIP_DOUBLE);
 
   // The good old penguin, what would we be without it?
-  new FXButton(statusbar,"\tHello, I'm Tux...\nThe symbol for the Linux Operating System.\nAnd all it stands for.",penguinicon,NULL,0,LAYOUT_RIGHT);
+  new FXButton(statusbar,"\tHello, I'm Tux...\nThe symbol for the Linux Operating System.\nAnd all it stands for.",penguinicon,nullptr,0,LAYOUT_RIGHT);
 
   // Contents
   FXHorizontalFrame *frame=new FXHorizontalFrame(this,LAYOUT_SIDE_TOP|LAYOUT_FILL_X|LAYOUT_FILL_Y, 0,0,0,0, 0,0,0,0, 4,4);
@@ -540,7 +540,7 @@ GLViewWindow::GLViewWindow(FXApp* a):FXMainWindow(a,"OpenGL Test Application",NU
   new FXMDIDeleteButton(dockframe,dockbar,FXWindow::ID_HIDE,LAYOUT_FILL_Y);
 
   // Tab book with switchable panels
-  FXTabBook* panels=new FXTabBook(dockbar,NULL,0,LAYOUT_FILL_Y|LAYOUT_FILL_X,0,0,0,0, 0,0,0,0);
+  FXTabBook* panels=new FXTabBook(dockbar,nullptr,0,LAYOUT_FILL_Y|LAYOUT_FILL_X,0,0,0,0, 0,0,0,0);
 
   new FXTabItem(panels,"Angles\tCamera Angles\tSwitch to camera angles panel.");
 
@@ -595,24 +595,24 @@ GLViewWindow::GLViewWindow(FXApp* a):FXMainWindow(a,"OpenGL Test Application",NU
   // Colors
   new FXTabItem(panels,"Colors\tColors\tSwitch to color panel.");
   FXMatrix *colors=new FXMatrix(panels,2,MATRIX_BY_COLUMNS|FRAME_THICK|FRAME_RAISED|LAYOUT_FILL_Y|LAYOUT_CENTER_X|LAYOUT_TOP|LAYOUT_LEFT,0,0,0,0,10,10,10,10);
-  new FXLabel(colors,"Background:",NULL,LAYOUT_RIGHT|LAYOUT_CENTER_Y|JUSTIFY_RIGHT);
+  new FXLabel(colors,"Background:",nullptr,LAYOUT_RIGHT|LAYOUT_CENTER_Y|JUSTIFY_RIGHT);
   new FXColorWell(colors,0,mdiclient,FXGLViewer::ID_BACK_COLOR,COLORWELL_OPAQUEONLY|LAYOUT_TOP|LAYOUT_LEFT|FRAME_SUNKEN|FRAME_THICK, 0,0,0,0 ,0,0,0,0);
 
-  new FXLabel(colors,"Top Back:",NULL,LAYOUT_RIGHT|LAYOUT_CENTER_Y|JUSTIFY_RIGHT);
+  new FXLabel(colors,"Top Back:",nullptr,LAYOUT_RIGHT|LAYOUT_CENTER_Y|JUSTIFY_RIGHT);
   new FXColorWell(colors,0,mdiclient,FXGLViewer::ID_TOP_COLOR,COLORWELL_OPAQUEONLY|LAYOUT_TOP|LAYOUT_LEFT|FRAME_SUNKEN|FRAME_THICK, 0,0,0,0 ,0,0,0,0);
-  new FXLabel(colors,"Bottom Back:",NULL,LAYOUT_RIGHT|LAYOUT_CENTER_Y|JUSTIFY_RIGHT);
+  new FXLabel(colors,"Bottom Back:",nullptr,LAYOUT_RIGHT|LAYOUT_CENTER_Y|JUSTIFY_RIGHT);
   new FXColorWell(colors,0,mdiclient,FXGLViewer::ID_BOTTOM_COLOR,COLORWELL_OPAQUEONLY|LAYOUT_TOP|LAYOUT_LEFT|FRAME_SUNKEN|FRAME_THICK, 0,0,0,0 ,0,0,0,0);
 
 
-  new FXLabel(colors,"Ambient:",NULL,LAYOUT_RIGHT|LAYOUT_CENTER_Y|JUSTIFY_RIGHT);
+  new FXLabel(colors,"Ambient:",nullptr,LAYOUT_RIGHT|LAYOUT_CENTER_Y|JUSTIFY_RIGHT);
   new FXColorWell(colors,0,mdiclient,FXGLViewer::ID_AMBIENT_COLOR,COLORWELL_OPAQUEONLY|LAYOUT_TOP|LAYOUT_LEFT|FRAME_SUNKEN|FRAME_THICK, 0,0,0,0 ,0,0,0,0);
 
 
-  new FXLabel(colors,"Light Amb:",NULL,LAYOUT_RIGHT|LAYOUT_CENTER_Y|JUSTIFY_RIGHT);
+  new FXLabel(colors,"Light Amb:",nullptr,LAYOUT_RIGHT|LAYOUT_CENTER_Y|JUSTIFY_RIGHT);
   new FXColorWell(colors,0,mdiclient,FXGLViewer::ID_LIGHT_AMBIENT,COLORWELL_OPAQUEONLY|LAYOUT_TOP|LAYOUT_LEFT|FRAME_SUNKEN|FRAME_THICK, 0,0,0,0 ,0,0,0,0);
-  new FXLabel(colors,"Light Diff:",NULL,LAYOUT_RIGHT|LAYOUT_CENTER_Y|JUSTIFY_RIGHT);
+  new FXLabel(colors,"Light Diff:",nullptr,LAYOUT_RIGHT|LAYOUT_CENTER_Y|JUSTIFY_RIGHT);
   new FXColorWell(colors,0,mdiclient,FXGLViewer::ID_LIGHT_DIFFUSE,COLORWELL_OPAQUEONLY|LAYOUT_TOP|LAYOUT_LEFT|FRAME_SUNKEN|FRAME_THICK, 0,0,0,0 ,0,0,0,0);
-  new FXLabel(colors,"Light Spec:",NULL,LAYOUT_RIGHT|LAYOUT_CENTER_Y|JUSTIFY_RIGHT);
+  new FXLabel(colors,"Light Spec:",nullptr,LAYOUT_RIGHT|LAYOUT_CENTER_Y|JUSTIFY_RIGHT);
   new FXColorWell(colors,0,mdiclient,FXGLViewer::ID_LIGHT_SPECULAR,COLORWELL_OPAQUEONLY|LAYOUT_TOP|LAYOUT_LEFT|FRAME_SUNKEN|FRAME_THICK, 0,0,0,0 ,0,0,0,0);
 
   // Switches
@@ -632,32 +632,32 @@ GLViewWindow::GLViewWindow(FXApp* a):FXMainWindow(a,"OpenGL Test Application",NU
 
   // File Menu
   filemenu=new FXMenuPane(this);
-  new FXMenuTitle(menubar,"&File",NULL,filemenu,LAYOUT_CENTER_Y);
+  new FXMenuTitle(menubar,"&File",nullptr,filemenu,LAYOUT_CENTER_Y);
   new FXMenuCommand(filemenu,"&New...\tCtl-N\tCreate new document.",filenewicon);
   new FXMenuCommand(filemenu,"&Open...\tCtl-O\tOpen document file.",fileopenicon,this,ID_OPEN);
   new FXMenuCommand(filemenu,"&Save\tCtl-S\tSave document.",filesaveicon);
   new FXMenuCommand(filemenu,"Save &As...\t\tSave document to another file.",filesaveasicon);
-  new FXMenuCommand(filemenu,"&Print Image...\t\tPrint snapshot image.",NULL,mdiclient,FXGLViewer::ID_PRINT_IMAGE,MENU_AUTOGRAY);
-  new FXMenuCommand(filemenu,"&Print Vector...\t\tPrint geometry.",NULL,mdiclient,FXGLViewer::ID_PRINT_VECTOR,MENU_AUTOGRAY);
-  new FXMenuCommand(filemenu,"&Dump...\t\tDump widgets.",NULL,getApp(),FXApp::ID_DUMP);
-  new FXMenuCommand(filemenu,"&Quit\tCtl-Q\tQuit the application.",NULL,getApp(),FXApp::ID_QUIT);
+  new FXMenuCommand(filemenu,"&Print Image...\t\tPrint snapshot image.",nullptr,mdiclient,FXGLViewer::ID_PRINT_IMAGE,MENU_AUTOGRAY);
+  new FXMenuCommand(filemenu,"&Print Vector...\t\tPrint geometry.",nullptr,mdiclient,FXGLViewer::ID_PRINT_VECTOR,MENU_AUTOGRAY);
+  new FXMenuCommand(filemenu,"&Dump...\t\tDump widgets.",nullptr,getApp(),FXApp::ID_DUMP);
+  new FXMenuCommand(filemenu,"&Quit\tCtl-Q\tQuit the application.",nullptr,getApp(),FXApp::ID_QUIT);
 
   // Edit Menu
   editmenu=new FXMenuPane(this);
-  new FXMenuTitle(menubar,"&Edit",NULL,editmenu,LAYOUT_CENTER_Y);
-  new FXMenuCommand(editmenu,"Lasso",NULL,mdiclient,FXGLViewer::ID_LASSO_SELECT,MENU_AUTOGRAY);
-  new FXMenuCommand(editmenu,"Copy\tCtl-C",NULL,mdiclient,FXGLViewer::ID_COPY_SEL,MENU_AUTOGRAY);
-  new FXMenuCommand(editmenu,"Cut\tCtl-X",NULL,mdiclient,FXGLViewer::ID_CUT_SEL,MENU_AUTOGRAY);
-  new FXMenuCommand(editmenu,"Paste\tCtl-V",NULL,mdiclient,FXGLViewer::ID_PASTE_SEL,MENU_AUTOGRAY);
-  new FXMenuCommand(editmenu,"Delete",NULL,mdiclient,FXGLViewer::ID_DELETE_SEL,MENU_AUTOGRAY);
+  new FXMenuTitle(menubar,"&Edit",nullptr,editmenu,LAYOUT_CENTER_Y);
+  new FXMenuCommand(editmenu,"Lasso",nullptr,mdiclient,FXGLViewer::ID_LASSO_SELECT,MENU_AUTOGRAY);
+  new FXMenuCommand(editmenu,"Copy\tCtl-C",nullptr,mdiclient,FXGLViewer::ID_COPY_SEL,MENU_AUTOGRAY);
+  new FXMenuCommand(editmenu,"Cut\tCtl-X",nullptr,mdiclient,FXGLViewer::ID_CUT_SEL,MENU_AUTOGRAY);
+  new FXMenuCommand(editmenu,"Paste\tCtl-V",nullptr,mdiclient,FXGLViewer::ID_PASTE_SEL,MENU_AUTOGRAY);
+  new FXMenuCommand(editmenu,"Delete",nullptr,mdiclient,FXGLViewer::ID_DELETE_SEL,MENU_AUTOGRAY);
 
 
   // File manipulation
-  new FXButton(toolbar1,"\tNew\tCreate new document.",filenewicon,NULL,0,BUTTON_TOOLBAR|FRAME_RAISED|LAYOUT_TOP|LAYOUT_LEFT);
+  new FXButton(toolbar1,"\tNew\tCreate new document.",filenewicon,nullptr,0,BUTTON_TOOLBAR|FRAME_RAISED|LAYOUT_TOP|LAYOUT_LEFT);
   new FXButton(toolbar1,"\tOpen\tOpen document file.",fileopenicon,this,ID_OPEN,BUTTON_TOOLBAR|FRAME_RAISED|LAYOUT_TOP|LAYOUT_LEFT);
-  new FXButton(toolbar1,"\tSave\tSave document.",filesaveicon,NULL,0,BUTTON_TOOLBAR|FRAME_RAISED|LAYOUT_TOP|LAYOUT_LEFT);
+  new FXButton(toolbar1,"\tSave\tSave document.",filesaveicon,nullptr,0,BUTTON_TOOLBAR|FRAME_RAISED|LAYOUT_TOP|LAYOUT_LEFT);
   new FXButton(toolbar1,"\tSave As\tSave document to another file.",filesaveasicon,this,ID_OPEN,BUTTON_TOOLBAR|FRAME_RAISED|LAYOUT_TOP|LAYOUT_LEFT);
-  new FXButton(toolbar1,"\tNew Folder\tNo comment",newfoldericon,NULL,0,BUTTON_TOOLBAR|FRAME_RAISED|LAYOUT_TOP|LAYOUT_LEFT);
+  new FXButton(toolbar1,"\tNew Folder\tNo comment",newfoldericon,nullptr,0,BUTTON_TOOLBAR|FRAME_RAISED|LAYOUT_TOP|LAYOUT_LEFT);
 
   printicon=new FXGIFIcon(getApp(),print);
 
@@ -693,7 +693,7 @@ GLViewWindow::GLViewWindow(FXApp* a):FXMainWindow(a,"OpenGL Test Application",NU
   new FXButton(toolbar2,"\tSmooth shading\tTurn on smooth shading.",smoothlighticon,mdiclient,FXGLShape::ID_SHADESMOOTH,BUTTON_AUTOGRAY|BUTTON_TOOLBAR|FRAME_RAISED|LAYOUT_TOP|LAYOUT_LEFT);
 
   new FXSeparator(toolbar2,SEPARATOR_GROOVE);
-  new FXToggleButton(toolbar2,"\tToggle Light\tToggle light source.",FXString::null,nolighticon,lighticon,NULL,0,BUTTON_TOOLBAR|FRAME_RAISED|LAYOUT_TOP|LAYOUT_LEFT);
+  new FXToggleButton(toolbar2,"\tToggle Light\tToggle light source.",FXString::null,nolighticon,lighticon,nullptr,0,BUTTON_TOOLBAR|FRAME_RAISED|LAYOUT_TOP|LAYOUT_LEFT);
 
   frontviewicon=new FXGIFIcon(getApp(),frontview);
   backviewicon=new FXGIFIcon(getApp(),backview);
@@ -719,10 +719,10 @@ GLViewWindow::GLViewWindow(FXApp* a):FXMainWindow(a,"OpenGL Test Application",NU
 
   // Miscellaneous buttons
   new FXSeparator(toolbar2,SEPARATOR_GROOVE);
-  new FXButton(toolbar2,FXString::null,zoomicon,NULL,0,BUTTON_TOOLBAR|FRAME_RAISED|LAYOUT_TOP|LAYOUT_LEFT);
+  new FXButton(toolbar2,FXString::null,zoomicon,nullptr,0,BUTTON_TOOLBAR|FRAME_RAISED|LAYOUT_TOP|LAYOUT_LEFT);
   new FXButton(toolbar2,"\tColors\tDisplay color dialog.",colorpalicon,colordlg,FXWindow::ID_SHOW,BUTTON_TOOLBAR|FRAME_RAISED|LAYOUT_TOP|LAYOUT_LEFT);
-  new FXButton(toolbar2,FXString::null,cameraicon,NULL,0,BUTTON_TOOLBAR|FRAME_RAISED|LAYOUT_TOP|LAYOUT_LEFT);
-  new FXButton(toolbar2,FXString::null,foxiconicon,NULL,0,BUTTON_TOOLBAR|FRAME_RAISED|LAYOUT_TOP|LAYOUT_LEFT);
+  new FXButton(toolbar2,FXString::null,cameraicon,nullptr,0,BUTTON_TOOLBAR|FRAME_RAISED|LAYOUT_TOP|LAYOUT_LEFT);
+  new FXButton(toolbar2,FXString::null,foxiconicon,nullptr,0,BUTTON_TOOLBAR|FRAME_RAISED|LAYOUT_TOP|LAYOUT_LEFT);
 
   killobjecticon=new FXGIFIcon(getApp(),killobject);
 
@@ -732,7 +732,7 @@ GLViewWindow::GLViewWindow(FXApp* a):FXMainWindow(a,"OpenGL Test Application",NU
 
   // View menu
   viewmenu=new FXMenuPane(this);
-  new FXMenuTitle(menubar,"&View",NULL,viewmenu,LAYOUT_CENTER_Y);
+  new FXMenuTitle(menubar,"&View",nullptr,viewmenu,LAYOUT_CENTER_Y);
   new FXMenuRadio(viewmenu,"Parallel\t\tSwitch to parallel projection.",mdiclient,FXGLViewer::ID_PARALLEL,MENU_AUTOGRAY);
   new FXMenuRadio(viewmenu,"Perspective\t\tSwitch to perspective projection.",mdiclient,FXGLViewer::ID_PERSPECTIVE,MENU_AUTOGRAY);
   new FXMenuSeparator(viewmenu);
@@ -743,14 +743,14 @@ GLViewWindow::GLViewWindow(FXApp* a):FXMainWindow(a,"OpenGL Test Application",NU
   new FXMenuRadio(viewmenu,"&Top\tCtl-T\tTop view.",mdiclient,FXGLViewer::ID_TOP,MENU_AUTOGRAY);
   new FXMenuRadio(viewmenu,"&Bottom\tCtl-K\tBottom view.",mdiclient,FXGLViewer::ID_BOTTOM,MENU_AUTOGRAY);
   new FXMenuSeparator(viewmenu);
-  new FXMenuCommand(viewmenu,"F&it\t\tFit to view.",NULL,mdiclient,FXGLViewer::ID_FITVIEW,MENU_AUTOGRAY);
-  new FXMenuCommand(viewmenu,"R&eset\tCtl-G\tReset all viewing parameters",NULL,mdiclient,FXGLViewer::ID_RESETVIEW,MENU_AUTOGRAY);
-  new FXMenuCommand(viewmenu,"Zoom\t\tZoom in on area",NULL,mdiclient,FXGLViewer::ID_LASSO_ZOOM,MENU_AUTOGRAY);
-  new FXMenuCommand(viewmenu,"Select\t\tZoom in on area",NULL,mdiclient,FXGLViewer::ID_LASSO_SELECT,MENU_AUTOGRAY);
+  new FXMenuCommand(viewmenu,"F&it\t\tFit to view.",nullptr,mdiclient,FXGLViewer::ID_FITVIEW,MENU_AUTOGRAY);
+  new FXMenuCommand(viewmenu,"R&eset\tCtl-G\tReset all viewing parameters",nullptr,mdiclient,FXGLViewer::ID_RESETVIEW,MENU_AUTOGRAY);
+  new FXMenuCommand(viewmenu,"Zoom\t\tZoom in on area",nullptr,mdiclient,FXGLViewer::ID_LASSO_ZOOM,MENU_AUTOGRAY);
+  new FXMenuCommand(viewmenu,"Select\t\tZoom in on area",nullptr,mdiclient,FXGLViewer::ID_LASSO_SELECT,MENU_AUTOGRAY);
 
   // Rendering menu
   rendermenu=new FXMenuPane(this);
-  new FXMenuTitle(menubar,"&Rendering",NULL,rendermenu,LAYOUT_CENTER_Y);
+  new FXMenuTitle(menubar,"&Rendering",nullptr,rendermenu,LAYOUT_CENTER_Y);
   new FXMenuCheck(rendermenu,"Points\t\tRender as points.",mdiclient,FXGLShape::ID_STYLE_POINTS,MENU_AUTOGRAY);
   new FXMenuCheck(rendermenu,"Wire Frame\t\tRender as wire frame.",mdiclient,FXGLShape::ID_STYLE_WIREFRAME,MENU_AUTOGRAY);
   new FXMenuCheck(rendermenu,"Surface \t\tRender solid surface.",mdiclient,FXGLShape::ID_STYLE_SURFACE,MENU_AUTOGRAY);
@@ -758,12 +758,12 @@ GLViewWindow::GLViewWindow(FXApp* a):FXMainWindow(a,"OpenGL Test Application",NU
 
   // Window menu
   windowmenu=new FXMenuPane(this);
-  new FXMenuTitle(menubar,"&Windows",NULL,windowmenu,LAYOUT_CENTER_Y);
-  new FXMenuCommand(windowmenu,"New Viewer\t\tCreate new viewer window.",NULL,this,ID_NEWVIEWER);
-  new FXMenuCommand(windowmenu,"Tile Horizontally\t\tTile windows horizontally.",NULL,mdiclient,FXMDIClient::ID_MDI_TILEHORIZONTAL);
-  new FXMenuCommand(windowmenu,"Tile Vertically\t\tTile windows vertically.",NULL,mdiclient,FXMDIClient::ID_MDI_TILEVERTICAL);
-  new FXMenuCommand(windowmenu,"Cascade\t\tCascade windows.",NULL,mdiclient,FXMDIClient::ID_MDI_CASCADE);
-  new FXMenuCommand(windowmenu,"Delete\t\tDelete current viewer window.",NULL,mdiclient,FXMDIClient::ID_MDI_CLOSE);
+  new FXMenuTitle(menubar,"&Windows",nullptr,windowmenu,LAYOUT_CENTER_Y);
+  new FXMenuCommand(windowmenu,"New Viewer\t\tCreate new viewer window.",nullptr,this,ID_NEWVIEWER);
+  new FXMenuCommand(windowmenu,"Tile Horizontally\t\tTile windows horizontally.",nullptr,mdiclient,FXMDIClient::ID_MDI_TILEHORIZONTAL);
+  new FXMenuCommand(windowmenu,"Tile Vertically\t\tTile windows vertically.",nullptr,mdiclient,FXMDIClient::ID_MDI_TILEVERTICAL);
+  new FXMenuCommand(windowmenu,"Cascade\t\tCascade windows.",nullptr,mdiclient,FXMDIClient::ID_MDI_CASCADE);
+  new FXMenuCommand(windowmenu,"Delete\t\tDelete current viewer window.",nullptr,mdiclient,FXMDIClient::ID_MDI_CLOSE);
   new FXMenuSeparator(windowmenu);
   new FXMenuCheck(windowmenu,"Main Toolbar",toolbar1,FXWindow::ID_TOGGLESHOWN);
   new FXMenuCheck(windowmenu,"Graphic Toolbar",toolbar2,FXWindow::ID_TOGGLESHOWN);
@@ -776,8 +776,8 @@ GLViewWindow::GLViewWindow(FXApp* a):FXMainWindow(a,"OpenGL Test Application",NU
 
   // Help menu
   helpmenu=new FXMenuPane(this);
-  new FXMenuTitle(menubar,"&Help",NULL,helpmenu,LAYOUT_RIGHT|LAYOUT_CENTER_Y);
-  new FXMenuCommand(helpmenu,"&About FOX...\t\tDisplay FOX about panel.",NULL,this,ID_ABOUT,0);
+  new FXMenuTitle(menubar,"&Help",nullptr,helpmenu,LAYOUT_RIGHT|LAYOUT_CENTER_Y);
+  new FXMenuCommand(helpmenu,"&About FOX...\t\tDisplay FOX about panel.",nullptr,this,ID_ABOUT,0);
 
   // Make a tool tip
   new FXToolTip(getApp(),TOOLTIP_PERMANENT);
@@ -941,10 +941,10 @@ long GLViewWindow::onQueryMenu(FXObject* sender,FXSelector,void* ptr){
   new FXMenuRadio(&pane,"&Top\t\tTop view.",sender,FXGLViewer::ID_TOP);
   new FXMenuRadio(&pane,"&Bottom\t\tBottom view.",sender,FXGLViewer::ID_BOTTOM);
   new FXMenuSeparator(&pane);
-  new FXMenuCommand(&pane,"F&it\t\tFit to view.",NULL,sender,FXGLViewer::ID_FITVIEW);
-  new FXMenuCommand(&pane,"R&eset\t\tReset all viewing parameters",NULL,sender,FXGLViewer::ID_RESETVIEW);
+  new FXMenuCommand(&pane,"F&it\t\tFit to view.",nullptr,sender,FXGLViewer::ID_FITVIEW);
+  new FXMenuCommand(&pane,"R&eset\t\tReset all viewing parameters",nullptr,sender,FXGLViewer::ID_RESETVIEW);
   pane.create();
-  pane.popup(NULL,event->root_x,event->root_y);
+  pane.popup(nullptr,event->root_x,event->root_y);
   getApp()->runModalWhileShown(&pane);
   return 1;
   }

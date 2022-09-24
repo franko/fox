@@ -3,7 +3,7 @@
 *                   M u l t i - L i n e   T e x t   W i d g e t                 *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 1998,2021 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 1998,2022 by Jeroen van der Zijp.   All Rights Reserved.        *
 *********************************************************************************
 * This library is free software; you can redistribute it and/or modify          *
 * it under the terms of the GNU Lesser General Public License as published by   *
@@ -536,7 +536,7 @@ public:
 public:
 
   /// Construct multi-line text widget
-  FXText(FXComposite *p,FXObject* tgt=NULL,FXSelector sel=0,FXuint opts=0,FXint x=0,FXint y=0,FXint w=0,FXint h=0,FXint pl=3,FXint pr=3,FXint pt=2,FXint pb=2);
+  FXText(FXComposite *p,FXObject* tgt=nullptr,FXSelector sel=0,FXuint opts=0,FXint x=0,FXint y=0,FXint w=0,FXint h=0,FXint pl=3,FXint pr=3,FXint pt=2,FXint pb=2);
 
   /// Create server-side resources
   virtual void create();
@@ -971,7 +971,7 @@ public:
   * in this case, the number of entries in the beg[], end[] arrays must be npar also.
   * If either beg or end or both are NULL, internal arrays are used.
   */
-  FXbool findText(const FXString& string,FXint* beg=NULL,FXint* end=NULL,FXint start=0,FXuint flags=SEARCH_FORWARD|SEARCH_WRAP|SEARCH_EXACT,FXint npar=1);
+  FXbool findText(const FXString& string,FXint* beg=nullptr,FXint* end=nullptr,FXint start=0,FXuint flags=SEARCH_FORWARD|SEARCH_WRAP|SEARCH_EXACT,FXint npar=1);
 
   /// Change text widget style
   void setTextStyle(FXuint style);
@@ -1097,7 +1097,7 @@ public:
   FXbool setStyled(FXbool styled=true);
 
   /// Return true if style buffer
-  FXbool isStyled() const { return (sbuffer!=NULL); }
+  FXbool isStyled() const { return (sbuffer!=nullptr); }
 
   /**
   * Set highlight styles.

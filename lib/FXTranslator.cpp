@@ -3,7 +3,7 @@
 *                       M e s s a g e   T r a n s l a t o r                     *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 2005,2021 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 2005,2022 by Jeroen van der Zijp.   All Rights Reserved.        *
 *********************************************************************************
 * This library is free software; you can redistribute it and/or modify          *
 * it under the terms of the GNU Lesser General Public License as published by   *
@@ -62,7 +62,7 @@ namespace FX {
 
 
 // Object implementation
-FXIMPLEMENT(FXTranslator,FXObject,NULL,0)
+FXIMPLEMENT(FXTranslator,FXObject,nullptr,0)
 
 
 // Construct translator
@@ -85,7 +85,7 @@ FXTranslator::FXTranslator(){
   GetLocaleInfo(mylcid,LOCALE_SINTLSYMBOL,buffer,sizeof(buffer)/sizeof(TCHAR)));
 
 #else
-  char *locale=setlocale(LC_ALL, NULL);
+  char *locale=setlocale(LC_ALL, nullptr);
   char *lang=strstr(locale,"LANG=");
   if(!lang) lang=strstr(locale,"LC_MESSAGES=");
   if(!lang) lang=strstr(locale,"LC_CTYPE=");

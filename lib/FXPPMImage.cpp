@@ -3,7 +3,7 @@
 *                            P P M   I m a g e   O b j e c t                    *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 1998,2021 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 1998,2022 by Jeroen van der Zijp.   All Rights Reserved.        *
 *********************************************************************************
 * This library is free software; you can redistribute it and/or modify          *
 * it under the terms of the GNU Lesser General Public License as published by   *
@@ -62,11 +62,11 @@ const FXchar FXPPMImage::mimeType[]="image/x-portable-pixmap";
 
 
 // Object implementation
-FXIMPLEMENT(FXPPMImage,FXImage,NULL,0)
+FXIMPLEMENT(FXPPMImage,FXImage,nullptr,0)
 
 
 // Initialize
-FXPPMImage::FXPPMImage(FXApp* a,const void *pix,FXuint opts,FXint w,FXint h):FXImage(a,NULL,opts,w,h){
+FXPPMImage::FXPPMImage(FXApp* a,const void *pix,FXuint opts,FXint w,FXint h):FXImage(a,nullptr,opts,w,h){
   if(pix){
     FXMemoryStream ms(FXStreamLoad,(FXuchar*)pix);
     loadPixels(ms);

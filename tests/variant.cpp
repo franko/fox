@@ -20,7 +20,7 @@ void printusage(const char* prog){
 // Test JSON I/O
 int main(int argc,char *argv[]){
   const FXchar* savefile="test.json";
-  const FXchar* loadfile=NULL;
+  const FXchar* loadfile=nullptr;
   FXint precision;
   FXint format;
   FXint flow;
@@ -58,31 +58,31 @@ int main(int argc,char *argv[]){
       }
     else if(strcmp(argv[arg],"--tracelevel")==0){
       if(++arg>=argc){ fxmessage("Missing tracelevel number argument.\n"); exit(1); }
-      setTraceLevel(strtoul(argv[arg],NULL,0));
+      setTraceLevel(strtoul(argv[arg],nullptr,0));
       }
     else if(strcmp(argv[arg],"--precision")==0){
       if(++arg>=argc){ fxmessage("Missing precision number argument.\n"); exit(1); }
-      precision=strtoul(argv[arg],NULL,0);
+      precision=strtoul(argv[arg],nullptr,0);
       }
     else if(strcmp(argv[arg],"--format")==0){
       if(++arg>=argc){ fxmessage("Missing format number argument.\n"); exit(1); }
-      format=strtoul(argv[arg],NULL,0);
+      format=strtoul(argv[arg],nullptr,0);
       }
     else if(strcmp(argv[arg],"--flow")==0){
       if(++arg>=argc){ fxmessage("Missing flow number argument.\n"); exit(1); }
-      flow=strtoul(argv[arg],NULL,0);
+      flow=strtoul(argv[arg],nullptr,0);
       }
     else if(strcmp(argv[arg],"--dent")==0){
       if(++arg>=argc){ fxmessage("Missing indentation amount number argument.\n"); exit(1); }
-      dent=strtoul(argv[arg],NULL,0);
+      dent=strtoul(argv[arg],nullptr,0);
       }
     else if(strcmp(argv[arg],"--wrap")==0){
       if(++arg>=argc){ fxmessage("Missing line wrap columns argument.\n"); exit(1); }
-      wrap=strtoul(argv[arg],NULL,0);
+      wrap=strtoul(argv[arg],nullptr,0);
       }
     else if(strcmp(argv[arg],"--esc")==0){
       if(++arg>=argc){ fxmessage("Missing escape mode argument.\n"); exit(1); }
-      esc=strtoul(argv[arg],NULL,0);
+      esc=strtoul(argv[arg],nullptr,0);
       }
     else{
       fxmessage("Bad argument.\n");

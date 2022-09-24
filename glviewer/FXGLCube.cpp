@@ -3,7 +3,7 @@
 *                      O p e n G L   C u b e   O b j e c t                      *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 1999,2021 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 1999,2022 by Jeroen van der Zijp.   All Rights Reserved.        *
 *********************************************************************************
 * This library is free software; you can redistribute it and/or modify          *
 * it under the terms of the GNU Lesser General Public License as published by   *
@@ -27,7 +27,7 @@
 /*******************************************************************************/
 
 // Object implementation
-FXIMPLEMENT(FXGLCube,FXGLShape,NULL,0)
+FXIMPLEMENT(FXGLCube,FXGLShape,nullptr,0)
 
 
 // Create cube

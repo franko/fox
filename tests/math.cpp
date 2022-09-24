@@ -3,7 +3,7 @@
 *                              M a t h   T e s t                                *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 2007,2021 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 2007,2022 by Jeroen van der Zijp.   All Rights Reserved.        *
 ********************************************************************************/
 #include "fx.h"
 
@@ -401,7 +401,7 @@ void testDoubleDenorm(DPAccuracy& acc,DBLFUN1 tf,DBLFUN1 rf,FXulong cov){
 
 
 // Test tree: denormals
-void testFloatDenorm(SPAccuracy& acc,FLTFUN1 tf,FLTFUN1 rf,FXulong cov){
+void testFloatDenorm(SPAccuracy& acc,FLTFUN1 tf,FLTFUN1 rf,FXulong){
   FXfloat arg,res,act;
   SP z;
   for(z.u=0x00000001; z.u<0x00800000; z.u++){
@@ -505,7 +505,7 @@ int main(int argc,char *argv[]){
       exit(1);
       }
     if(argv[2][0]=='d'){
-      dbl_arg=strtod(argv[3],NULL);
+      dbl_arg=strtod(argv[3],nullptr);
       dbl_act=dblfuns[func].tf(dbl_arg);
       dbl_res=dblfuns[func].rf(dbl_arg);
       fprintf(stderr,"%s()\n",argv[1]);
@@ -517,7 +517,7 @@ int main(int argc,char *argv[]){
       printDP(dbl_res);
       }
     else{
-      flt_arg=strtof(argv[3],NULL);
+      flt_arg=strtof(argv[3],nullptr);
       flt_act=fltfuns[func].tf(flt_arg);
       flt_res=fltfuns[func].rf(flt_arg);
       fprintf(stderr,"%s()\n",argv[1]);

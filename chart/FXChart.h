@@ -3,7 +3,7 @@
 *                        C h a r t   B a s e   W i d g e t                      *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 2003,2021 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 2003,2022 by Jeroen van der Zijp.   All Rights Reserved.        *
 *********************************************************************************
 * This library is free software; you can redistribute it and/or modify          *
 * it under the terms of the GNU Lesser General Public License as published by   *
@@ -77,7 +77,7 @@ public:
 public:
 
   /// Construct chart widget
-  FXChart(FXComposite* p,FXObject* tgt=NULL,FXSelector sel=0,FXuint opts=CAPTION_ABOVE|CAPTION_SHOWN,FXint x=0,FXint y=0,FXint w=0,FXint h=0,FXint pl=4,FXint pr=4,FXint pt=4,FXint pb=4);
+  FXChart(FXComposite* p,FXObject* tgt=nullptr,FXSelector sel=0,FXuint opts=CAPTION_ABOVE|CAPTION_SHOWN,FXint x=0,FXint y=0,FXint w=0,FXint h=0,FXint pl=4,FXint pr=4,FXint pt=4,FXint pb=4);
 
   /// Create server-side resources
   virtual void create();

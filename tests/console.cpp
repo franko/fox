@@ -3,7 +3,7 @@
 *                                 Test Console Widget                           *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 2006,2021 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 2006,2022 by Jeroen van der Zijp.   All Rights Reserved.        *
 ********************************************************************************/
 #include "fx.h"
 #include <stdio.h>
@@ -59,7 +59,7 @@ FXIMPLEMENT(ConsoleWindow,FXMainWindow,ConsoleWindowMap,ARRAYNUMBER(ConsoleWindo
 /*******************************************************************************/
 
 // Make some windows
-ConsoleWindow::ConsoleWindow(FXApp* a):FXMainWindow(a,"Console",NULL,NULL,DECOR_ALL,0,0,800,800){
+ConsoleWindow::ConsoleWindow(FXApp* a):FXMainWindow(a,"Console",nullptr,nullptr,DECOR_ALL,0,0,800,800){
 
   // Menubar
   menubar=new FXMenuBar(this,LAYOUT_SIDE_TOP|LAYOUT_FILL_X);
@@ -75,12 +75,12 @@ ConsoleWindow::ConsoleWindow(FXApp* a):FXMainWindow(a,"Console",NULL,NULL,DECOR_
 
   // File Menu
   filemenu=new FXMenuPane(this);
-  new FXMenuCommand(filemenu,"&Quit\tCtl-Q",NULL,getApp(),FXApp::ID_QUIT);
-  new FXMenuTitle(menubar,"&File",NULL,filemenu);
+  new FXMenuCommand(filemenu,"&Quit\tCtl-Q",nullptr,getApp(),FXApp::ID_QUIT);
+  new FXMenuTitle(menubar,"&File",nullptr,filemenu);
 
   helpmenu=new FXMenuPane(this);
-  new FXMenuCommand(helpmenu,"About...",NULL,this,ID_ABOUT);
-  new FXMenuTitle(menubar,"&Help",NULL,helpmenu,LAYOUT_RIGHT);
+  new FXMenuCommand(helpmenu,"About...",nullptr,this,ID_ABOUT);
+  new FXMenuTitle(menubar,"&Help",nullptr,helpmenu,LAYOUT_RIGHT);
 
   // Tooltip
   tooltip=new FXToolTip(getApp());

@@ -3,7 +3,7 @@
 *                        C h a r t    D e f i n i t i o n s                     *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 2003,2021 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 2003,2022 by Jeroen van der Zijp.   All Rights Reserved.        *
 *********************************************************************************
 * This library is free software; you can redistribute it and/or modify          *
 * it under the terms of the GNU Lesser General Public License as published by   *

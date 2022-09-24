@@ -3,7 +3,7 @@
 *                      O p e n G L   S h a p e   O b j e c t                    *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 1999,2021 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 1999,2022 by Jeroen van der Zijp.   All Rights Reserved.        *
 *********************************************************************************
 * This library is free software; you can redistribute it and/or modify          *
 * it under the terms of the GNU Lesser General Public License as published by   *
@@ -180,22 +180,22 @@ long FXGLShape::onCmdShadeSmooth(FXObject*,FXSelector,void*){
 
 // Update shading off button
 long FXGLShape::onUpdShadeOff(FXObject* sender,FXSelector,void*){
-  sender->handle(this,FXSEL(SEL_COMMAND,FXWindow::ID_ENABLE),NULL);
-  sender->handle(this,(options&(SHADING_FLAT|SHADING_SMOOTH))?FXSEL(SEL_COMMAND,FXWindow::ID_UNCHECK):FXSEL(SEL_COMMAND,FXWindow::ID_CHECK),NULL);
+  sender->handle(this,FXSEL(SEL_COMMAND,FXWindow::ID_ENABLE),nullptr);
+  sender->handle(this,(options&(SHADING_FLAT|SHADING_SMOOTH))?FXSEL(SEL_COMMAND,FXWindow::ID_UNCHECK):FXSEL(SEL_COMMAND,FXWindow::ID_CHECK),nullptr);
   return 1;
   }
 
 // Update shading on button
 long FXGLShape::onUpdShadeOn(FXObject* sender,FXSelector,void*){
-  sender->handle(this,FXSEL(SEL_COMMAND,FXWindow::ID_ENABLE),NULL);
-  sender->handle(this,(options&SHADING_FLAT)?FXSEL(SEL_COMMAND,FXWindow::ID_CHECK):FXSEL(SEL_COMMAND,FXWindow::ID_UNCHECK),NULL);
+  sender->handle(this,FXSEL(SEL_COMMAND,FXWindow::ID_ENABLE),nullptr);
+  sender->handle(this,(options&SHADING_FLAT)?FXSEL(SEL_COMMAND,FXWindow::ID_CHECK):FXSEL(SEL_COMMAND,FXWindow::ID_UNCHECK),nullptr);
   return 1;
   }
 
 // Update shading smooth button
 long FXGLShape::onUpdShadeSmooth(FXObject* sender,FXSelector,void*){
-  sender->handle(this,FXSEL(SEL_COMMAND,FXWindow::ID_ENABLE),NULL);
-  sender->handle(this,(options&SHADING_SMOOTH)?FXSEL(SEL_COMMAND,FXWindow::ID_CHECK):FXSEL(SEL_COMMAND,FXWindow::ID_UNCHECK),NULL);
+  sender->handle(this,FXSEL(SEL_COMMAND,FXWindow::ID_ENABLE),nullptr);
+  sender->handle(this,(options&SHADING_SMOOTH)?FXSEL(SEL_COMMAND,FXWindow::ID_CHECK):FXSEL(SEL_COMMAND,FXWindow::ID_UNCHECK),nullptr);
   return 1;
   }
 
@@ -486,8 +486,8 @@ long FXGLShape::onUpdDrawingStyle(FXObject *sender,FXSelector sel,void*){
     case ID_STYLE_WIREFRAME: if(options&STYLE_WIREFRAME) msg=FXSEL(SEL_COMMAND,FXWindow::ID_CHECK); break;
     case ID_STYLE_BOUNDINGBOX: if(options&STYLE_BOUNDBOX) msg=FXSEL(SEL_COMMAND,FXWindow::ID_CHECK); break;
     }
-  sender->handle(this,msg,NULL);
-  sender->handle(this,FXSEL(SEL_COMMAND,FXWindow::ID_ENABLE),NULL);
+  sender->handle(this,msg,nullptr);
+  sender->handle(this,FXSEL(SEL_COMMAND,FXWindow::ID_ENABLE),nullptr);
   return 1;
   }
 

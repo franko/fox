@@ -3,7 +3,7 @@
 *                          T a b   B a r   W i d g e t                          *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 1997,2021 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 1997,2022 by Jeroen van der Zijp.   All Rights Reserved.        *
 *********************************************************************************
 * This library is free software; you can redistribute it and/or modify          *
 * it under the terms of the GNU Lesser General Public License as published by   *
@@ -173,7 +173,7 @@ FXint FXTabBar::getDefaultHeight(){
 // Recalculate layout
 void FXTabBar::layout(){
   FXint i,px,py,pw,ph,x,y,xx,yy,w,h,maxtabw,maxtabh,cumw,cumh,newcurrent;
-  FXWindow *raisetab=NULL;
+  FXWindow *raisetab=nullptr;
   FXWindow *tab;
   FXuint hints;
 
@@ -483,7 +483,7 @@ long FXTabBar::onCmdOpen(FXObject*,FXSelector sel,void*){
 
 // Update the nth button
 long FXTabBar::onUpdOpen(FXObject* sender,FXSelector sel,void*){
-  sender->handle(this,((FXSELID(sel)-ID_OPEN_FIRST)==current)?FXSEL(SEL_COMMAND,ID_CHECK):FXSEL(SEL_COMMAND,ID_UNCHECK),NULL);
+  sender->handle(this,((FXSELID(sel)-ID_OPEN_FIRST)==current)?FXSEL(SEL_COMMAND,ID_CHECK):FXSEL(SEL_COMMAND,ID_UNCHECK),nullptr);
   return 1;
   }
 

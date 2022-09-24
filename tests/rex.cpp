@@ -3,7 +3,7 @@
 *                             Regular Expression Test                           *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 1999,2021 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 1999,2022 by Jeroen van der Zijp.   All Rights Reserved.        *
 ********************************************************************************/
 #include "fx.h"
 

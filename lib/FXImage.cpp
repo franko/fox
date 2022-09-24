@@ -3,7 +3,7 @@
 *                             I m a g e    O b j e c t                          *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 1997,2021 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 1997,2022 by Jeroen van der Zijp.   All Rights Reserved.        *
 *********************************************************************************
 * This library is free software; you can redistribute it and/or modify          *
 * it under the terms of the GNU Lesser General Public License as published by   *
@@ -194,11 +194,11 @@ enum {
 
 
 // Object implementation
-FXIMPLEMENT(FXImage,FXDrawable,NULL,0)
+FXIMPLEMENT(FXImage,FXDrawable,nullptr,0)
 
 
 // For deserialization
-FXImage::FXImage():data(NULL),options(0){
+FXImage::FXImage():data(nullptr),options(0){
   }
 
 
@@ -291,7 +291,7 @@ FXbool FXImage::hasAlpha() const {
 
 // Return the device context; the image already selected into it
 FXID FXImage::GetDC() const {
-  HDC hdc=::CreateCompatibleDC(NULL);
+  HDC hdc=::CreateCompatibleDC(nullptr);
   SelectObject(hdc,(HBITMAP)xid);
   return hdc;
   }
@@ -419,7 +419,7 @@ void FXImage::restore(){
       if(!pixels){ throw FXMemoryException("unable to restore image"); }
 
       // Make device context
-      hdcmem=::CreateCompatibleDC(NULL);
+      hdcmem=::CreateCompatibleDC(nullptr);
       if(!GetDIBits(hdcmem,(HBITMAP)xid,0,height,pixels,&bmi,DIB_RGB_COLORS)){
         throw FXImageException("unable to restore image");
         }
@@ -470,7 +470,7 @@ void FXImage::restore(){
     FXPixel redmask,greenmask,bluemask;
     int size,i;
     FXbool shmi=false;
-    XImage *xim=NULL;
+    XImage *xim=nullptr;
     Visual *vis;
     FXint x,y;
     FXuchar *img;
@@ -511,11 +511,11 @@ void FXImage::restore(){
       // First try XShm
 #ifdef HAVE_XSHM_H
       if(shmi){
-        xim=XShmCreateImage(DISPLAY(getApp()),vis,visual->depth,(visual->depth==1)?XYPixmap:ZPixmap,NULL,&shminfo,width,height);
+        xim=XShmCreateImage(DISPLAY(getApp()),vis,visual->depth,(visual->depth==1)?XYPixmap:ZPixmap,nullptr,&shminfo,width,height);
         if(!xim){ shmi=0; }
         if(shmi){
           shminfo.shmid=shmget(IPC_PRIVATE,xim->bytes_per_line*xim->height,IPC_CREAT|0777);
-          if(shminfo.shmid==-1){ xim->data=NULL; XDestroyImage(xim); xim=NULL; shmi=0; }
+          if(shminfo.shmid==-1){ xim->data=nullptr; XDestroyImage(xim); xim=nullptr; shmi=0; }
           if(shmi){
             shminfo.shmaddr=xim->data=(char*)shmat(shminfo.shmid,0,0);
             shminfo.readOnly=false;
@@ -713,7 +713,7 @@ void FXImage::render(){
       // Win95 you must pass in a non-NULL hdc for the first parameter; otherwise
       // this call to SetDIBits() will fail (in contrast, it works fine under
       // Windows NT if you pass in a NULL hdc).
-      hdcmem=::CreateCompatibleDC(NULL);
+      hdcmem=::CreateCompatibleDC(nullptr);
       if(!SetDIBits(hdcmem,(HBITMAP)xid,0,height,pixels,&bmi,DIB_RGB_COLORS)){
 //    if(!StretchDIBits(hdcmem,0,0,width,height,0,0,width,height,pixels,&bmi,DIB_RGB_COLORS,SRCCOPY)){
         throw FXImageException("unable to render image");
@@ -1335,7 +1335,7 @@ void FXImage::render_mono_1_dither(void *xim,FXuchar *img){
 void FXImage::render(){
   if(xid){
     FXbool shmi=false;
-    XImage *xim=NULL;
+    XImage *xim=nullptr;
     XGCValues values;
     GC gc;
 #ifdef HAVE_XSHM_H
@@ -1360,11 +1360,11 @@ void FXImage::render(){
       // First try XShm
 #ifdef HAVE_XSHM_H
       if(shmi){
-        xim=XShmCreateImage(DISPLAY(getApp()),(Visual*)visual->visual,visual->depth,(visual->depth==1)?XYPixmap:ZPixmap,NULL,&shminfo,width,height);
+        xim=XShmCreateImage(DISPLAY(getApp()),(Visual*)visual->visual,visual->depth,(visual->depth==1)?XYPixmap:ZPixmap,nullptr,&shminfo,width,height);
         if(!xim){ shmi=0; }
         if(shmi){
           shminfo.shmid=shmget(IPC_PRIVATE,xim->bytes_per_line*xim->height,IPC_CREAT|0777);
-          if(shminfo.shmid==-1){ xim->data=NULL; XDestroyImage(xim); xim=NULL; shmi=0; }
+          if(shminfo.shmid==-1){ xim->data=nullptr; XDestroyImage(xim); xim=nullptr; shmi=0; }
           if(shmi){
             shminfo.shmaddr=xim->data=(char*)shmat(shminfo.shmid,0,0);
             shminfo.readOnly=false;
@@ -1377,7 +1377,7 @@ void FXImage::render(){
 
       // Try the old fashioned way
       if(!shmi){
-        xim=XCreateImage(DISPLAY(getApp()),(Visual*)visual->visual,visual->depth,(visual->depth==1)?XYPixmap:ZPixmap,0,NULL,width,height,32,0);
+        xim=XCreateImage(DISPLAY(getApp()),(Visual*)visual->visual,visual->depth,(visual->depth==1)?XYPixmap:ZPixmap,0,nullptr,width,height,32,0);
         if(!xim){ throw FXImageException("unable to render image"); }
 
         // Try create temp pixel store
@@ -1488,7 +1488,7 @@ void FXImage::render(){
         XSync(DISPLAY(getApp()),False);
         FXTRACE((150,"RGBPixmap XSHM detached at memory=%p (%d bytes)\n",xim->data,xim->bytes_per_line*xim->height));
         XShmDetach(DISPLAY(getApp()),&shminfo);
-        xim->data=NULL;
+        xim->data=nullptr;
         XDestroyImage(xim);
         shmdt(shminfo.shmaddr);
         shmctl(shminfo.shmid,IPC_RMID,0);
@@ -1515,7 +1515,7 @@ void FXImage::release(){
     options&=~IMAGE_OWNED;
     freeElms(data);
     }
-  data=NULL;
+  data=nullptr;
   }
 
 
@@ -2684,7 +2684,7 @@ FXbool FXImage::loadPixels(FXStream& store){
 
 // Save data
 void FXImage::save(FXStream& store) const {
-  FXuchar haspixels=(data!=NULL);
+  FXuchar haspixels=(data!=nullptr);
   FXDrawable::save(store);
   store << options;
   store << haspixels;

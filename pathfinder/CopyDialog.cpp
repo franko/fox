@@ -3,7 +3,7 @@
 *                       F i l e   C o p y   D i a l o g                         *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 2005,2021 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 2005,2022 by Jeroen van der Zijp.   All Rights Reserved.        *
 *********************************************************************************
 * This program is free software: you can redistribute it and/or modify          *
 * it under the terms of the GNU General Public License as published by          *
@@ -31,20 +31,20 @@
 
 /**********************************  Preferences  ******************************/
 
-FXIMPLEMENT(CopyDialog,FXDialogBox,NULL,0)
+FXIMPLEMENT(CopyDialog,FXDialogBox,nullptr,0)
 
 
 // Create properties dialog
 CopyDialog::CopyDialog(FXWindow *own,const FXString& name):FXDialogBox(own,name,DECOR_TITLE|DECOR_BORDER|DECOR_RESIZE,0,0,0,0, 4,4,4,4, 4,4){
   FXHorizontalFrame* buttons=new FXHorizontalFrame(this,LAYOUT_SIDE_BOTTOM|LAYOUT_FILL_X|PACK_UNIFORM_WIDTH);
-  new FXButton(buttons,tr("&Cancel"),NULL,this,FXDialogBox::ID_CANCEL,BUTTON_DEFAULT|FRAME_RAISED|FRAME_THICK|LAYOUT_CENTER_X|LAYOUT_CENTER_Y,0,0,0,0,20,20);
-  new FXButton(buttons,tr("&OK"),NULL,this,FXDialogBox::ID_ACCEPT,BUTTON_INITIAL|BUTTON_DEFAULT|FRAME_RAISED|FRAME_THICK|LAYOUT_CENTER_X|LAYOUT_CENTER_Y);
+  new FXButton(buttons,tr("&Cancel"),nullptr,this,FXDialogBox::ID_CANCEL,BUTTON_DEFAULT|FRAME_RAISED|FRAME_THICK|LAYOUT_CENTER_X|LAYOUT_CENTER_Y,0,0,0,0,20,20);
+  new FXButton(buttons,tr("&OK"),nullptr,this,FXDialogBox::ID_ACCEPT,BUTTON_INITIAL|BUTTON_DEFAULT|FRAME_RAISED|FRAME_THICK|LAYOUT_CENTER_X|LAYOUT_CENTER_Y);
   new FXHorizontalSeparator(this,SEPARATOR_GROOVE|LAYOUT_SIDE_BOTTOM|LAYOUT_FILL_X);
   FXMatrix *matrix=new FXMatrix(this,2,MATRIX_BY_COLUMNS|LAYOUT_SIDE_TOP|LAYOUT_FILL_X|LAYOUT_FILL_Y);
-  new FXLabel(matrix,tr("&Old name:"),NULL,LAYOUT_FILL_X|JUSTIFY_LEFT);
-  oldname=new FXTextField(matrix,50,NULL,0,TEXTFIELD_ENTER_ONLY|FRAME_SUNKEN|FRAME_THICK|LAYOUT_FILL_X|LAYOUT_FILL_COLUMN);
+  new FXLabel(matrix,tr("&Old name:"),nullptr,LAYOUT_FILL_X|JUSTIFY_LEFT);
+  oldname=new FXTextField(matrix,50,nullptr,0,TEXTFIELD_ENTER_ONLY|FRAME_SUNKEN|FRAME_THICK|LAYOUT_FILL_X|LAYOUT_FILL_COLUMN);
   oldname->setEditable(false);
-  new FXLabel(matrix,tr("&New name:"),NULL,LAYOUT_FILL_X|JUSTIFY_LEFT);
+  new FXLabel(matrix,tr("&New name:"),nullptr,LAYOUT_FILL_X|JUSTIFY_LEFT);
   newname=new FXTextField(matrix,50,this,FXDialogBox::ID_ACCEPT,TEXTFIELD_ENTER_ONLY|FRAME_SUNKEN|FRAME_THICK|LAYOUT_FILL_X|LAYOUT_FILL_COLUMN);
   }
 

@@ -54,14 +54,14 @@ int main(int argc,char **argv){
   // The decorations determine stuff like the borders, close buttons,
   // drag handles, and so on the Window Manager is supposed to give this
   // window.
-  FXMainWindow *main=new FXMainWindow(&application,"Hello",NULL,NULL,DECOR_ALL);
+  FXMainWindow *main=new FXMainWindow(&application,"Hello",nullptr,nullptr,DECOR_ALL);
 
   // Here we create a button.  The button has a label on it, but no icon in
   // this case.  An '&' followed by a letter introduces a hot-key so you can
   // invoke this button from the keyboard.
   // The button sends an ID_QUIT message to the application object, which
   // in its default implementation causes the program to quit.
-  new FXButton(main,"&Hello, World!",NULL,&application,FXApp::ID_QUIT);
+  new FXButton(main,"&Hello, World!",nullptr,&application,FXApp::ID_QUIT);
 
   // This "realizes" the widget tree.  This is necessary because GUI's are
   // a client-server system, i.e. there are actually two programs involved,

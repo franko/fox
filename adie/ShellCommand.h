@@ -3,7 +3,7 @@
 *                             S h e l l - C o m m a n d                         *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 2014,2021 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 2014,2022 by Jeroen van der Zijp.   All Rights Reserved.        *
 *********************************************************************************
 * This program is free software: you can redistribute it and/or modify          *
 * it under the terms of the GNU General Public License as published by          *
@@ -57,7 +57,7 @@ public:
 public:
 
   // Construct shell command
-  ShellCommand(FXApp* a,FXObject* tgt=NULL,FXSelector so=0,FXSelector se=0,FXSelector sd=0);
+  ShellCommand(FXApp* a,FXObject* tgt=nullptr,FXSelector so=0,FXSelector se=0,FXSelector sd=0);
 
   // Access target
   void setTarget(FXObject* tgt){ target=tgt; }

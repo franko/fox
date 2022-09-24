@@ -3,7 +3,7 @@
 *                             String Format I/O Test                            *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 2007,2021 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 2007,2022 by Jeroen van der Zijp.   All Rights Reserved.        *
 ********************************************************************************/
 #include "fx.h"
 #include "fx3d.h"
@@ -200,43 +200,43 @@ int main(int argc,char* argv[]){
       }
     else if(strcmp(argv[arg],"--tracelevel")==0){
       if(++arg>=argc){ fxmessage("Missing --tracelevel argument.\n"); exit(1); }
-      setTraceLevel(strtoul(argv[arg],NULL,0));
+      setTraceLevel(strtoul(argv[arg],nullptr,0));
       }
     else if(strcmp(argv[arg],"--year")==0){
       if(++arg>=argc){ fxmessage("Missing --year argument.\n"); exit(1); }
-      st.year=strtoul(argv[arg],NULL,0);
+      st.year=strtoul(argv[arg],nullptr,0);
       }
     else if(strcmp(argv[arg],"--month")==0){
       if(++arg>=argc){ fxmessage("Missing --month argument.\n"); exit(1); }
-      st.month=strtoul(argv[arg],NULL,0);
+      st.month=strtoul(argv[arg],nullptr,0);
       }
     else if(strcmp(argv[arg],"--mday")==0){
       if(++arg>=argc){ fxmessage("Missing --mday argument.\n"); exit(1); }
-      st.mday=strtoul(argv[arg],NULL,0);
+      st.mday=strtoul(argv[arg],nullptr,0);
       }
     else if(strcmp(argv[arg],"--yday")==0){
       if(++arg>=argc){ fxmessage("Missing --mday argument.\n"); exit(1); }
-      st.yday=strtoul(argv[arg],NULL,0);
+      st.yday=strtoul(argv[arg],nullptr,0);
       }
     else if(strcmp(argv[arg],"--hour")==0){
       if(++arg>=argc){ fxmessage("Missing --mday argument.\n"); exit(1); }
-      st.hour=strtoul(argv[arg],NULL,0);
+      st.hour=strtoul(argv[arg],nullptr,0);
       }
     else if(strcmp(argv[arg],"--min")==0){
       if(++arg>=argc){ fxmessage("Missing --mday argument.\n"); exit(1); }
-      st.min=strtoul(argv[arg],NULL,0);
+      st.min=strtoul(argv[arg],nullptr,0);
       }
     else if(strcmp(argv[arg],"--sec")==0){
       if(++arg>=argc){ fxmessage("Missing --mday argument.\n"); exit(1); }
-      st.sec=strtoul(argv[arg],NULL,0);
+      st.sec=strtoul(argv[arg],nullptr,0);
       }
     else if(strcmp(argv[arg],"--nano")==0){
       if(++arg>=argc){ fxmessage("Missing --mday argument.\n"); exit(1); }
-      st.nano=strtoul(argv[arg],NULL,0);
+      st.nano=strtoul(argv[arg],nullptr,0);
       }
     else if(strcmp(argv[arg],"--offset")==0){
       if(++arg>=argc){ fxmessage("Missing --mday argument.\n"); exit(1); }
-      st.offset=strtoul(argv[arg],NULL,0);
+      st.offset=strtoul(argv[arg],nullptr,0);
       }
     else if(strcmp(argv[arg],"--string")==0){
       if(++arg>=argc){ fxmessage("Missing --string argument.\n"); exit(1); }

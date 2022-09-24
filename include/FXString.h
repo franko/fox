@@ -3,7 +3,7 @@
 *                           S t r i n g   O b j e c t                           *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 1997,2021 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 1997,2022 by Jeroen van der Zijp.   All Rights Reserved.        *
 *********************************************************************************
 * This library is free software; you can redistribute it and/or modify          *
 * it under the terms of the GNU Lesser General Public License as published by   *
@@ -515,22 +515,22 @@ public:
   FXint vformat(const FXchar* fmt,va_list args);
 
   /// Convert to integer
-  FXint toInt(FXint base=10,FXbool* ok=NULL) const;
+  FXint toInt(FXint base=10,FXbool* ok=nullptr) const;
 
   /// Convert to unsigned integer
-  FXuint toUInt(FXint base=10,FXbool* ok=NULL) const;
+  FXuint toUInt(FXint base=10,FXbool* ok=nullptr) const;
 
   /// Convert to long integer
-  FXlong toLong(FXint base=10,FXbool* ok=NULL) const;
+  FXlong toLong(FXint base=10,FXbool* ok=nullptr) const;
 
   /// Convert to unsigned long integer
-  FXulong toULong(FXint base=10,FXbool* ok=NULL) const;
+  FXulong toULong(FXint base=10,FXbool* ok=nullptr) const;
 
   /// Convert to float
-  FXfloat toFloat(FXbool* ok=NULL) const;
+  FXfloat toFloat(FXbool* ok=nullptr) const;
 
   /// Convert to double
-  FXdouble toDouble(FXbool* ok=NULL) const;
+  FXdouble toDouble(FXbool* ok=nullptr) const;
 
   /// Convert from integer
   FXString& fromInt(FXint number,FXint base=10);

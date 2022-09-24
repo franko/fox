@@ -3,7 +3,7 @@
 *                         P r o c e s s   S u p p o r t                         *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 1997,2021 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 1997,2022 by Jeroen van der Zijp.   All Rights Reserved.        *
 *********************************************************************************
 * This library is free software; you can redistribute it and/or modify          *
 * it under the terms of the GNU Lesser General Public License as published by   *
@@ -45,7 +45,7 @@ public:
   FXProcessID id() const;
 
   /// Start subprocess
-  FXbool start(const FXchar* exec,const FXchar *const *args,const FXchar *const *env=NULL);
+  FXbool start(const FXchar* exec,const FXchar *const *args,const FXchar *const *env=nullptr);
 
   /// Change input stream; handle must be Inheritable
   void setInputStream(FXIODevice* is){ input=is; }

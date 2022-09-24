@@ -3,7 +3,7 @@
 *                             String Format I/O Test                            *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 2007,2021 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 2007,2022 by Jeroen van der Zijp.   All Rights Reserved.        *
 ********************************************************************************/
 #include "fx.h"
 //#include <locale.h>
@@ -168,7 +168,7 @@ int main(int argc,char* argv[]){
 
   //setlocale(LC_ALL,"");
   if(argc==2){
-    FXdouble num=strtod(argv[1],NULL);
+    FXdouble num=strtod(argv[1],nullptr);
     __snprintf(buffer,sizeof(buffer),"%.20e",num);
     fprintf(stdout,"native: %.20e\n",num);
     fprintf(stdout,"ours  : %s\n",buffer);

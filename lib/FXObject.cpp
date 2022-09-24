@@ -3,7 +3,7 @@
 *                         T o p l e v e l   O b j e c t                         *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 1997,2021 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 1997,2022 by Jeroen van der Zijp.   All Rights Reserved.        *
 *********************************************************************************
 * This library is free software; you can redistribute it and/or modify          *
 * it under the terms of the GNU Lesser General Public License as published by   *
@@ -49,7 +49,7 @@ namespace FX {
 /*******************************************************************************/
 
 // Have to do this one `by hand' as it has no base class
-const FXMetaClass FXObject::metaClass("FXObject",FXObject::manufacture,NULL,NULL,0,0);
+const FXMetaClass FXObject::metaClass("FXObject",FXObject::manufacture,nullptr,nullptr,0,0);
 
 
 // Build an object

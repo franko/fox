@@ -3,7 +3,7 @@
 *                        D D S   I c o n   O b j e c t                          *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 2008,2021 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 2008,2022 by Jeroen van der Zijp.   All Rights Reserved.        *
 *********************************************************************************
 * This library is free software; you can redistribute it and/or modify          *
 * it under the terms of the GNU Lesser General Public License as published by   *
@@ -66,11 +66,11 @@ const FXchar FXDDSIcon::mimeType[]="image/x-dds";
 
 
 // Object implementation
-FXIMPLEMENT(FXDDSIcon,FXIcon,NULL,0)
+FXIMPLEMENT(FXDDSIcon,FXIcon,nullptr,0)
 
 
 // Initialize nicely
-FXDDSIcon::FXDDSIcon(FXApp* a,const void *pix,FXColor clr,FXuint opts,FXint w,FXint h):FXIcon(a,NULL,clr,opts,w,h){
+FXDDSIcon::FXDDSIcon(FXApp* a,const void *pix,FXColor clr,FXuint opts,FXint w,FXint h):FXIcon(a,nullptr,clr,opts,w,h){
   if(pix){
     FXMemoryStream ms(FXStreamLoad,(FXuchar*)pix);
     loadPixels(ms);

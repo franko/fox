@@ -3,7 +3,7 @@
 *                            P o i n t e r   L i s t                            *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 1997,2021 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 1997,2022 by Jeroen van der Zijp.   All Rights Reserved.        *
 *********************************************************************************
 * This library is free software; you can redistribute it and/or modify          *
 * it under the terms of the GNU Lesser General Public License as published by   *
@@ -60,10 +60,10 @@ FXbool FXPtrList::no(FXival num){
     if(0<num){
       FXptr p;
       if(ptr!=EMPTY){
-        if(__unlikely((p=::realloc(((FXival*)ptr)-1,sizeof(FXival)+sizeof(FXptr)*ROUNDUP(num)))==NULL)) return false;
+        if(__unlikely((p=::realloc(((FXival*)ptr)-1,sizeof(FXival)+sizeof(FXptr)*ROUNDUP(num)))==nullptr)) return false;
         }
       else{
-        if(__unlikely((p=::malloc(sizeof(FXival)+sizeof(FXptr)*ROUNDUP(num)))==NULL)) return false;
+        if(__unlikely((p=::malloc(sizeof(FXival)+sizeof(FXptr)*ROUNDUP(num)))==nullptr)) return false;
         }
       ptr=(FXptr*)(((FXival*)p)+1);
       *(((FXival*)ptr)-1)=num;

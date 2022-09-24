@@ -3,7 +3,7 @@
 *                          E v e n t   D i s p a t c h e r                      *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 2019,2021 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 2019,2022 by Jeroen van der Zijp.   All Rights Reserved.        *
 ********************************************************************************/
 #include "xincs.h"
 #include "fxver.h"
@@ -50,7 +50,7 @@ const FXTime seconds=1000000000;
 
 
 // Construct event dispatcher object
-FXEventDispatcher::FXEventDispatcher():display(NULL){
+FXEventDispatcher::FXEventDispatcher():display(nullptr){
   }
 
 
@@ -72,7 +72,7 @@ FXbool FXEventDispatcher::init(FXptr dpy){
 // Initialize dispatcher
 FXbool FXEventDispatcher::init(){
   if(FXDispatcher::init()){
-    display=NULL;
+    display=nullptr;
     return true;
     }
   return false;
@@ -122,7 +122,7 @@ FXbool FXEventDispatcher::dispatch(FXTime blocking,FXuint flags){
       // The fix is to call MsgWaitForMultipleObjects() only AFTER having ascertained
       // that there are NO unhandled messages queued up.
       if(flags&DispatchEvents){
-        if(PeekMessage(&event,NULL,0,0,PM_REMOVE)){
+        if(PeekMessage(&event,nullptr,0,0,PM_REMOVE)){
           if(dispatchEvent(event)) return true;         // Event activity
           continue;
           }
@@ -164,7 +164,7 @@ FXbool FXEventDispatcher::dispatch(FXTime blocking,FXuint flags){
         // A call to MsgWaitForMultipleObjects() when there are messages already in
         // the queue would block until the next message comes in.
         if(flags&DispatchEvents){
-          if(PeekMessage(&event,NULL,0,0,PM_REMOVE)){
+          if(PeekMessage(&event,nullptr,0,0,PM_REMOVE)){
            if(dispatchEvent(event)) return true;        // Event activity
            continue;
            }
@@ -278,7 +278,7 @@ FXbool FXEventDispatcher::dispatch(FXTime blocking,FXuint flags){
         }
 
       // Select active handles and check signals; don't block
-      numwatched=epoll_pwait(internals->handle,internals->events,ARRAYNUMBER(internals->events),0,NULL);
+      numwatched=epoll_pwait(internals->handle,internals->events,ARRAYNUMBER(internals->events),0,nullptr);
 
       // No active handles yet; need to wait
       if(numwatched==0){
@@ -302,7 +302,7 @@ FXbool FXEventDispatcher::dispatch(FXTime blocking,FXuint flags){
           }
 
         // Select active handles and check signals, waiting for timeout or maximum block time
-        numwatched=epoll_pwait(internals->handle,internals->events,ARRAYNUMBER(internals->events),ms,NULL);
+        numwatched=epoll_pwait(internals->handle,internals->events,ARRAYNUMBER(internals->events),ms,nullptr);
 
         // Return if there was no timeout within maximum block time
         if(numwatched==0){
@@ -417,9 +417,9 @@ FXbool FXEventDispatcher::dispatch(FXTime blocking,FXuint flags){
 
       // Select active handles and check signals; don't block
 #if (_POSIX_C_SOURCE >= 200112L)
-      numraised=pselect(numhandles,&internals->watched[0],&internals->watched[1],&internals->watched[2],NULL,NULL);
+      numraised=pselect(numhandles,&internals->watched[0],&internals->watched[1],&internals->watched[2],nullptr,nullptr);
 #else
-      numraised=select(numhandles,&internals->watched[0],&internals->watched[1],&internals->watched[2],NULL);
+      numraised=select(numhandles,&internals->watched[0],&internals->watched[1],&internals->watched[2],nullptr);
 #endif
 
       // No handles were active
@@ -448,7 +448,7 @@ FXbool FXEventDispatcher::dispatch(FXTime blocking,FXuint flags){
 #if (_POSIX_C_SOURCE >= 200112L)
         delta.tv_sec=interval/seconds;
         delta.tv_nsec=(interval-seconds*delta.tv_sec);
-        numraised=pselect(numhandles,&internals->watched[0],&internals->watched[1],&internals->watched[2],&delta,NULL);
+        numraised=pselect(numhandles,&internals->watched[0],&internals->watched[1],&internals->watched[2],&delta,nullptr);
 #else
         delta.tv_sec=interval/seconds;
         delta.tv_usec=(interval-seconds*delta.tv_sec)/1000;
@@ -491,7 +491,7 @@ FXbool FXEventDispatcher::dispatchEvent(FXRawEvent& event){
 // Exit dispatcher
 FXbool FXEventDispatcher::exit(){
   if(FXDispatcher::exit()){
-    display=NULL;
+    display=nullptr;
     return true;
     }
   return false;

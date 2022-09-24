@@ -3,7 +3,7 @@
 *             O p e n G L   T r i a n g l e   M e s h   O b j e c t             *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 1999,2021 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 1999,2022 by Jeroen van der Zijp.   All Rights Reserved.        *
 *********************************************************************************
 * This library is free software; you can redistribute it and/or modify          *
 * it under the terms of the GNU Lesser General Public License as published by   *
@@ -39,7 +39,7 @@ protected:
 public:
 
   /// Construct triangle mesh with nv vertices, and optional normals, colors, and texture coordinates
-  FXGLTriangleMesh(FXfloat x,FXfloat y,FXfloat z,FXint nv,FXfloat *v,FXfloat *n=NULL,FXfloat *c=NULL,FXfloat *t=NULL);
+  FXGLTriangleMesh(FXfloat x,FXfloat y,FXfloat z,FXint nv,FXfloat *v,FXfloat *n=nullptr,FXfloat *c=nullptr,FXfloat *t=nullptr);
 
   /// Construct triangle mesh with nv vertices, and optional normals, colors, and texture coordinates, and surface material
   FXGLTriangleMesh(FXfloat x,FXfloat y,FXfloat z,FXint nv,FXfloat *v,FXfloat *n,FXfloat *c,FXfloat *t,const FXMaterial& mtl);

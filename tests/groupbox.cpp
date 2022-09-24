@@ -3,7 +3,7 @@
 *                                 Test Group Box                                *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 1997,2021 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 1997,2022 by Jeroen van der Zijp.   All Rights Reserved.        *
 ********************************************************************************/
 #include "fx.h"
 #include <stdio.h>
@@ -181,11 +181,11 @@ static const FXchar *const listofitems[]={
   "Fifth Item",
   "Sixth Item",
   "Seventh Item",
-  NULL
+  nullptr
   };
 
 // Make some windows
-GroupWindow::GroupWindow(FXApp* a):FXMainWindow(a,"Group Box Test",NULL,NULL,DECOR_ALL,0,0,0,0),radiotarget(choice){
+GroupWindow::GroupWindow(FXApp* a):FXMainWindow(a,"Group Box Test",nullptr,nullptr,DECOR_ALL,0,0,0,0),radiotarget(choice){
 
   tooltip=new FXToolTip(getApp(),0,100,100);
 
@@ -204,19 +204,19 @@ GroupWindow::GroupWindow(FXApp* a):FXMainWindow(a,"Group Box Test",NULL,NULL,DEC
     new FXMenuCommand(filemenu,"Open multiple all",folder_open,this,ID_FILEDLG_MULTIPLE_ALL);
     new FXMenuCommand(filemenu,"Open directory",folder_open,this,ID_FILEDLG_DIRECTORY);
     new FXMenuCommand(filemenu,"Open directory dialog",folder_open,this,ID_DIRDLG);
-    new FXMenuCommand(filemenu,"Open choice dialog",NULL,this,ID_CHOICE);
+    new FXMenuCommand(filemenu,"Open choice dialog",nullptr,this,ID_CHOICE);
     new FXMenuRadio(filemenu,"Radio&1",&radiotarget,FXDataTarget::ID_OPTION+1);
     new FXMenuRadio(filemenu,"Radio&2",&radiotarget,FXDataTarget::ID_OPTION+2);
     new FXMenuRadio(filemenu,"Radio&3",&radiotarget,FXDataTarget::ID_OPTION+3);
 
-    new FXMenuCommand(filemenu,"Delete\tCtl-X",NULL,this,ID_DELETE,0);
-    new FXMenuCommand(filemenu,"Downsize\tF5\tResize to minimum",NULL,this,ID_DOWNSIZE,0);
-    new FXMenuCommand(filemenu,"&Size",NULL,this,ID_DOWNSIZE,0);
-    new FXMenuCommand(filemenu,"Full Screen",NULL,this,ID_FULLSCREEN,0);     // TEST
-    new FXMenuCommand(filemenu,"Maximize",NULL,this,ID_MAXIMIZE,0);     // TEST
-    new FXMenuCommand(filemenu,"Minimize",NULL,this,ID_ICONIFY,0);     // TEST
-    new FXMenuCommand(filemenu,"Restore",NULL,this,ID_RESTORE,0);       // TEST
-    new FXMenuCommand(filemenu,"Dump Widgets",NULL,getApp(),FXApp::ID_DUMP);
+    new FXMenuCommand(filemenu,"Delete\tCtl-X",nullptr,this,ID_DELETE,0);
+    new FXMenuCommand(filemenu,"Downsize\tF5\tResize to minimum",nullptr,this,ID_DOWNSIZE,0);
+    new FXMenuCommand(filemenu,"&Size",nullptr,this,ID_DOWNSIZE,0);
+    new FXMenuCommand(filemenu,"Full Screen",nullptr,this,ID_FULLSCREEN,0);     // TEST
+    new FXMenuCommand(filemenu,"Maximize",nullptr,this,ID_MAXIMIZE,0);     // TEST
+    new FXMenuCommand(filemenu,"Minimize",nullptr,this,ID_ICONIFY,0);     // TEST
+    new FXMenuCommand(filemenu,"Restore",nullptr,this,ID_RESTORE,0);       // TEST
+    new FXMenuCommand(filemenu,"Dump Widgets",nullptr,getApp(),FXApp::ID_DUMP);
 
     // Make edit popup menu
     editmenu=new FXMenuPane(this);
@@ -227,18 +227,18 @@ GroupWindow::GroupWindow(FXApp* a):FXMainWindow(a,"Group Box Test",NULL,NULL,DEC
           new FXMenuCommand(submenu1,"&Two");
           new FXMenuCommand(submenu1,"Th&ree");
           new FXMenuCommand(submenu1,"&Four");
-      new FXMenuCascade(editmenu,"&Submenu1",NULL,submenu1);
-    new FXMenuCascade(filemenu,"&Edit",NULL,editmenu);
-    new FXMenuCommand(filemenu,"&Quit\tCtl-Q",NULL,getApp(),FXApp::ID_QUIT,0);
-  new FXMenuTitle(menubar,"&File",NULL,filemenu);
+      new FXMenuCascade(editmenu,"&Submenu1",nullptr,submenu1);
+    new FXMenuCascade(filemenu,"&Edit",nullptr,editmenu);
+    new FXMenuCommand(filemenu,"&Quit\tCtl-Q",nullptr,getApp(),FXApp::ID_QUIT,0);
+  new FXMenuTitle(menubar,"&File",nullptr,filemenu);
 
 
   helpmenu=new FXMenuPane(this);
-    new FXMenuCommand(helpmenu,"&About FOX...",NULL,this,ID_ABOUT,0);
-  new FXMenuTitle(menubar,"&Help",NULL,helpmenu,LAYOUT_RIGHT);
+    new FXMenuCommand(helpmenu,"&About FOX...",nullptr,this,ID_ABOUT,0);
+  new FXMenuTitle(menubar,"&Help",nullptr,helpmenu,LAYOUT_RIGHT);
 
   popupmenu=new FXMenuPane(this);
-    FXTextField* poptext=new FXTextField(popupmenu,10,NULL,0,FRAME_SUNKEN|FRAME_THICK|LAYOUT_SIDE_TOP,0,0,0,0);
+    FXTextField* poptext=new FXTextField(popupmenu,10,nullptr,0,FRAME_SUNKEN|FRAME_THICK|LAYOUT_SIDE_TOP,0,0,0,0);
     poptext->setText("Popup with text");
 
   scrollpane=new FXScrollPane(this,10,PACK_UNIFORM_HEIGHT);
@@ -262,12 +262,12 @@ GroupWindow::GroupWindow(FXApp* a):FXMainWindow(a,"Group Box Test",NULL,NULL,DEC
   new FXMenuCommand(scrollpane,"Eighteen");
   new FXMenuCommand(scrollpane,"Nineteen");
   new FXMenuCommand(scrollpane,"Twenty");
-  new FXMenuTitle(menubar,"&Scroll",NULL,scrollpane);
+  new FXMenuTitle(menubar,"&Scroll",nullptr,scrollpane);
 
   // Status bar
   FXStatusBar *status=new FXStatusBar(this,LAYOUT_SIDE_BOTTOM|LAYOUT_FILL_X|STATUSBAR_WITH_DRAGCORNER);
 
-  new FXLabel(status,"10:15 PM",NULL,LAYOUT_FILL_Y|LAYOUT_RIGHT|FRAME_SUNKEN);
+  new FXLabel(status,"10:15 PM",nullptr,LAYOUT_FILL_Y|LAYOUT_RIGHT|FRAME_SUNKEN);
 
   // Content
   contents=new FXHorizontalFrame(this,LAYOUT_SIDE_TOP|FRAME_NONE|LAYOUT_FILL_X|LAYOUT_FILL_Y);
@@ -277,84 +277,84 @@ GroupWindow::GroupWindow(FXApp* a):FXMainWindow(a,"Group Box Test",NULL,NULL,DEC
   group4=new FXGroupBox(contents,"Arrow Buttons",GROUPBOX_TITLE_CENTER|FRAME_RIDGE|LAYOUT_FILL_X|LAYOUT_FILL_Y);
   group3=new FXGroupBox(contents,"Title Right",GROUPBOX_TITLE_RIGHT|FRAME_RIDGE|LAYOUT_FILL_X|LAYOUT_FILL_Y);
 
-  FXLabel *testlabel=new FXLabel(group1,"Big Font",NULL,LAYOUT_CENTER_X|JUSTIFY_CENTER_X);
+  FXLabel *testlabel=new FXLabel(group1,"Big Font",nullptr,LAYOUT_CENTER_X|JUSTIFY_CENTER_X);
   testlabel->setFont(bigfont);
 
-  new FXButton(group1,"Small &Button",NULL,NULL,0,FRAME_RAISED|FRAME_THICK);
-  new FXButton(group1,"Big Fat Wide Button\nComprising\nthree lines",NULL,NULL,0,FRAME_RAISED|FRAME_THICK);
-  new FXToggleButton(group1,"C&losed\tTooltip for closed\tHelp for closed","O&pen\nState\tTooltip for open\tHelp for open",folder_closed,folder_open,NULL,0,ICON_BEFORE_TEXT|JUSTIFY_LEFT|FRAME_RAISED|FRAME_THICK);
-  FXTriStateButton *tsb=new FXTriStateButton(group1,"False","True","Maybe",folder_closed,folder_open,doc,NULL,0,ICON_BEFORE_TEXT|JUSTIFY_LEFT|FRAME_RAISED|FRAME_THICK);
+  new FXButton(group1,"Small &Button",nullptr,nullptr,0,FRAME_RAISED|FRAME_THICK);
+  new FXButton(group1,"Big Fat Wide Button\nComprising\nthree lines",nullptr,nullptr,0,FRAME_RAISED|FRAME_THICK);
+  new FXToggleButton(group1,"C&losed\tTooltip for closed\tHelp for closed","O&pen\nState\tTooltip for open\tHelp for open",folder_closed,folder_open,nullptr,0,ICON_BEFORE_TEXT|JUSTIFY_LEFT|FRAME_RAISED|FRAME_THICK);
+  FXTriStateButton *tsb=new FXTriStateButton(group1,"False","True","Maybe",folder_closed,folder_open,doc,nullptr,0,ICON_BEFORE_TEXT|JUSTIFY_LEFT|FRAME_RAISED|FRAME_THICK);
   tsb->setState(maybe);
 
   pop=new FXPopup(this);
 
-  new FXOption(pop,"&First\tTip #1\tHelp first",NULL,this,ID_OPTION1,JUSTIFY_HZ_APART|ICON_AFTER_TEXT);
-  new FXOption(pop,"&Second\tTip #2\tHelp second",NULL,this,ID_OPTION2,JUSTIFY_HZ_APART|ICON_AFTER_TEXT);
-  new FXOption(pop,"Th&ird\tTip #3\tHelp third",NULL,this,ID_OPTION3,JUSTIFY_HZ_APART|ICON_AFTER_TEXT);
-  new FXOption(pop,"F&ourth\tTip #4\tHelp fourth",NULL,this,ID_OPTION4,JUSTIFY_HZ_APART|ICON_AFTER_TEXT);
+  new FXOption(pop,"&First\tTip #1\tHelp first",nullptr,this,ID_OPTION1,JUSTIFY_HZ_APART|ICON_AFTER_TEXT);
+  new FXOption(pop,"&Second\tTip #2\tHelp second",nullptr,this,ID_OPTION2,JUSTIFY_HZ_APART|ICON_AFTER_TEXT);
+  new FXOption(pop,"Th&ird\tTip #3\tHelp third",nullptr,this,ID_OPTION3,JUSTIFY_HZ_APART|ICON_AFTER_TEXT);
+  new FXOption(pop,"F&ourth\tTip #4\tHelp fourth",nullptr,this,ID_OPTION4,JUSTIFY_HZ_APART|ICON_AFTER_TEXT);
 
   new FXOptionMenu(group1,pop,LAYOUT_TOP|FRAME_RAISED|FRAME_THICK|JUSTIFY_HZ_APART|ICON_AFTER_TEXT);
 
-  new FXLabel(group1,"Te&kstje",NULL,LAYOUT_TOP|JUSTIFY_LEFT);
-  new FXButton(group1,"Add an `&&' by doubling\tTooltip\tHelp text for status",NULL,NULL,0,LAYOUT_TOP|FRAME_RAISED|FRAME_THICK);
-  new FXButton(group1,"Te&kstje",NULL,this,ID_POPUP,LAYOUT_TOP|FRAME_RAISED|FRAME_THICK);
+  new FXLabel(group1,"Te&kstje",nullptr,LAYOUT_TOP|JUSTIFY_LEFT);
+  new FXButton(group1,"Add an `&&' by doubling\tTooltip\tHelp text for status",nullptr,nullptr,0,LAYOUT_TOP|FRAME_RAISED|FRAME_THICK);
+  new FXButton(group1,"Te&kstje",nullptr,this,ID_POPUP,LAYOUT_TOP|FRAME_RAISED|FRAME_THICK);
 
-  new FXMenuButton(group1,"&Menu",NULL,filemenu,MENUBUTTON_ATTACH_BOTH|MENUBUTTON_DOWN|JUSTIFY_HZ_APART|LAYOUT_TOP|FRAME_RAISED|FRAME_THICK|ICON_AFTER_TEXT);
-  new FXMenuButton(group1,"&Menu",NULL,filemenu,MENUBUTTON_UP|LAYOUT_TOP|FRAME_RAISED|FRAME_THICK|ICON_AFTER_TEXT);
+  new FXMenuButton(group1,"&Menu",nullptr,filemenu,MENUBUTTON_ATTACH_BOTH|MENUBUTTON_DOWN|JUSTIFY_HZ_APART|LAYOUT_TOP|FRAME_RAISED|FRAME_THICK|ICON_AFTER_TEXT);
+  new FXMenuButton(group1,"&Menu",nullptr,filemenu,MENUBUTTON_UP|LAYOUT_TOP|FRAME_RAISED|FRAME_THICK|ICON_AFTER_TEXT);
 
   coolpop=new FXPopup(this,POPUP_HORIZONTAL);
-  new FXButton(coolpop,"A\tTipA",NULL,NULL,0,FRAME_THICK|FRAME_RAISED|LAYOUT_FIX_WIDTH|LAYOUT_FIX_HEIGHT,0,0,30,30);
-  new FXButton(coolpop,"B\tTipB",NULL,NULL,0,FRAME_THICK|FRAME_RAISED|LAYOUT_FIX_WIDTH|LAYOUT_FIX_HEIGHT,0,0,30,30);
-  new FXButton(coolpop,"C\tTipC",NULL,NULL,0,FRAME_THICK|FRAME_RAISED|LAYOUT_FIX_WIDTH|LAYOUT_FIX_HEIGHT,0,0,30,30);
-  new FXButton(coolpop,"D\tTipD",NULL,NULL,0,FRAME_THICK|FRAME_RAISED|LAYOUT_FIX_WIDTH|LAYOUT_FIX_HEIGHT,0,0,30,30);
-  new FXMenuButton(group1,"&S\tSideways",NULL,coolpop,MENUBUTTON_ATTACH_BOTH|MENUBUTTON_LEFT|MENUBUTTON_NOARROWS|LAYOUT_TOP|FRAME_RAISED|FRAME_THICK|LAYOUT_FIX_WIDTH|LAYOUT_FIX_HEIGHT,0,0,30,30);
+  new FXButton(coolpop,"A\tTipA",nullptr,nullptr,0,FRAME_THICK|FRAME_RAISED|LAYOUT_FIX_WIDTH|LAYOUT_FIX_HEIGHT,0,0,30,30);
+  new FXButton(coolpop,"B\tTipB",nullptr,nullptr,0,FRAME_THICK|FRAME_RAISED|LAYOUT_FIX_WIDTH|LAYOUT_FIX_HEIGHT,0,0,30,30);
+  new FXButton(coolpop,"C\tTipC",nullptr,nullptr,0,FRAME_THICK|FRAME_RAISED|LAYOUT_FIX_WIDTH|LAYOUT_FIX_HEIGHT,0,0,30,30);
+  new FXButton(coolpop,"D\tTipD",nullptr,nullptr,0,FRAME_THICK|FRAME_RAISED|LAYOUT_FIX_WIDTH|LAYOUT_FIX_HEIGHT,0,0,30,30);
+  new FXMenuButton(group1,"&S\tSideways",nullptr,coolpop,MENUBUTTON_ATTACH_BOTH|MENUBUTTON_LEFT|MENUBUTTON_NOARROWS|LAYOUT_TOP|FRAME_RAISED|FRAME_THICK|LAYOUT_FIX_WIDTH|LAYOUT_FIX_HEIGHT,0,0,30,30);
 
   FXMatrix* matrix=new FXMatrix(group1,3,FRAME_RAISED|LAYOUT_TOP|LAYOUT_FILL_X|LAYOUT_FILL_Y);
 
-  new FXButton(matrix,"A",NULL,NULL,0,FRAME_RAISED|FRAME_THICK|LAYOUT_FILL_X|LAYOUT_FILL_Y|LAYOUT_FILL_ROW);
-  new FXButton(matrix,"&Wide button",NULL,NULL,0,FRAME_RAISED|FRAME_THICK|LAYOUT_FILL_X);
-  new FXButton(matrix,"A",NULL,NULL,0,FRAME_RAISED|FRAME_THICK|LAYOUT_FILL_X);
+  new FXButton(matrix,"A",nullptr,nullptr,0,FRAME_RAISED|FRAME_THICK|LAYOUT_FILL_X|LAYOUT_FILL_Y|LAYOUT_FILL_ROW);
+  new FXButton(matrix,"&Wide button",nullptr,nullptr,0,FRAME_RAISED|FRAME_THICK|LAYOUT_FILL_X);
+  new FXButton(matrix,"A",nullptr,nullptr,0,FRAME_RAISED|FRAME_THICK|LAYOUT_FILL_X);
 
-  new FXButton(matrix,"BBBB",NULL,NULL,0,FRAME_RAISED|FRAME_THICK|LAYOUT_FILL_X|LAYOUT_FILL_Y|LAYOUT_FILL_ROW|LAYOUT_FILL_COLUMN);
-  new FXButton(matrix,"B",NULL,NULL,0,FRAME_RAISED|FRAME_THICK|LAYOUT_FILL_X|LAYOUT_FILL_COLUMN);
-  new FXButton(matrix,"BB",NULL,NULL,0,FRAME_RAISED|FRAME_THICK|LAYOUT_FILL_X|LAYOUT_FILL_COLUMN);
+  new FXButton(matrix,"BBBB",nullptr,nullptr,0,FRAME_RAISED|FRAME_THICK|LAYOUT_FILL_X|LAYOUT_FILL_Y|LAYOUT_FILL_ROW|LAYOUT_FILL_COLUMN);
+  new FXButton(matrix,"B",nullptr,nullptr,0,FRAME_RAISED|FRAME_THICK|LAYOUT_FILL_X|LAYOUT_FILL_COLUMN);
+  new FXButton(matrix,"BB",nullptr,nullptr,0,FRAME_RAISED|FRAME_THICK|LAYOUT_FILL_X|LAYOUT_FILL_COLUMN);
 
-  new FXButton(matrix,"C",NULL,NULL,0,FRAME_RAISED|FRAME_THICK|LAYOUT_CENTER_Y|LAYOUT_CENTER_X|LAYOUT_FILL_ROW);
-  new FXButton(matrix,"&wide",NULL,NULL,0,FRAME_RAISED|FRAME_THICK);
-  new FXButton(matrix,"CC",NULL,NULL,0,FRAME_RAISED|FRAME_THICK|LAYOUT_RIGHT);
+  new FXButton(matrix,"C",nullptr,nullptr,0,FRAME_RAISED|FRAME_THICK|LAYOUT_CENTER_Y|LAYOUT_CENTER_X|LAYOUT_FILL_ROW);
+  new FXButton(matrix,"&wide",nullptr,nullptr,0,FRAME_RAISED|FRAME_THICK);
+  new FXButton(matrix,"CC",nullptr,nullptr,0,FRAME_RAISED|FRAME_THICK|LAYOUT_RIGHT);
 
   FXSlider *slider;
   new FXLabel(group2,"No Arrow");
-  slider=new FXSlider(group2,NULL,0,LAYOUT_TOP|LAYOUT_FIX_WIDTH|LAYOUT_FIX_HEIGHT|SLIDER_HORIZONTAL,0,0,200,30);
+  slider=new FXSlider(group2,nullptr,0,LAYOUT_TOP|LAYOUT_FIX_WIDTH|LAYOUT_FIX_HEIGHT|SLIDER_HORIZONTAL,0,0,200,30);
 
   new FXLabel(group2,"Up Arrow");
-  slider=new FXSlider(group2,NULL,0,LAYOUT_TOP|LAYOUT_FIX_WIDTH|LAYOUT_FIX_HEIGHT|SLIDER_HORIZONTAL|SLIDER_ARROW_UP|SLIDER_TICKS_TOP,0,0,200,30);
+  slider=new FXSlider(group2,nullptr,0,LAYOUT_TOP|LAYOUT_FIX_WIDTH|LAYOUT_FIX_HEIGHT|SLIDER_HORIZONTAL|SLIDER_ARROW_UP|SLIDER_TICKS_TOP,0,0,200,30);
   slider->setRange(0,10);
 
   new FXLabel(group2,"Down Arrow");
-  slider=new FXSlider(group2,NULL,0,LAYOUT_TOP|LAYOUT_FIX_WIDTH|LAYOUT_FIX_HEIGHT|SLIDER_HORIZONTAL|SLIDER_ARROW_DOWN|SLIDER_TICKS_BOTTOM,0,0,200,30);
+  slider=new FXSlider(group2,nullptr,0,LAYOUT_TOP|LAYOUT_FIX_WIDTH|LAYOUT_FIX_HEIGHT|SLIDER_HORIZONTAL|SLIDER_ARROW_DOWN|SLIDER_TICKS_BOTTOM,0,0,200,30);
   slider->setRange(0,10);
 
   new FXLabel(group2,"Inside Bar");
-  slider=new FXSlider(group2,NULL,0,LAYOUT_TOP|LAYOUT_FILL_X|LAYOUT_FIX_HEIGHT|SLIDER_HORIZONTAL|SLIDER_INSIDE_BAR|SLIDER_TICKS_BOTTOM,0,0,200,20);
+  slider=new FXSlider(group2,nullptr,0,LAYOUT_TOP|LAYOUT_FILL_X|LAYOUT_FIX_HEIGHT|SLIDER_HORIZONTAL|SLIDER_INSIDE_BAR|SLIDER_TICKS_BOTTOM,0,0,200,20);
   slider->setRange(0,3);
 
-  new FXRangeSlider(group2,NULL,0,LAYOUT_TOP|LAYOUT_FILL_X|RANGESLIDER_HORIZONTAL|RANGESLIDER_INSIDE_BAR,0,0,200,0);
+  new FXRangeSlider(group2,nullptr,0,LAYOUT_TOP|LAYOUT_FILL_X|RANGESLIDER_HORIZONTAL|RANGESLIDER_INSIDE_BAR,0,0,200,0);
 
   FXMatrix* vsmatrix=new FXMatrix(group2,1,LAYOUT_FILL_X);
 
-  slider=new FXSlider(vsmatrix,NULL,0,LAYOUT_FIX_HEIGHT|LAYOUT_CENTER_X|SLIDER_VERTICAL|SLIDER_TICKS_LEFT|SLIDER_TICKS_RIGHT|LAYOUT_FILL_ROW|LAYOUT_FILL_COLUMN,0,0,30,200);
+  slider=new FXSlider(vsmatrix,nullptr,0,LAYOUT_FIX_HEIGHT|LAYOUT_CENTER_X|SLIDER_VERTICAL|SLIDER_TICKS_LEFT|SLIDER_TICKS_RIGHT|LAYOUT_FILL_ROW|LAYOUT_FILL_COLUMN,0,0,30,200);
   slider->setRange(0,10);
-  slider=new FXSlider(vsmatrix,NULL,0,LAYOUT_FIX_HEIGHT|LAYOUT_CENTER_X|SLIDER_VERTICAL|SLIDER_ARROW_RIGHT|SLIDER_TICKS_RIGHT|LAYOUT_FILL_ROW|LAYOUT_FILL_COLUMN,0,0,30,200);
+  slider=new FXSlider(vsmatrix,nullptr,0,LAYOUT_FIX_HEIGHT|LAYOUT_CENTER_X|SLIDER_VERTICAL|SLIDER_ARROW_RIGHT|SLIDER_TICKS_RIGHT|LAYOUT_FILL_ROW|LAYOUT_FILL_COLUMN,0,0,30,200);
   slider->setRange(0,10);
-  slider=new FXSlider(vsmatrix,NULL,0,LAYOUT_FIX_HEIGHT|LAYOUT_CENTER_X|SLIDER_VERTICAL|SLIDER_ARROW_LEFT|SLIDER_TICKS_LEFT|LAYOUT_FILL_ROW|LAYOUT_FILL_COLUMN,0,0,30,200);
+  slider=new FXSlider(vsmatrix,nullptr,0,LAYOUT_FIX_HEIGHT|LAYOUT_CENTER_X|SLIDER_VERTICAL|SLIDER_ARROW_LEFT|SLIDER_TICKS_LEFT|LAYOUT_FILL_ROW|LAYOUT_FILL_COLUMN,0,0,30,200);
   slider->setRange(0,10);
-  slider=new FXSlider(vsmatrix,NULL,0,LAYOUT_FIX_HEIGHT|LAYOUT_CENTER_X|SLIDER_VERTICAL|SLIDER_INSIDE_BAR|SLIDER_TICKS_LEFT|LAYOUT_FILL_ROW|LAYOUT_FILL_COLUMN,0,0,20,200);
+  slider=new FXSlider(vsmatrix,nullptr,0,LAYOUT_FIX_HEIGHT|LAYOUT_CENTER_X|SLIDER_VERTICAL|SLIDER_INSIDE_BAR|SLIDER_TICKS_LEFT|LAYOUT_FILL_ROW|LAYOUT_FILL_COLUMN,0,0,20,200);
   slider->setRange(0,7);
   slider->setTickDelta(7);
-  new FXScrollBar(vsmatrix,NULL,0,LAYOUT_FIX_HEIGHT|LAYOUT_CENTER_X|SCROLLBAR_VERTICAL|LAYOUT_FILL_ROW|LAYOUT_FILL_COLUMN,0,0,20,200);
+  new FXScrollBar(vsmatrix,nullptr,0,LAYOUT_FIX_HEIGHT|LAYOUT_CENTER_X|SCROLLBAR_VERTICAL|LAYOUT_FILL_ROW|LAYOUT_FILL_COLUMN,0,0,20,200);
 
-  new FXRangeSlider(vsmatrix,NULL,0,LAYOUT_FIX_HEIGHT|LAYOUT_CENTER_X|RANGESLIDER_VERTICAL|RANGESLIDER_INSIDE_BAR|LAYOUT_FILL_ROW|LAYOUT_FILL_COLUMN,0,0,20,200);
+  new FXRangeSlider(vsmatrix,nullptr,0,LAYOUT_FIX_HEIGHT|LAYOUT_CENTER_X|RANGESLIDER_VERTICAL|RANGESLIDER_INSIDE_BAR|LAYOUT_FILL_ROW|LAYOUT_FILL_COLUMN,0,0,20,200);
 
   // List box
   listbox=new FXListBox(group2,this,ID_LISTBOX,FRAME_SUNKEN|FRAME_THICK|LAYOUT_TOP);
@@ -363,14 +363,14 @@ GroupWindow::GroupWindow(FXApp* a):FXMainWindow(a,"Group Box Test",NULL,NULL,DEC
 
   // Arrow buttons
   FXMatrix* abmatrix=new FXMatrix(group4,4,LAYOUT_FILL_X|LAYOUT_FILL_Y|PACK_UNIFORM_WIDTH|PACK_UNIFORM_HEIGHT);
-  new FXArrowButton(abmatrix,NULL,0,LAYOUT_FILL_X|LAYOUT_FILL_Y|FRAME_RAISED|FRAME_THICK|ARROW_UP|LAYOUT_FILL_ROW|LAYOUT_FILL_COLUMN);
-  new FXArrowButton(abmatrix,NULL,0,LAYOUT_FILL_X|LAYOUT_FILL_Y|FRAME_RAISED|FRAME_THICK|ARROW_DOWN|LAYOUT_FILL_ROW|LAYOUT_FILL_COLUMN);
-  new FXArrowButton(abmatrix,NULL,0,LAYOUT_FILL_X|LAYOUT_FILL_Y|FRAME_RAISED|FRAME_THICK|ARROW_LEFT|LAYOUT_FILL_ROW|LAYOUT_FILL_COLUMN);
-  new FXArrowButton(abmatrix,NULL,0,LAYOUT_FILL_X|LAYOUT_FILL_Y|FRAME_RAISED|FRAME_THICK|ARROW_RIGHT|LAYOUT_FILL_ROW|LAYOUT_FILL_COLUMN);
-  new FXArrowButton(abmatrix,NULL,0,LAYOUT_FILL_X|LAYOUT_FILL_Y|FRAME_RAISED|FRAME_THICK|ARROW_UP|ARROW_TOOLBAR|LAYOUT_FILL_ROW|LAYOUT_FILL_COLUMN);
-  new FXArrowButton(abmatrix,NULL,0,LAYOUT_FILL_X|LAYOUT_FILL_Y|FRAME_RAISED|FRAME_THICK|ARROW_DOWN|ARROW_TOOLBAR|LAYOUT_FILL_ROW|LAYOUT_FILL_COLUMN);
-  new FXArrowButton(abmatrix,NULL,0,LAYOUT_FILL_X|LAYOUT_FILL_Y|FRAME_RAISED|FRAME_THICK|ARROW_LEFT|ARROW_TOOLBAR|LAYOUT_FILL_ROW|LAYOUT_FILL_COLUMN);
-  new FXArrowButton(abmatrix,NULL,0,LAYOUT_FILL_X|LAYOUT_FILL_Y|FRAME_RAISED|FRAME_THICK|ARROW_RIGHT|ARROW_TOOLBAR|LAYOUT_FILL_ROW|LAYOUT_FILL_COLUMN);
+  new FXArrowButton(abmatrix,nullptr,0,LAYOUT_FILL_X|LAYOUT_FILL_Y|FRAME_RAISED|FRAME_THICK|ARROW_UP|LAYOUT_FILL_ROW|LAYOUT_FILL_COLUMN);
+  new FXArrowButton(abmatrix,nullptr,0,LAYOUT_FILL_X|LAYOUT_FILL_Y|FRAME_RAISED|FRAME_THICK|ARROW_DOWN|LAYOUT_FILL_ROW|LAYOUT_FILL_COLUMN);
+  new FXArrowButton(abmatrix,nullptr,0,LAYOUT_FILL_X|LAYOUT_FILL_Y|FRAME_RAISED|FRAME_THICK|ARROW_LEFT|LAYOUT_FILL_ROW|LAYOUT_FILL_COLUMN);
+  new FXArrowButton(abmatrix,nullptr,0,LAYOUT_FILL_X|LAYOUT_FILL_Y|FRAME_RAISED|FRAME_THICK|ARROW_RIGHT|LAYOUT_FILL_ROW|LAYOUT_FILL_COLUMN);
+  new FXArrowButton(abmatrix,nullptr,0,LAYOUT_FILL_X|LAYOUT_FILL_Y|FRAME_RAISED|FRAME_THICK|ARROW_UP|ARROW_TOOLBAR|LAYOUT_FILL_ROW|LAYOUT_FILL_COLUMN);
+  new FXArrowButton(abmatrix,nullptr,0,LAYOUT_FILL_X|LAYOUT_FILL_Y|FRAME_RAISED|FRAME_THICK|ARROW_DOWN|ARROW_TOOLBAR|LAYOUT_FILL_ROW|LAYOUT_FILL_COLUMN);
+  new FXArrowButton(abmatrix,nullptr,0,LAYOUT_FILL_X|LAYOUT_FILL_Y|FRAME_RAISED|FRAME_THICK|ARROW_LEFT|ARROW_TOOLBAR|LAYOUT_FILL_ROW|LAYOUT_FILL_COLUMN);
+  new FXArrowButton(abmatrix,nullptr,0,LAYOUT_FILL_X|LAYOUT_FILL_Y|FRAME_RAISED|FRAME_THICK|ARROW_RIGHT|ARROW_TOOLBAR|LAYOUT_FILL_ROW|LAYOUT_FILL_COLUMN);
 
   // Radio buttons
   FXGroupBox *gp=new FXGroupBox(group3,"Group Box",LAYOUT_SIDE_TOP|FRAME_GROOVE|LAYOUT_FILL_X, 0,0,0,0);
@@ -379,24 +379,24 @@ GroupWindow::GroupWindow(FXApp* a):FXMainWindow(a,"Group Box Test",NULL,NULL,DEC
   new FXRadioButton(gp,"Radio &3",&radiotarget,FXDataTarget::ID_OPTION+3,ICON_BEFORE_TEXT|LAYOUT_SIDE_TOP);
 
   FXPacker *vv=new FXGroupBox(group3,"Group Box",LAYOUT_SIDE_TOP|FRAME_GROOVE|LAYOUT_FILL_X, 0,0,0,0);
-  new FXCheckButton(vv,"Hilversum 1",NULL,0,ICON_BEFORE_TEXT|LAYOUT_SIDE_TOP);
-  new FXCheckButton(vv,"Hilversum 2",NULL,0,ICON_BEFORE_TEXT|LAYOUT_SIDE_TOP);
-  FXCheckButton *chk1=new FXCheckButton(vv,"One multi-line\nCheckbox Widget",NULL,0,CHECKBUTTON_PLUS|JUSTIFY_LEFT|JUSTIFY_TOP|ICON_BEFORE_TEXT|LAYOUT_SIDE_TOP);
+  new FXCheckButton(vv,"Hilversum 1",nullptr,0,ICON_BEFORE_TEXT|LAYOUT_SIDE_TOP);
+  new FXCheckButton(vv,"Hilversum 2",nullptr,0,ICON_BEFORE_TEXT|LAYOUT_SIDE_TOP);
+  FXCheckButton *chk1=new FXCheckButton(vv,"One multi-line\nCheckbox Widget",nullptr,0,CHECKBUTTON_PLUS|JUSTIFY_LEFT|JUSTIFY_TOP|ICON_BEFORE_TEXT|LAYOUT_SIDE_TOP);
   chk1->setCheck(maybe);
-  FXCheckButton *chk2=new FXCheckButton(vv,FXString::unescape("Ouvres votre fen\\u00EAtre"),NULL,0,ICON_BEFORE_TEXT|LAYOUT_SIDE_TOP);
+  FXCheckButton *chk2=new FXCheckButton(vv,FXString::unescape("Ouvres votre fen\\u00EAtre"),nullptr,0,ICON_BEFORE_TEXT|LAYOUT_SIDE_TOP);
   chk2->setCheck(maybe);
 
-  FXSpinner *spinner=new FXSpinner(group3,20,NULL,0,SPIN_NORMAL|FRAME_SUNKEN|FRAME_THICK|LAYOUT_SIDE_TOP);
+  FXSpinner *spinner=new FXSpinner(group3,20,nullptr,0,SPIN_NORMAL|FRAME_SUNKEN|FRAME_THICK|LAYOUT_SIDE_TOP);
   spinner->setRange(1,20);
   spinner->setTipText("tip");
   spinner->setHelpText("help");
 
-  FXRealSpinner *realspinner=new FXRealSpinner(group3,20,NULL,0,REALSPIN_CYCLIC|FRAME_SUNKEN|FRAME_THICK|LAYOUT_SIDE_TOP);
+  FXRealSpinner *realspinner=new FXRealSpinner(group3,20,nullptr,0,REALSPIN_CYCLIC|FRAME_SUNKEN|FRAME_THICK|LAYOUT_SIDE_TOP);
   realspinner->setRange(1.0,2.0);
   realspinner->setValue(1.0);
   realspinner->setIncrement(0.1);
 
-  FXComboBox* combobox=new FXComboBox(group3,5,NULL,0,COMBOBOX_INSERT_LAST|FRAME_SUNKEN|FRAME_THICK|LAYOUT_SIDE_TOP);
+  FXComboBox* combobox=new FXComboBox(group3,5,nullptr,0,COMBOBOX_INSERT_LAST|FRAME_SUNKEN|FRAME_THICK|LAYOUT_SIDE_TOP);
   combobox->setNumVisible(5);
   combobox->appendItem("Very Wide Item");
   for(int i=0; i<3; i++){
@@ -405,12 +405,12 @@ GroupWindow::GroupWindow(FXApp* a):FXMainWindow(a,"Group Box Test",NULL,NULL,DEC
     combobox->appendItem(name);
     }
 
-  FXTreeListBox *treebox=new FXTreeListBox(group3,NULL,0,FRAME_SUNKEN|FRAME_THICK|LAYOUT_SIDE_TOP,0,0,200,0);
+  FXTreeListBox *treebox=new FXTreeListBox(group3,nullptr,0,FRAME_SUNKEN|FRAME_THICK|LAYOUT_SIDE_TOP,0,0,200,0);
   FXTreeItem *branch,*twig,*leaf,*topmost,*topmost2;
 
   treebox->setNumVisible(10);
-  topmost=treebox->appendItem(NULL,"Top",folder_open,folder_closed);
-  topmost2=treebox->appendItem(NULL,"Top2",folder_open,folder_closed);
+  topmost=treebox->appendItem(nullptr,"Top",folder_open,folder_closed);
+  topmost2=treebox->appendItem(nullptr,"Top2",folder_open,folder_closed);
            treebox->appendItem(topmost2,"First",doc,doc);
 
   treebox->appendItem(topmost,"First",doc,doc);
@@ -432,36 +432,36 @@ GroupWindow::GroupWindow(FXApp* a):FXMainWindow(a,"Group Box Test",NULL,NULL,DEC
       treebox->appendItem(twig,"Fourth-Fourth-Second",doc,doc);
       treebox->appendItem(twig,"Fourth-Fourth-Third",doc,doc);
 
-  new FXLabel(group3,"H&it the hotkey",NULL,LAYOUT_CENTER_X|JUSTIFY_CENTER_X|FRAME_RAISED);
-  FXTextField* textfield0=new FXTextField(group3,20,NULL,0,FRAME_SUNKEN|FRAME_THICK|LAYOUT_SIDE_TOP|LAYOUT_FILL_X);
+  new FXLabel(group3,"H&it the hotkey",nullptr,LAYOUT_CENTER_X|JUSTIFY_CENTER_X|FRAME_RAISED);
+  FXTextField* textfield0=new FXTextField(group3,20,nullptr,0,FRAME_SUNKEN|FRAME_THICK|LAYOUT_SIDE_TOP|LAYOUT_FILL_X);
   textfield0->setText("Normal Text Field");
-  FXTextField* textfield1=new FXTextField(group3,20,NULL,0,JUSTIFY_RIGHT|FRAME_SUNKEN|FRAME_THICK|LAYOUT_SIDE_TOP|LAYOUT_FILL_X);
+  FXTextField* textfield1=new FXTextField(group3,20,nullptr,0,JUSTIFY_RIGHT|FRAME_SUNKEN|FRAME_THICK|LAYOUT_SIDE_TOP|LAYOUT_FILL_X);
   textfield1->setText("Reverse Text Field");
-  FXTextField* textfield5=new FXTextField(group3,20,NULL,0,FRAME_SUNKEN|FRAME_THICK|LAYOUT_SIDE_TOP|LAYOUT_FILL_X);
+  FXTextField* textfield5=new FXTextField(group3,20,nullptr,0,FRAME_SUNKEN|FRAME_THICK|LAYOUT_SIDE_TOP|LAYOUT_FILL_X);
   textfield5->setText("Centered Text Field");
   textfield5->setJustify(JUSTIFY_CENTER_X);
-  FXTextField* textfield2=new FXTextField(group3,20,NULL,0,JUSTIFY_RIGHT|TEXTFIELD_PASSWD|FRAME_SUNKEN|FRAME_THICK|LAYOUT_SIDE_TOP|LAYOUT_FILL_X);
+  FXTextField* textfield2=new FXTextField(group3,20,nullptr,0,JUSTIFY_RIGHT|TEXTFIELD_PASSWD|FRAME_SUNKEN|FRAME_THICK|LAYOUT_SIDE_TOP|LAYOUT_FILL_X);
   textfield2->setText("Password");
-  FXTextField* textfield3=new FXTextField(group3,20,NULL,0,TEXTFIELD_READONLY|FRAME_SUNKEN|FRAME_THICK|LAYOUT_SIDE_TOP|LAYOUT_FILL_X);
+  FXTextField* textfield3=new FXTextField(group3,20,nullptr,0,TEXTFIELD_READONLY|FRAME_SUNKEN|FRAME_THICK|LAYOUT_SIDE_TOP|LAYOUT_FILL_X);
   textfield3->setText("Read Only");
-  FXTextField* textfield4=new FXTextField(group3,20,NULL,0,TEXTFIELD_READONLY|FRAME_SUNKEN|FRAME_THICK|LAYOUT_SIDE_TOP|LAYOUT_FILL_X);
+  FXTextField* textfield4=new FXTextField(group3,20,nullptr,0,TEXTFIELD_READONLY|FRAME_SUNKEN|FRAME_THICK|LAYOUT_SIDE_TOP|LAYOUT_FILL_X);
   textfield4->setText("Grayed out");
   textfield4->disable();
 
-  FXTextField* realnumber=new FXTextField(group3,20,NULL,0,TEXTFIELD_REAL|FRAME_SUNKEN|FRAME_THICK|LAYOUT_SIDE_TOP|LAYOUT_FIX_HEIGHT,0,0,0,30);
+  FXTextField* realnumber=new FXTextField(group3,20,nullptr,0,TEXTFIELD_REAL|FRAME_SUNKEN|FRAME_THICK|LAYOUT_SIDE_TOP|LAYOUT_FIX_HEIGHT,0,0,0,30);
   realnumber->setText("1.0E+3");
-  FXTextField* intnumber=new FXTextField(group3,20,NULL,0,TEXTFIELD_INTEGER|FRAME_SUNKEN|FRAME_THICK|LAYOUT_SIDE_TOP|LAYOUT_FIX_HEIGHT,0,0,0,30);
+  FXTextField* intnumber=new FXTextField(group3,20,nullptr,0,TEXTFIELD_INTEGER|FRAME_SUNKEN|FRAME_THICK|LAYOUT_SIDE_TOP|LAYOUT_FIX_HEIGHT,0,0,0,30);
   intnumber->setText("1000");
 
-  FXDial *dial2=new FXDial(group3,NULL,0,DIAL_CYCLIC|DIAL_HAS_NOTCH|DIAL_HORIZONTAL|LAYOUT_FILL_X|FRAME_RAISED|FRAME_THICK,0,0,120,0);
-  new FXScrollBar(group3,NULL,0,SCROLLBAR_HORIZONTAL|LAYOUT_FIX_HEIGHT|LAYOUT_FIX_WIDTH,0,0,300,20);
+  FXDial *dial2=new FXDial(group3,nullptr,0,DIAL_CYCLIC|DIAL_HAS_NOTCH|DIAL_HORIZONTAL|LAYOUT_FILL_X|FRAME_RAISED|FRAME_THICK,0,0,120,0);
+  new FXScrollBar(group3,nullptr,0,SCROLLBAR_HORIZONTAL|LAYOUT_FIX_HEIGHT|LAYOUT_FIX_WIDTH,0,0,300,20);
 
-  FXProgressBar *pbar=new FXProgressBar(group3,NULL,0,LAYOUT_FILL_X|FRAME_SUNKEN|FRAME_THICK|PROGRESSBAR_PERCENTAGE);
+  FXProgressBar *pbar=new FXProgressBar(group3,nullptr,0,LAYOUT_FILL_X|FRAME_SUNKEN|FRAME_THICK|PROGRESSBAR_PERCENTAGE);
   pbar->setProgress(48);
   pbar->setTotal(360);
-  FXProgressBar *pbar2=new FXProgressBar(group3,NULL,0,LAYOUT_FILL_Y|FRAME_SUNKEN|FRAME_THICK|PROGRESSBAR_VERTICAL|PROGRESSBAR_PERCENTAGE|LAYOUT_SIDE_LEFT);
+  FXProgressBar *pbar2=new FXProgressBar(group3,nullptr,0,LAYOUT_FILL_Y|FRAME_SUNKEN|FRAME_THICK|PROGRESSBAR_VERTICAL|PROGRESSBAR_PERCENTAGE|LAYOUT_SIDE_LEFT);
   pbar2->setTotal(360);
-  FXDial *dial1=new FXDial(group3,NULL,0,DIAL_CYCLIC|DIAL_HAS_NOTCH|DIAL_VERTICAL|FRAME_RAISED|FRAME_THICK|LAYOUT_FILL_Y|LAYOUT_SIDE_LEFT);
+  FXDial *dial1=new FXDial(group3,nullptr,0,DIAL_CYCLIC|DIAL_HAS_NOTCH|DIAL_VERTICAL|FRAME_RAISED|FRAME_THICK|LAYOUT_FILL_Y|LAYOUT_SIDE_LEFT);
   pbar2->setProgress(48);
   dial1->setTarget(pbar2);
   dial1->setSelector(FXWindow::ID_SETVALUE);
@@ -573,7 +573,7 @@ long GroupWindow::onCmdDownSize(FXObject*,FXSelector,void*){
 // Test delete
 long GroupWindow::onCmdDelete(FXObject*,FXSelector,void*){
   delete group2;
-  group2=NULL;
+  group2=nullptr;
   return 1;
   }
 
@@ -582,7 +582,7 @@ long GroupWindow::onCmdDelete(FXObject*,FXSelector,void*){
 long GroupWindow::onCmdPopup(FXObject*,FXSelector,void*){
   FXint x,y; FXuint buttons;
   getRoot()->getCursorPosition(x,y,buttons);
-  popupmenu->popup(NULL,x,y);
+  popupmenu->popup(nullptr,x,y);
   return 1;
   }
 

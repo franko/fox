@@ -3,7 +3,7 @@
 *                                 Button Test                                   *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 1998,2021 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 1998,2022 by Jeroen van der Zijp.   All Rights Reserved.        *
 ********************************************************************************/
 #include "fx.h"
 #include <stdio.h>
@@ -152,7 +152,7 @@ FXIMPLEMENT(ButtonWindow,FXMainWindow,ButtonWindowMap,ARRAYNUMBER(ButtonWindowMa
 
 
 // Make some windows
-ButtonWindow::ButtonWindow(FXApp* a):FXMainWindow(a,"Button Test",NULL,NULL,DECOR_TITLE|DECOR_MINIMIZE|DECOR_MAXIMIZE|DECOR_CLOSE|DECOR_BORDER|DECOR_STRETCHABLE|DECOR_MENU,100,100,800,600){
+ButtonWindow::ButtonWindow(FXApp* a):FXMainWindow(a,"Button Test",nullptr,nullptr,DECOR_TITLE|DECOR_MINIMIZE|DECOR_MAXIMIZE|DECOR_CLOSE|DECOR_BORDER|DECOR_STRETCHABLE|DECOR_MENU,100,100,800,600){
 
   // Tooltip
   new FXToolTip(getApp());
@@ -175,7 +175,7 @@ ButtonWindow::ButtonWindow(FXApp* a):FXMainWindow(a,"Button Test",NULL,NULL,DECO
   button=new FXButton(contents,
                       "&This is a multi-line label on\na button to show off the full\ncapabilities of the button object\tIt also has a tooltip\n[which by the way can be multi-line also]\tAnd some helpful message for the status line.",
                       icon,
-                      NULL,0,
+                      nullptr,0,
                       FRAME_RAISED|FRAME_THICK|LAYOUT_CENTER_X|LAYOUT_CENTER_Y|LAYOUT_FIX_WIDTH|LAYOUT_FIX_HEIGHT,
                       0,0,300,200);
 
@@ -204,7 +204,7 @@ ButtonWindow::ButtonWindow(FXApp* a):FXMainWindow(a,"Button Test",NULL,NULL,DECO
   new FXRadioButton(group4,"Bottom",this,ID_JUST_BOTTOM);
   new FXRadioButton(group4,"Apart",this,ID_JUST_VER_APART);
 
-  new FXButton(controls,"&Quit",NULL,this,ID_QUIT,FRAME_RAISED|FRAME_THICK|LAYOUT_FILL_X|LAYOUT_BOTTOM);
+  new FXButton(controls,"&Quit",nullptr,this,ID_QUIT,FRAME_RAISED|FRAME_THICK|LAYOUT_FILL_X|LAYOUT_BOTTOM);
   }
 
 
@@ -273,7 +273,7 @@ long ButtonWindow::onUpdIconTextRelation(FXObject* sender,FXSelector sel,void*){
       if(!(style&ICON_ABOVE_TEXT) && !(style&ICON_BELOW_TEXT)) updatemessage=FXSEL(SEL_COMMAND,ID_CHECK);
       break;
     }
-  sender->handle(this,updatemessage,NULL);
+  sender->handle(this,updatemessage,nullptr);
   return 1;
   }
 
@@ -346,7 +346,7 @@ long ButtonWindow::onUpdJustification(FXObject* sender,FXSelector sel,void*){
       if((style&JUSTIFY_TOP) && (style&JUSTIFY_BOTTOM)) updatemessage=FXSEL(SEL_COMMAND,ID_CHECK);
       break;
     }
-  sender->handle(this,updatemessage,NULL);
+  sender->handle(this,updatemessage,nullptr);
   return 1;
   }
 

@@ -3,7 +3,7 @@
 *                          D i c t i o n a r y    C l a s s                     *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 1998,2021 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 1998,2022 by Jeroen van der Zijp.   All Rights Reserved.        *
 *********************************************************************************
 * This library is free software; you can redistribute it and/or modify          *
 * it under the terms of the GNU Lesser General Public License as published by   *
@@ -118,10 +118,10 @@ public:
   const FXptr& operator[](const FXString& ky) const { return at(ky); }
 
   /// Insert association with given key; return old value, if any
-  FXptr insert(const FXchar* ky,FXptr ptr=NULL){ return swap(ptr,at(ky)); }
+  FXptr insert(const FXchar* ky,FXptr ptr=nullptr){ return swap(ptr,at(ky)); }
 
   /// Insert association with given key; return old value, if any
-  FXptr insert(const FXString& ky,FXptr ptr=NULL){ return swap(ptr,at(ky)); }
+  FXptr insert(const FXString& ky,FXptr ptr=nullptr){ return swap(ptr,at(ky)); }
 
   /// Remove association with given key; return old value, if any
   FXptr remove(const FXchar* ky);

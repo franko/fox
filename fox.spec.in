@@ -12,7 +12,7 @@ License: LGPL+Addendum
 Group: System Environment/Libraries
 Source: ftp://ftp.fox-toolkit.org/pub/fox-@FOX_MAJOR_VERSION@.@FOX_MINOR_VERSION@.@FOX_PATCH_LEVEL@.tar.gz
 URL: http://www.fox-toolkit.org
-Packager: Jeroen van der Zijp <jeroen@fox-toolkit.com>
+Packager: Jeroen van der Zijp <jeroen@fox-toolkit.net>
 BuildRoot: %{_tmppath}/%{name}-buildroot
 
 %description
@@ -168,7 +168,7 @@ rm -rf ${RPM_BUILD_ROOT}/usr/fox
 %{_mandir}/man1/ControlPanel.1*
 
 %changelog
-* Sat Wed 9 2011 Jeroen van der Zijp <jeroen@fox-toolkit.com>
+* Sat Wed 9 2011 Jeroen van der Zijp <jeroen@fox-toolkit.net>
 - Added Control Panel application.
 - Added package config to installed.
 - Deleted very old stuff in change log.

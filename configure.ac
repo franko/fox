@@ -1,11 +1,11 @@
 # Version of the code
 m4_define([fox_major], [1])
 m4_define([fox_minor], [7])
-m4_define([fox_level], [77])
+m4_define([fox_level], [78])
 m4_define([fox_version],[fox_major.fox_minor.fox_level])
 
 # Init
-AC_INIT(fox,[fox_version],jeroen@fox-toolkit.com)
+AC_INIT(fox,[fox_version],jeroen@fox-toolkit.net)
 AC_CONFIG_SRCDIR([include/fx.h])
 AM_INIT_AUTOMAKE([foreign])
 

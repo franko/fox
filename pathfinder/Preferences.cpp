@@ -3,7 +3,7 @@
 *                        P r e f e r e n c e s   D i a l o g                    *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 2003,2021 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 2003,2022 by Jeroen van der Zijp.   All Rights Reserved.        *
 *********************************************************************************
 * This program is free software: you can redistribute it and/or modify          *
 * it under the terms of the GNU General Public License as published by          *
@@ -94,40 +94,40 @@ Preferences::Preferences(PathFinderMain *own):FXDialogBox(own,"PathFinder Prefer
 
   ///////////////////////////  Browser settings pane  ///////////////////////////
   FXVerticalFrame* browserpane=new FXVerticalFrame(switcher,LAYOUT_FILL_X|LAYOUT_FILL_Y,0,0,0,0, 0,0,0,0, 0,0);
-  new FXLabel(browserpane,tr("PathFinder settings"),NULL,LAYOUT_LEFT);
+  new FXLabel(browserpane,tr("PathFinder settings"),nullptr,LAYOUT_LEFT);
   new FXHorizontalSeparator(browserpane,SEPARATOR_LINE|LAYOUT_FILL_X);
   FXMatrix *matrix2=new FXMatrix(browserpane,3,MATRIX_BY_COLUMNS|PACK_UNIFORM_HEIGHT|LAYOUT_FILL_X|LAYOUT_FILL_Y,0,0,0,0, 0,0,10,0, 6, 6);
 
-  new FXLabel(matrix2,tr("Icon search paths:"),NULL,LAYOUT_LEFT);
-  icondirs=new FXTextField(matrix2,6,NULL,0,FRAME_SUNKEN|FRAME_THICK|LAYOUT_CENTER_Y|LAYOUT_FILL_X|LAYOUT_FILL_COLUMN,0,0,0,0, 2,2,2,2);
+  new FXLabel(matrix2,tr("Icon search paths:"),nullptr,LAYOUT_LEFT);
+  icondirs=new FXTextField(matrix2,6,nullptr,0,FRAME_SUNKEN|FRAME_THICK|LAYOUT_CENTER_Y|LAYOUT_FILL_X|LAYOUT_FILL_COLUMN,0,0,0,0, 2,2,2,2);
   icondirs->setTipText(tr("List of directories to search for icons."));
   new FXButton(matrix2,tr("\tBrowse..."),dir,this,ID_BROWSE_ICONS,FRAME_RAISED|FRAME_THICK|LAYOUT_CENTER_Y);
 
-  new FXLabel(matrix2,tr("Editor command:"),NULL,JUSTIFY_LEFT|LAYOUT_CENTER_Y|LAYOUT_FILL_X);
-  editor=new FXTextField(matrix2,6,NULL,0,FRAME_SUNKEN|FRAME_THICK|LAYOUT_CENTER_Y|LAYOUT_FILL_X|LAYOUT_FILL_COLUMN,0,0,0,0, 2,2,2,2);
+  new FXLabel(matrix2,tr("Editor command:"),nullptr,JUSTIFY_LEFT|LAYOUT_CENTER_Y|LAYOUT_FILL_X);
+  editor=new FXTextField(matrix2,6,nullptr,0,FRAME_SUNKEN|FRAME_THICK|LAYOUT_CENTER_Y|LAYOUT_FILL_X|LAYOUT_FILL_COLUMN,0,0,0,0, 2,2,2,2);
   editor->setTipText(tr("Path to text editor program\nCommand line arguments are assembled from the selected file(s) as follows:\n  %f  Replaced by current filename;\n  %F  Replaced by selected filenames;\n  %u  Replaced by URL encoding of current filename;\n  %U  Replaced by URL encoding of selected files;\n  %d  Replaced by current working directory;\n  %%  Replaced by simply '%'."));
   new FXButton(matrix2,tr("\tBrowse..."),dir,this,ID_BROWSE_EDITOR,FRAME_RAISED|FRAME_THICK|LAYOUT_CENTER_Y);
 
-  new FXLabel(matrix2,tr("Terminal command:"),NULL,JUSTIFY_LEFT|LAYOUT_CENTER_Y|LAYOUT_FILL_X);
-  terminal=new FXTextField(matrix2,6,NULL,0,FRAME_SUNKEN|FRAME_THICK|LAYOUT_CENTER_Y|LAYOUT_FILL_X|LAYOUT_FILL_COLUMN,0,0,0,0, 2,2,2,2);
+  new FXLabel(matrix2,tr("Terminal command:"),nullptr,JUSTIFY_LEFT|LAYOUT_CENTER_Y|LAYOUT_FILL_X);
+  terminal=new FXTextField(matrix2,6,nullptr,0,FRAME_SUNKEN|FRAME_THICK|LAYOUT_CENTER_Y|LAYOUT_FILL_X|LAYOUT_FILL_COLUMN,0,0,0,0, 2,2,2,2);
   terminal->setTipText(tr("Path to terminal program."));
   new FXButton(matrix2,tr("\tBrowse..."),dir,this,ID_BROWSE_TERMINAL,FRAME_RAISED|FRAME_THICK|LAYOUT_CENTER_Y);
 
-  new FXLabel(matrix2,tr("Executable paths:"),NULL,JUSTIFY_LEFT|LAYOUT_CENTER_Y|LAYOUT_FILL_X);
-  execpaths=new FXTextField(matrix2,6,NULL,0,FRAME_SUNKEN|FRAME_THICK|LAYOUT_CENTER_Y|LAYOUT_FILL_X|LAYOUT_FILL_COLUMN,0,0,0,0, 2,2,2,2);
+  new FXLabel(matrix2,tr("Executable paths:"),nullptr,JUSTIFY_LEFT|LAYOUT_CENTER_Y|LAYOUT_FILL_X);
+  execpaths=new FXTextField(matrix2,6,nullptr,0,FRAME_SUNKEN|FRAME_THICK|LAYOUT_CENTER_Y|LAYOUT_FILL_X|LAYOUT_FILL_COLUMN,0,0,0,0, 2,2,2,2);
   execpaths->setTipText(tr("List of directories to search for executable programs."));
   new FXButton(matrix2,tr("\tBrowse..."),dir,this,ID_BROWSE_PATHS,FRAME_RAISED|FRAME_THICK|LAYOUT_CENTER_Y);
 
-  new FXLabel(matrix2,tr("Preview images:"),NULL,JUSTIFY_LEFT|LAYOUT_CENTER_Y|LAYOUT_FILL_X);
-  preview=new FXCheckButton(matrix2,FXString::null,NULL,0,LAYOUT_LEFT|LAYOUT_CENTER_Y|LAYOUT_FILL_COLUMN,0,0,0,0, 0,0,0,0);
+  new FXLabel(matrix2,tr("Preview images:"),nullptr,JUSTIFY_LEFT|LAYOUT_CENTER_Y|LAYOUT_FILL_X);
+  preview=new FXCheckButton(matrix2,FXString::null,nullptr,0,LAYOUT_LEFT|LAYOUT_CENTER_Y|LAYOUT_FILL_COLUMN,0,0,0,0, 0,0,0,0);
   new FXFrame(matrix2,0);
 
-  new FXLabel(matrix2,tr("Image blending:"),NULL,JUSTIFY_LEFT|LAYOUT_CENTER_Y|LAYOUT_FILL_X);
-  blending=new FXCheckButton(matrix2,FXString::null,NULL,0,LAYOUT_LEFT|LAYOUT_CENTER_Y|LAYOUT_FILL_COLUMN,0,0,0,0, 0,0,0,0);
+  new FXLabel(matrix2,tr("Image blending:"),nullptr,JUSTIFY_LEFT|LAYOUT_CENTER_Y|LAYOUT_FILL_X);
+  blending=new FXCheckButton(matrix2,FXString::null,nullptr,0,LAYOUT_LEFT|LAYOUT_CENTER_Y|LAYOUT_FILL_COLUMN,0,0,0,0, 0,0,0,0);
   new FXFrame(matrix2,0);
 
-  new FXLabel(matrix2,tr("Image scaling:"),NULL,JUSTIFY_LEFT|LAYOUT_CENTER_Y|LAYOUT_FILL_X);
-  scaling=new FXCheckButton(matrix2,FXString::null,NULL,0,LAYOUT_LEFT|LAYOUT_CENTER_Y|LAYOUT_FILL_COLUMN,0,0,0,0, 0,0,0,0);
+  new FXLabel(matrix2,tr("Image scaling:"),nullptr,JUSTIFY_LEFT|LAYOUT_CENTER_Y|LAYOUT_FILL_X);
+  scaling=new FXCheckButton(matrix2,FXString::null,nullptr,0,LAYOUT_LEFT|LAYOUT_CENTER_Y|LAYOUT_FILL_COLUMN,0,0,0,0, 0,0,0,0);
   new FXFrame(matrix2,0);
 
   //// Browser settings button
@@ -136,15 +136,15 @@ Preferences::Preferences(PathFinderMain *own):FXDialogBox(own,"PathFinder Prefer
 
   /////////////////////////  Mime type settings pane  ///////////////////////////
   FXPacker* mimetypepane=new FXPacker(switcher,LAYOUT_FILL_X|LAYOUT_FILL_Y,0,0,0,0, 0,0,0,0);
-  new FXLabel(mimetypepane,tr("Extensions Setup"),NULL,LAYOUT_LEFT|LAYOUT_SIDE_TOP);
+  new FXLabel(mimetypepane,tr("Extensions Setup"),nullptr,LAYOUT_LEFT|LAYOUT_SIDE_TOP);
   new FXHorizontalSeparator(mimetypepane,SEPARATOR_LINE|LAYOUT_FILL_X|LAYOUT_SIDE_TOP);
 
   // List of possible extensions of this file type
   FXGroupBox *extensiongroup=new FXGroupBox(mimetypepane,tr("File Extensions"),GROUPBOX_TITLE_LEFT|FRAME_GROOVE|LAYOUT_FILL_Y|LAYOUT_SIDE_LEFT);
   FXHorizontalFrame *filetypebuttons=new FXHorizontalFrame(extensiongroup,LAYOUT_SIDE_BOTTOM|LAYOUT_FILL_X|PACK_UNIFORM_WIDTH,0,0,0,0, 0,0,0,0);
-  new FXButton(filetypebuttons,tr("Add"),NULL,this,ID_APPEND_EXTENSION,FRAME_RAISED|FRAME_THICK|LAYOUT_CENTER_Y|LAYOUT_CENTER_X);
-  new FXButton(filetypebuttons,tr("Edit"),NULL,this,ID_CHANGE_EXTENSION,FRAME_RAISED|FRAME_THICK|LAYOUT_CENTER_Y|LAYOUT_CENTER_X);
-  new FXButton(filetypebuttons,tr("Delete"),NULL,this,ID_REMOVE_EXTENSION,FRAME_RAISED|FRAME_THICK|LAYOUT_CENTER_Y|LAYOUT_CENTER_X);
+  new FXButton(filetypebuttons,tr("Add"),nullptr,this,ID_APPEND_EXTENSION,FRAME_RAISED|FRAME_THICK|LAYOUT_CENTER_Y|LAYOUT_CENTER_X);
+  new FXButton(filetypebuttons,tr("Edit"),nullptr,this,ID_CHANGE_EXTENSION,FRAME_RAISED|FRAME_THICK|LAYOUT_CENTER_Y|LAYOUT_CENTER_X);
+  new FXButton(filetypebuttons,tr("Delete"),nullptr,this,ID_REMOVE_EXTENSION,FRAME_RAISED|FRAME_THICK|LAYOUT_CENTER_Y|LAYOUT_CENTER_X);
   FXVerticalFrame *extensionFrame=new FXVerticalFrame(extensiongroup,LAYOUT_FILL_X|LAYOUT_FILL_Y|FRAME_SUNKEN|FRAME_THICK,0,0,0,0, 0,0,0,0);
   extensions=new FXList(extensionFrame,this,ID_SELECT_EXTENSION,LIST_BROWSESELECT|LAYOUT_FILL_X|LAYOUT_FILL_Y|HSCROLLER_NEVER);
   extensions->setSortFunc(FXList::ascendingCase);
@@ -177,20 +177,20 @@ Preferences::Preferences(PathFinderMain *own):FXDialogBox(own,"PathFinder Prefer
   FXMatrix *iconsmatrix=new FXMatrix(iconsgroup,4,MATRIX_BY_COLUMNS|LAYOUT_FILL_X|LAYOUT_FILL_Y|PACK_UNIFORM_WIDTH,0,0,0,0, 0,0,0,0);
 
   // Icon labels
-  new FXLabel(iconsmatrix,tr("Small"),NULL,JUSTIFY_CENTER_X|LAYOUT_FILL_X|LAYOUT_FILL_Y|LAYOUT_FILL_COLUMN);
-  new FXLabel(iconsmatrix,tr("Big"),NULL,JUSTIFY_CENTER_X|LAYOUT_FILL_X|LAYOUT_FILL_Y|LAYOUT_FILL_COLUMN);
-  new FXLabel(iconsmatrix,tr("Small Open"),NULL,JUSTIFY_CENTER_X|LAYOUT_FILL_X|LAYOUT_FILL_Y|LAYOUT_FILL_COLUMN);
-  new FXLabel(iconsmatrix,tr("Big Open"),NULL,JUSTIFY_CENTER_X|LAYOUT_FILL_X|LAYOUT_FILL_Y|LAYOUT_FILL_COLUMN);
+  new FXLabel(iconsmatrix,tr("Small"),nullptr,JUSTIFY_CENTER_X|LAYOUT_FILL_X|LAYOUT_FILL_Y|LAYOUT_FILL_COLUMN);
+  new FXLabel(iconsmatrix,tr("Big"),nullptr,JUSTIFY_CENTER_X|LAYOUT_FILL_X|LAYOUT_FILL_Y|LAYOUT_FILL_COLUMN);
+  new FXLabel(iconsmatrix,tr("Small Open"),nullptr,JUSTIFY_CENTER_X|LAYOUT_FILL_X|LAYOUT_FILL_Y|LAYOUT_FILL_COLUMN);
+  new FXLabel(iconsmatrix,tr("Big Open"),nullptr,JUSTIFY_CENTER_X|LAYOUT_FILL_X|LAYOUT_FILL_Y|LAYOUT_FILL_COLUMN);
 
   // Icons
-  iconbutton[0]=new FXButton(iconsmatrix,tr("\tChange small icon."),NULL,this,ID_BROWSE_SMALLICON,FRAME_RAISED|LAYOUT_CENTER_X|LAYOUT_CENTER_Y|LAYOUT_FIX_WIDTH|LAYOUT_FIX_HEIGHT|JUSTIFY_CENTER_X|JUSTIFY_CENTER_Y|LAYOUT_FILL_COLUMN|LAYOUT_FILL_ROW,0,0,56,56, 1,1,1,1);
-  iconbutton[1]=new FXButton(iconsmatrix,tr("\tChange big icon."),NULL,this,ID_BROWSE_BIGICON,FRAME_RAISED|LAYOUT_CENTER_X|LAYOUT_CENTER_Y|LAYOUT_FIX_WIDTH|LAYOUT_FIX_HEIGHT|JUSTIFY_CENTER_X|JUSTIFY_CENTER_Y|LAYOUT_FILL_COLUMN|LAYOUT_FILL_ROW,0,0,56,56, 1,1,1,1);
-  iconbutton[2]=new FXButton(iconsmatrix,tr("\tChange small open icon."),NULL,this,ID_BROWSE_SMALLICONOPEN,FRAME_RAISED|LAYOUT_CENTER_X|LAYOUT_CENTER_Y|LAYOUT_FIX_WIDTH|LAYOUT_FIX_HEIGHT|JUSTIFY_CENTER_X|JUSTIFY_CENTER_Y|LAYOUT_FILL_COLUMN|LAYOUT_FILL_ROW,0,0,56,56, 1,1,1,1);
-  iconbutton[3]=new FXButton(iconsmatrix,tr("\tChange big open icon."),NULL,this,ID_BROWSE_BIGICONOPEN,FRAME_RAISED|LAYOUT_CENTER_X|LAYOUT_CENTER_Y|LAYOUT_FIX_WIDTH|LAYOUT_FIX_HEIGHT|JUSTIFY_CENTER_X|JUSTIFY_CENTER_Y|LAYOUT_FILL_COLUMN|LAYOUT_FILL_ROW,0,0,56,56, 1,1,1,1);
-  iconimage[0]=NULL;
-  iconimage[1]=NULL;
-  iconimage[2]=NULL;
-  iconimage[3]=NULL;
+  iconbutton[0]=new FXButton(iconsmatrix,tr("\tChange small icon."),nullptr,this,ID_BROWSE_SMALLICON,FRAME_RAISED|LAYOUT_CENTER_X|LAYOUT_CENTER_Y|LAYOUT_FIX_WIDTH|LAYOUT_FIX_HEIGHT|JUSTIFY_CENTER_X|JUSTIFY_CENTER_Y|LAYOUT_FILL_COLUMN|LAYOUT_FILL_ROW,0,0,56,56, 1,1,1,1);
+  iconbutton[1]=new FXButton(iconsmatrix,tr("\tChange big icon."),nullptr,this,ID_BROWSE_BIGICON,FRAME_RAISED|LAYOUT_CENTER_X|LAYOUT_CENTER_Y|LAYOUT_FIX_WIDTH|LAYOUT_FIX_HEIGHT|JUSTIFY_CENTER_X|JUSTIFY_CENTER_Y|LAYOUT_FILL_COLUMN|LAYOUT_FILL_ROW,0,0,56,56, 1,1,1,1);
+  iconbutton[2]=new FXButton(iconsmatrix,tr("\tChange small open icon."),nullptr,this,ID_BROWSE_SMALLICONOPEN,FRAME_RAISED|LAYOUT_CENTER_X|LAYOUT_CENTER_Y|LAYOUT_FIX_WIDTH|LAYOUT_FIX_HEIGHT|JUSTIFY_CENTER_X|JUSTIFY_CENTER_Y|LAYOUT_FILL_COLUMN|LAYOUT_FILL_ROW,0,0,56,56, 1,1,1,1);
+  iconbutton[3]=new FXButton(iconsmatrix,tr("\tChange big open icon."),nullptr,this,ID_BROWSE_BIGICONOPEN,FRAME_RAISED|LAYOUT_CENTER_X|LAYOUT_CENTER_Y|LAYOUT_FIX_WIDTH|LAYOUT_FIX_HEIGHT|JUSTIFY_CENTER_X|JUSTIFY_CENTER_Y|LAYOUT_FILL_COLUMN|LAYOUT_FILL_ROW,0,0,56,56, 1,1,1,1);
+  iconimage[0]=nullptr;
+  iconimage[1]=nullptr;
+  iconimage[2]=nullptr;
+  iconimage[3]=nullptr;
 
   //// Mime type settings button
   new FXButton(buttons,tr("Extensions\tFile extensions setup\tChange associations for file extensions."),mim,switcher,FXSwitcher::ID_OPEN_SECOND,FRAME_RAISED|ICON_ABOVE_TEXT|LAYOUT_FILL_Y);
@@ -198,12 +198,12 @@ Preferences::Preferences(PathFinderMain *own):FXDialogBox(own,"PathFinder Prefer
 
   ///////////////////////  File pattern settings pane  //////////////////////////
   FXVerticalFrame* filepatpane=new FXVerticalFrame(switcher,LAYOUT_FILL_X|LAYOUT_FILL_Y,0,0,0,0, 0,0,0,0, 0,0);
-  new FXLabel(filepatpane,tr("Filename patterns"),NULL,LAYOUT_LEFT);
+  new FXLabel(filepatpane,tr("Filename patterns"),nullptr,LAYOUT_LEFT);
   new FXHorizontalSeparator(filepatpane,SEPARATOR_LINE|LAYOUT_FILL_X);
   FXVerticalFrame *sub3=new FXVerticalFrame(filepatpane,LAYOUT_FILL_Y|LAYOUT_FILL_X,0,0,0,0, 0,0,10,0, 0,0);
-  new FXLabel(sub3,tr("Filename patterns, one per line:"),NULL,JUSTIFY_LEFT);
+  new FXLabel(sub3,tr("Filename patterns, one per line:"),nullptr,JUSTIFY_LEFT);
   FXVerticalFrame* textwell=new FXVerticalFrame(sub3,LAYOUT_FILL_X|LAYOUT_FILL_Y|FRAME_SUNKEN|FRAME_THICK,0,0,0,0, 0,0,0,0);
-  pattern=new FXText(textwell,NULL,0,LAYOUT_FILL_X|LAYOUT_FILL_Y);
+  pattern=new FXText(textwell,nullptr,0,LAYOUT_FILL_X|LAYOUT_FILL_Y);
 
   //// File pattern settings button
   new FXButton(buttons,tr("Patterns\tFilename patterns\tChange wildcard patterns for filenames."),pat,switcher,FXSwitcher::ID_OPEN_THIRD,FRAME_RAISED|ICON_ABOVE_TEXT|LAYOUT_FILL_Y);
@@ -212,16 +212,16 @@ Preferences::Preferences(PathFinderMain *own):FXDialogBox(own,"PathFinder Prefer
 
   ///////////////////////////  Other settings pane  /////////////////////////////
   FXVerticalFrame* otherpane=new FXVerticalFrame(switcher,LAYOUT_FILL_X|LAYOUT_FILL_Y,0,0,0,0, 0,0,0,0, 0,0);
-  new FXLabel(otherpane,tr("Other Settings"),NULL,LAYOUT_LEFT);
+  new FXLabel(otherpane,tr("Other Settings"),nullptr,LAYOUT_LEFT);
   new FXHorizontalSeparator(otherpane,SEPARATOR_LINE|LAYOUT_FILL_X);
   FXMatrix *matrix3=new FXMatrix(otherpane,3,MATRIX_BY_COLUMNS|PACK_UNIFORM_HEIGHT|LAYOUT_FILL_X|LAYOUT_FILL_Y,0,0,0,0, 0,0,10,0, 6, 6);
 
-  new FXLabel(matrix3,tr("Auto size lists:"),NULL,LAYOUT_LEFT|LAYOUT_CENTER_Y);
-  autosize=new FXCheckButton(matrix3,FXString::null,NULL,0,LAYOUT_LEFT|LAYOUT_CENTER_Y|LAYOUT_FILL_COLUMN,0,0,0,0, 0,0,0,0);
+  new FXLabel(matrix3,tr("Auto size lists:"),nullptr,LAYOUT_LEFT|LAYOUT_CENTER_Y);
+  autosize=new FXCheckButton(matrix3,FXString::null,nullptr,0,LAYOUT_LEFT|LAYOUT_CENTER_Y|LAYOUT_FILL_COLUMN,0,0,0,0, 0,0,0,0);
   new FXFrame(matrix3,0);
 
-  new FXLabel(matrix3,tr("Item space:"),NULL,LAYOUT_LEFT|LAYOUT_CENTER_Y);
-  itemspace=new FXTextField(matrix3,6,NULL,0,TEXTFIELD_INTEGER|JUSTIFY_RIGHT|FRAME_SUNKEN|FRAME_THICK|LAYOUT_CENTER_Y,0,0,0,0, 2,2,2,2);
+  new FXLabel(matrix3,tr("Item space:"),nullptr,LAYOUT_LEFT|LAYOUT_CENTER_Y);
+  itemspace=new FXTextField(matrix3,6,nullptr,0,TEXTFIELD_INTEGER|JUSTIFY_RIGHT|FRAME_SUNKEN|FRAME_THICK|LAYOUT_CENTER_Y,0,0,0,0, 2,2,2,2);
   new FXFrame(matrix3,0);
 
   //// File pattern settings button
@@ -231,8 +231,8 @@ Preferences::Preferences(PathFinderMain *own):FXDialogBox(own,"PathFinder Prefer
   // Bottom part
   new FXHorizontalSeparator(vertical,SEPARATOR_RIDGE|LAYOUT_FILL_X);
   FXHorizontalFrame *closebox=new FXHorizontalFrame(vertical,LAYOUT_BOTTOM|LAYOUT_FILL_X|PACK_UNIFORM_WIDTH);
-  new FXButton(closebox,tr("&Accept"),NULL,this,FXDialogBox::ID_ACCEPT,BUTTON_INITIAL|BUTTON_DEFAULT|LAYOUT_RIGHT|FRAME_RAISED|FRAME_THICK,0,0,0,0, 20,20);
-  new FXButton(closebox,tr("&Cancel"),NULL,this,FXDialogBox::ID_CANCEL,BUTTON_DEFAULT|LAYOUT_RIGHT|FRAME_RAISED|FRAME_THICK,0,0,0,0, 20,20);
+  new FXButton(closebox,tr("&Accept"),nullptr,this,FXDialogBox::ID_ACCEPT,BUTTON_INITIAL|BUTTON_DEFAULT|LAYOUT_RIGHT|FRAME_RAISED|FRAME_THICK,0,0,0,0, 20,20);
+  new FXButton(closebox,tr("&Cancel"),nullptr,this,FXDialogBox::ID_CANCEL,BUTTON_DEFAULT|LAYOUT_RIGHT|FRAME_RAISED|FRAME_THICK,0,0,0,0, 20,20);
 
   // Populate bindings
   setupFileBindings();
@@ -260,7 +260,7 @@ void Preferences::setupFileBindings(){
     FXString mime;
     for(FXint entry=0; entry<section.no(); ++entry){
       if(section.empty(entry)) continue;
-      extensions->appendItem(section.key(entry),NULL,NULL,true);
+      extensions->appendItem(section.key(entry),nullptr,nullptr,true);
       mime=section.data(entry).section(';',4);
       if(!mime.empty() && (mimetypes->findItem(mime)==-1)){
         mimetypes->appendItem(mime);
@@ -283,7 +283,7 @@ FXIcon *Preferences::createIconFromName(const FXString& name) const {
       return ico;
       }
     }
-  return NULL;
+  return nullptr;
   }
 
 
@@ -292,8 +292,8 @@ void Preferences::changeIconButton(const FXString& name,FXint index){
   FXASSERT(0<=index && index<=4);
   if(iconimage[index]){
     delete iconimage[index];
-    iconbutton[index]->setIcon(NULL);
-    iconimage[index]=NULL;
+    iconbutton[index]->setIcon(nullptr);
+    iconimage[index]=nullptr;
     }
   iconimage[index]=createIconFromName(name);
   if(iconimage[index]){
@@ -404,7 +404,7 @@ void Preferences::writeFileExtension(const FXString& ext){
 
 // Run in terminal update
 long Preferences::onUpdRunInTerminal(FXObject* sender,FXSelector,void*){
-  sender->handle(this,(fileflags&2) ? FXSEL(SEL_COMMAND,ID_CHECK) : FXSEL(SEL_COMMAND,ID_UNCHECK),NULL);
+  sender->handle(this,(fileflags&2) ? FXSEL(SEL_COMMAND,ID_CHECK) : FXSEL(SEL_COMMAND,ID_UNCHECK),nullptr);
   return 1;
   }
 
@@ -418,7 +418,7 @@ long Preferences::onCmdRunInTerminal(FXObject*,FXSelector,void*){
 
 // Change directory update
 long Preferences::onUpdChangeDirectory(FXObject* sender,FXSelector,void*){
-  sender->handle(this,(fileflags&1) ? FXSEL(SEL_COMMAND,ID_CHECK) : FXSEL(SEL_COMMAND,ID_UNCHECK),NULL);
+  sender->handle(this,(fileflags&1) ? FXSEL(SEL_COMMAND,ID_CHECK) : FXSEL(SEL_COMMAND,ID_UNCHECK),nullptr);
   return 1;
   }
 
@@ -446,7 +446,7 @@ long Preferences::onCmdDeselectExtension(FXObject*,FXSelector,void* ptr){
 
 // Gray out things if no extension selected
 long Preferences::onUpdSelectExtension(FXObject* sender,FXSelector,void*){
-  sender->handle(this,(0<=extensions->getCurrentItem())?FXSEL(SEL_COMMAND,ID_ENABLE):FXSEL(SEL_COMMAND,ID_DISABLE),NULL);
+  sender->handle(this,(0<=extensions->getCurrentItem())?FXSEL(SEL_COMMAND,ID_ENABLE):FXSEL(SEL_COMMAND,ID_DISABLE),nullptr);
   return 1;
   }
 
@@ -454,7 +454,7 @@ long Preferences::onUpdSelectExtension(FXObject* sender,FXSelector,void*){
 // Append new extension name
 long Preferences::onCmdAppendExtension(FXObject*,FXSelector,void*){
   FXString ext;
-  if(FXInputDialog::getString(ext,this,tr("New File Extension"),tr("Please enter file extension:"),NULL)){
+  if(FXInputDialog::getString(ext,this,tr("New File Extension"),tr("Please enter file extension:"),nullptr)){
     if(ext.empty()) return 1;
     if(0<=extensions->findItem(ext)){
       FXMessageBox::question(this,MBOX_OK,tr("Duplicate Extension"),tr("The given extension: %s already exists!"),ext.text());
@@ -475,7 +475,7 @@ long Preferences::onCmdChangeExtension(FXObject*,FXSelector,void*){
   if(0<=index){
     FXString ext=extensions->getItemText(index);
     FXString old=ext;
-    if(FXInputDialog::getString(ext,this,tr("Rename File Extension"),tr("Rename file extension:"),NULL)){
+    if(FXInputDialog::getString(ext,this,tr("Rename File Extension"),tr("Rename file extension:"),nullptr)){
       if(ext==old) return 1;
       if(0<=extensions->findItem(ext)){
         FXMessageBox::question(this,MBOX_OK,tr("Duplicate Extension"),tr("The given extension: %s already exists!"),ext.text());

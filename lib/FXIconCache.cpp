@@ -3,7 +3,7 @@
 *                              I c o n   C a c h e                              *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 1998,2021 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 1998,2022 by Jeroen van der Zijp.   All Rights Reserved.        *
 *********************************************************************************
 * This library is free software; you can redistribute it and/or modify          *
 * it under the terms of the GNU Lesser General Public License as published by   *
@@ -84,7 +84,7 @@ const FXchar FXIconCache::defaultIconPath[]=DEFAULTICONPATH;
 
 
 // Object implementation
-FXIMPLEMENT(FXIconCache,FXObject,NULL,0)
+FXIMPLEMENT(FXIconCache,FXObject,nullptr,0)
 
 
 // Build icon cache

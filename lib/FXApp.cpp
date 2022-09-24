@@ -3,7 +3,7 @@
 *                     A p p l i c a t i o n   O b j e c t                       *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 1997,2021 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 1997,2022 by Jeroen van der Zijp.   All Rights Reserved.        *
 *********************************************************************************
 * This library is free software; you can redistribute it and/or modify          *
 * it under the terms of the GNU Lesser General Public License as published by   *
@@ -332,15 +332,15 @@ struct FXInvocation {
 
 
 // Application object
-FXApp* FXApp::app=NULL;
+FXApp* FXApp::app=nullptr;
 
 
 // Copyright information
-const FXuchar FXApp::copyright[]="Copyright (C) 1997,2021 Jeroen van der Zijp. All Rights Reserved.";
+const FXuchar FXApp::copyright[]="Copyright (C) 1997,2022 Jeroen van der Zijp. All Rights Reserved.";
 
 
 // Conversion
-extern FXAPI FXuint __strtoul(const FXchar *beg,const FXchar** end=NULL,FXint base=0,FXbool* ok=NULL);
+extern FXAPI FXuint __strtoul(const FXchar *beg,const FXchar** end=nullptr,FXint base=0,FXbool* ok=nullptr);
 
 
 #ifdef WIN32            // Windows
@@ -474,26 +474,26 @@ FXIMPLEMENT(FXApp,FXObject,FXAppMap,ARRAYNUMBER(FXAppMap))
 FXApp::FXApp(const FXString& name,const FXString& vendor):registry(name,vendor){
 
   // Initialize private platform independent data
-  display=NULL;                           // Display connection
-  activeWindow=NULL;                      // Active toplevel window
-  cursorWindow=NULL;                      // Window under the cursor
-  mouseGrabWindow=NULL;                   // Window which grabbed mouse
-  keyboardGrabWindow=NULL;                // Window which grabbed keyboard
-  keyWindow=NULL;                         // Window in which keyboard key was pressed
-  selectionWindow=NULL;                   // Window which has the selection
-  clipboardWindow=NULL;                   // Window which has the clipboard
-  dropWindow=NULL;                        // Drag source window
-  dragWindow=NULL;                        // Drop target window
-  refresher=NULL;                         // GUI refresher pointer
-  refresherstop=NULL;                     // GUI refresher end pointer
-  popupWindow=NULL;                       // No popup windows
-  timers=NULL;                            // No timers present
-  chores=NULL;                            // No chores present
-  repaints=NULL;                          // No outstanding repaints
-  timerrecs=NULL;                         // No timer records
-  chorerecs=NULL;                         // No chore records
-  repaintrecs=NULL;                       // No repaint records
-  invocation=NULL;                        // Modal loop invocation
+  display=nullptr;                           // Display connection
+  activeWindow=nullptr;                      // Active toplevel window
+  cursorWindow=nullptr;                      // Window under the cursor
+  mouseGrabWindow=nullptr;                   // Window which grabbed mouse
+  keyboardGrabWindow=nullptr;                // Window which grabbed keyboard
+  keyWindow=nullptr;                         // Window in which keyboard key was pressed
+  selectionWindow=nullptr;                   // Window which has the selection
+  clipboardWindow=nullptr;                   // Window which has the clipboard
+  dropWindow=nullptr;                        // Drag source window
+  dragWindow=nullptr;                        // Drop target window
+  refresher=nullptr;                         // GUI refresher pointer
+  refresherstop=nullptr;                     // GUI refresher end pointer
+  popupWindow=nullptr;                       // No popup windows
+  timers=nullptr;                            // No timers present
+  chores=nullptr;                            // No chores present
+  repaints=nullptr;                          // No outstanding repaints
+  timerrecs=nullptr;                         // No timer records
+  chorerecs=nullptr;                         // No chore records
+  repaintrecs=nullptr;                       // No repaint records
+  invocation=nullptr;                        // Modal loop invocation
   callocElms(signals,MAXSIGNALS);         // Signals array
   signalreceived=0;                       // Latest received signal
   callocElms(inputs,8);                   // Input file descriptors
@@ -503,10 +503,10 @@ FXApp::FXApp(const FXString& name,const FXString& vendor):registry(name,vendor){
   inputmethod="";                         // Input method name
   inputstyle="overthespot";               // Input method style
   maxcolors=MAXCOLORS;                    // Maximum number of colors to allocate
-  ddeData=NULL;                           // Data exchange array
+  ddeData=nullptr;                           // Data exchange array
   ddeSize=0;                              // Data exchange array size
   appArgc=0;                              // Number of program arguments
-  appArgv=NULL;                           // Program arguments
+  appArgv=nullptr;                           // Program arguments
   waitCount=0;                            // Cursor wait count
   windowCount=0;                          // Number of windows
   initialized=false;                      // Not yet initialized
@@ -586,19 +586,19 @@ FXApp::FXApp(const FXString& name,const FXString& vendor):registry(name,vendor){
   ddeTargets=0;                           // Data exchange to get list of types
   ddeAtom=0;                              // Data exchange atom
   ddeDelete=0;                            // Data exchange delete request
-  ddeTypeList=NULL;                       // Data types list available
+  ddeTypeList=nullptr;                       // Data types list available
   ddeNumTypes=0;                          // Number of data types
   ddeAction=DRAG_REJECT;                  // Drag and drop action requested
   ansAction=DRAG_REJECT;                  // Drag and drop action suggested
 
   // SELECTION
-  xselTypeList=NULL;                      // List of primary selection types
+  xselTypeList=nullptr;                      // List of primary selection types
   xselNumTypes=0;                         // How many types in list
 
   // XDND
   xdndFinishPending=false;                // XDND waiting for drop-confirmation
   xdndAware=0;                            // XDND awareness atom
-  xdndTypes=NULL;
+  xdndTypes=nullptr;
   xdndSource=0;                           // XDND drag source window
   xdndTarget=0;                           // XDND drop target window
   xdndStatusPending=false;                // XDND waiting for status feedback
@@ -650,22 +650,22 @@ FXApp::FXApp(const FXString& name,const FXString& vendor):registry(name,vendor){
   ddeTargets=0;                           // Data exchange to get list of types
   ddeAtom=0;                              // Data exchange atom
   ddeDelete=0;                            // Data exchange delete request
-  ddeTypeList=NULL;                       // Data types list available
+  ddeTypeList=nullptr;                       // Data types list available
   ddeNumTypes=0;                          // Number of data types
   ddeAction=DRAG_REJECT;                  // Drag and drop action requested
   ansAction=DRAG_REJECT;                  // Drag and drop action suggested
 
   // CLIPBOARD
   xcbSelection=0;                         // Clipboard selection atom
-  xcbTypeList=NULL;                       // List of clipboard types
+  xcbTypeList=nullptr;                       // List of clipboard types
   xcbNumTypes=0;                          // How many types clipped
 
   // SELECTION
-  xselTypeList=NULL;                      // List of primary selection types
+  xselTypeList=nullptr;                      // List of primary selection types
   xselNumTypes=0;                         // How many types in list
 
   // XDND
-  xdndTypeList=NULL;                      // List of XDND types
+  xdndTypeList=nullptr;                      // List of XDND types
   xdndNumTypes=0;                         // How many types in list
   xdndProxy=0;                            // XDND proxy atom
   xdndAware=0;                            // XDND awareness atom
@@ -701,7 +701,7 @@ FXApp::FXApp(const FXString& name,const FXString& vendor):registry(name,vendor){
   xfxFixesSelection=0;                    // Xfixes event
   xInputOpcode=0;                         // XInput2 Opcode
   xsbDevice=0;                            // Space ball device
-  xim=NULL;                               // Input method stuff
+  xim=nullptr;                               // Input method stuff
 
   // Miscellaneous stuff
   shmi=true;
@@ -791,7 +791,7 @@ FXbool FXApp::hasInputMethod() const {
 #ifdef WIN32
   return true;
 #else
-  return xim!=NULL;
+  return xim!=nullptr;
 #endif
   }
 
@@ -826,7 +826,7 @@ FXWindow *FXApp::getFocusWindow() const {
 
 #if 0
 FXWindow* FXApp::getForegroundWindow() const {
-  FXWindow *win=NULL;
+  FXWindow *win=nullptr;
 #ifdef WIN32
   unsigned long n,i; Atom type; unsigned char *prop; int format;
   if(Success==XGetWindowProperty((Display*)display,XDefaultRootWindow((Display*)display),wmNetActiveWindow,0,1,false,XA_WINDOW,&type,&format,&n,&i,&prop)){
@@ -867,14 +867,14 @@ FXWindow* FXApp::findWindowAt(FXint rx,FXint ry,FXID window) const {
     int wx,wy;
     if(!window) window=rootwin;
     while(1){
-      if(!XTranslateCoordinates((Display*)display,rootwin,window,rx,ry,&wx,&wy,&child)) return NULL;
+      if(!XTranslateCoordinates((Display*)display,rootwin,window,rx,ry,&wx,&wy,&child)) return nullptr;
       if(child==None) break;
       window=child;
       }
 #endif
     return findWindowWithId(window);
     }
-  return NULL;
+  return nullptr;
   }
 
 
@@ -945,7 +945,7 @@ void FXApp::endWaitCursor(){
 // Change to a new wait cursor
 void FXApp::setWaitCursor(FXCursor *cur){
   if(initialized){
-    if(cur==NULL){ fxerror("%s::setWaitCursor: NULL wait cursor.\n",getClassName()); }
+    if(cur==nullptr){ fxerror("%s::setWaitCursor: NULL wait cursor.\n",getClassName()); }
     if(waitCursor!=cur){
       waitCursor=cur;
       if(waitCount){
@@ -1047,7 +1047,7 @@ void FXApp::openInputDevices(){
   FXuint bc;
 
   // Get the number of attached raw input devices
-  GetRawInputDeviceList(NULL,&num_devices,sizeof(RAWINPUTDEVICELIST));
+  GetRawInputDeviceList(nullptr,&num_devices,sizeof(RAWINPUTDEVICELIST));
   if(0<num_devices){
 
     // Allocate the list
@@ -1100,7 +1100,7 @@ void FXApp::openInputDevices(){
               dev.usUsagePage=1;
               dev.usUsage=8;
               dev.dwFlags=0;
-              dev.hwndTarget=NULL;		    // follow keyboard focus
+              dev.hwndTarget=nullptr;		    // follow keyboard focus
               if(RegisterRawInputDevices(&dev,1,sizeof(dev))){
                 spaceNavHandle=devlist[i].hDevice;  // assume only one device is connected
                 // FXTRACE((1,"\nRegistered for WM_INPUT!\n"));
@@ -1189,7 +1189,7 @@ long SpaceNav::onMotion(FXObject *, FXSelector, void *vp){
     // can a function's semantics get any more ridiculous???
     sizeof_buffer = sizeof(RAWINPUT);
 #if 1
-    num_inputs = GetRawInputBuffer(NULL, &sizeof_buffer, sizeof(RAWINPUTHEADER));
+    num_inputs = GetRawInputBuffer(nullptr, &sizeof_buffer, sizeof(RAWINPUTHEADER));
     num_inputs = sizeof_buffer/sizeof(RAWINPUT);
     if (bufAlloc < num_inputs) {
 	bufAlloc = num_inputs;
@@ -1200,7 +1200,7 @@ long SpaceNav::onMotion(FXObject *, FXSelector, void *vp){
     tlog("onMotion(%d)\n", num_inputs);
     status = DefRawInputProc(&inpBuffer, 1/*num_inputs*/, sizeof(RAWINPUTHEADER));
 #endif
-    onPaint(NULL,0,NULL);
+    onPaint(nullptr,0,nullptr);
     return 1;
 }
 #endif
@@ -1239,12 +1239,12 @@ void FXApp::imcreatecallback(void*,FXApp* a,void*){
 #ifndef NO_XIM
   XIMCallback ximcallback;
   fxwarning("Warning: input method server restarted.\n");
-  XUnregisterIMInstantiateCallback((Display*)app->getDisplay(),NULL,NULL,NULL,(XIDProc)imcreatecallback,(XPointer)a);
-  a->xim=XOpenIM((Display*)app->display,NULL,NULL,NULL);
+  XUnregisterIMInstantiateCallback((Display*)app->getDisplay(),nullptr,nullptr,nullptr,(XIDProc)imcreatecallback,(XPointer)a);
+  a->xim=XOpenIM((Display*)app->display,nullptr,nullptr,nullptr);
   if(a->xim){
     ximcallback.callback=(XIMProc)imdestroycallback;
     ximcallback.client_data=(XPointer)a;
-    XSetIMValues((XIM)a->xim,XNDestroyCallback,&ximcallback,NULL);
+    XSetIMValues((XIM)a->xim,XNDestroyCallback,&ximcallback,nullptr);
     }
 #endif
   }
@@ -1254,8 +1254,8 @@ void FXApp::imcreatecallback(void*,FXApp* a,void*){
 void FXApp::imdestroycallback(void*,FXApp* a,void*){
 #ifndef NO_XIM
   fxwarning("Warning: input method server terminated.\n");
-  XRegisterIMInstantiateCallback((Display*)a->getDisplay(),NULL,NULL,NULL,(XIDProc)imcreatecallback,(XPointer)a);
-  a->xim=NULL;
+  XRegisterIMInstantiateCallback((Display*)a->getDisplay(),nullptr,nullptr,nullptr,(XIDProc)imcreatecallback,(XPointer)a);
+  a->xim=nullptr;
 #endif
   }
 
@@ -1351,9 +1351,9 @@ typedef DWORD (WINAPI *SETPROCESSDPIAWARENESSCONTEXTFUNC)(DPI_AWARENESS_CONTEXT 
 
 void setDPIAwareness(){
   HMODULE user32dll;
-  if((user32dll=GetModuleHandleA("user32.dll"))!=NULL){
+  if((user32dll=GetModuleHandleA("user32.dll"))!=nullptr){
     SETPROCESSDPIAWARENESSCONTEXTFUNC SetProcessDpiAwarenessContextFunc;
-    if((SetProcessDpiAwarenessContextFunc=(SETPROCESSDPIAWARENESSCONTEXTFUNC)GetProcAddress(user32dll,"SetProcessDpiAwarenessContext"))!=NULL){
+    if((SetProcessDpiAwarenessContextFunc=(SETPROCESSDPIAWARENESSCONTEXTFUNC)GetProcAddress(user32dll,"SetProcessDpiAwarenessContext"))!=nullptr){
       SetProcessDpiAwarenessContextFunc(DPI_AWARENESS_CONTEXT_SYSTEM_AWARE);
       }
     }
@@ -1417,11 +1417,11 @@ FXbool FXApp::openDisplay(const FXchar* dpy){
     wndclass.cbClsExtra=0;
     wndclass.cbWndExtra=sizeof(FXWindow*);
     wndclass.hInstance=(HINSTANCE)display;
-    wndclass.hIcon=NULL;
-    wndclass.hIconSm=NULL;
-    wndclass.hCursor=NULL;
-    wndclass.hbrBackground=NULL;
-    wndclass.lpszMenuName=NULL;
+    wndclass.hIcon=nullptr;
+    wndclass.hIconSm=nullptr;
+    wndclass.hCursor=nullptr;
+    wndclass.hbrBackground=nullptr;
+    wndclass.lpszMenuName=nullptr;
     wndclass.lpszClassName=TEXT("FXWindow");
     RegisterClassEx(&wndclass);
 
@@ -1434,12 +1434,12 @@ FXbool FXApp::openDisplay(const FXchar* dpy){
     wndclass.cbWndExtra=sizeof(FXWindow*);
     wndclass.hInstance=(HINSTANCE)display;
     wndclass.hIcon=LoadIcon((HINSTANCE)display,IDI_APPLICATION);
-    if(wndclass.hIcon==NULL) wndclass.hIcon=LoadIcon(NULL,IDI_APPLICATION);
+    if(wndclass.hIcon==nullptr) wndclass.hIcon=LoadIcon(nullptr,IDI_APPLICATION);
     wndclass.hIconSm=(HICON)LoadImage((HINSTANCE)display,IDI_APPLICATION,IMAGE_ICON,16,16,LR_DEFAULTCOLOR);
-    if(wndclass.hIconSm==NULL) wndclass.hIconSm=wndclass.hIcon;
-    wndclass.hCursor=NULL;
-    wndclass.hbrBackground=NULL;
-    wndclass.lpszMenuName=NULL;
+    if(wndclass.hIconSm==nullptr) wndclass.hIconSm=wndclass.hIcon;
+    wndclass.hCursor=nullptr;
+    wndclass.hbrBackground=nullptr;
+    wndclass.lpszMenuName=nullptr;
     wndclass.lpszClassName=TEXT("FXTopWindow");
     RegisterClassEx(&wndclass);
 
@@ -1450,11 +1450,11 @@ FXbool FXApp::openDisplay(const FXchar* dpy){
     wndclass.cbClsExtra=0;
     wndclass.cbWndExtra=sizeof(FXWindow*);
     wndclass.hInstance=(HINSTANCE)display;
-    wndclass.hIcon=NULL;
-    wndclass.hIconSm=NULL;
-    wndclass.hCursor=LoadCursor(NULL,IDC_ARROW);
-    wndclass.hbrBackground=NULL;
-    wndclass.lpszMenuName=NULL;
+    wndclass.hIcon=nullptr;
+    wndclass.hIconSm=nullptr;
+    wndclass.hCursor=LoadCursor(nullptr,IDC_ARROW);
+    wndclass.hbrBackground=nullptr;
+    wndclass.lpszMenuName=nullptr;
     wndclass.lpszClassName=TEXT("FXGLCanvas");
     RegisterClassEx(&wndclass);
 
@@ -1465,11 +1465,11 @@ FXbool FXApp::openDisplay(const FXchar* dpy){
     wndclass.cbClsExtra=0;
     wndclass.cbWndExtra=0;
     wndclass.hInstance=(HINSTANCE)display;
-    wndclass.hIcon=NULL;
-    wndclass.hIconSm=NULL;
-    wndclass.hCursor=NULL;
-    wndclass.hbrBackground=NULL;
-    wndclass.lpszMenuName=NULL;
+    wndclass.hIcon=nullptr;
+    wndclass.hIconSm=nullptr;
+    wndclass.hCursor=nullptr;
+    wndclass.hbrBackground=nullptr;
+    wndclass.lpszMenuName=nullptr;
     wndclass.lpszClassName=TEXT("GLTEMP");
     RegisterClassEx(&wndclass);
 
@@ -1480,11 +1480,11 @@ FXbool FXApp::openDisplay(const FXchar* dpy){
     wndclass.cbClsExtra=0;
     wndclass.cbWndExtra=sizeof(FXWindow*);
     wndclass.hInstance=(HINSTANCE)display;
-    wndclass.hIcon=NULL;
-    wndclass.hIconSm=NULL;
-    wndclass.hCursor=LoadCursor(NULL,IDC_ARROW);
-    wndclass.hbrBackground=NULL;
-    wndclass.lpszMenuName=NULL;
+    wndclass.hIcon=nullptr;
+    wndclass.hIconSm=nullptr;
+    wndclass.hCursor=LoadCursor(nullptr,IDC_ARROW);
+    wndclass.hbrBackground=nullptr;
+    wndclass.lpszMenuName=nullptr;
     wndclass.lpszClassName=TEXT("FXPopup");
     RegisterClassEx(&wndclass);
 
@@ -1584,7 +1584,7 @@ FXbool FXApp::openDisplay(const FXchar* dpy){
 
     // Initialize Xft and fontconfig
 #if defined(HAVE_XFT_H)
-    if(!XftInit(NULL)) return false;
+    if(!XftInit(nullptr)) return false;
     if(XftGetVersion()<XftVersion){
       fxwarning("Expected Xft library version %d or greater; was %d.\n",XftVersion,XftGetVersion());
       }
@@ -1592,16 +1592,16 @@ FXbool FXApp::openDisplay(const FXchar* dpy){
 
     // Open input method
 #ifndef NO_XIM
-    xim=XOpenIM((Display*)display,NULL,NULL,NULL);
+    xim=XOpenIM((Display*)display,nullptr,nullptr,nullptr);
     if(xim){
       XIMCallback ximcallback;
       ximcallback.callback=(XIMProc)imdestroycallback;
       ximcallback.client_data=(XPointer)this;
-      XSetIMValues((XIM)xim,XNDestroyCallback,&ximcallback,NULL);
+      XSetIMValues((XIM)xim,XNDestroyCallback,&ximcallback,nullptr);
       FXTRACE((100,"Got Input Method\n"));
       }
     else{
-      XRegisterIMInstantiateCallback((Display*)display,NULL,NULL,NULL,(XIDProc)imcreatecallback,(XPointer)this);
+      XRegisterIMInstantiateCallback((Display*)display,nullptr,nullptr,nullptr,(XIDProc)imcreatecallback,(XPointer)this);
       }
 #endif
 
@@ -1844,7 +1844,7 @@ FXbool FXApp::closeDisplay(){
 #endif
 
     // Clear it
-    display=NULL;
+    display=nullptr;
 
     // Unlock the global mutex
     appMutex.unlock();
@@ -1860,9 +1860,9 @@ FXbool FXApp::closeDisplay(){
 
 // Add deadline in nanoseconds
 FXptr FXApp::addDeadline(FXObject* tgt,FXSelector sel,FXTime due,FXptr ptr){
-  FXptr result=NULL;
+  FXptr result=nullptr;
   FXTimer *t,**tt;
-  for(tt=&timers; (t=*tt)!=NULL; tt=&t->next){
+  for(tt=&timers; (t=*tt)!=nullptr; tt=&t->next){
     if(t->target==tgt && t->message==sel){ *tt=t->next; result=t->data; goto a; }
     }
   if(timerrecs){
@@ -1900,10 +1900,10 @@ FXbool FXApp::hasTimeout(FXObject* tgt,FXSelector sel) const {
 
 // Remove timeout(s) identified by tgt and sel from the list
 FXptr FXApp::removeTimeout(FXObject* tgt,FXSelector sel){
-  FXptr result=NULL;
+  FXptr result=nullptr;
   FXTimer **tt=&timers;
   FXTimer *t;
-  while((t=*tt)!=NULL){
+  while((t=*tt)!=nullptr){
     if(t->target==tgt && (sel==0 || t->message==sel)){
       *tt=t->next; result=t->data; t->next=timerrecs; timerrecs=t;
       continue;
@@ -1972,7 +1972,7 @@ void FXApp::addSignal(FXint sig,FXObject* tgt,FXSelector sel,FXbool immediate,FX
     sigact.sa_handler=handler;                  // signals except while in pselect() so that they're deferred until
     sigemptyset(&sigact.sa_mask);               // return to the main event loop.  This will eliminate the race condition
     sigact.sa_flags=flags;                      // where we could be blocking while actually having a raised signal around!
-    if(sigaction(sig,&sigact,NULL)!=0){ fxwarning("%s::addSignal: error setting signal handler\n",getClassName()); }
+    if(sigaction(sig,&sigact,nullptr)!=0){ fxwarning("%s::addSignal: error setting signal handler\n",getClassName()); }
 #else
     signal(sig,handler);
 #endif
@@ -1997,12 +1997,12 @@ void FXApp::removeSignal(FXint sig){
     sigact.sa_handler=SIG_DFL;
     sigemptyset(&sigact.sa_mask);
     sigact.sa_flags=0;
-    if(sigaction(sig,&sigact,NULL)!=0){ fxwarning("%s::removeSignal: error removing signal handler\n",getClassName()); }
+    if(sigaction(sig,&sigact,nullptr)!=0){ fxwarning("%s::removeSignal: error removing signal handler\n",getClassName()); }
 #else
     signal(sig,SIG_DFL);
 #endif
 #endif
-    signals[sig].target=NULL;
+    signals[sig].target=nullptr;
     signals[sig].message=0;
     signals[sig].handlerset=false;
     signals[sig].notified=false;
@@ -2015,9 +2015,9 @@ void FXApp::removeSignal(FXint sig){
 
 // Add chore to the END of the list
 FXptr FXApp::addChore(FXObject* tgt,FXSelector sel,FXptr ptr){
-  FXptr result=NULL;
+  FXptr result=nullptr;
   FXChore *c,**cc;
-  for(cc=&chores; (c=*cc)!=NULL; cc=&c->next){
+  for(cc=&chores; (c=*cc)!=nullptr; cc=&c->next){
     if(c->target==tgt && c->message==sel){ *cc=c->next; result=c->data; goto a; }
     }
   if(chorerecs){
@@ -2031,7 +2031,7 @@ a:c->data=ptr;
   c->target=tgt;
   c->message=sel;
   for(cc=&chores; *cc; cc=&(*cc)->next){}
-  c->next=NULL;
+  c->next=nullptr;
   *cc=c;
   return result;
   }
@@ -2039,10 +2039,10 @@ a:c->data=ptr;
 
 // Remove chore(s) identified by tgt and sel from the list
 FXptr FXApp::removeChore(FXObject* tgt,FXSelector sel){
-  FXptr result=NULL;
+  FXptr result=nullptr;
   FXChore **cc=&chores;
   FXChore *c;
-  while((c=*cc)!=NULL){
+  while((c=*cc)!=nullptr){
     if(c->target==tgt && (sel==0 || c->message==sel)){
       *cc=c->next; result=c->data; c->next=chorerecs; chorerecs=c;
       continue;
@@ -2069,7 +2069,7 @@ FXbool FXApp::addInput(FXObject *tgt,FXSelector sel,FXInputHandle fd,FXuint mode
   if(mode==INPUT_NONE) return false;
 #ifdef WIN32
   FXint in;
-  if(fd==INVALID_HANDLE_VALUE || fd==NULL) return false;
+  if(fd==INVALID_HANDLE_VALUE || fd==nullptr) return false;
   for(in=0; in<=maxhandle; in++){       // See if existing handle
     if(handles->hnd[in]==fd) goto r;    // If existing handle, just replace callbacks
     }
@@ -2135,25 +2135,25 @@ FXbool FXApp::removeInput(FXInputHandle fd,FXuint mode){
   if(mode==INPUT_NONE) return false;
 #ifdef WIN32
   FXint in;
-  if(fd==INVALID_HANDLE_VALUE || fd==NULL) return false;
+  if(fd==INVALID_HANDLE_VALUE || fd==nullptr) return false;
   for(in=0; in<=maxhandle; in++){       // See if existing handle
     if(handles->hnd[in]==fd) goto r;
     }
   return false;                         // Handle didn't exist, so nothing to remove
 r:if(mode&INPUT_READ){
-    inputs[in].read.target=NULL;
+    inputs[in].read.target=nullptr;
     inputs[in].read.message=0;
-    inputs[in].read.data=NULL;
+    inputs[in].read.data=nullptr;
     }
   if(mode&INPUT_WRITE){
-    inputs[in].write.target=NULL;
+    inputs[in].write.target=nullptr;
     inputs[in].write.message=0;
-    inputs[in].write.data=NULL;
+    inputs[in].write.data=nullptr;
     }
   if(mode&INPUT_EXCEPT){
-    inputs[in].excpt.target=NULL;
+    inputs[in].excpt.target=nullptr;
     inputs[in].excpt.message=0;
-    inputs[in].excpt.data=NULL;
+    inputs[in].excpt.data=nullptr;
     }
   if(!inputs[in].read.target && !inputs[in].write.target && !inputs[in].excpt.target){  // Removed them all
     handles->hnd[in]=handles->hnd[maxhandle];      // Compact handle table
@@ -2163,21 +2163,21 @@ r:if(mode&INPUT_READ){
 #else
   if(fd<0 || fd>maxhandle) return false;
   if(mode&INPUT_READ){
-    inputs[fd].read.target=NULL;
+    inputs[fd].read.target=nullptr;
     inputs[fd].read.message=0;
-    inputs[fd].read.data=NULL;
+    inputs[fd].read.data=nullptr;
     FD_CLR(fd,&handles->hnd[0]);
     }
   if(mode&INPUT_WRITE){
-    inputs[fd].write.target=NULL;
+    inputs[fd].write.target=nullptr;
     inputs[fd].write.message=0;
-    inputs[fd].write.data=NULL;
+    inputs[fd].write.data=nullptr;
     FD_CLR(fd,&handles->hnd[1]);
     }
   if(mode&INPUT_EXCEPT){
-    inputs[fd].excpt.target=NULL;
+    inputs[fd].excpt.target=nullptr;
     inputs[fd].excpt.message=0;
-    inputs[fd].excpt.data=NULL;
+    inputs[fd].excpt.data=nullptr;
     FD_CLR(fd,&handles->hnd[2]);
     }
   if(maxhandle==fd){
@@ -2281,7 +2281,7 @@ void FXApp::addRepaint(FXID win,FXint x,FXint y,FXint w,FXint h,FXbool synth){
   r->rect.h=h;
   r->area=area;
   r->synth=synth;
-  r->next=NULL;
+  r->next=nullptr;
   *pr=r;
   }
 
@@ -2307,7 +2307,7 @@ void FXApp::removeRepaints(FXID win,FXint x,FXint y,FXint w,FXint h){
   // Then process events pertaining to window win and overlapping
   // with the given rectangle; other events are left in the queue.
   rr=&repaints;
-  while((r=*rr)!=NULL){
+  while((r=*rr)!=nullptr){
     if(!win || (win==r->window && x<r->rect.w && y<r->rect.h && r->rect.x<w && r->rect.y<h)){
       *rr=r->next;
       ev.xany.type=Expose;
@@ -2410,7 +2410,7 @@ a:ev.xany.type=0;
 #if defined(__USE_XOPEN2K)
     delta.tv_nsec=0;
     delta.tv_sec=0;
-    nfds=pselect(maxfds+1,&readfds,&writefds,&exceptfds,&delta,NULL);
+    nfds=pselect(maxfds+1,&readfds,&writefds,&exceptfds,&delta,nullptr);
 #else
     delta.tv_usec=0;
     delta.tv_sec=0;
@@ -2456,9 +2456,9 @@ a:ev.xany.type=0;
             refresher=refresher->getParent();
             }
           }
-        refresher->handle(this,FXSEL(SEL_UPDATE,0),NULL);
+        refresher->handle(this,FXSEL(SEL_UPDATE,0),nullptr);
         if(refresher!=refresherstop) return false;
-        refresher=refresherstop=NULL;
+        refresher=refresherstop=nullptr;
         }
 
       // There are more chores to do
@@ -2496,7 +2496,7 @@ a:ev.xany.type=0;
 #if defined(__USE_XOPEN2K)
         delta.tv_nsec=blocking%1000000000;
         delta.tv_sec=blocking/1000000000;
-        nfds=pselect(maxfds+1,&readfds,&writefds,&exceptfds,&delta,NULL);
+        nfds=pselect(maxfds+1,&readfds,&writefds,&exceptfds,&delta,nullptr);
 #else
         delta.tv_usec=(blocking/1000)%1000000;
         delta.tv_sec=blocking/1000000000;
@@ -2515,9 +2515,9 @@ a:ev.xany.type=0;
 
         // Block until something happens
 #if defined(__USE_XOPEN2K)
-        nfds=pselect(maxfds+1,&readfds,&writefds,&exceptfds,NULL,NULL);
+        nfds=pselect(maxfds+1,&readfds,&writefds,&exceptfds,nullptr,nullptr);
 #else
-        nfds=select(maxfds+1,&readfds,&writefds,&exceptfds,NULL);
+        nfds=select(maxfds+1,&readfds,&writefds,&exceptfds,nullptr);
 #endif
 
         // Enter critical section
@@ -2674,7 +2674,7 @@ FXbool FXApp::peekEvent(){
 #if defined(__USE_XOPEN2K)
     delta.tv_nsec=0;
     delta.tv_sec=0;
-    nfds=pselect(maxfds+1,&readfds,&writefds,&exceptfds,&delta,NULL);
+    nfds=pselect(maxfds+1,&readfds,&writefds,&exceptfds,&delta,nullptr);
 #else
     delta.tv_usec=0;
     delta.tv_sec=0;
@@ -2700,7 +2700,7 @@ FXbool FXApp::peekEvent(){
 // Translate key code to utf8 text
 FXString translateKeyEvent(FXRawEvent& event){
   char buffer[40]; KeySym sym; FXwchar w;
-  XLookupString(&event.xkey,buffer,sizeof(buffer),&sym,NULL);
+  XLookupString(&event.xkey,buffer,sizeof(buffer),&sym,nullptr);
   w=fxkeysym2ucs(sym);
   return FXString(&w,1);
   }
@@ -2710,7 +2710,7 @@ FXString translateKeyEvent(FXRawEvent& event){
 static FXuint keysym(FXRawEvent& event){
   KeySym sym=KEY_VoidSymbol;
   char buffer[40];
-  XLookupString(&event.xkey,buffer,sizeof(buffer),&sym,NULL);
+  XLookupString(&event.xkey,buffer,sizeof(buffer),&sym,nullptr);
   return sym;
   }
 
@@ -2732,7 +2732,7 @@ FXString translateKeyEvent(XEvent& event,XIC xic){
     }
   else{
 #endif
-    n=XLookupString(&event.xkey,buffer,sizeof(buffer),&sym,NULL);
+    n=XLookupString(&event.xkey,buffer,sizeof(buffer),&sym,nullptr);
     w=fxkeysym2ucs(sym);
     result.assign(&w,1);
 #ifndef NO_XIM
@@ -3044,7 +3044,7 @@ FXbool FXApp::dispatchEvent(FXRawEvent& ev){
         focuswin=getFocusWindow();
         if((ev.xkey.keycode!=0) && focuswin && focuswin->getComposeContext()){
           Window w;
-          XGetICValues((XIC)focuswin->getComposeContext()->id(),XNFocusWindow,&w,NULL);
+          XGetICValues((XIC)focuswin->getComposeContext()->id(),XNFocusWindow,&w,nullptr);
           if((focuswin->id()!=w) && XFilterEvent(&ev,(Window)focuswin->id())){
             return true;
             }
@@ -3140,7 +3140,7 @@ FXbool FXApp::dispatchEvent(FXRawEvent& ev){
             if(inputstyle[1]!='o'){ // not root mode
               focuswin=getFocusWindow();
               if(focuswin && focuswin->getComposeContext()){
-                focuswin->handle(this,FXSEL(SEL_IME_START,0),NULL);
+                focuswin->handle(this,FXSEL(SEL_IME_START,0),nullptr);
                 }
               }
             return true;
@@ -3303,11 +3303,11 @@ FXbool FXApp::dispatchEvent(FXRawEvent& ev){
         if(ev.xfocus.type==FocusOut && activeWindow==window){
           event.type=SEL_FOCUSOUT;
           if(window->handle(this,FXSEL(SEL_FOCUSOUT,0),&event)) refresh();
-          activeWindow=NULL;
+          activeWindow=nullptr;
           if(inputstyle[1]!='o'){ // not root mode
             focuswin=getFocusWindow();
             if(focuswin && focuswin->getComposeContext()){
-              focuswin->handle(this,FXSEL(SEL_IME_END,0),NULL);
+              focuswin->handle(this,FXSEL(SEL_IME_END,0),nullptr);
               }
             }
           }
@@ -3318,7 +3318,7 @@ FXbool FXApp::dispatchEvent(FXRawEvent& ev){
           if(inputstyle[1]!='o'){ // not root mode
             focuswin=getFocusWindow();
             if(focuswin && focuswin->getComposeContext()){
-              focuswin->handle(this,FXSEL(SEL_IME_START,0),NULL);
+              focuswin->handle(this,FXSEL(SEL_IME_START,0),nullptr);
               }
             }
           }
@@ -3381,7 +3381,7 @@ FXbool FXApp::dispatchEvent(FXRawEvent& ev){
             event.type=SEL_SELECTION_LOST;
             event.time=ev.xselectionclear.time;
             if(selectionWindow->handle(this,FXSEL(SEL_SELECTION_LOST,0),&event)) refresh();
-            selectionWindow=NULL;
+            selectionWindow=nullptr;
             }
           freeElms(xselTypeList);
           xselNumTypes=0;
@@ -3393,7 +3393,7 @@ FXbool FXApp::dispatchEvent(FXRawEvent& ev){
             event.time=ev.xselectionclear.time;
             event.type=SEL_CLIPBOARD_LOST;
             if(clipboardWindow->handle(this,FXSEL(SEL_CLIPBOARD_LOST,0),&event)) refresh();
-            clipboardWindow=NULL;
+            clipboardWindow=nullptr;
             }
           freeElms(xcbTypeList);
           xcbNumTypes=0;
@@ -3414,13 +3414,13 @@ FXbool FXApp::dispatchEvent(FXRawEvent& ev){
               event.type=SEL_SELECTION_REQUEST;
               event.time=ev.xselectionrequest.time;
               event.target=ev.xselectionrequest.target;
-              ddeData=NULL;
+              ddeData=nullptr;
               ddeSize=0;
               selectionWindow->handle(this,FXSEL(SEL_SELECTION_REQUEST,0),&event);
               FXTRACE((100,"Window %ld being requested by window %ld for SELECTION DATA of type %ld; sending %d bytes\n",ev.xselectionrequest.owner,ev.xselectionrequest.requestor,ev.xselectionrequest.target,ddeSize));
               answer=fxsenddata((Display*)display,ev.xselectionrequest.requestor,ev.xselectionrequest.property,ev.xselectionrequest.target,ddeData,ddeSize);
               freeElms(ddeData);
-              ddeData=NULL;
+              ddeData=nullptr;
               ddeSize=0;
               }
             }
@@ -3435,13 +3435,13 @@ FXbool FXApp::dispatchEvent(FXRawEvent& ev){
               event.type=SEL_CLIPBOARD_REQUEST;
               event.time=ev.xselectionrequest.time;
               event.target=ev.xselectionrequest.target;
-              ddeData=NULL;
+              ddeData=nullptr;
               ddeSize=0;
               clipboardWindow->handle(this,FXSEL(SEL_CLIPBOARD_REQUEST,0),&event);
               FXTRACE((100,"Window %ld being requested by window %ld for CLIPBOARD DATA of type %ld; sending %d bytes\n",ev.xselectionrequest.owner,ev.xselectionrequest.requestor,ev.xselectionrequest.target,ddeSize));
               answer=fxsenddata((Display*)display,ev.xselectionrequest.requestor,ev.xselectionrequest.property,ev.xselectionrequest.target,ddeData,ddeSize);
               freeElms(ddeData);
-              ddeData=NULL;
+              ddeData=nullptr;
               ddeSize=0;
               }
             }
@@ -3456,13 +3456,13 @@ FXbool FXApp::dispatchEvent(FXRawEvent& ev){
               event.type=SEL_DND_REQUEST;
               event.time=ev.xselectionrequest.time;
               event.target=ev.xselectionrequest.target;
-              ddeData=NULL;
+              ddeData=nullptr;
               ddeSize=0;
               dragWindow->handle(this,FXSEL(SEL_DND_REQUEST,0),&event);
               FXTRACE((100,"Window %ld being requested by window %ld for XDND DATA of type %ld; sending %d bytes\n",ev.xselectionrequest.owner,ev.xselectionrequest.requestor,ev.xselectionrequest.target,ddeSize));
               answer=fxsenddata((Display*)display,ev.xselectionrequest.requestor,ev.xselectionrequest.property,ev.xselectionrequest.target,ddeData,ddeSize);
               freeElms(ddeData);
-              ddeData=NULL;
+              ddeData=nullptr;
               ddeSize=0;
               }
             }
@@ -3561,7 +3561,7 @@ FXbool FXApp::dispatchEvent(FXRawEvent& ev){
           if(dropWindow){
             event.type=SEL_DND_LEAVE;
             if(dropWindow->handle(this,FXSEL(SEL_DND_LEAVE,0),&event)) refresh();
-            dropWindow=NULL;
+            dropWindow=nullptr;
             }
           if(ddeTypeList){freeElms(ddeTypeList);ddeNumTypes=0;}
           xdndSource=0;
@@ -3595,7 +3595,7 @@ FXbool FXApp::dispatchEvent(FXRawEvent& ev){
               event.type=SEL_DND_LEAVE;
               if(dropWindow->handle(this,FXSEL(SEL_DND_LEAVE,0),&event)) refresh();
               }
-            dropWindow=NULL;
+            dropWindow=nullptr;
             if(window && window->isDropEnabled()){
               dropWindow=window;
               event.type=SEL_DND_ENTER;
@@ -3652,7 +3652,7 @@ FXbool FXApp::dispatchEvent(FXRawEvent& ev){
 
           // Clean up
           if(ddeTypeList){freeElms(ddeTypeList);ddeNumTypes=0;}
-          dropWindow=NULL;
+          dropWindow=nullptr;
           xdndSource=0;
           refresh();
           }
@@ -3814,7 +3814,7 @@ FXbool FXApp::getNextEvent(FXRawEvent& msg,FXTime blocking){
   // MsgWaitForMultipleObjects would block even if there are unhandled events;
   // the fix is to call MsgWaitForMultipleObjects only AFTER having ascertained
   // that there are NO unhandled events queued up.
-  if(PeekMessage(&msg,NULL,0,0,PM_REMOVE)) return true;
+  if(PeekMessage(&msg,nullptr,0,0,PM_REMOVE)) return true;
 
   // Poll to see if any waitable objects are signalled
   allinputs=maxhandle+1;
@@ -3844,9 +3844,9 @@ FXbool FXApp::getNextEvent(FXRawEvent& msg,FXTime blocking){
           refresher=refresher->getParent();
           }
         }
-      refresher->handle(this,FXSEL(SEL_UPDATE,0),NULL);
+      refresher->handle(this,FXSEL(SEL_UPDATE,0),nullptr);
       if(refresher!=refresherstop) return false;
-      refresher=refresherstop=NULL;
+      refresher=refresherstop=nullptr;
       }
 
     // There are more chores to do
@@ -3860,7 +3860,7 @@ FXbool FXApp::getNextEvent(FXRawEvent& msg,FXTime blocking){
     // our message queue:- a call to MsgWaitForMultipleObjects when
     // there are events already in the queue would NOT immediately fall
     // through but block until the next event comes in.
-    if(PeekMessage(&msg,NULL,0,0,PM_REMOVE)) return true;
+    if(PeekMessage(&msg,nullptr,0,0,PM_REMOVE)) return true;
 
     // If there are timers, block only a little time
     allinputs=maxhandle+1;
@@ -3930,7 +3930,7 @@ FXbool FXApp::getNextEvent(FXRawEvent& msg,FXTime blocking){
   // The new code will always fall through, with an event if there
   // is one, or without one if despite our efforts above there wasn't.
   // Thanks to Hodju Petri <phodju@cc.hut.fi> for this suggestion.
-  return PeekMessage(&msg,NULL,0,0,PM_REMOVE)!=0;
+  return PeekMessage(&msg,nullptr,0,0,PM_REMOVE)!=0;
   }
 
 
@@ -3951,7 +3951,7 @@ FXbool FXApp::peekEvent(){
       }
 
     // Other events due?
-    return PeekMessage(&msg,NULL,0,0,PM_NOREMOVE)!=0;
+    return PeekMessage(&msg,nullptr,0,0,PM_NOREMOVE)!=0;
     }
   return false;
   }
@@ -4005,7 +4005,7 @@ void FXApp::repaint(){
   if(initialized){
 #ifdef WIN32
     for(FXWindow *top=getRootWindow()->getFirst(); top; top=top->getNext()){
-      RedrawWindow((HWND)top->id(),NULL,NULL,RDW_ERASENOW|RDW_UPDATENOW|RDW_ALLCHILDREN);
+      RedrawWindow((HWND)top->id(),nullptr,nullptr,RDW_ERASENOW|RDW_UPDATENOW|RDW_ALLCHILDREN);
       }
 #else
     removeRepaints(0,0,0,0,0);
@@ -4016,7 +4016,7 @@ void FXApp::repaint(){
 
 // Run application
 FXint FXApp::run(){
-  FXInvocation inv(&invocation,MODAL_FOR_NONE,NULL);
+  FXInvocation inv(&invocation,MODAL_FOR_NONE,nullptr);
   FXTRACE((100,"Start run\n"));
   while(!inv.done){
     runOneEvent();
@@ -4028,7 +4028,7 @@ FXint FXApp::run(){
 
 // Run till some flag becomes non-zero
 FXint FXApp::runUntil(FXuint& condition){
-  FXInvocation inv(&invocation,MODAL_FOR_NONE,NULL);
+  FXInvocation inv(&invocation,MODAL_FOR_NONE,nullptr);
   FXTRACE((100,"Start runUntil\n"));
   while(!inv.done && condition==0){
     runOneEvent();
@@ -4040,7 +4040,7 @@ FXint FXApp::runUntil(FXuint& condition){
 
 // Run event loop while events are available
 FXint FXApp::runWhileEvents(FXTime blocking){
-  FXInvocation inv(&invocation,MODAL_FOR_NONE,NULL);
+  FXInvocation inv(&invocation,MODAL_FOR_NONE,nullptr);
   FXTRACE((100,"Start runWhileEvents\n"));
   while(!inv.done && runOneEvent(blocking)) blocking=1000;
   FXTRACE((100,"End runWhileEvents\n"));
@@ -4071,7 +4071,7 @@ FXbool FXApp::runOneEvent(FXTime blocking){
 
 // Run modal event loop, blocking events to all windows, until stopModal is called.
 FXint FXApp::runModal(){
-  FXInvocation inv(&invocation,MODAL_FOR_WINDOW,NULL);
+  FXInvocation inv(&invocation,MODAL_FOR_WINDOW,nullptr);
   FXTRACE((100,"Start runModal\n"));
   while(!inv.done){
     runOneEvent();
@@ -4129,7 +4129,7 @@ FXbool FXApp::isModal(FXWindow *window) const {
 
 // Return current modal window, if any
 FXWindow* FXApp::getModalWindow() const {
-  return invocation ? invocation->window : NULL;
+  return invocation ? invocation->window : nullptr;
   }
 
 
@@ -4145,7 +4145,7 @@ void FXApp::stop(FXint value){
   for(inv=invocation; inv; inv=inv->upper){
     inv->done=true;
     inv->code=0;
-    if(inv->upper==NULL){
+    if(inv->upper==nullptr){
       inv->code=value;
       return;
       }
@@ -4212,7 +4212,7 @@ static void getSystemFont(FXFontDesc& fontdesc){
   fxstrlcpy(fontdesc.face,ncm.lfMenuFont.lfFaceName,sizeof(fontdesc.face));
 #endif
   fontdesc.face[sizeof(fontdesc.face)-1]='\0';
-  HDC hDC=CreateCompatibleDC(NULL);
+  HDC hDC=CreateCompatibleDC(nullptr);
   fontdesc.size=-10*MulDiv(ncm.lfMenuFont.lfHeight,72,GetDeviceCaps(hDC,LOGPIXELSY));
   DeleteDC(hDC);
   fontdesc.weight=ncm.lfMenuFont.lfWeight/10;
@@ -4226,10 +4226,10 @@ static void getSystemFont(FXFontDesc& fontdesc){
 
 // Initialize application and optionally open display
 void FXApp::init(int& argc,char** argv,FXbool connect){
-  const FXchar *fontspec=NULL;
-  const FXchar *style=NULL;
+  const FXchar *fontspec=nullptr;
+  const FXchar *style=nullptr;
   const FXchar *dpy=":0.0";
-  const FXchar *str=NULL;
+  const FXchar *str=nullptr;
   FXuint maxcols=0;
   FXint i,j;
 
@@ -4251,7 +4251,7 @@ void FXApp::init(int& argc,char** argv,FXbool connect){
   FXASSERT_STATIC(sizeof(FXString)==sizeof(void*));
 
   // Check arguments
-  if(argc<1 || argv==NULL || argv[0]==NULL){
+  if(argc<1 || argv==nullptr || argv[0]==nullptr){
     fxerror("%s::init: bad arguments.\n",getClassName());
     }
 
@@ -4263,21 +4263,21 @@ void FXApp::init(int& argc,char** argv,FXbool connect){
 
   // Try locate display
 #ifndef WIN32
-  if((str=getenv("DISPLAY"))!=NULL) dpy=str;
+  if((str=getenv("DISPLAY"))!=nullptr) dpy=str;
 #endif
 
   // System-wide configuration search paths
-  if((str=getenv("XDG_CONFIG_DIRS"))!=NULL){
-    registry.setSystemDirectories("$XDG_CONFIG_DIRS");
+  if((str=getenv("XDG_CONFIG_DIRS"))!=nullptr){
+    registry.setSystemDirectories(str);
     }
 
   // Per-user configuration path
-  if((str=getenv("XDG_CONFIG_HOME"))!=NULL){
-    registry.setUserDirectory("$XDG_CONFIG_HOME");
+  if((str=getenv("XDG_CONFIG_HOME"))!=nullptr){
+    registry.setUserDirectory(str);
     }
 
   // If set, force FOXDIR for system-wide path
-  if((str=getenv("FOXDIR"))!=NULL){
+  if((str=getenv("FOXDIR"))!=nullptr){
     registry.setSystemDirectories(str);
     }
 
@@ -4393,7 +4393,7 @@ void FXApp::init(int& argc,char** argv,FXbool connect){
     }
 
   // Adjust argment count
-  argv[i]=NULL;
+  argv[i]=nullptr;
   argc=i;
 
   // Remember arguments
@@ -4448,7 +4448,7 @@ void FXApp::init(int& argc,char** argv,FXbool connect){
 #endif
 
   // Parse font and change default font if set
-  fontspec=registry.readStringEntry("SETTINGS","normalfont",NULL);
+  fontspec=registry.readStringEntry("SETTINGS","normalfont",nullptr);
   if(fontspec){
     normalFont->setFont(fontspec);
     }
@@ -4684,7 +4684,7 @@ long FXApp::onCmdHover(FXObject*,FXSelector,void*){
   FXWindow *window;
   if(!mouseGrabWindow && cursorWindow && cursorWindow!=root){
     root->getCursorPosition(x,y,buttons);
-    if((window=findWindowAt(x,y))==NULL || !window->getShell()->containsChild(cursorWindow)){
+    if((window=findWindowAt(x,y))==nullptr || !window->getShell()->containsChild(cursorWindow)){
       event.type=SEL_LEAVE;
       event.root_x=x;
       event.root_y=y;
@@ -4765,7 +4765,7 @@ FXival FXApp::dispatchEvent(FXID hwnd,FXuint iMsg,FXuval wParam,FXival lParam){
       focuswin=getFocusWindow();
       if(inputstyle[1]!='o'){ // not root mode
         if(focuswin && focuswin->getComposeContext())
-          focuswin->handle(this,FXSEL(SEL_IME_START,0),NULL);
+          focuswin->handle(this,FXSEL(SEL_IME_START,0),nullptr);
         else
           return 0;
         }
@@ -4779,7 +4779,7 @@ FXival FXApp::dispatchEvent(FXID hwnd,FXuint iMsg,FXuval wParam,FXival lParam){
       focuswin=getFocusWindow();
       if(inputstyle[1]!='o'){ // not root mode
         if(focuswin && focuswin->getComposeContext())
-          focuswin->handle(this,FXSEL(SEL_IME_END,0),NULL);
+          focuswin->handle(this,FXSEL(SEL_IME_END,0),nullptr);
         else
           return 0;
         }
@@ -4903,7 +4903,7 @@ Alt key seems to repeat.
             if(inputstyle[1]!='o'){
               focuswin=getFocusWindow();
               if(focuswin){
-                focuswin->handle(this,FXSEL(SEL_IME_START,0),NULL);
+                focuswin->handle(this,FXSEL(SEL_IME_START,0),nullptr);
                 }
               }
             return DefWindowProc((HWND)hwnd,iMsg,wParam,lParam);
@@ -5100,7 +5100,7 @@ Alt key seems to repeat.
       if(iMsg==WM_KILLFOCUS && activeWindow==window){
         event.type=SEL_FOCUSOUT;
         if(window->handle(this,FXSEL(SEL_FOCUSOUT,0),&event)) refresh();
-        activeWindow=NULL;
+        activeWindow=nullptr;
         }
       if(iMsg==WM_SETFOCUS && activeWindow!=window){
         event.type=SEL_FOCUSIN;
@@ -5209,7 +5209,7 @@ Alt key seems to repeat.
         event.time=GetMessageTime();
         event.type=SEL_CLIPBOARD_LOST;
         if(clipboardWindow->handle(this,FXSEL(SEL_CLIPBOARD_LOST,0),&event)) refresh();
-        clipboardWindow=NULL;
+        clipboardWindow=nullptr;
         }
       return 0;
 
@@ -5260,7 +5260,7 @@ Alt key seems to repeat.
         HDC hdc=GetDC((HWND)hwnd);
         HPALETTE paletteold=SelectPalette(hdc,(HPALETTE)window->getVisual()->colormap,false);
         UINT nchanged=RealizePalette(hdc);
-        if(nchanged) InvalidateRect((HWND)hwnd,NULL,true);
+        if(nchanged) InvalidateRect((HWND)hwnd,nullptr,true);
         SelectPalette(hdc,paletteold,true);
         ReleaseDC((HWND)hwnd,hdc);
         return nchanged;
@@ -5329,7 +5329,7 @@ Alt key seems to repeat.
 #if 0
     case WM_ENTERSIZEMOVE:
       if(!repostimer){
-        repostimer=SetTimer((HWND)hwnd,1,10 /* lower doesn't work :( */,NULL);
+        repostimer=SetTimer((HWND)hwnd,1,10 /* lower doesn't work :( */,nullptr);
         return 0;
         }
       return DefWindowProc((HWND)hwnd,iMsg,wParam,lParam);
@@ -5394,7 +5394,7 @@ Alt key seems to repeat.
       //char ListFileName[MAX_PATH];
       //HDROP hDropInfo=(HDROP)WParam;
       //DragQueryFile(hDropInfo,0,ListFileName,sizeof(ListFileName)-1);
-      //numfiles = DragQueryFile(hDropInfo, (DWORD)(-1), (LPSTR)NULL, 0);
+      //numfiles = DragQueryFile(hDropInfo, (DWORD)(-1), (LPSTR)nullptr, 0);
       //for (fileindex=0; fileindex<numfiles; fileindex++) {
       //  numc = DragQueryFile(hDropInfo,fileindex,ListFileName,sizeof(ListFileName)-1);
       //  }
@@ -5429,7 +5429,7 @@ Alt key seems to repeat.
       if(dropWindow){
         event.type=SEL_DND_LEAVE;
         if(dropWindow->handle(this,FXSEL(SEL_DND_LEAVE,0),&event)) refresh();
-        dropWindow=NULL;
+        dropWindow=nullptr;
         }
       if(ddeTypeList){freeElms(ddeTypeList);ddeNumTypes=0;}
       xdndSource=0;
@@ -5450,7 +5450,7 @@ Alt key seems to repeat.
         PostMessage((HWND)xdndSource,WM_DND_FINISH_REJECT+ansAction,0,(LPARAM)hwnd);
         }
       if(ddeTypeList){freeElms(ddeTypeList);ddeNumTypes=0;}
-      dropWindow=NULL;
+      dropWindow=nullptr;
       xdndSource=0;
       refresh();
       return 0;
@@ -5478,7 +5478,7 @@ Alt key seems to repeat.
           event.type=SEL_DND_LEAVE;
           if(dropWindow->handle(this,FXSEL(SEL_DND_LEAVE,0),&event)) refresh();
           }
-        dropWindow=NULL;
+        dropWindow=nullptr;
         if(win && win->isDropEnabled()){
           dropWindow=win;
           event.type=SEL_DND_ENTER;
@@ -5522,13 +5522,13 @@ Alt key seems to repeat.
         event.type=SEL_DND_REQUEST;
         event.time=GetMessageTime();
         event.target=(FXDragType)wParam;
-        ddeData=NULL;
+        ddeData=nullptr;
         ddeSize=0;
         dragWindow->handle(this,FXSEL(SEL_DND_REQUEST,0),&event);
         FXTRACE((100,"Window %d being requested by window %d for XDND DATA of type %d; sending %d bytes\n",hwnd,lParam,wParam,ddeSize));
         answer=fxsenddata((HWND)lParam,ddeData,ddeSize);
         freeElms(ddeData);
-        ddeData=NULL;
+        ddeData=nullptr;
         ddeSize=0;
         }
       FXTRACE((100,"sending handle %d from window %d to %d\n",answer,hwnd,lParam));
@@ -5980,7 +5980,7 @@ FXApp::~FXApp(){
   cursor[DEF_WAIT_CURSOR]=(FXCursor*)-1L;
 
   // Do this last
-  app=NULL;
+  app=nullptr;
   }
 
 }

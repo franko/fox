@@ -3,7 +3,7 @@
 *                  P a t h   N a m e   M a n i p u l a t i o n                  *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 2000,2021 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 2000,2022 by Jeroen van der Zijp.   All Rights Reserved.        *
 *********************************************************************************
 * This library is free software; you can redistribute it and/or modify          *
 * it under the terms of the GNU Lesser General Public License as published by   *
@@ -363,29 +363,23 @@ FXString FXPath::drive(const FXString&){
 
 /*******************************************************************************/
 
-// Perform tilde or environment variable expansion
-// On Windows, environment variables are of the form '%ENVVAR%'.
-// On Unix, environment variables are of the form '$ENVVAR' or '${ENVVAR}'.
-// Also, on unix tilde-expansion '~' or '~user' is replaced by the
-// home directory of the current user or designated user.
-FXString FXPath::expand(const FXString& file){
-  if(!file.empty()){
-    FXString result,value; FXint b=0,e=0,p;
-#if defined(WIN32)
+// Expand environment variables recursively, stopping when recursion goes too deep
+static FXString expandEnvironmentVariables(const FXString& file,FXint level){
+  FXString result;
+  if(0<=--level){
+    FXint b=0,e=0,p,q;
+#if defined(_WIN32)
     while(file[e]){
-      if(file[e]=='%'){
+      if(file[e]=='%'){         // %VAR%
         p=++e;
         while(Ascii::isAlphaNumeric(file[e]) || file[e]=='_') e++;
+        q=e;
         if(file[e]=='%'){
-          if(p<e){
-            value=FXSystem::getEnvironment(file.mid(p,e-p));
-            if(!value.empty()){
-              result.append(&file[b],p-b-1);
-              result.append(value);
-              b=e+1;
-              }
+          result.append(&file[b],p-b-1);
+          b=++e;
+          if(p<q){
+            result.append(expandEnvironmentVariables(FXSystem::getEnvironment(file.mid(p,q-p)),level));
             }
-          ++e;
           }
         continue;
         }
@@ -393,26 +387,6 @@ FXString FXPath::expand(const FXString& file){
       }
     result.append(&file[b],e-b);
 #else
-
-    // Expand leading tilde of the form ~/filename or ~user/filename
-    // Also don't expand if non-existing user-directory.
-    if(file[e]=='~'){
-      ++e;
-      while(file[e] && !(ISPATHSEP(file[e]) && file[e-1]!='\\')){
-        ++e;
-        }
-      if(e==1){
-        result=FXSystem::getHomeDirectory();
-        }
-      else{
-        result=FXSystem::getUserDirectory(file.mid(b+1,e-b-1));
-        }
-      if(result.empty()){
-        e=b;
-        }
-      }
-
-    // Expand environment variables of the form $HOME or ${HOME}
     b=e;
     while(file[e]){
       if(file[e]=='$'){
@@ -420,28 +394,23 @@ FXString FXPath::expand(const FXString& file){
         if(file[e]=='{'){       // ${VAR}...
           p=++e;
           while(Ascii::isAlphaNumeric(file[e]) || file[e]=='_') e++;
+          q=e;
           if(file[e]=='}'){
-            if(p<e){
-              value=FXSystem::getEnvironment(file.mid(p,e-p));
-              if(!value.empty()){
-                result.append(&file[b],p-b-2);
-                result.append(value);
-                b=e+1;
-                }
+            result.append(&file[b],p-b-2);
+            b=++e;
+            if(p<q){
+              result.append(expandEnvironmentVariables(FXSystem::getEnvironment(file.mid(p,q-p)),level));
               }
-            ++e;
             }
           }
         else{                   // $VAR...
           p=e;
           while(Ascii::isAlphaNumeric(file[e]) || file[e]=='_') e++;
-          if(p<e){
-            value=FXSystem::getEnvironment(file.mid(p,e-p));
-            if(!value.empty()){
-              result.append(&file[b],p-b-1);
-              result.append(value);
-              b=e;
-              }
+          q=e;
+          result.append(&file[b],p-b-1);
+          b=e;
+          if(p<q){
+            result.append(expandEnvironmentVariables(FXSystem::getEnvironment(file.mid(p,q-p)),level));
             }
           }
         continue;
@@ -450,7 +419,32 @@ FXString FXPath::expand(const FXString& file){
       }
     result.append(&file[b],e-b);
 #endif
-    return result;
+    }
+  return result;
+  }
+
+
+// Perform tilde or environment variable expansion.
+// A prefix of the form ~ or ~user is expanded to the user's home directory.
+// Environment variables of the form $HOME or ${HOME} are expanded by
+// substituting the value of the variable, recusively up to given level.
+// On Windows, only environment variables of the form %HOME% are expanded.
+FXString FXPath::expand(const FXString& file,FXint level){
+  if(!file.empty()){
+#if defined(_WIN32)
+    return expandEnvironmentVariables(file,level);
+#else
+    FXint e=0;
+    if(file[e]=='~'){
+      e++;
+      while(Ascii::isAlphaNumeric(file[e]) || file[e]=='_') e++;
+      if(1<e){
+        return FXSystem::getUserDirectory(file.mid(1,e-1))+expandEnvironmentVariables(file.mid(e,file.length()-e),level);
+        }
+      return FXSystem::getHomeDirectory()+expandEnvironmentVariables(file.mid(e,file.length()-e),level);
+      }
+    return expandEnvironmentVariables(file,level);
+#endif
     }
   return FXString::null;
   }
@@ -1508,7 +1502,7 @@ FXString FXPath::dequote(const FXString& file){
 // N backslashes          : N backslashes
 //
 FXint FXPath::parseArgs(FXchar**& argv,const FXchar* command){
-  argv=NULL;
+  argv=nullptr;
   if(command){
     const FXchar *p=command;
     FXint token=0;
@@ -1640,7 +1634,7 @@ FXint FXPath::parseArgs(FXchar**& argv,const FXchar* command){
           }
 
         // Argv closeout
-        *ptr=NULL;
+        *ptr=nullptr;
         return count;
         }
       }
@@ -1660,7 +1654,7 @@ FXint FXPath::parseArgs(FXchar**& argv,const FXchar* command){
 // '......'     : No characters can be escaped inside single-quoted text
 //
 FXint FXPath::parseArgs(FXchar**& argv,const FXchar* command){
-  argv=NULL;
+  argv=nullptr;
   if(command){
     const FXchar *p=command;
     FXint token=0;
@@ -1809,7 +1803,7 @@ FXint FXPath::parseArgs(FXchar**& argv,const FXchar* command){
           }
 
         // Argv closeout
-        *ptr=NULL;
+        *ptr=nullptr;
         return count;
         }
       }
@@ -2061,14 +2055,15 @@ FXString FXPath::unique(const FXString& file){
 FXString FXPath::search(const FXString& pathlist,const FXString& file){
   if(!file.empty()){
     FXString path;
-    FXint beg,end;
+    FXint beg=0;
+    FXint end=0;
     if(FXPath::isAbsolute(file)){
       if(FXStat::exists(file)) return file;
       return FXString::null;
       }
-    for(beg=0; pathlist[beg]; beg=end){
-      while(pathlist[beg]==PATHLISTSEP) beg++;
-      end=beg;
+    while(pathlist[end]){
+      while(pathlist[end]==PATHLISTSEP) end++;
+      beg=end;
       while(pathlist[end] && pathlist[end]!=PATHLISTSEP) end++;
       if(beg==end) break;
       path=FXPath::absolute(FXPath::expand(pathlist.mid(beg,end-beg)),file);
@@ -2084,18 +2079,21 @@ FXString FXPath::search(const FXString& pathlist,const FXString& file){
 FXString FXPath::relativize(const FXString& pathlist,const FXString& file){
   FXString result(file);
   if(!file.empty()){
-    FXint beg,end;
-    FXString base,rr,r;
-    for(beg=0; pathlist[beg]; beg=end){
-      while(pathlist[beg]==PATHLISTSEP) beg++;
-      for(end=beg; pathlist[end] && pathlist[end]!=PATHLISTSEP; end++){}
+    FXString base;
+    FXString res;
+    FXint beg=0;
+    FXint end=0;
+    while(pathlist[end]){
+      while(pathlist[end]==PATHLISTSEP) end++;
+      beg=end;
+      while(pathlist[end] && pathlist[end]!=PATHLISTSEP) end++;
       if(beg==end) break;
       base=FXPath::absolute(FXPath::expand(pathlist.mid(beg,end-beg)));
-      if(isInside(base,file)){
-        r=FXPath::relative(base,file);
-        if(r.length()<result.length()){         // ??
-          if(FXPath::search(pathlist,r)==file){
-            result=r;
+      if(FXPath::isInside(base,file)){
+        res=FXPath::relative(base,file);
+        if(res.length()<result.length()){
+          if(FXPath::search(pathlist,res)==file){
+            result=res;
             }
           }
         }
@@ -2135,7 +2133,7 @@ static const char *fxstrcasestr(const FXchar *haystack,const FXchar *needle){
       if(!*b) return haystack;
       }
     }
-  return NULL;
+  return nullptr;
   }
 
 
@@ -2144,10 +2142,10 @@ FXbool FXPath::isReservedName(const FXString& file){
   static const FXchar reserved3[]="CON\nPRN\nAUX\nNUL\n";
   static const FXchar reserved4[]="COM1\nCOM2\nCOM3\nCOM4\nCOM5\nCOM6\nCOM7\nCOM8\nCOM9\nLPT1\nLPT2\nLPT3\nLPT4\nLPT5\nLPT6\nLPT7\nLPT8\nLPT9\n";
   if(file.length()==3){
-    return (fxstrcasestr(reserved3,file.text())!=NULL);
+    return (fxstrcasestr(reserved3,file.text())!=nullptr);
     }
   if(file.length()==4){
-    return (fxstrcasestr(reserved4,file.text())!=NULL);
+    return (fxstrcasestr(reserved4,file.text())!=nullptr);
     }
   return false;
   }

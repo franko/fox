@@ -3,7 +3,7 @@
 *                           S n a p p e r   W i d g e t                         *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 2003,2021 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 2003,2022 by Jeroen van der Zijp.   All Rights Reserved.        *
 *********************************************************************************
 * This program is free software: you can redistribute it and/or modify          *
 * it under the terms of the GNU General Public License as published by          *
@@ -30,7 +30,7 @@
 
 
 // Object implementation
-FXIMPLEMENT(Snapper,FXShell,NULL,0)
+FXIMPLEMENT(Snapper,FXShell,nullptr,0)
 
 
 // Deserialization

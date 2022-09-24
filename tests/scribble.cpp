@@ -77,7 +77,7 @@ FXIMPLEMENT(ScribbleWindow,FXMainWindow,ScribbleWindowMap,ARRAYNUMBER(ScribbleWi
 
 
 // Construct a ScribbleWindow
-ScribbleWindow::ScribbleWindow(FXApp *a):FXMainWindow(a,"Scribble Application",NULL,NULL,DECOR_ALL,0,0,800,600){
+ScribbleWindow::ScribbleWindow(FXApp *a):FXMainWindow(a,"Scribble Application",nullptr,nullptr,DECOR_ALL,0,0,800,600){
 
   contents=new FXHorizontalFrame(this,LAYOUT_SIDE_TOP|LAYOUT_FILL_X|LAYOUT_FILL_Y,0,0,0,0, 0,0,0,0);
 
@@ -85,7 +85,7 @@ ScribbleWindow::ScribbleWindow(FXApp *a):FXMainWindow(a,"Scribble Application",N
   canvasFrame=new FXVerticalFrame(contents,FRAME_SUNKEN|LAYOUT_FILL_X|LAYOUT_FILL_Y|LAYOUT_TOP|LAYOUT_LEFT,0,0,0,0,10,10,10,10);
 
     // Label above the canvas
-    new FXLabel(canvasFrame,"Canvas Frame",NULL,JUSTIFY_CENTER_X|LAYOUT_FILL_X);
+    new FXLabel(canvasFrame,"Canvas Frame",nullptr,JUSTIFY_CENTER_X|LAYOUT_FILL_X);
 
     // Horizontal divider line
     new FXHorizontalSeparator(canvasFrame,SEPARATOR_GROOVE|LAYOUT_FILL_X);
@@ -97,16 +97,16 @@ ScribbleWindow::ScribbleWindow(FXApp *a):FXMainWindow(a,"Scribble Application",N
   buttonFrame=new FXVerticalFrame(contents,FRAME_SUNKEN|LAYOUT_FILL_Y|LAYOUT_TOP|LAYOUT_LEFT,0,0,0,0,10,10,10,10);
 
     // Label above the buttons
-    new FXLabel(buttonFrame,"Button Frame",NULL,JUSTIFY_CENTER_X|LAYOUT_FILL_X);
+    new FXLabel(buttonFrame,"Button Frame",nullptr,JUSTIFY_CENTER_X|LAYOUT_FILL_X);
 
     // Horizontal divider line
     new FXHorizontalSeparator(buttonFrame,SEPARATOR_RIDGE|LAYOUT_FILL_X);
 
     // Button to clear
-    new FXButton(buttonFrame,"&Clear",NULL,this,ID_CLEAR,FRAME_THICK|FRAME_RAISED|LAYOUT_FILL_X|LAYOUT_TOP|LAYOUT_LEFT,0,0,0,0,10,10,5,5);
+    new FXButton(buttonFrame,"&Clear",nullptr,this,ID_CLEAR,FRAME_THICK|FRAME_RAISED|LAYOUT_FILL_X|LAYOUT_TOP|LAYOUT_LEFT,0,0,0,0,10,10,5,5);
 
     // Exit button
-    new FXButton(buttonFrame,"&Exit",NULL,getApp(),FXApp::ID_QUIT,FRAME_THICK|FRAME_RAISED|LAYOUT_FILL_X|LAYOUT_TOP|LAYOUT_LEFT,0,0,0,0,10,10,5,5);
+    new FXButton(buttonFrame,"&Exit",nullptr,getApp(),FXApp::ID_QUIT,FRAME_THICK|FRAME_RAISED|LAYOUT_FILL_X|LAYOUT_TOP|LAYOUT_LEFT,0,0,0,0,10,10,5,5);
 
   // Initialize private variables
   drawColor=FXRGB(255,0,0);
@@ -218,9 +218,9 @@ long ScribbleWindow::onCmdClear(FXObject*,FXSelector,void*){
 long ScribbleWindow::onUpdClear(FXObject* sender,FXSelector,void*){
 
   if(dirty)
-    sender->handle(this,FXSEL(SEL_COMMAND,FXWindow::ID_ENABLE),NULL);
+    sender->handle(this,FXSEL(SEL_COMMAND,FXWindow::ID_ENABLE),nullptr);
   else
-    sender->handle(this,FXSEL(SEL_COMMAND,FXWindow::ID_DISABLE),NULL);
+    sender->handle(this,FXSEL(SEL_COMMAND,FXWindow::ID_DISABLE),nullptr);
 
   return 1;
   }

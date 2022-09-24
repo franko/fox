@@ -3,7 +3,7 @@
 *                           S t r i n g   O b j e c t                           *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 1997,2021 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 1997,2022 by Jeroen van der Zijp.   All Rights Reserved.        *
 *********************************************************************************
 * This library is free software; you can redistribute it and/or modify          *
 * it under the terms of the GNU Lesser General Public License as published by   *
@@ -159,12 +159,12 @@ const FXschar FXString::utfBytes[256]={
 extern FXAPI FXint __vsscanf(const FXchar* string,const FXchar* format,va_list arg_ptr);
 extern FXAPI FXint __vsnprintf(FXchar* string,FXint length,const FXchar* format,va_list args);
 extern FXAPI FXint __snprintf(FXchar* string,FXint length,const FXchar* format,...);
-extern FXAPI FXlong __strtoll(const FXchar *beg,const FXchar** end=NULL,FXint base=0,FXbool* ok=NULL);
-extern FXAPI FXulong __strtoull(const FXchar* beg,const FXchar** end=NULL,FXint base=0,FXbool* ok=NULL);
-extern FXAPI FXint __strtol(const FXchar *beg,const FXchar** end=NULL,FXint base=0,FXbool* ok=NULL);
-extern FXAPI FXuint __strtoul(const FXchar* beg,const FXchar** end=NULL,FXint base=0,FXbool* ok=NULL);
-extern FXAPI FXdouble __strtod(const FXchar *beg,const FXchar** end=NULL,FXbool* ok=NULL);
-extern FXAPI FXfloat __strtof(const FXchar *beg,const FXchar** end=NULL,FXbool* ok=NULL);
+extern FXAPI FXlong __strtoll(const FXchar *beg,const FXchar** end=nullptr,FXint base=0,FXbool* ok=nullptr);
+extern FXAPI FXulong __strtoull(const FXchar* beg,const FXchar** end=nullptr,FXint base=0,FXbool* ok=nullptr);
+extern FXAPI FXint __strtol(const FXchar *beg,const FXchar** end=nullptr,FXint base=0,FXbool* ok=nullptr);
+extern FXAPI FXuint __strtoul(const FXchar* beg,const FXchar** end=nullptr,FXint base=0,FXbool* ok=nullptr);
+extern FXAPI FXdouble __strtod(const FXchar *beg,const FXchar** end=nullptr,FXbool* ok=nullptr);
+extern FXAPI FXfloat __strtof(const FXchar *beg,const FXchar** end=nullptr,FXbool* ok=nullptr);
 
 /*******************************************************************************/
 
@@ -708,7 +708,7 @@ FXival utf2wcs(FXwchar *dst,const FXchar* src,FXival dstlen,FXival srclen){
   FXwchar* ptr=dst;
   FXwchar w;
   FXuchar c;
-  while(src<srcend && (w=*src++)!=0){
+  while(src<srcend && (w=c=*src++)!=0){
     if(0xC0<=w){
       if(__unlikely(src>=srcend)) break;
       c=*src++;
@@ -776,7 +776,7 @@ FXival utf2ncs(FXnchar *dst,const FXchar* src,FXival dstlen,FXival srclen){
   FXnchar* ptr=dst;
   FXwchar w;
   FXuchar c;
-  while(src<srcend && (w=*src++)!=0){
+  while(src<srcend && (w=c=*src++)!=0){
     if(0xC0<=w){
       if(__unlikely(src>=srcend)) break;
       c=*src++;
@@ -815,7 +815,7 @@ FXival utf2ncs(FXnchar *dst,const FXchar* src,FXival dstlen){
   FXnchar* ptr=dst;
   FXwchar w;
   FXuchar c;
-  while((w=*src++)!=0){
+  while((w=c=*src++)!=0){
     if(0xC0<=w){
       c=*src++;
       if(__unlikely(!FXISFOLLOWUTF8(c))) break;
@@ -2367,37 +2367,37 @@ FXint FXString::format(const FXchar* fmt,...){
 
 // Convert to integer
 FXint FXString::toInt(FXint base,FXbool* ok) const {
-  return __strtol(str,NULL,base,ok);
+  return __strtol(str,nullptr,base,ok);
   }
 
 
 // Convert to unsigned integer
 FXuint FXString::toUInt(FXint base,FXbool* ok) const {
-  return __strtoul(str,NULL,base,ok);
+  return __strtoul(str,nullptr,base,ok);
   }
 
 
 // Convert to long integer
 FXlong FXString::toLong(FXint base,FXbool* ok) const {
-  return __strtoll(str,NULL,base,ok);
+  return __strtoll(str,nullptr,base,ok);
   }
 
 
 // Convert to unsigned long integer
 FXulong FXString::toULong(FXint base,FXbool* ok) const {
-  return __strtoull(str,NULL,base,ok);
+  return __strtoull(str,nullptr,base,ok);
   }
 
 
 // Convert to float
 FXfloat FXString::toFloat(FXbool* ok) const {
-  return __strtof(str,NULL,ok);
+  return __strtof(str,nullptr,ok);
   }
 
 
 // Convert to double number
 FXdouble FXString::toDouble(FXbool* ok) const {
-  return __strtod(str,NULL,ok);
+  return __strtod(str,nullptr,ok);
   }
 
 

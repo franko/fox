@@ -3,7 +3,7 @@
 *                      I m a g e   V i e w e r   D e m o                        *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 2000,2021 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 2000,2022 by Jeroen van der Zijp.   All Rights Reserved.        *
 ********************************************************************************/
 #include "fx.h"
 #include <stdio.h>
@@ -230,7 +230,7 @@ FXIMPLEMENT(ImageWindow,FXMainWindow,ImageWindowMap,ARRAYNUMBER(ImageWindowMap))
 
 
 // Make some windows
-ImageWindow::ImageWindow(FXApp* a):FXMainWindow(a,"FOX Image Viewer: - untitled",NULL,NULL,DECOR_ALL,0,0,850,600,0,0),mrufiles(a){
+ImageWindow::ImageWindow(FXApp* a):FXMainWindow(a,"FOX Image Viewer: - untitled",nullptr,nullptr,DECOR_ALL,0,0,850,600,0,0),mrufiles(a){
   setTarget(this);
   setSelector(ID_TITLE);
 
@@ -257,7 +257,7 @@ ImageWindow::ImageWindow(FXApp* a):FXMainWindow(a,"FOX Image Viewer: - untitled"
 
   // Tool bar
   //FXHorizontalFrame* toolbarcontainer=new FXHorizontalFrame(this,LAYOUT_SIDE_TOP|LAYOUT_FILL_X,0,0,0,0, 0,0,0,0, 0,0);
-  //new FXToolBarTab(toolbarcontainer,NULL,0,FRAME_RAISED);
+  //new FXToolBarTab(toolbarcontainer,nullptr,0,FRAME_RAISED);
   //toolbar=new FXToolBar(toolbarcontainer,FRAME_RAISED|PACK_UNIFORM_WIDTH|LAYOUT_SIDE_TOP|LAYOUT_FILL_X,0,0,0,0, 4,4,4,4, 0,0);
 
   // Status bar
@@ -265,23 +265,23 @@ ImageWindow::ImageWindow(FXApp* a):FXMainWindow(a,"FOX Image Viewer: - untitled"
 
   // File menu
   filemenu=new FXMenuPane(this);
-  new FXMenuTitle(menubar,"&File",NULL,filemenu);
+  new FXMenuTitle(menubar,"&File",nullptr,filemenu);
 
   // Edit Menu
   editmenu=new FXMenuPane(this);
-  new FXMenuTitle(menubar,"&Edit",NULL,editmenu);
+  new FXMenuTitle(menubar,"&Edit",nullptr,editmenu);
 
   // Edit Menu
   manipmenu=new FXMenuPane(this);
-  new FXMenuTitle(menubar,"&Manipulation",NULL,manipmenu);
+  new FXMenuTitle(menubar,"&Manipulation",nullptr,manipmenu);
 
   // View menu
   viewmenu=new FXMenuPane(this);
-  new FXMenuTitle(menubar,"&View",NULL,viewmenu);
+  new FXMenuTitle(menubar,"&View",nullptr,viewmenu);
 
   // Help menu
   helpmenu=new FXMenuPane(this);
-  new FXMenuTitle(menubar,"&Help",NULL,helpmenu,LAYOUT_RIGHT);
+  new FXMenuTitle(menubar,"&Help",nullptr,helpmenu,LAYOUT_RIGHT);
 
   // Splitter
   splitter=new FXSplitter(this,LAYOUT_SIDE_TOP|LAYOUT_FILL_X|LAYOUT_FILL_Y|SPLITTER_TRACKING|SPLITTER_VERTICAL|SPLITTER_REVERSED);
@@ -290,7 +290,7 @@ ImageWindow::ImageWindow(FXApp* a):FXMainWindow(a,"FOX Image Viewer: - untitled"
   FXHorizontalFrame *imagebox=new FXHorizontalFrame(splitter,FRAME_SUNKEN|FRAME_THICK|LAYOUT_FILL_X|LAYOUT_FILL_Y,0,0,0,0, 0,0,0,0);
 
   // Make image widget
-  imageview=new FXImageView(imagebox,NULL,NULL,0,LAYOUT_FILL_X|LAYOUT_FILL_Y);
+  imageview=new FXImageView(imagebox,nullptr,nullptr,0,LAYOUT_FILL_X|LAYOUT_FILL_Y);
 
   // Sunken border for file list
   filebox=new FXHorizontalFrame(splitter,LAYOUT_FILL_X|LAYOUT_FILL_Y,0,0,0,0, 0,0,0,0);
@@ -305,9 +305,9 @@ ImageWindow::ImageWindow(FXApp* a):FXMainWindow(a,"FOX Image Viewer: - untitled"
   new FXButton(toolbar,"&Save\tSave Image\tSave image file.",filesaveicon,this,ID_SAVE,ICON_ABOVE_TEXT|BUTTON_TOOLBAR|FRAME_RAISED);
 
   // Toobar buttons: Editing
-  new FXButton(toolbar,"Cut\tCut",cuticon,NULL,0,ICON_ABOVE_TEXT|BUTTON_TOOLBAR|FRAME_RAISED);
-  new FXButton(toolbar,"Copy\tCopy",copyicon,NULL,0,ICON_ABOVE_TEXT|BUTTON_TOOLBAR|FRAME_RAISED);
-  new FXButton(toolbar,"Paste\tPaste",pasteicon,NULL,0,ICON_ABOVE_TEXT|BUTTON_TOOLBAR|FRAME_RAISED);
+  new FXButton(toolbar,"Cut\tCut",cuticon,nullptr,0,ICON_ABOVE_TEXT|BUTTON_TOOLBAR|FRAME_RAISED);
+  new FXButton(toolbar,"Copy\tCopy",copyicon,nullptr,0,ICON_ABOVE_TEXT|BUTTON_TOOLBAR|FRAME_RAISED);
+  new FXButton(toolbar,"Paste\tPaste",pasteicon,nullptr,0,ICON_ABOVE_TEXT|BUTTON_TOOLBAR|FRAME_RAISED);
 
   // Color
   new FXButton(toolbar,"&Colors\tColors\tDisplay color dialog.",paletteicon,colordlg,FXWindow::ID_SHOW,ICON_ABOVE_TEXT|BUTTON_TOOLBAR|FRAME_RAISED|LAYOUT_RIGHT);
@@ -315,60 +315,60 @@ ImageWindow::ImageWindow(FXApp* a):FXMainWindow(a,"FOX Image Viewer: - untitled"
   // File Menu entries
   new FXMenuCommand(filemenu,"&Open...\tCtl-O\tOpen image file.",fileopenicon,this,ID_OPEN);
   new FXMenuCommand(filemenu,"&Save...\tCtl-S\tSave image file.",filesaveicon,this,ID_SAVE);
-  new FXMenuCommand(filemenu,"Dump",NULL,getApp(),FXApp::ID_DUMP);
+  new FXMenuCommand(filemenu,"Dump",nullptr,getApp(),FXApp::ID_DUMP);
 
   // Recent file menu; this automatically hides if there are no files
   new FXMenuSeparator(filemenu,&mrufiles,FXRecentFiles::ID_ANYFILES);
-  new FXMenuCommand(filemenu,FXString::null,NULL,&mrufiles,FXRecentFiles::ID_FILE_1);
-  new FXMenuCommand(filemenu,FXString::null,NULL,&mrufiles,FXRecentFiles::ID_FILE_2);
-  new FXMenuCommand(filemenu,FXString::null,NULL,&mrufiles,FXRecentFiles::ID_FILE_3);
-  new FXMenuCommand(filemenu,FXString::null,NULL,&mrufiles,FXRecentFiles::ID_FILE_4);
-  new FXMenuCommand(filemenu,FXString::null,NULL,&mrufiles,FXRecentFiles::ID_FILE_5);
-  new FXMenuCommand(filemenu,FXString::null,NULL,&mrufiles,FXRecentFiles::ID_FILE_6);
-  new FXMenuCommand(filemenu,FXString::null,NULL,&mrufiles,FXRecentFiles::ID_FILE_7);
-  new FXMenuCommand(filemenu,FXString::null,NULL,&mrufiles,FXRecentFiles::ID_FILE_8);
-  new FXMenuCommand(filemenu,FXString::null,NULL,&mrufiles,FXRecentFiles::ID_FILE_9);
-  new FXMenuCommand(filemenu,FXString::null,NULL,&mrufiles,FXRecentFiles::ID_FILE_10);
-  new FXMenuCommand(filemenu,"&Clear Recent Files",NULL,&mrufiles,FXRecentFiles::ID_CLEAR);
+  new FXMenuCommand(filemenu,"&1",nullptr,&mrufiles,FXRecentFiles::ID_FILE_1);
+  new FXMenuCommand(filemenu,"&2",nullptr,&mrufiles,FXRecentFiles::ID_FILE_2);
+  new FXMenuCommand(filemenu,"&3",nullptr,&mrufiles,FXRecentFiles::ID_FILE_3);
+  new FXMenuCommand(filemenu,"&4",nullptr,&mrufiles,FXRecentFiles::ID_FILE_4);
+  new FXMenuCommand(filemenu,"&5",nullptr,&mrufiles,FXRecentFiles::ID_FILE_5);
+  new FXMenuCommand(filemenu,"&6",nullptr,&mrufiles,FXRecentFiles::ID_FILE_6);
+  new FXMenuCommand(filemenu,"&7",nullptr,&mrufiles,FXRecentFiles::ID_FILE_7);
+  new FXMenuCommand(filemenu,"&8",nullptr,&mrufiles,FXRecentFiles::ID_FILE_8);
+  new FXMenuCommand(filemenu,"&9",nullptr,&mrufiles,FXRecentFiles::ID_FILE_9);
+  new FXMenuCommand(filemenu,"1&0",nullptr,&mrufiles,FXRecentFiles::ID_FILE_10);
+  new FXMenuCommand(filemenu,"&Clear Recent Files",nullptr,&mrufiles,FXRecentFiles::ID_CLEAR);
   new FXMenuSeparator(filemenu,&mrufiles,FXRecentFiles::ID_ANYFILES);
-  new FXMenuCommand(filemenu,"&Quit\tCtl-Q",NULL,this,ID_QUIT);
+  new FXMenuCommand(filemenu,"&Quit\tCtl-Q",nullptr,this,ID_QUIT);
 
   // Edit Menu entries
   new FXMenuCommand(editmenu,"&Undo\tCtl-Z\tUndo last change.");
   new FXMenuCommand(editmenu,"&Redo\tCtl-R\tRedo last undo.");
-  new FXMenuCommand(editmenu,"&Copy\tCtl-C\tCopy selection to clipboard.",copyicon,NULL,0);
-  new FXMenuCommand(editmenu,"C&ut\tCtl-X\tCut selection to clipboard.",cuticon,NULL,0);
-  new FXMenuCommand(editmenu,"&Paste\tCtl-V\tPaste from clipboard.",pasteicon,NULL,0);
-  new FXMenuCommand(editmenu,"&Delete\t\tDelete selection.",NULL,NULL,0);
+  new FXMenuCommand(editmenu,"&Copy\tCtl-C\tCopy selection to clipboard.",copyicon,nullptr,0);
+  new FXMenuCommand(editmenu,"C&ut\tCtl-X\tCut selection to clipboard.",cuticon,nullptr,0);
+  new FXMenuCommand(editmenu,"&Paste\tCtl-V\tPaste from clipboard.",pasteicon,nullptr,0);
+  new FXMenuCommand(editmenu,"&Delete\t\tDelete selection.",nullptr,nullptr,0);
 
   // Manipulation Menu entries
-  new FXMenuCommand(manipmenu,"Rotate 90\t\tRotate 90 degrees.",NULL,this,ID_ROTATE_90);
-  new FXMenuCommand(manipmenu,"Rotate 180\t\tRotate 180 degrees.",NULL,this,ID_ROTATE_180);
-  new FXMenuCommand(manipmenu,"Rotate -90\t\tRotate -90 degrees.",NULL,this,ID_ROTATE_270);
-  new FXMenuCommand(manipmenu,"Mirror Horizontally\t\tMirror Horizontally.",NULL,this,ID_MIRROR_HOR);
-  new FXMenuCommand(manipmenu,"Mirror Vertically\t\tMirror Vertically.",NULL,this,ID_MIRROR_VER);
-  new FXMenuCommand(manipmenu,"Mirror Both\t\tMirror Both.",NULL,this,ID_MIRROR_BOTH);
-  new FXMenuCommand(manipmenu,"Scale...\t\tScale image.",NULL,this,ID_SCALE);
-  new FXMenuCommand(manipmenu,"Crop...\t\tCrop image.",NULL,this,ID_CROP);
+  new FXMenuCommand(manipmenu,"Rotate 90\t\tRotate 90 degrees.",nullptr,this,ID_ROTATE_90);
+  new FXMenuCommand(manipmenu,"Rotate 180\t\tRotate 180 degrees.",nullptr,this,ID_ROTATE_180);
+  new FXMenuCommand(manipmenu,"Rotate -90\t\tRotate -90 degrees.",nullptr,this,ID_ROTATE_270);
+  new FXMenuCommand(manipmenu,"Mirror Horizontally\t\tMirror Horizontally.",nullptr,this,ID_MIRROR_HOR);
+  new FXMenuCommand(manipmenu,"Mirror Vertically\t\tMirror Vertically.",nullptr,this,ID_MIRROR_VER);
+  new FXMenuCommand(manipmenu,"Mirror Both\t\tMirror Both.",nullptr,this,ID_MIRROR_BOTH);
+  new FXMenuCommand(manipmenu,"Scale...\t\tScale image.",nullptr,this,ID_SCALE);
+  new FXMenuCommand(manipmenu,"Crop...\t\tCrop image.",nullptr,this,ID_CROP);
 
   // View Menu entries
   new FXMenuCheck(viewmenu,"File list\t\tDisplay file list.",filebox,FXWindow::ID_TOGGLESHOWN);
-  new FXMenuCommand(viewmenu,"Show hidden files\t\tShow hidden files and directories.",NULL,filelist,FXFileList::ID_TOGGLE_HIDDEN);
-  new FXMenuCommand(viewmenu,"Show small icons\t\tDisplay directory with small icons.",NULL,filelist,FXFileList::ID_SHOW_MINI_ICONS);
-  new FXMenuCommand(viewmenu,"Show big icons\t\tDisplay directory with big icons.",NULL,filelist,FXFileList::ID_SHOW_BIG_ICONS);
-  new FXMenuCommand(viewmenu,"Show details view\t\tDisplay detailed directory listing.",NULL,filelist,FXFileList::ID_SHOW_DETAILS);
-  new FXMenuCommand(viewmenu,"Rows of icons\t\tView row-wise.",NULL,filelist,FXFileList::ID_ARRANGE_BY_ROWS);
-  new FXMenuCommand(viewmenu,"Columns of icons\t\tView column-wise.",NULL,filelist,FXFileList::ID_ARRANGE_BY_COLUMNS);
+  new FXMenuCommand(viewmenu,"Show hidden files\t\tShow hidden files and directories.",nullptr,filelist,FXFileList::ID_TOGGLE_HIDDEN);
+  new FXMenuCommand(viewmenu,"Show small icons\t\tDisplay directory with small icons.",nullptr,filelist,FXFileList::ID_SHOW_MINI_ICONS);
+  new FXMenuCommand(viewmenu,"Show big icons\t\tDisplay directory with big icons.",nullptr,filelist,FXFileList::ID_SHOW_BIG_ICONS);
+  new FXMenuCommand(viewmenu,"Show details view\t\tDisplay detailed directory listing.",nullptr,filelist,FXFileList::ID_SHOW_DETAILS);
+  new FXMenuCommand(viewmenu,"Rows of icons\t\tView row-wise.",nullptr,filelist,FXFileList::ID_ARRANGE_BY_ROWS);
+  new FXMenuCommand(viewmenu,"Columns of icons\t\tView column-wise.",nullptr,filelist,FXFileList::ID_ARRANGE_BY_COLUMNS);
   new FXMenuCheck(viewmenu,"Toolbar\t\tDisplay toolbar.",toolbar,FXWindow::ID_TOGGLESHOWN);
-  new FXMenuCommand(viewmenu,"Float toolbar\t\tUndock the toolbar.",NULL,toolbar,FXToolBar::ID_DOCK_FLOAT);
-  new FXMenuCommand(viewmenu,"Dock toolbar top\t\tDock the toolbar on the top.",NULL,toolbar,FXToolBar::ID_DOCK_TOP);
-  new FXMenuCommand(viewmenu,"Dock toolbar left\t\tDock the toolbar on the left.",NULL,toolbar,FXToolBar::ID_DOCK_LEFT);
-  new FXMenuCommand(viewmenu,"Dock toolbar right\t\tDock the toolbar on the right.",NULL,toolbar,FXToolBar::ID_DOCK_RIGHT);
-  new FXMenuCommand(viewmenu,"Dock toolbar bottom\t\tDock the toolbar on the bottom.",NULL,toolbar,FXToolBar::ID_DOCK_BOTTOM);
+  new FXMenuCommand(viewmenu,"Float toolbar\t\tUndock the toolbar.",nullptr,toolbar,FXToolBar::ID_DOCK_FLOAT);
+  new FXMenuCommand(viewmenu,"Dock toolbar top\t\tDock the toolbar on the top.",nullptr,toolbar,FXToolBar::ID_DOCK_TOP);
+  new FXMenuCommand(viewmenu,"Dock toolbar left\t\tDock the toolbar on the left.",nullptr,toolbar,FXToolBar::ID_DOCK_LEFT);
+  new FXMenuCommand(viewmenu,"Dock toolbar right\t\tDock the toolbar on the right.",nullptr,toolbar,FXToolBar::ID_DOCK_RIGHT);
+  new FXMenuCommand(viewmenu,"Dock toolbar bottom\t\tDock the toolbar on the bottom.",nullptr,toolbar,FXToolBar::ID_DOCK_BOTTOM);
   new FXMenuCheck(viewmenu,"Status line\t\tDisplay status line.",statusbar,FXWindow::ID_TOGGLESHOWN);
 
   // Help Menu entries
-  new FXMenuCommand(helpmenu,"&About FOX...",NULL,this,ID_ABOUT,0);
+  new FXMenuCommand(helpmenu,"&About FOX...",nullptr,this,ID_ABOUT,0);
 
   // Make a tool tip
   new FXToolTip(getApp(),TOOLTIP_NORMAL);
@@ -401,7 +401,7 @@ ImageWindow::~ImageWindow(){
 
 // About box
 long ImageWindow::onCmdAbout(FXObject*,FXSelector,void*){
-  FXMessageBox about(this,"About Image Viewer","Image Viewer demonstrates the FOX ImageView widget.\n\nUsing the FOX C++ GUI Library (http://www.fox-toolkit.org)\n\nCopyright (C) 2000,2015 Jeroen van der Zijp (jeroen@fox-toolkit.com)",NULL,MBOX_OK|DECOR_TITLE|DECOR_BORDER);
+  FXMessageBox about(this,"About Image Viewer","Image Viewer demonstrates the FOX ImageView widget.\n\nUsing the FOX C++ GUI Library (http://www.fox-toolkit.org)\n\nCopyright (C) 2000,2022 Jeroen van der Zijp (jeroen@fox-toolkit.net)",nullptr,MBOX_OK|DECOR_TITLE|DECOR_BORDER);
   about.execute();
   return 1;
   }
@@ -410,65 +410,65 @@ long ImageWindow::onCmdAbout(FXObject*,FXSelector,void*){
 // Load file
 FXbool ImageWindow::loadimage(const FXString& file){
   FXString ext=FXPath::extension(file);
-  FXImage *img=NULL;
+  FXImage *img=nullptr;
   FXImage *old;
   if(comparecase(ext,"gif")==0){
-    img=new FXGIFImage(getApp(),NULL,IMAGE_KEEP|IMAGE_SHMI|IMAGE_SHMP);
+    img=new FXGIFImage(getApp(),nullptr,IMAGE_KEEP|IMAGE_SHMI|IMAGE_SHMP);
     }
   else if(comparecase(ext,"bmp")==0){
-    img=new FXBMPImage(getApp(),NULL,IMAGE_KEEP|IMAGE_SHMI|IMAGE_SHMP);
+    img=new FXBMPImage(getApp(),nullptr,IMAGE_KEEP|IMAGE_SHMI|IMAGE_SHMP);
     }
   else if(comparecase(ext,"xpm")==0){
-    img=new FXXPMImage(getApp(),NULL,IMAGE_KEEP|IMAGE_SHMI|IMAGE_SHMP);
+    img=new FXXPMImage(getApp(),nullptr,IMAGE_KEEP|IMAGE_SHMI|IMAGE_SHMP);
     }
   else if(comparecase(ext,"pcx")==0){
-    img=new FXPCXImage(getApp(),NULL,IMAGE_KEEP|IMAGE_SHMI|IMAGE_SHMP);
+    img=new FXPCXImage(getApp(),nullptr,IMAGE_KEEP|IMAGE_SHMI|IMAGE_SHMP);
     }
   else if(comparecase(ext,"ico")==0 || comparecase(ext,"cur")==0){
-    img=new FXICOImage(getApp(),NULL,IMAGE_KEEP|IMAGE_SHMI|IMAGE_SHMP);
+    img=new FXICOImage(getApp(),nullptr,IMAGE_KEEP|IMAGE_SHMI|IMAGE_SHMP);
     }
   else if(comparecase(ext,"tga")==0){
-    img=new FXTGAImage(getApp(),NULL,IMAGE_KEEP|IMAGE_SHMI|IMAGE_SHMP);
+    img=new FXTGAImage(getApp(),nullptr,IMAGE_KEEP|IMAGE_SHMI|IMAGE_SHMP);
     }
   else if(comparecase(ext,"rgb")==0){
-    img=new FXRGBImage(getApp(),NULL,IMAGE_KEEP|IMAGE_SHMI|IMAGE_SHMP);
+    img=new FXRGBImage(getApp(),nullptr,IMAGE_KEEP|IMAGE_SHMI|IMAGE_SHMP);
     }
   else if(comparecase(ext,"xbm")==0){
-    img=new FXXBMImage(getApp(),NULL,NULL,IMAGE_KEEP|IMAGE_SHMI|IMAGE_SHMP);
+    img=new FXXBMImage(getApp(),nullptr,nullptr,IMAGE_KEEP|IMAGE_SHMI|IMAGE_SHMP);
     }
   else if(comparecase(ext,"ppm")==0 || comparecase(ext,"pbm")==0 || comparecase(ext,"pgm")==0 || comparecase(ext,"pnm")==0){
-    img=new FXPPMImage(getApp(),NULL,IMAGE_KEEP|IMAGE_SHMI|IMAGE_SHMP);
+    img=new FXPPMImage(getApp(),nullptr,IMAGE_KEEP|IMAGE_SHMI|IMAGE_SHMP);
     }
   else if(comparecase(ext,"iff")==0 || comparecase(ext,"lbm")==0){
-    img=new FXIFFImage(getApp(),NULL,IMAGE_KEEP|IMAGE_SHMI|IMAGE_SHMP);
+    img=new FXIFFImage(getApp(),nullptr,IMAGE_KEEP|IMAGE_SHMI|IMAGE_SHMP);
     }
   else if(comparecase(ext,"ras")==0){
-    img=new FXRASImage(getApp(),NULL,IMAGE_KEEP|IMAGE_SHMI|IMAGE_SHMP);
+    img=new FXRASImage(getApp(),nullptr,IMAGE_KEEP|IMAGE_SHMI|IMAGE_SHMP);
     }
   else if(comparecase(ext,"png")==0){
-    img=new FXPNGImage(getApp(),NULL,IMAGE_KEEP|IMAGE_SHMI|IMAGE_SHMP);
+    img=new FXPNGImage(getApp(),nullptr,IMAGE_KEEP|IMAGE_SHMI|IMAGE_SHMP);
     }
   else if(comparecase(ext,"jpg")==0 || comparecase(ext,"jpeg")==0){
-    img=new FXJPGImage(getApp(),NULL,IMAGE_KEEP|IMAGE_SHMI|IMAGE_SHMP);
+    img=new FXJPGImage(getApp(),nullptr,IMAGE_KEEP|IMAGE_SHMI|IMAGE_SHMP);
     }
   else if(comparecase(ext,"jp2")==0){
-    img=new FXJP2Image(getApp(),NULL,IMAGE_KEEP|IMAGE_SHMI|IMAGE_SHMP);
+    img=new FXJP2Image(getApp(),nullptr,IMAGE_KEEP|IMAGE_SHMI|IMAGE_SHMP);
     }
   else if(comparecase(ext,"tif")==0 || comparecase(ext,"tiff")==0){
-    img=new FXTIFImage(getApp(),NULL,IMAGE_KEEP|IMAGE_SHMI|IMAGE_SHMP);
+    img=new FXTIFImage(getApp(),nullptr,IMAGE_KEEP|IMAGE_SHMI|IMAGE_SHMP);
     }
   else if(comparecase(ext,"dds")==0){
-    img=new FXDDSImage(getApp(),NULL,IMAGE_KEEP|IMAGE_SHMI|IMAGE_SHMP);
+    img=new FXDDSImage(getApp(),nullptr,IMAGE_KEEP|IMAGE_SHMI|IMAGE_SHMP);
     }
   else if(comparecase(ext,"webp")==0){
-    img=new FXWEBPImage(getApp(),NULL,IMAGE_KEEP|IMAGE_SHMI|IMAGE_SHMP);
+    img=new FXWEBPImage(getApp(),nullptr,IMAGE_KEEP|IMAGE_SHMI|IMAGE_SHMP);
     }
   else if(comparecase(ext,"exe")==0 || comparecase(ext,"dll")==0){
-    img=new FXEXEImage(getApp(),NULL,IMAGE_KEEP|IMAGE_SHMI|IMAGE_SHMP);
+    img=new FXEXEImage(getApp(),nullptr,IMAGE_KEEP|IMAGE_SHMI|IMAGE_SHMP);
     }
 
   // Perhaps failed
-  if(img==NULL){
+  if(img==nullptr){
     FXMessageBox::error(this,MBOX_OK,"Error Loading Image","Unsupported type: %s",ext.text());
     return false;
     }
@@ -628,9 +628,9 @@ long ImageWindow::onCmdRotate(FXObject*,FXSelector sel,void*){
 // Update image
 long ImageWindow::onUpdImage(FXObject* sender,FXSelector,void*){
   if(imageview->getImage())
-    sender->handle(this,FXSEL(SEL_COMMAND,FXWindow::ID_ENABLE),NULL);
+    sender->handle(this,FXSEL(SEL_COMMAND,FXWindow::ID_ENABLE),nullptr);
   else
-    sender->handle(this,FXSEL(SEL_COMMAND,FXWindow::ID_DISABLE),NULL);
+    sender->handle(this,FXSEL(SEL_COMMAND,FXWindow::ID_DISABLE),nullptr);
   return 1;
   }
 
@@ -661,16 +661,16 @@ long ImageWindow::onCmdScale(FXObject*,FXSelector,void*){
   FXDataTarget sqtarget(sq);    //: ADDED by Amanda Ross To reflect new feature since V1.1.32
   FXDialogBox  scalepanel(this,"Scale Image To Size");
   FXHorizontalFrame* frame=new FXHorizontalFrame(&scalepanel,LAYOUT_SIDE_TOP|LAYOUT_FILL_X|LAYOUT_FILL_Y);
-  new FXLabel(frame,"W:",NULL,LAYOUT_CENTER_Y);
+  new FXLabel(frame,"W:",nullptr,LAYOUT_CENTER_Y);
   new FXTextField(frame,5,&sxtarget,FXDataTarget::ID_VALUE,LAYOUT_CENTER_Y|FRAME_SUNKEN|FRAME_THICK|JUSTIFY_RIGHT);
-  new FXLabel(frame,"H:",NULL,LAYOUT_CENTER_Y);
+  new FXLabel(frame,"H:",nullptr,LAYOUT_CENTER_Y);
   new FXTextField(frame,5,&sytarget,FXDataTarget::ID_VALUE,LAYOUT_CENTER_Y|FRAME_SUNKEN|FRAME_THICK|JUSTIFY_RIGHT);
-  new FXLabel(frame,"Q:",NULL,LAYOUT_CENTER_Y); //: ADDED by Amanda Ross To reflect new feature since V1.1.32
+  new FXLabel(frame,"Q:",nullptr,LAYOUT_CENTER_Y); //: ADDED by Amanda Ross To reflect new feature since V1.1.32
   FXSpinner *spinner=new FXSpinner(frame,2,&sqtarget,FXDataTarget::ID_VALUE,SPIN_NORMAL|FRAME_SUNKEN|FRAME_THICK|LAYOUT_SIDE_TOP);
   spinner->setRange(0,1);
   spinner->setValue(1);
-  new FXButton(frame,"Cancel",NULL,&scalepanel,FXDialogBox::ID_CANCEL,LAYOUT_CENTER_Y|FRAME_RAISED|FRAME_THICK,0,0,0,0, 20,20,4,4);
-  new FXButton(frame,"OK",NULL,&scalepanel,FXDialogBox::ID_ACCEPT,LAYOUT_CENTER_Y|FRAME_RAISED|FRAME_THICK,0,0,0,0, 30,30,4,4);
+  new FXButton(frame,"Cancel",nullptr,&scalepanel,FXDialogBox::ID_CANCEL,LAYOUT_CENTER_Y|FRAME_RAISED|FRAME_THICK,0,0,0,0, 20,20,4,4);
+  new FXButton(frame,"OK",nullptr,&scalepanel,FXDialogBox::ID_ACCEPT,LAYOUT_CENTER_Y|FRAME_RAISED|FRAME_THICK,0,0,0,0, 30,30,4,4);
   if(!scalepanel.execute()) return 1;
   if(sx<1 || sy<1) return 1;
   image->scale(sx,sy,FXCLAMP(0,sq,1));
@@ -693,16 +693,16 @@ long ImageWindow::onCmdCrop(FXObject*,FXSelector,void*){
   FXDataTarget chtarget(ch);
   FXDialogBox  croppanel(this,"Crop image");
   FXHorizontalFrame* frame=new FXHorizontalFrame(&croppanel,LAYOUT_SIDE_TOP|LAYOUT_FILL_X|LAYOUT_FILL_Y);
-  new FXLabel(frame,"X:",NULL,LAYOUT_CENTER_Y);
+  new FXLabel(frame,"X:",nullptr,LAYOUT_CENTER_Y);
   new FXTextField(frame,5,&cxtarget,FXDataTarget::ID_VALUE,LAYOUT_CENTER_Y|FRAME_SUNKEN|FRAME_THICK|JUSTIFY_RIGHT);
-  new FXLabel(frame,"Y:",NULL,LAYOUT_CENTER_Y);
+  new FXLabel(frame,"Y:",nullptr,LAYOUT_CENTER_Y);
   new FXTextField(frame,5,&cytarget,FXDataTarget::ID_VALUE,LAYOUT_CENTER_Y|FRAME_SUNKEN|FRAME_THICK|JUSTIFY_RIGHT);
-  new FXLabel(frame,"W:",NULL,LAYOUT_CENTER_Y);
+  new FXLabel(frame,"W:",nullptr,LAYOUT_CENTER_Y);
   new FXTextField(frame,5,&cwtarget,FXDataTarget::ID_VALUE,LAYOUT_CENTER_Y|FRAME_SUNKEN|FRAME_THICK|JUSTIFY_RIGHT);
-  new FXLabel(frame,"H:",NULL,LAYOUT_CENTER_Y);
+  new FXLabel(frame,"H:",nullptr,LAYOUT_CENTER_Y);
   new FXTextField(frame,5,&chtarget,FXDataTarget::ID_VALUE,LAYOUT_CENTER_Y|FRAME_SUNKEN|FRAME_THICK|JUSTIFY_RIGHT);
-  new FXButton(frame,"Cancel",NULL,&croppanel,FXDialogBox::ID_CANCEL,LAYOUT_CENTER_Y|FRAME_RAISED|FRAME_THICK,0,0,0,0, 20,20,4,4);
-  new FXButton(frame,"OK",NULL,&croppanel,FXDialogBox::ID_ACCEPT,LAYOUT_CENTER_Y|FRAME_RAISED|FRAME_THICK,0,0,0,0, 30,30,4,4);
+  new FXButton(frame,"Cancel",nullptr,&croppanel,FXDialogBox::ID_CANCEL,LAYOUT_CENTER_Y|FRAME_RAISED|FRAME_THICK,0,0,0,0, 20,20,4,4);
+  new FXButton(frame,"OK",nullptr,&croppanel,FXDialogBox::ID_ACCEPT,LAYOUT_CENTER_Y|FRAME_RAISED|FRAME_THICK,0,0,0,0, 30,30,4,4);
   if(!croppanel.execute()) return 1;
   if(cx+cw<=0 || cy+ch<=0 || cx>=image->getWidth() || cy>=image->getHeight()) return 1;
   image->crop(cx,cy,cw,ch);

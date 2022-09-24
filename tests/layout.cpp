@@ -3,7 +3,7 @@
 *                                 Layout Example                             *
 *                                                                            *
 ******************************************************************************
-* Copyright (C) 2004,2021 by Bill Baxter.   All Rights Reserved.             *
+* Copyright (C) 2004,2022 by Bill Baxter.   All Rights Reserved.             *
 *****************************************************************************/
 #include "fx.h"
 #include <stdio.h>
@@ -196,13 +196,13 @@ const FXuint LAYOUT_HEIGHT_MASK=(LAYOUT_MIN_HEIGHT|LAYOUT_FIX_HEIGHT|LAYOUT_FILL
 
 
 // Make some windows
-ButtonWindow::ButtonWindow(FXApp* a):FXMainWindow(a,"Layout Test",NULL,NULL,DECOR_ALL,0,0,900,900){
+ButtonWindow::ButtonWindow(FXApp* a):FXMainWindow(a,"Layout Test",nullptr,nullptr,DECOR_ALL,0,0,900,900){
 
   // Tooltip
   new FXToolTip(getApp());
 
   nextButtonNum=1;
-  lastButton=NULL;
+  lastButton=nullptr;
   layoutHints=0;
 
   // Controls on right
@@ -215,16 +215,16 @@ ButtonWindow::ButtonWindow(FXApp* a):FXMainWindow(a,"Layout Test",NULL,NULL,DECO
   contents=new FXPacker(this,LAYOUT_SIDE_LEFT|FRAME_NONE|LAYOUT_FILL_X|LAYOUT_FILL_Y,0,0,0,0, 0,0,0,0, 0,0);
   contents->setBackColor(FXRGB(192,128,128));
 
-  new FXLabel(controls,"Widget Layout Styles\tLayout flags for added buttons",NULL,LAYOUT_CENTER_X);
+  new FXLabel(controls,"Widget Layout Styles\tLayout flags for added buttons",nullptr,LAYOUT_CENTER_X);
   new FXHorizontalSeparator(controls);
 
-  new FXLabel(controls,"Packing Side:",NULL,LAYOUT_CENTER_X);
+  new FXLabel(controls,"Packing Side:",nullptr,LAYOUT_CENTER_X);
   new FXRadioButton(controls,"LAYOUT_SIDE_LEFT",this,ID_LAYOUT_SIDE_LEFT);
   new FXRadioButton(controls,"LAYOUT_SIDE_RIGHT",this,ID_LAYOUT_SIDE_RIGHT);
   new FXRadioButton(controls,"LAYOUT_SIDE_TOP",this,ID_LAYOUT_SIDE_TOP);
   new FXRadioButton(controls,"LAYOUT_SIDE_BOTTOM",this,ID_LAYOUT_SIDE_BOTTOM);
 
-  new FXLabel(controls,"Horizontal alignment:",NULL,LAYOUT_CENTER_X);
+  new FXLabel(controls,"Horizontal alignment:",nullptr,LAYOUT_CENTER_X);
   new FXRadioButton(controls,"LAYOUT_LEFT",this,ID_LAYOUT_LEFT);
   new FXRadioButton(controls,"LAYOUT_RIGHT",this,ID_LAYOUT_RIGHT);
   new FXRadioButton(controls,"LAYOUT_CENTER_X",this,ID_LAYOUT_CENTER_X);
@@ -234,7 +234,7 @@ ButtonWindow::ButtonWindow(FXApp* a):FXMainWindow(a,"Layout Test",NULL,NULL,DECO
     xspin->setIncrement(10);
     xspin->setRange(0,10000);
 
-  new FXLabel(controls,"Vertical alignment:",NULL,LAYOUT_CENTER_X);
+  new FXLabel(controls,"Vertical alignment:",nullptr,LAYOUT_CENTER_X);
   new FXRadioButton(controls,"LAYOUT_TOP",this,ID_LAYOUT_TOP);
   new FXRadioButton(controls,"LAYOUT_BOTTOM",this,ID_LAYOUT_BOTTOM);
   new FXRadioButton(controls,"LAYOUT_CENTER_Y",this,ID_LAYOUT_CENTER_Y);
@@ -244,7 +244,7 @@ ButtonWindow::ButtonWindow(FXApp* a):FXMainWindow(a,"Layout Test",NULL,NULL,DECO
     yspin->setIncrement(10);
     yspin->setRange(0,10000);
 
-  new FXLabel(controls,"Width control:",NULL,LAYOUT_CENTER_X);
+  new FXLabel(controls,"Width control:",nullptr,LAYOUT_CENTER_X);
   new FXRadioButton(controls,"LAYOUT_MIN_WIDTH",this,ID_LAYOUT_MIN_WIDTH);
   new FXRadioButton(controls,"LAYOUT_FILL_X",this,ID_LAYOUT_FILL_X);
   FXComposite *wcontrols=new FXHorizontalFrame(controls,LAYOUT_SIDE_RIGHT|LAYOUT_FILL_X,0,0,0,0, 0,0,0,0);
@@ -253,7 +253,7 @@ ButtonWindow::ButtonWindow(FXApp* a):FXMainWindow(a,"Layout Test",NULL,NULL,DECO
     wspin->setIncrement(10);
     wspin->setRange(0,10000);
 
-  new FXLabel(controls,"Height control:",NULL,LAYOUT_CENTER_X);
+  new FXLabel(controls,"Height control:",nullptr,LAYOUT_CENTER_X);
   new FXRadioButton(controls,"LAYOUT_MIN_HEIGHT",this,ID_LAYOUT_MIN_HEIGHT);
   new FXRadioButton(controls,"LAYOUT_FILL_Y",this,ID_LAYOUT_FILL_Y);
   FXComposite *hcontrols=new FXHorizontalFrame(controls,LAYOUT_SIDE_RIGHT|LAYOUT_FILL_X,0,0,0,0, 0,0,0,0);
@@ -262,13 +262,13 @@ ButtonWindow::ButtonWindow(FXApp* a):FXMainWindow(a,"Layout Test",NULL,NULL,DECO
     hspin->setIncrement(10);
     hspin->setRange(0,10000);
 
-  new FXLabel(controls,"Matrix flags:",NULL,LAYOUT_CENTER_X);
+  new FXLabel(controls,"Matrix flags:",nullptr,LAYOUT_CENTER_X);
   new FXCheckButton(controls,"LAYOUT_FILL_COLUMN",this,ID_LAYOUT_FILL_COLUMN);
   new FXCheckButton(controls,"LAYOUT_FILL_ROW",this,ID_LAYOUT_FILL_ROW);
 
 
   new FXHorizontalSeparator(controls);
-  new FXLabel(controls,"Container Packing Styles\tPacking flags for container",NULL,LAYOUT_CENTER_X);
+  new FXLabel(controls,"Container Packing Styles\tPacking flags for container",nullptr,LAYOUT_CENTER_X);
 
   FXComposite *ctrlsB = new FXHorizontalFrame(controls,LAYOUT_FILL);
   FXGroupBox *group=new FXGroupBox(ctrlsB,"Container Type",GROUPBOX_TITLE_CENTER|FRAME_RIDGE|LAYOUT_FILL_X);
@@ -288,9 +288,9 @@ ButtonWindow::ButtonWindow(FXApp* a):FXMainWindow(a,"Layout Test",NULL,NULL,DECO
   new FXSpinner(hf, 4, this, ID_MATRIX_ROWS_COLS,FRAME_SUNKEN|FRAME_THICK|SPIN_NOMAX|LAYOUT_CENTER_Y);
 
   FXComposite *bframe = new FXHorizontalFrame(controls,LAYOUT_BOTTOM|LAYOUT_FILL_X);
-  new FXButton(bframe,"&Add\tAdd a button",NULL,this,ID_ADD_BUTTON,FRAME_RAISED|FRAME_THICK|LAYOUT_FILL_X);
-  new FXButton(bframe,"&Clear\tRemove all buttons",NULL,this,ID_CLEAR_BUTTON,FRAME_RAISED|FRAME_THICK|LAYOUT_FILL_X);
-  new FXButton(bframe,"&Quit\tQuit program",NULL,getApp(),FXApp::ID_QUIT,FRAME_RAISED|FRAME_THICK|LAYOUT_FILL_X|LAYOUT_BOTTOM);
+  new FXButton(bframe,"&Add\tAdd a button",nullptr,this,ID_ADD_BUTTON,FRAME_RAISED|FRAME_THICK|LAYOUT_FILL_X);
+  new FXButton(bframe,"&Clear\tRemove all buttons",nullptr,this,ID_CLEAR_BUTTON,FRAME_RAISED|FRAME_THICK|LAYOUT_FILL_X);
+  new FXButton(bframe,"&Quit\tQuit program",nullptr,getApp(),FXApp::ID_QUIT,FRAME_RAISED|FRAME_THICK|LAYOUT_FILL_X|LAYOUT_BOTTOM);
   }
 
 
@@ -329,10 +329,10 @@ long ButtonWindow::onUpdLayoutSide(FXObject* sender,FXSelector sel,void*){
       case ID_LAYOUT_SIDE_RIGHT:  equal=(hints==LAYOUT_SIDE_RIGHT); break;
       }
     sender->handle(this,FXSEL(SEL_COMMAND,ID_SETINTVALUE),(void*)&equal);
-    sender->handle(this,FXSEL(SEL_COMMAND,ID_ENABLE),NULL);
+    sender->handle(this,FXSEL(SEL_COMMAND,ID_ENABLE),nullptr);
     }
   else{
-    sender->handle(this,FXSEL(SEL_COMMAND,ID_DISABLE),NULL);
+    sender->handle(this,FXSEL(SEL_COMMAND,ID_DISABLE),nullptr);
     }
   return 1;
   }
@@ -365,10 +365,10 @@ long ButtonWindow::onUpdLayoutHorz(FXObject* sender,FXSelector sel,void*){
       case ID_LAYOUT_FIX_X:    equal=(hints==LAYOUT_FIX_X); break;
       }
     sender->handle(this,FXSEL(SEL_COMMAND,ID_SETINTVALUE),(void*)&equal);
-    sender->handle(this,FXSEL(SEL_COMMAND,ID_ENABLE),NULL);
+    sender->handle(this,FXSEL(SEL_COMMAND,ID_ENABLE),nullptr);
     }
   else{
-    sender->handle(this,FXSEL(SEL_COMMAND,ID_DISABLE),NULL);
+    sender->handle(this,FXSEL(SEL_COMMAND,ID_DISABLE),nullptr);
     }
   return 1;
   }
@@ -402,10 +402,10 @@ long ButtonWindow::onUpdLayoutVert(FXObject* sender,FXSelector sel,void*){
       case ID_LAYOUT_FIX_Y:    equal=(hints==LAYOUT_FIX_Y); break;
       }
     sender->handle(this,FXSEL(SEL_COMMAND,ID_SETINTVALUE),(void*)&equal);
-    sender->handle(this,FXSEL(SEL_COMMAND,ID_ENABLE),NULL);
+    sender->handle(this,FXSEL(SEL_COMMAND,ID_ENABLE),nullptr);
     }
   else{
-    sender->handle(this,FXSEL(SEL_COMMAND,ID_DISABLE),NULL);
+    sender->handle(this,FXSEL(SEL_COMMAND,ID_DISABLE),nullptr);
     }
   return 1;
   }
@@ -437,10 +437,10 @@ long ButtonWindow::onUpdLayoutWidth(FXObject* sender,FXSelector sel,void*){
       case ID_LAYOUT_FILL_X:    equal=(hints==LAYOUT_FILL_X); break;
       }
     sender->handle(this,FXSEL(SEL_COMMAND,ID_SETINTVALUE),(void*)&equal);
-    sender->handle(this,FXSEL(SEL_COMMAND,ID_ENABLE),NULL);
+    sender->handle(this,FXSEL(SEL_COMMAND,ID_ENABLE),nullptr);
     }
   else{
-    sender->handle(this,FXSEL(SEL_COMMAND,ID_DISABLE),NULL);
+    sender->handle(this,FXSEL(SEL_COMMAND,ID_DISABLE),nullptr);
     }
   return 1;
   }
@@ -471,10 +471,10 @@ long ButtonWindow::onUpdLayoutHeight(FXObject* sender,FXSelector sel,void*){
       case ID_LAYOUT_FILL_Y:     equal=(hints==LAYOUT_FILL_Y); break;
       }
     sender->handle(this,FXSEL(SEL_COMMAND,ID_SETINTVALUE),(void*)&equal);
-    sender->handle(this,FXSEL(SEL_COMMAND,ID_ENABLE),NULL);
+    sender->handle(this,FXSEL(SEL_COMMAND,ID_ENABLE),nullptr);
     }
   else{
-    sender->handle(this,FXSEL(SEL_COMMAND,ID_DISABLE),NULL);
+    sender->handle(this,FXSEL(SEL_COMMAND,ID_DISABLE),nullptr);
     }
   return 1;
   }
@@ -503,10 +503,10 @@ long ButtonWindow::onUpdLayoutMatrix(FXObject* sender,FXSelector sel,void*){
       case ID_LAYOUT_FILL_ROW:    equal=(hints&LAYOUT_FILL_ROW)!=0; break;
       }
     sender->handle(this,FXSEL(SEL_COMMAND,ID_SETINTVALUE),(void*)&equal);
-    sender->handle(this,FXSEL(SEL_COMMAND,ID_ENABLE),NULL);
+    sender->handle(this,FXSEL(SEL_COMMAND,ID_ENABLE),nullptr);
     }
   else{
-    sender->handle(this,FXSEL(SEL_COMMAND,ID_DISABLE),NULL);
+    sender->handle(this,FXSEL(SEL_COMMAND,ID_DISABLE),nullptr);
     }
   return 1;
   }
@@ -538,10 +538,10 @@ long ButtonWindow::onUpdPackHints(FXObject* sender,FXSelector sel,void*){
       case ID_PACK_UNIFORM_WIDTH:  equal=(hints&PACK_UNIFORM_WIDTH)!=0; break;
       }
     sender->handle(this,FXSEL(SEL_COMMAND,ID_SETINTVALUE),(void*)&equal);
-    sender->handle(this,FXSEL(SEL_COMMAND,ID_ENABLE),NULL);
+    sender->handle(this,FXSEL(SEL_COMMAND,ID_ENABLE),nullptr);
     }
   else{
-    sender->handle(this,FXSEL(SEL_COMMAND,ID_DISABLE),NULL);
+    sender->handle(this,FXSEL(SEL_COMMAND,ID_DISABLE),nullptr);
     }
   return 1;
   }
@@ -573,10 +573,10 @@ long ButtonWindow::onUpdMatrixMode(FXObject* sender,FXSelector sel,void*){
       case ID_MATRIX_BY_ROWS:    equal=(style&MATRIX_BY_COLUMNS)==0; break;
       }
     sender->handle(this,FXSEL(SEL_COMMAND,ID_SETINTVALUE),(void*)&equal);
-    sender->handle(this,FXSEL(SEL_COMMAND,ID_ENABLE),NULL);
+    sender->handle(this,FXSEL(SEL_COMMAND,ID_ENABLE),nullptr);
     }
   else{
-    sender->handle(this,FXSEL(SEL_COMMAND,ID_DISABLE),NULL);
+    sender->handle(this,FXSEL(SEL_COMMAND,ID_DISABLE),nullptr);
     }
   return 1;
   }
@@ -622,19 +622,19 @@ long ButtonWindow::onUpdContainerType(FXObject* sender,FXSelector sel,void*){
   const FXMetaClass *mc=contents->getMetaClass();
   switch(FXSELID(sel)){
     case ID_CONTAINER_COMPOSITE:
-      sender->handle(this,(mc==&FXComposite::metaClass)?FXSEL(SEL_COMMAND,ID_CHECK):FXSEL(SEL_COMMAND,ID_UNCHECK),NULL);
+      sender->handle(this,(mc==&FXComposite::metaClass)?FXSEL(SEL_COMMAND,ID_CHECK):FXSEL(SEL_COMMAND,ID_UNCHECK),nullptr);
       break;
     case ID_CONTAINER_HORIZONTAL_FRAME:
-      sender->handle(this,(mc==&FXHorizontalFrame::metaClass)?FXSEL(SEL_COMMAND,ID_CHECK):FXSEL(SEL_COMMAND,ID_UNCHECK),NULL);
+      sender->handle(this,(mc==&FXHorizontalFrame::metaClass)?FXSEL(SEL_COMMAND,ID_CHECK):FXSEL(SEL_COMMAND,ID_UNCHECK),nullptr);
       break;
     case ID_CONTAINER_VERTICAL_FRAME:
-      sender->handle(this,(mc==&FXVerticalFrame::metaClass)?FXSEL(SEL_COMMAND,ID_CHECK):FXSEL(SEL_COMMAND,ID_UNCHECK),NULL);
+      sender->handle(this,(mc==&FXVerticalFrame::metaClass)?FXSEL(SEL_COMMAND,ID_CHECK):FXSEL(SEL_COMMAND,ID_UNCHECK),nullptr);
       break;
     case ID_CONTAINER_PACKER:
-      sender->handle(this,(mc==&FXPacker::metaClass)?FXSEL(SEL_COMMAND,ID_CHECK):FXSEL(SEL_COMMAND,ID_UNCHECK),NULL);
+      sender->handle(this,(mc==&FXPacker::metaClass)?FXSEL(SEL_COMMAND,ID_CHECK):FXSEL(SEL_COMMAND,ID_UNCHECK),nullptr);
       break;
     case ID_CONTAINER_MATRIX:
-      sender->handle(this,(mc==&FXMatrix::metaClass)?FXSEL(SEL_COMMAND,ID_CHECK):FXSEL(SEL_COMMAND,ID_UNCHECK),NULL);
+      sender->handle(this,(mc==&FXMatrix::metaClass)?FXSEL(SEL_COMMAND,ID_CHECK):FXSEL(SEL_COMMAND,ID_UNCHECK),nullptr);
       break;
     }
   return 1;
@@ -669,10 +669,10 @@ long ButtonWindow::onUpdFixVal(FXObject*sender,FXSelector sel,void*){
       case ID_FIX_H_VAL: val=lastButton->getHeight(); break;
       }
     sender->handle(this,FXSEL(SEL_COMMAND,ID_SETINTVALUE),(void*)&val);
-    sender->handle(this,FXSEL(SEL_COMMAND,ID_ENABLE),NULL);
+    sender->handle(this,FXSEL(SEL_COMMAND,ID_ENABLE),nullptr);
     }
   else{
-    sender->handle(this,FXSEL(SEL_COMMAND,ID_DISABLE),NULL);
+    sender->handle(this,FXSEL(SEL_COMMAND,ID_DISABLE),nullptr);
     }
   return 1;
   }
@@ -707,10 +707,10 @@ long ButtonWindow::onUpdMatVal(FXObject* sender,FXSelector,void*){
       val=matrix->getNumRows();
       }
     sender->handle(this,FXSEL(SEL_COMMAND,ID_SETINTVALUE),&val);
-    sender->handle(this,FXSEL(SEL_COMMAND,ID_ENABLE),NULL);
+    sender->handle(this,FXSEL(SEL_COMMAND,ID_ENABLE),nullptr);
     }
   else{
-    sender->handle(this,FXSEL(SEL_COMMAND,ID_DISABLE),NULL);
+    sender->handle(this,FXSEL(SEL_COMMAND,ID_DISABLE),nullptr);
     }
   return 1;
   }
@@ -722,14 +722,14 @@ long ButtonWindow::onCmdClearButton(FXObject*,FXSelector,void*){
     delete contents->getFirst();
     }
   contents->recalc();
-  lastButton=NULL;
+  lastButton=nullptr;
   nextButtonNum=0;
   return 1;
   }
 
 
 long ButtonWindow::onUpdClearButton(FXObject* sender,FXSelector,void*){
-  sender->handle(this,contents->getFirst()?FXSEL(SEL_COMMAND,ID_ENABLE):FXSEL(SEL_COMMAND,ID_DISABLE),NULL);
+  sender->handle(this,contents->getFirst()?FXSEL(SEL_COMMAND,ID_ENABLE):FXSEL(SEL_COMMAND,ID_DISABLE),nullptr);
   return 1;
   }
 
@@ -738,7 +738,7 @@ long ButtonWindow::onCmdAddButton(FXObject*,FXSelector,void*){
   static const FXchar *titles[]={"Button %d\tClick to make active", "Wide Button %d\tClick to make active", "Tall\nButton %d\tClick to make active"};
   FXString string;
   string.format(titles[nextButtonNum%3],nextButtonNum);
-  lastButton=new FXButton(contents,string,NULL,this,ID_BUTTON,FRAME_THICK|FRAME_RAISED|layoutHints);
+  lastButton=new FXButton(contents,string,nullptr,this,ID_BUTTON,FRAME_THICK|FRAME_RAISED|layoutHints);
   lastButton->create();
   lastButton->recalc();
   nextButtonNum++;

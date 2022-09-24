@@ -3,7 +3,7 @@
 *                         C o l o r R i n g   W i d g e t                       *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 2005,2021 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 2005,2022 by Jeroen van der Zijp.   All Rights Reserved.        *
 *********************************************************************************
 * This library is free software; you can redistribute it and/or modify          *
 * it under the terms of the GNU Lesser General Public License as published by   *
@@ -162,7 +162,7 @@ FXColorRing::FXColorRing(){
 // Make a color ring
 FXColorRing::FXColorRing(FXComposite* p,FXObject* tgt,FXSelector sel,FXuint opts,FXint x,FXint y,FXint w,FXint h,FXint pl,FXint pr,FXint pt,FXint pb):FXFrame(p,opts,x,y,w,h,pl,pr,pt,pb){
   flags|=FLAG_ENABLED;
-  dial=new FXImage(getApp(),NULL,IMAGE_DITHER|IMAGE_KEEP|IMAGE_OWNED|IMAGE_SHMI|IMAGE_SHMP,RINGDIAMETER,RINGDIAMETER);
+  dial=new FXImage(getApp(),nullptr,IMAGE_DITHER|IMAGE_KEEP|IMAGE_OWNED|IMAGE_SHMI|IMAGE_SHMP,RINGDIAMETER,RINGDIAMETER);
   target=tgt;
   message=sel;
   hsv[0]=0.0f;

@@ -3,7 +3,7 @@
 *                       X M L   R e a d e r  &  W r i t e r                     *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 2016,2021 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 2016,2022 by Jeroen van der Zijp.   All Rights Reserved.        *
 *********************************************************************************
 * This library is free software; you can redistribute it and/or modify          *
 * it under the terms of the GNU Lesser General Public License as published by   *
@@ -591,13 +591,13 @@ FXbool FXXML::encode(FXString& dst,const FXString& src,FXuint flags){
 /*******************************************************************************/
 
 // Construct XML parser instance
-FXXML::FXXML():begptr(NULL),endptr(NULL),wptr(NULL),rptr(NULL),sptr(NULL),offset(0),current(NULL),column(0),line(1),dir(Stop),enc(UTF8){
+FXXML::FXXML():begptr(nullptr),endptr(nullptr),wptr(nullptr),rptr(nullptr),sptr(nullptr),offset(0),current(nullptr),column(0),line(1),dir(Stop),enc(UTF8){
   FXTRACE((100,"FXXML::FXXML\n"));
   }
 
 
 // Construct XML parser instance and pass it external buffer
-FXXML::FXXML(FXchar* buffer,FXuval sz,Direction d):begptr(NULL),endptr(NULL),wptr(NULL),rptr(NULL),sptr(NULL),offset(0),current(NULL),column(0),line(1),dir(Stop),enc(UTF8){
+FXXML::FXXML(FXchar* buffer,FXuval sz,Direction d):begptr(nullptr),endptr(nullptr),wptr(nullptr),rptr(nullptr),sptr(nullptr),offset(0),current(nullptr),column(0),line(1),dir(Stop),enc(UTF8){
   FXTRACE((100,"FXXML::FXXML(%p,%ld,%s)\n",buffer,sz,d==Load?"Load":d==Save?"Save":"Stop"));
   open(buffer,sz,d);
   }
@@ -614,7 +614,7 @@ FXbool FXXML::open(FXchar* buffer,FXuval sz,Direction d){
     rptr=begptr;
     sptr=begptr;
     offset=0;
-    current=NULL;
+    current=nullptr;
     column=0;
     line=1;
     dir=d;
@@ -1677,7 +1677,7 @@ FXXML::Error FXXML::parseelement(){
 // Parse it
 FXXML::Error FXXML::parse(){
   FXXML::Error err;
-  current=NULL;
+  current=nullptr;
   if(need(MAXTOKEN)){
     enc=guess();
     FXTRACE((101,"encoding=%s\n",encodingName[enc]));
@@ -1773,20 +1773,20 @@ FXbool FXXML::close(){
   FXTRACE((101,"XML::close()\n"));
   if(dir!=Stop){
     if((dir==Load) || 0<=flush(0)){             // Error during final flush is possible
-      begptr=NULL;
-      endptr=NULL;
-      rptr=NULL;
-      sptr=NULL;
-      wptr=NULL;
-      current=NULL;
+      begptr=nullptr;
+      endptr=nullptr;
+      rptr=nullptr;
+      sptr=nullptr;
+      wptr=nullptr;
+      current=nullptr;
       dir=Stop;
       return true;
       }
-    begptr=NULL;
-    endptr=NULL;
-    wptr=NULL;
-    rptr=NULL;
-    sptr=NULL;
+    begptr=nullptr;
+    endptr=nullptr;
+    wptr=nullptr;
+    rptr=nullptr;
+    sptr=nullptr;
     dir=Stop;
     }
   return false;

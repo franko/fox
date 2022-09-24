@@ -3,7 +3,7 @@
 *                            W i n d o w   O b j e c t                          *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 1997,2021 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 1997,2022 by Jeroen van der Zijp.   All Rights Reserved.        *
 *********************************************************************************
 * This library is free software; you can redistribute it and/or modify          *
 * it under the terms of the GNU Lesser General Public License as published by   *
@@ -666,7 +666,7 @@ public:
   void forceRefresh();
 
   /// Reparent this window under new father before other
-  virtual void reparent(FXWindow* father,FXWindow *other=NULL);
+  virtual void reparent(FXWindow* father,FXWindow *other=nullptr);
 
   /// Scroll rectangle x,y,w,h by a shift of dx,dy
   void scroll(FXint x,FXint y,FXint w,FXint h,FXint dx,FXint dy) const;
@@ -855,7 +855,7 @@ public:
   * In addition, the name of the widget is passed as context name so
   * that translations for a single dialog may be grouped together.
   */
-  virtual const FXchar* tr(const FXchar* text,const FXchar* hint=NULL,FXint count=-1) const FX_FORMAT(2) ;
+  virtual const FXchar* tr(const FXchar* text,const FXchar* hint=nullptr,FXint count=-1) const FX_FORMAT(2) ;
 
   /// Save window to stream
   virtual void save(FXStream& store) const;

@@ -3,7 +3,7 @@
 *                     U n d o a b l e   C o m m a n d s                         *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 1998,2021 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 1998,2022 by Jeroen van der Zijp.   All Rights Reserved.        *
 *********************************************************************************
 * This program is free software: you can redistribute it and/or modify          *
 * it under the terms of the GNU General Public License as published by          *
@@ -33,7 +33,7 @@ protected:
   FXint   ndel;     // Deleted characters
   FXint   nins;     // Inserted characters
 public:
-  FXTextCommand(FXText* txt,FXint p,FXint nd,FXint ni):text(txt),buffer(NULL),pos(p),ndel(nd),nins(ni){}
+  FXTextCommand(FXText* txt,FXint p,FXint nd,FXint ni):text(txt),buffer(nullptr),pos(p),ndel(nd),nins(ni){}
   virtual FXuint size() const;
   virtual ~FXTextCommand();
   };

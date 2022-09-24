@@ -3,7 +3,7 @@
 *                          T h r e a d   S u p p o r t                          *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 2004,2021 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 2004,2022 by Jeroen van der Zijp.   All Rights Reserved.        *
 *********************************************************************************
 * This library is free software; you can redistribute it and/or modify          *
 * it under the terms of the GNU Lesser General Public License as published by   *
@@ -127,8 +127,8 @@ void* FXThread::function(void* ptr){
   FXThread *thread=(FXThread*)ptr;
   FXint code=-1;
   self(thread);
-  pthread_setcancelstate(PTHREAD_CANCEL_ENABLE,NULL);
-  pthread_setcanceltype(PTHREAD_CANCEL_ASYNCHRONOUS,NULL);
+  pthread_setcancelstate(PTHREAD_CANCEL_ENABLE,nullptr);
+  pthread_setcanceltype(PTHREAD_CANCEL_ASYNCHRONOUS,nullptr);
   try{
     code=thread->run();
     }
@@ -154,8 +154,8 @@ FXbool FXThread::start(FXuval stacksize){
   if(busy){ fxerror("FXThread::start: thread already running.\n"); }
   if(tid){ fxerror("FXThread::start: thread still attached.\n"); }
   busy=true;
-  if((tid=(FXThreadID)CreateThread(NULL,stacksize,(LPTHREAD_START_ROUTINE)FXThread::function,this,0,&thd))==NULL) busy=false;
-//  if((tid=(FXThreadID)_beginthreadex(NULL,stacksize,(LPTHREAD_START_ROUTINE)FXThread::function,this,0,&thd))==NULL) busy=false;
+  if((tid=(FXThreadID)CreateThread(nullptr,stacksize,(LPTHREAD_START_ROUTINE)FXThread::function,this,0,&thd))==nullptr) busy=false;
+//  if((tid=(FXThreadID)_beginthreadex(nullptr,stacksize,(LPTHREAD_START_ROUTINE)FXThread::function,this,0,&thd))==nullptr) busy=false;
 #else
   pthread_attr_t attr;
   if(busy){ fxerror("FXThread::start: thread already running.\n"); }
@@ -169,7 +169,7 @@ FXbool FXThread::start(FXuval stacksize){
   sigfillset(&newset);
   pthread_sigmask(SIG_SETMASK,&newset,&oldset); // No signals except to main thread
   if(pthread_create((pthread_t*)&tid,&attr,FXThread::function,(void*)this)!=0) busy=false;
-  pthread_sigmask(SIG_SETMASK,&oldset,NULL);    // Restore old mask
+  pthread_sigmask(SIG_SETMASK,&oldset,nullptr);    // Restore old mask
 #else
   if(pthread_create((pthread_t*)&tid,&attr,FXThread::function,(void*)this)!=0) busy=false;
 #endif
@@ -190,7 +190,7 @@ FXbool FXThread::join(FXint& code){
     }
   return false;
 #else
-  void *trc=NULL;
+  void *trc=nullptr;
   if(tid && pthread_join((pthread_t)tid,&trc)==0){
     code=(FXint)(FXival)trc;
     tid=0;
@@ -211,7 +211,7 @@ FXbool FXThread::join(){
     }
   return false;
 #else
-  if(tid && pthread_join((pthread_t)tid,NULL)==0){
+  if(tid && pthread_join((pthread_t)tid,nullptr)==0){
     tid=0;
     return true;
     }
@@ -234,7 +234,7 @@ FXbool FXThread::cancel(){
 #else
   if(tid){
     if(busy && pthread_cancel((pthread_t)tid)==0) busy=false;
-    if(pthread_join((pthread_t)tid,NULL)==0){
+    if(pthread_join((pthread_t)tid,nullptr)==0){
       tid=0;
       return true;
       }
@@ -316,7 +316,7 @@ FXTime FXThread::time(){
   const FXTime seconds=1000000000;
   const FXTime microseconds=1000;
   struct timeval tv;
-  gettimeofday(&tv,NULL);
+  gettimeofday(&tv,nullptr);
   return tv.tv_sec*seconds+tv.tv_usec*microseconds;
 #endif
   }
@@ -349,7 +349,7 @@ FXTime FXThread::steadytime(){
   const FXTime seconds=1000000000;
   const FXTime microseconds=1000;
   struct timeval tv;
-  gettimeofday(&tv,NULL);
+  gettimeofday(&tv,nullptr);
   return tv.tv_sec*seconds+tv.tv_usec*microseconds;
 #endif
   }
@@ -416,7 +416,7 @@ void FXThread::sleep(FXTime nsec){
   if(microseconds<=nsec){
     value.tv_usec=(nsec/microseconds)%milliseconds;
     value.tv_sec=nsec/seconds;
-    select(0,NULL,NULL,NULL,&value);
+    select(0,nullptr,nullptr,nullptr,&value);
     }
 #endif
   }
@@ -443,7 +443,7 @@ void FXThread::wakeat(FXTime nsec){
   if(0<=nsec){
     value.tv_sec=nsec/seconds;
     value.tv_nsec=nsec%seconds;
-    while(clock_nanosleep(CLOCK_REALTIME,TIMER_ABSTIME,&value,NULL)!=0){ }
+    while(clock_nanosleep(CLOCK_REALTIME,TIMER_ABSTIME,&value,nullptr)!=0){ }
     }
 #elif (_POSIX_C_SOURCE >= 199309L)
   const FXTime seconds=1000000000;
@@ -463,7 +463,7 @@ void FXThread::wakeat(FXTime nsec){
   if(microseconds<=nsec){
     value.tv_usec=(nsec/microseconds)%milliseconds;
     value.tv_sec=nsec/seconds;
-    select(0,NULL,NULL,NULL,&value);
+    select(0,nullptr,nullptr,nullptr,&value);
     }
 #endif
   }
@@ -498,13 +498,13 @@ FXint FXThread::processors(){
   mib[0]=CTL_HW;
   mib[1]=HW_AVAILCPU;
   len=sizeof(result);
-  if(sysctl(mib,2,&result,&len,NULL,0)!=-1){
+  if(sysctl(mib,2,&result,&len,nullptr,0)!=-1){
     return result;
     }
   mib[0]=CTL_HW;
   mib[1]=HW_NCPU;
   len=sizeof(result);
-  if(sysctl(mib,2,&result,&len,NULL,0)!=-1){
+  if(sysctl(mib,2,&result,&len,nullptr,0)!=-1){
     return result;
     }
 #elif defined(__IRIX__) && defined(_SC_NPROC_ONLN)              // IRIX
@@ -545,7 +545,7 @@ FXThreadStorageKey FXThread::createStorageKey(){
   return (FXThreadStorageKey)TlsAlloc();
 #else
   pthread_key_t key;
-  return pthread_key_create(&key,NULL)==0UL ? (FXThreadStorageKey)key : ~0UL;
+  return pthread_key_create(&key,nullptr)==0UL ? (FXThreadStorageKey)key : ~0UL;
 #endif
   }
 
@@ -985,7 +985,7 @@ FXbool FXThread::resume(){
 // Destroy
 FXThread::~FXThread(){
   if(self()==this){
-    self(NULL);
+    self(nullptr);
     detach();
     }
   else{

@@ -3,7 +3,7 @@
 *                          V a r i a n t   T y p e                              *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 2013,2021 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 2013,2022 by Jeroen van der Zijp.   All Rights Reserved.        *
 *********************************************************************************
 * This library is free software; you can redistribute it and/or modify          *
 * it under the terms of the GNU Lesser General Public License as published by   *
@@ -177,28 +177,28 @@ public:
   FXptr toPtr() const;
 
   /// Convert to int
-  FXint toInt(FXbool* ok=NULL) const;
+  FXint toInt(FXbool* ok=nullptr) const;
 
   /// Convert to unsigned int
-  FXuint toUInt(FXbool* ok=NULL) const;
+  FXuint toUInt(FXbool* ok=nullptr) const;
 
   /// Convert to long
-  FXlong toLong(FXbool* ok=NULL) const;
+  FXlong toLong(FXbool* ok=nullptr) const;
 
   /// Convert to unsigned long
-  FXulong toULong(FXbool* ok=NULL) const;
+  FXulong toULong(FXbool* ok=nullptr) const;
 
   /// Convert to float
-  FXfloat toFloat(FXbool* ok=NULL) const;
+  FXfloat toFloat(FXbool* ok=nullptr) const;
 
   /// Convert to double
-  FXdouble toDouble(FXbool* ok=NULL) const;
+  FXdouble toDouble(FXbool* ok=nullptr) const;
 
   /// Convert to char pointer
   const FXchar* toChars() const;
 
   /// Convert to string
-  FXString toString(FXbool* ok=NULL) const;
+  FXString toString(FXbool* ok=nullptr) const;
 
   /// Convert to bool
   operator FXbool() const { return toBool(); }

@@ -3,7 +3,7 @@
 *                          Test Header Controls                                 *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 1997,2021 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 1997,2022 by Jeroen van der Zijp.   All Rights Reserved.        *
 ********************************************************************************/
 #include "fx.h"
 #include <stdio.h>
@@ -81,7 +81,7 @@ FXIMPLEMENT(HeaderWindow,FXMainWindow,HeaderWindowMap,ARRAYNUMBER(HeaderWindowMa
 
 
 // Make some windows
-HeaderWindow::HeaderWindow(FXApp* a):FXMainWindow(a,"Header Control Test",NULL,NULL,DECOR_ALL,0,0,800,600){
+HeaderWindow::HeaderWindow(FXApp* a):FXMainWindow(a,"Header Control Test",nullptr,nullptr,DECOR_ALL,0,0,800,600){
 
   // Make menu bar
   menubar=new FXMenuBar(this,LAYOUT_SIDE_TOP|LAYOUT_FILL_X);
@@ -89,11 +89,11 @@ HeaderWindow::HeaderWindow(FXApp* a):FXMainWindow(a,"Header Control Test",NULL,N
   new FXStatusBar(this,LAYOUT_SIDE_BOTTOM|LAYOUT_FILL_X);
 
   filemenu=new FXMenuPane(this);
-  new FXMenuCommand(filemenu,"&Quit\tCtl-Q\tQuit the application",NULL,getApp(),FXApp::ID_QUIT);
-  new FXMenuTitle(menubar,"&File",NULL,filemenu);
+  new FXMenuCommand(filemenu,"&Quit\tCtl-Q\tQuit the application",nullptr,getApp(),FXApp::ID_QUIT);
+  new FXMenuTitle(menubar,"&File",nullptr,filemenu);
   helpmenu=new FXMenuPane(this);
-  new FXMenuCommand(helpmenu,"&About Header...",NULL,this,ID_ABOUT,0);
-  new FXMenuTitle(menubar,"&Help",NULL,helpmenu,LAYOUT_RIGHT);
+  new FXMenuCommand(helpmenu,"&About Header...",nullptr,this,ID_ABOUT,0);
+  new FXMenuTitle(menubar,"&Help",nullptr,helpmenu,LAYOUT_RIGHT);
 
   // Make Main Window contents
   contents=new FXVerticalFrame(this,FRAME_SUNKEN|FRAME_THICK|LAYOUT_SIDE_TOP|LAYOUT_FILL_X|LAYOUT_FILL_Y,0,0,0,0, 0,0,0,0, 0,0);
@@ -105,18 +105,18 @@ HeaderWindow::HeaderWindow(FXApp* a):FXMainWindow(a,"Header Control Test",NULL,N
   doc=new FXGIFIcon(getApp(),minidoc);
 
   header1->appendItem("Name",doc,150);
-  header1->appendItem("Type",NULL,120);
+  header1->appendItem("Type",nullptr,120);
   header1->appendItem("Layout Option",doc,230);
-  header1->appendItem("Attributes",NULL,80);
+  header1->appendItem("Attributes",nullptr,80);
 
   // Below header
   panes=new FXHorizontalFrame(contents,FRAME_SUNKEN|FRAME_THICK|LAYOUT_SIDE_TOP|LAYOUT_FILL_X|LAYOUT_FILL_Y,0,0,0,0, 0,0,0,0, 0,0);
 
   // Make 4 lists
-  list[0]=new FXList(panes,NULL,0,LAYOUT_FILL_Y|LAYOUT_FIX_WIDTH|LIST_BROWSESELECT,0,0,150,0);
-  list[1]=new FXList(panes,NULL,0,LAYOUT_FILL_Y|LAYOUT_FIX_WIDTH|LIST_SINGLESELECT,0,0,120,0);
-  list[2]=new FXList(panes,NULL,0,LAYOUT_FILL_Y|LAYOUT_FIX_WIDTH|LIST_MULTIPLESELECT,0,0,230,0);
-  list[3]=new FXList(panes,NULL,0,LAYOUT_FILL_Y|LAYOUT_FIX_WIDTH|LIST_EXTENDEDSELECT,0,0,80,0);
+  list[0]=new FXList(panes,nullptr,0,LAYOUT_FILL_Y|LAYOUT_FIX_WIDTH|LIST_BROWSESELECT,0,0,150,0);
+  list[1]=new FXList(panes,nullptr,0,LAYOUT_FILL_Y|LAYOUT_FIX_WIDTH|LIST_SINGLESELECT,0,0,120,0);
+  list[2]=new FXList(panes,nullptr,0,LAYOUT_FILL_Y|LAYOUT_FIX_WIDTH|LIST_MULTIPLESELECT,0,0,230,0);
+  list[3]=new FXList(panes,nullptr,0,LAYOUT_FILL_Y|LAYOUT_FIX_WIDTH|LIST_EXTENDEDSELECT,0,0,80,0);
   list[0]->setBackColor(FXRGB(255,240,240));
   list[1]->setBackColor(FXRGB(240,255,240));
   list[2]->setBackColor(FXRGB(240,240,255));
@@ -151,11 +151,11 @@ HeaderWindow::HeaderWindow(FXApp* a):FXMainWindow(a,"Header Control Test",NULL,N
   list[3]->appendItem("E");
   list[3]->appendItem("F");
 
-  header2=new FXHeader(panes,NULL,0,HEADER_VERTICAL|HEADER_BUTTON|HEADER_RESIZE|FRAME_RAISED|FRAME_THICK|LAYOUT_FILL_Y);
-  header2->appendItem("Example",NULL,30);
-  header2->appendItem("Of",NULL,30);
-  header2->appendItem("Vertical",NULL,30);
-  header2->appendItem("Header",NULL,30);
+  header2=new FXHeader(panes,nullptr,0,HEADER_VERTICAL|HEADER_BUTTON|HEADER_RESIZE|FRAME_RAISED|FRAME_THICK|LAYOUT_FILL_Y);
+  header2->appendItem("Example",nullptr,30);
+  header2->appendItem("Of",nullptr,30);
+  header2->appendItem("Vertical",nullptr,30);
+  header2->appendItem("Header",nullptr,30);
 
   // Group box with some controls
   FXGroupBox *groupie=new FXGroupBox(panes,"Controls",GROUPBOX_TITLE_CENTER|LAYOUT_FILL_X|LAYOUT_FILL_Y);

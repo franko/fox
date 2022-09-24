@@ -25,7 +25,7 @@
 #
 # - Please send addition changes or additions to this file to:
 #
-#       jeroen@fox-toolkit.com
+#       jeroen@fox-toolkit.net
 #
 # - Use bracketed patterns with sub-patterns instead of complex
 #   regular expressions; complex regular expressions can recurse
@@ -72,6 +72,10 @@ language "Adie Syntax"
     openpattern     "#"
     closepattern    "$"
     style           "darkgreen"
+    rule "FIXME"
+      pattern     "FIXME"
+      style       "fuchsia"
+    end
   end
   rule "Keyword"
     pattern         "\<(language|filesmatch|contentsmatch|delimiters|contextlines|contextchars|rule|group|pattern|openpattern|closepattern|stoppattern|end|style|autoindent|wrapwidth|tabwidth|wordwrap|expandtabs)\>"
@@ -120,11 +124,11 @@ language "Registry"
         stoppattern   "$"
         style         "blue"
         rule "OctalEscape"
-          pattern     "\\\d+"
+          pattern     "\\[0-7]{1,3}"
           style       "carrot"
         end
         rule "HexEscape"
-          pattern     "\\x\h+"
+          pattern     "\\x\h\h"
           style       "carrot"
         end
         rule "ControlEscape"
@@ -137,6 +141,123 @@ language "Registry"
         style     "blue"
       end
     end
+  end
+end
+
+# Julia programming language
+language "Julia"
+  filesmatch "*.jl"
+  contextlines 1
+
+  # Comment
+  rule "Comment"
+    openpattern     "#"
+    closepattern    "$"
+    style           "darkgreen"
+  end
+
+  # Multi-line comment
+  rule "MultiLineComment"
+    openpattern   "#="
+    closepattern  "=#"
+    style         "darkgreen"
+  end
+
+  # Keyword
+  rule "Keyword"
+    pattern     "\<(abstract|as|begin|break|catch|const|continue|function|elseif|else|end|export|finally|for|global|let|local|if|importall|import|immutable|include|in|isa|macro|module|mutable|println|require|return|struct|supertype|try|typeof|type|using|while|where)\>"
+    style       "red"
+  end
+
+  # Types
+  rule "Type"
+    pattern     "\<(AbstractArray|AbstractChar|AbstractFloat|AbstractString|Array|Bool|Char|Integer|Int8|UInt8|Int16|UInt16|Int32|UInt32|Int64|UInt64|Int128|UInt128|Int|UInt|Float16|Float32|Float64|Float128|Nothing|Number|Real|Regex|Signed|Type|Unsigned|UnionAll|Union)\>"
+    style       "blue"
+  end
+
+  # Operators
+  rule "Operator"
+    pattern     "(\[|\]|\+=|\+|-=|-|\*=|\*|/=|//=|//|/|\\|%=|%|\^=|\^|!=|!|&&|&=|&|\|\||\|=|\||~=|~|>>>=|>>>|>>=|>>|<<=|<<|==|=>|=|\.^|<=|<:|<|>=|>|::|:|\.\.|\.|\>|<\||\?|,)"
+    style       "red"
+  end
+
+  # Constants
+  rule "Constants"
+    pattern     "\<(false|true|Inf|NaN|im|nothing)\>"
+    style       "blue"
+  end
+
+  # Number
+  rule "Number"
+    pattern     "\<((\.\d+([eE][+-]?\d+)?|\d+\.\d*([eE][+-]?\d+)?|\d+[Ee][+-]?\d+|0[Xx]\.\h+[Pp][+-]?\d+|0[Xx]\h+\.\h*[Pp][+-]?\d+|0[Xx]\h+[Pp][+-]?\d+)[LlFfQq]?|(0[xX]\h+|0[0-7]*|[1-9]\d*)[Uu]?[Ll]{0,2})\>"
+    style       "blue"
+  end
+
+  # String
+  rule "StringTriQuoted"
+    openpattern   "\"\"\""
+    closepattern  "\"\"\""
+    style         "blue"
+    rule "OctalEscape"
+      pattern     "\\[0-7]{1,3}"
+      style       "carrot"
+    end
+    rule "HexEscape"
+      pattern     "\\x\h\h"
+      style       "carrot"
+    end
+    rule "ControlEscape"
+      pattern     "\\."
+      style       "carrot"
+    end
+  end
+
+  # String
+  rule "String"
+    openpattern   "\""
+    closepattern  "\""
+    stoppattern   "$"
+    style         "blue"
+    rule "OctalEscape"
+      pattern     "\\[0-7]{1,3}"
+      style       "carrot"
+    end
+    rule "HexEscape"
+      pattern     "\\x\h\h"
+      style       "carrot"
+    end
+    rule "ControlEscape"
+      pattern     "\\."
+      style       "carrot"
+    end
+  end
+
+  # Char constant
+  rule "Char"
+    openpattern  "'"
+    closepattern "'"
+    stoppattern  "$"
+    style        "blue"
+    rule "OctalEscape"
+      pattern    "\\[0-7]{1,3}"
+      style      "carrot"
+    end
+    rule "HexEscape"
+      pattern    "\\x\h\h"
+      style      "carrot"
+    end
+    rule "ControlEscape"
+      pattern    "\\."
+      style      "carrot"
+    end
+  end
+  rule "Braces"
+    pattern     "(\{|\})"
+    style       "red"
+  end
+  rule "Parentheses"
+    pattern     "(\(|\))"
+    style       "red"
   end
 end
 
@@ -212,11 +333,11 @@ language "C++"
     stoppattern   "$"
     style         "blue"
     rule "OctalEscape"
-      pattern     "\\\d+"
+      pattern     "\\[0-7]{1,3}"
       style       "carrot"
     end
     rule "HexEscape"
-      pattern     "\\x\h+"
+      pattern     "\\x\h\h"
       style       "carrot"
     end
     rule "ControlEscape"
@@ -234,18 +355,18 @@ language "C++"
     openpattern  "'"
     closepattern "'"
     stoppattern  "$"
-    style       "blue"
+    style        "blue"
     rule "OctalEscape"
-      pattern "\\\d+"
-      style       "carrot"
+      pattern    "\\[0-7]{1,3}"
+      style      "carrot"
     end
     rule "HexEscape"
-      pattern     "\\x\h+"
-      style       "carrot"
+      pattern    "\\x\h\h"
+      style      "carrot"
     end
     rule "ControlEscape"
-      pattern "\\."
-      style       "carrot"
+      pattern    "\\."
+      style      "carrot"
     end
   end
 
@@ -406,11 +527,11 @@ language "C"
     stoppattern   "$"
     style         "blue"
     rule "OctalEscape"
-      pattern     "\\\d+"
+      pattern     "\\[0-7]{1,3}"
       style       "carrot"
     end
     rule "HexEscape"
-      pattern     "\\x\h+"
+      pattern     "\\x\h\h"
       style       "carrot"
     end
     rule "ControlEscape"
@@ -430,11 +551,11 @@ language "C"
     stoppattern  "$"
     style        "blue"
     rule "OctalEscape"
-      pattern "\\\d+"
+      pattern     "\\[0-7]{1,3}"
       style       "carrot"
     end
     rule "HexEscape"
-      pattern     "\\x\h+"
+      pattern     "\\x\h\h"
       style       "carrot"
     end
     rule "ControlEscape"
@@ -651,7 +772,7 @@ language "Matlab"
     stoppattern   "$"
     style         "blue"
     rule "OctalEscape"
-      pattern     "\\\d+"
+      pattern     "\\[0-7]+"
       style       "carrot"
     end
     rule "HexEscape"
@@ -1045,11 +1166,21 @@ language "JavaScript"
     closepattern  "^>>>>>>>.*?\n"
   end
 
-  # C style comment
+  # C style comment (but we can nest)
   rule "CComment"
     openpattern   "/\*"
     closepattern  "\*/"
     style         "darkgreen"
+    rule "CComment"
+      openpattern   "/\*"
+      closepattern  "\*/"
+      style         "darkgreen"
+      rule "CComment"
+        openpattern   "/\*"
+        closepattern  "\*/"
+        style         "darkgreen"
+      end
+    end
   end
 
   # C++ style comment

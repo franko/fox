@@ -3,7 +3,7 @@
 *                                  Chart  Test                                  *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 2003,2021 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 2003,2022 by Jeroen van der Zijp.   All Rights Reserved.        *
 ********************************************************************************/
 #include "fx.h"
 #include "chart.h"
@@ -64,7 +64,7 @@ FXIMPLEMENT(ChartWindow,FXMainWindow,ChartWindowMap,ARRAYNUMBER(ChartWindowMap))
 
 
 // Make some windows
-ChartWindow::ChartWindow(FXApp* a):FXMainWindow(a,"Chart Test",NULL,NULL,DECOR_ALL,20,20,700,460){
+ChartWindow::ChartWindow(FXApp* a):FXMainWindow(a,"Chart Test",nullptr,nullptr,DECOR_ALL,20,20,700,460){
 
   // Menubar
   menubar=new FXMenuBar(this,FRAME_RAISED|LAYOUT_SIDE_TOP|LAYOUT_FILL_X);
@@ -72,8 +72,8 @@ ChartWindow::ChartWindow(FXApp* a):FXMainWindow(a,"Chart Test",NULL,NULL,DECOR_A
 
   // File menu
   filemenu=new FXMenuPane(this);
-  new FXMenuCommand(filemenu,"&Quit\tCtl-Q",NULL,getApp(),FXApp::ID_QUIT);
-  new FXMenuTitle(menubar,"&File",NULL,filemenu);
+  new FXMenuCommand(filemenu,"&Quit\tCtl-Q",nullptr,getApp(),FXApp::ID_QUIT);
+  new FXMenuTitle(menubar,"&File",nullptr,filemenu);
 
   // Container
   FXHorizontalFrame *container=new FXHorizontalFrame(this,LAYOUT_FILL_X|LAYOUT_FILL_Y|FRAME_RAISED);

@@ -3,7 +3,7 @@
 *                     T h e   A d i e   T e x t   E d i t o r                   *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 1998,2021 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 1998,2022 by Jeroen van der Zijp.   All Rights Reserved.        *
 *********************************************************************************
 * This program is free software: you can redistribute it and/or modify          *
 * it under the terms of the GNU General Public License as published by          *
@@ -150,7 +150,7 @@ long Adie::onUpdSyntaxPaths(FXObject* sender,FXSelector,void*){
 long Adie::onSigHarvest(FXObject*,FXSelector,void*){
   fxmessage("Harvesting...\n");
 #ifndef WIN32
-  while(waitpid(-1,NULL,WNOHANG)>0){ }
+  while(waitpid(-1,nullptr,WNOHANG)>0){ }
 #endif
   return 1;
   }
@@ -176,7 +176,7 @@ static void printusage(){
 // Print verson info
 static void printversion(){
   fxmessage("A.d.i.e. - ADvanced Interactive Editor %d.%d.%d.\n",VERSION_MAJOR,VERSION_MINOR,VERSION_PATCH);
-  fxmessage("Copyright (C) 2000,2020 Jeroen van der Zijp.  All Rights Reserved.\n\n");
+  fxmessage("Copyright (C) 2000,2022 Jeroen van der Zijp.  All Rights Reserved.\n\n");
   fxmessage("Please visit: http://www.fox-toolkit.org for further information.\n");
   fxmessage("\n");
   fxmessage("This program is free software: you can redistribute it and/or modify\n");
@@ -197,8 +197,8 @@ static void printversion(){
 // Start the application
 FXint Adie::start(int argc,char** argv){
   FXString    file,lang,execpath,iconpath,syntaxfile;
-  TextWindow *window=NULL;
-  Syntax     *syntax=NULL;
+  TextWindow *window=nullptr;
+  Syntax     *syntax=nullptr;
   FXbool      edit=true;
   FXint       line=0;
   FXint       col=0;
@@ -372,7 +372,7 @@ TextWindow *Adie::findUnused() const {
       return windowlist[w];
       }
     }
-  return NULL;
+  return nullptr;
   }
 
 
@@ -383,13 +383,13 @@ TextWindow* Adie::findWindow(const FXString& file) const {
       return windowlist[w];
       }
     }
-  return NULL;
+  return nullptr;
   }
 
 
 // Open file and jump to line, or just jump to line if already open
 TextWindow* Adie::openFileWindow(const FXString& file,FXint lineno,FXint column){
-  TextWindow *window=NULL;
+  TextWindow *window=nullptr;
 
   FXTRACE((1,"Adie::openFileWindow(%s,%d,%d)\n",file.text(),lineno,column));
 
@@ -436,7 +436,7 @@ Syntax* Adie::getSyntaxByName(const FXString& lang){
         }
       }
     }
-  return NULL;
+  return nullptr;
   }
 
 
@@ -448,7 +448,7 @@ Syntax* Adie::getSyntaxByRegistry(const FXString& file){
     FXString lang=reg().readStringEntry("SYNTAX",name);
     return getSyntaxByName(lang);
     }
-  return NULL;
+  return nullptr;
   }
 
 
@@ -463,7 +463,7 @@ Syntax* Adie::getSyntaxByPattern(const FXString& file){
         }
       }
     }
-  return NULL;
+  return nullptr;
   }
 
 
@@ -478,7 +478,7 @@ Syntax* Adie::getSyntaxByContents(const FXString& contents){
         }
       }
     }
-  return NULL;
+  return nullptr;
   }
 
 

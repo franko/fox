@@ -3,7 +3,7 @@
 *               T h r e a d - L o c a l   S t o r a g e   C l a s s             *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 2004,2021 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 2004,2022 by Jeroen van der Zijp.   All Rights Reserved.        *
 *********************************************************************************
 * This library is free software; you can redistribute it and/or modify          *
 * it under the terms of the GNU Lesser General Public License as published by   *
@@ -46,7 +46,7 @@ FXAutoThreadStorageKey::FXAutoThreadStorageKey(){
 #else
   FXASSERT_STATIC(sizeof(FXThreadStorageKey)>=sizeof(pthread_key_t));
   pthread_key_t key;
-  if(pthread_key_create(&key,NULL)!=0){ throw FXMemoryException("FXAutoThreadStorageKey::FXAutoThreadStorageKey: out of memory\n"); }
+  if(pthread_key_create(&key,nullptr)!=0){ throw FXMemoryException("FXAutoThreadStorageKey::FXAutoThreadStorageKey: out of memory\n"); }
   value=(FXThreadStorageKey)key;
 #endif
   }

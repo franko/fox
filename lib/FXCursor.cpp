@@ -3,7 +3,7 @@
 *                         C u r s o r - O b j e c t                             *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 1997,2021 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 1997,2022 by Jeroen van der Zijp.   All Rights Reserved.        *
 *********************************************************************************
 * This library is free software; you can redistribute it and/or modify          *
 * it under the terms of the GNU Lesser General Public License as published by   *
@@ -70,12 +70,12 @@ extern FXbool fxloadXBM(FXColor*& data,const FXuchar *pixels,const FXuchar *mask
 
 
 // Object implementation
-FXIMPLEMENT(FXCursor,FXId,NULL,0)
+FXIMPLEMENT(FXCursor,FXId,nullptr,0)
 
 
 // Deserialization
 FXCursor::FXCursor(){
-  data=NULL;
+  data=nullptr;
   width=0;
   height=0;
   hotx=0;
@@ -87,7 +87,7 @@ FXCursor::FXCursor(){
 // Make stock cursor
 FXCursor::FXCursor(FXApp* a,FXStockCursor curid):FXId(a){
   FXTRACE((TOPIC_CONSTRUCT,"FXCursor::FXCursor %p\n",this));
-  data=NULL;
+  data=nullptr;
   width=0;
   height=0;
   hotx=0;
@@ -146,7 +146,7 @@ void FXCursor::create(){
       // Building stock cursor
       if(options&CURSOR_STOCK){
         FXTRACE((TOPIC_CREATION,"%s::create: stock cursor\n",getClassName()));
-        xid=LoadCursor(NULL,stock[options&CURSOR_STOCK]);
+        xid=LoadCursor(nullptr,stock[options&CURSOR_STOCK]);
         }
 
       // Building custom cursor
@@ -166,9 +166,9 @@ void FXCursor::create(){
 
           // Make a DIB
           void *imgdata=0;
-          HDC hdc=GetDC(NULL);
-          HBITMAP himage=CreateDIBSection(hdc,(BITMAPINFO*)&bi,DIB_RGB_COLORS,&imgdata,NULL,0);
-          ReleaseDC(NULL,hdc);
+          HDC hdc=GetDC(nullptr);
+          HBITMAP himage=CreateDIBSection(hdc,(BITMAPINFO*)&bi,DIB_RGB_COLORS,&imgdata,nullptr,0);
+          ReleaseDC(nullptr,hdc);
           if(!himage){ throw FXImageException("unable to create cursor"); }
 
           // Fill in data
@@ -183,7 +183,7 @@ void FXCursor::create(){
             }
 
           // Strawman mask bitmap
-          HBITMAP hmask=CreateBitmap(32,32,1,1,NULL);
+          HBITMAP hmask=CreateBitmap(32,32,1,1,nullptr);
           if(!hmask){ throw FXImageException("unable to create cursor"); }
 
           // Create cursor
@@ -334,7 +334,7 @@ void FXCursor::release(){
     options&=~CURSOR_OWNED;
     freeElms(data);
     }
-  data=NULL;
+  data=nullptr;
   }
 
 
@@ -393,7 +393,7 @@ FXbool FXCursor::loadPixels(FXStream& store){
 
 // Save cursor to stream
 void FXCursor::save(FXStream& store) const {
-  FXuchar haspixels=(data!=NULL);
+  FXuchar haspixels=(data!=nullptr);
   FXId::save(store);
   store << width << height << hotx << hoty;
   store << options;

@@ -3,7 +3,7 @@
 *                               F o n t   O b j e c t                           *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 1997,2021 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 1997,2022 by Jeroen van der Zijp.   All Rights Reserved.        *
 *********************************************************************************
 * This library is free software; you can redistribute it and/or modify          *
 * it under the terms of the GNU Lesser General Public License as published by   *
@@ -200,7 +200,7 @@ void* FXFont::match(const FXString& wantfamily,const FXString& wantforge,FXuint 
   FXchar buffer[256];
 
   // Hang on to this for text metrics functions
-  dc=CreateCompatibleDC(NULL);
+  dc=CreateCompatibleDC(nullptr);
 
   // Now fill in the fields
   lf.lfHeight=-MulDiv(wantsize,GetDeviceCaps((HDC)dc,LOGPIXELSY),720);
@@ -263,10 +263,10 @@ void* FXFont::match(const FXString& wantfamily,const FXString& wantforge,FXuint 
   xid=CreateFontIndirect(&lf);
 
   // Uh-oh, we failed
-  if(!xid) return NULL;
+  if(!xid) return nullptr;
 
   // Obtain text metrics
-  if(!callocElms(font,1)) return NULL;
+  if(!callocElms(font,1)) return nullptr;
 
   SelectObject((HDC)dc,xid);
   GetTextMetrics((HDC)dc,(TEXTMETRIC*)font);
@@ -523,7 +523,7 @@ void* FXFont::match(const FXString& wantfamily,const FXString& wantforge,FXuint 
 
   // Find pattern matching a font
   p=FcFontMatch(0,pattern,&result);
-  if(!p) return NULL;
+  if(!p) return nullptr;
 
   // Get name and foundry
   if(FcPatternGetString(p,FC_FAMILY,0,&fam)==FcResultMatch){
@@ -751,7 +751,7 @@ static void xlfdSplit(const char *fld[],char* font){
 static FXString xlfdFont(Display *dpy,const FXString& font){
   char **fontnames; int nfontnames;
   FXString fontname(font);
-  if((fontnames=XListFonts(dpy,font.text(),1,&nfontnames))!=NULL){
+  if((fontnames=XListFonts(dpy,font.text(),1,&nfontnames))!=nullptr){
     fontname=fontnames[0];
     XFreeFontNames(fontnames);
     }
@@ -1038,7 +1038,7 @@ void* FXFont::match(const FXString& wantfamily,const FXString& wantforge,FXuint 
       return fs;
       }
     }
-  return NULL;
+  return nullptr;
   }
 
 
@@ -1048,7 +1048,7 @@ void* FXFont::match(const FXString& wantfamily,const FXString& wantforge,FXuint 
 /*******************************************************************************/
 
 // Object implementation
-FXIMPLEMENT(FXFont,FXId,NULL,0)
+FXIMPLEMENT(FXFont,FXId,nullptr,0)
 
 
 // Deserialization
@@ -1066,9 +1066,9 @@ FXFont::FXFont(){
   hints=0;
   flags=0;
   angle=0;
-  font=NULL;
+  font=nullptr;
 #ifdef WIN32
-  dc=NULL;
+  dc=nullptr;
 #endif
   }
 
@@ -1089,9 +1089,9 @@ FXFont::FXFont(FXApp* a,const FXString& string):FXId(a){
   hints=0;
   flags=0;
   angle=0;
-  font=NULL;
+  font=nullptr;
 #ifdef WIN32
-  dc=NULL;
+  dc=nullptr;
 #endif
   setFont(string);
   }
@@ -1113,9 +1113,9 @@ FXFont::FXFont(FXApp* a,const FXString& face,FXuint size,FXuint weight,FXuint sl
   hints=(h&~FXFont::X11);          // System-independent method
   flags=0;
   angle=0;
-  font=NULL;
+  font=nullptr;
 #ifdef WIN32
-  dc=NULL;
+  dc=nullptr;
 #endif
   }
 
@@ -1136,9 +1136,9 @@ FXFont::FXFont(FXApp* a,const FXFontDesc& fontdesc):FXId(a),wantedName(fontdesc.
   hints=fontdesc.flags;
   flags=0;
   angle=0;
-  font=NULL;
+  font=nullptr;
 #ifdef WIN32
-  dc=NULL;
+  dc=nullptr;
 #endif
   }
 
@@ -1340,7 +1340,7 @@ void FXFont::detach(){
     actualSlant=0;
     actualSetwidth=0;
     actualEncoding=0;
-    font=NULL;
+    font=nullptr;
     xid=0;
     }
   }
@@ -1386,7 +1386,7 @@ void FXFont::destroy(){
     actualSlant=0;
     actualSetwidth=0;
     actualEncoding=0;
-    font=NULL;
+    font=nullptr;
     xid=0;
     }
   }
@@ -1755,7 +1755,7 @@ FXint FXFont::getTextHeight(const FXchar *string,FXuint length) const {
   if(font){
 #if defined(WIN32)              ///// WIN32 /////
 //    SIZE size;
-//    FXASSERT(dc!=NULL);
+//    FXASSERT(dc!=nullptr);
 //    GetTextExtentPoint32((HDC)dc,string,length,&size);
 //    return size.cy;
     return ((TEXTMETRIC*)font)->tmHeight;
@@ -1994,11 +1994,11 @@ static int CALLBACK EnumFontFamExProc(const LOGFONTA *lf,const TEXTMETRICA *lptm
 
   // Get weight (also guess from the name)
   FXuint weight=lf->lfWeight/10;
-  if(strstr(lf->lfFaceName,"Bold")!=NULL) weight=FXFont::Bold;
-  if(strstr(lf->lfFaceName,"Black")!=NULL) weight=FXFont::Black;
-  if(strstr(lf->lfFaceName,"Demi")!=NULL) weight=FXFont::DemiBold;
-  if(strstr(lf->lfFaceName,"Light")!=NULL) weight=FXFont::Light;
-  if(strstr(lf->lfFaceName,"Medium")!=NULL) weight=FXFont::Medium;
+  if(strstr(lf->lfFaceName,"Bold")!=nullptr) weight=FXFont::Bold;
+  if(strstr(lf->lfFaceName,"Black")!=nullptr) weight=FXFont::Black;
+  if(strstr(lf->lfFaceName,"Demi")!=nullptr) weight=FXFont::DemiBold;
+  if(strstr(lf->lfFaceName,"Light")!=nullptr) weight=FXFont::Light;
+  if(strstr(lf->lfFaceName,"Medium")!=nullptr) weight=FXFont::Medium;
 
   // Skip if weight doesn't match
   FXuint wt=pFontStore->desc.weight;
@@ -2007,8 +2007,8 @@ static int CALLBACK EnumFontFamExProc(const LOGFONTA *lf,const TEXTMETRICA *lptm
   // Get slant
   FXuint slant=FXFont::Straight;
   if(lf->lfItalic) slant=FXFont::Italic;
-  if(strstr(lf->lfFaceName,"Italic")!=NULL) slant=FXFont::Italic;
-  if(strstr(lf->lfFaceName,"Roman")!=NULL) slant=FXFont::Straight;
+  if(strstr(lf->lfFaceName,"Italic")!=nullptr) slant=FXFont::Italic;
+  if(strstr(lf->lfFaceName,"Roman")!=nullptr) slant=FXFont::Straight;
 
   // Skip if no match
   FXuint sl=pFontStore->desc.slant;
@@ -2016,9 +2016,9 @@ static int CALLBACK EnumFontFamExProc(const LOGFONTA *lf,const TEXTMETRICA *lptm
 
   // Get set width (also guess from the name)
   FXuint setwidth=0;
-  if(strstr(lf->lfFaceName,"Cond")!=NULL) setwidth=FXFont::Condensed;
-  if(strstr(lf->lfFaceName,"Narrow")!=NULL) setwidth=FXFont::Condensed;
-  if(strstr(lf->lfFaceName,"Ext Cond")!=NULL) setwidth=FXFont::ExtraCondensed;
+  if(strstr(lf->lfFaceName,"Cond")!=nullptr) setwidth=FXFont::Condensed;
+  if(strstr(lf->lfFaceName,"Narrow")!=nullptr) setwidth=FXFont::Condensed;
+  if(strstr(lf->lfFaceName,"Ext Cond")!=nullptr) setwidth=FXFont::ExtraCondensed;
 
   // Skip if no match
   FXuint sw=pFontStore->desc.setwidth;
@@ -2084,7 +2084,7 @@ FXbool FXFont::listFonts(FXFontDesc*& fonts,FXuint& numfonts,const FXString& fac
   FXuint i,j;
 
   // Initialize return values
-  fonts=NULL;
+  fonts=nullptr;
   numfonts=0;
 
   // This data gets passed into the callback function
@@ -2181,7 +2181,7 @@ FXbool FXFont::listFonts(FXFontDesc*& fonts,FXuint& numfonts,const FXString& fac
   FXString     foundry;
   double       points;
 
-  fonts=NULL;
+  fonts=nullptr;
   numfonts=0;
 
   // Need to have application
@@ -2203,9 +2203,9 @@ FXbool FXFont::listFonts(FXFontDesc*& fonts,FXuint& numfonts,const FXString& fac
 
   // Build object set
 #ifdef FC_WIDTH
-  objset=FcObjectSetBuild(FC_FAMILY,FC_FOUNDRY,FC_SPACING,FC_SCALABLE,FC_WIDTH,FC_WEIGHT,FC_SLANT,FC_PIXEL_SIZE,NULL);
+  objset=FcObjectSetBuild(FC_FAMILY,FC_FOUNDRY,FC_SPACING,FC_SCALABLE,FC_WIDTH,FC_WEIGHT,FC_SLANT,FC_PIXEL_SIZE,nullptr);
 #else
-  objset=FcObjectSetBuild(FC_FAMILY,FC_FOUNDRY,FC_SPACING,FC_SCALABLE,FC_WEIGHT,FC_SLANT,FC_PIXEL_SIZE,NULL);
+  objset=FcObjectSetBuild(FC_FAMILY,FC_FOUNDRY,FC_SPACING,FC_SCALABLE,FC_WEIGHT,FC_SLANT,FC_PIXEL_SIZE,nullptr);
 #endif
   if(objset){
 
@@ -2365,7 +2365,7 @@ FXbool FXFont::listFonts(FXFontDesc*& fonts,FXuint& numfonts,const FXString& fac
   FXString family;
   FXString foundry;
 
-  fonts=NULL;
+  fonts=nullptr;
   numfonts=0;
 
   // Need to have application

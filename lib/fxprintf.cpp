@@ -3,7 +3,7 @@
 *                  V a r a r g s   P r i n t f   R o u t i n e s                *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 2002,2021 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 2002,2022 by Jeroen van der Zijp.   All Rights Reserved.        *
 *********************************************************************************
 * This library is free software; you can redistribute it and/or modify          *
 * it under the terms of the GNU Lesser General Public License as published by   *
@@ -211,13 +211,16 @@ static FXdouble scaleneg2[10] = {
 
 
 // Convert number to string in buffer
+// The buffer is populated with significant digits from the numeric
+// conversion.  Depending on conversion modes and desired precision,
+// there may be no significant digits.
 static FXchar* cvt(FXchar* buffer,FXuval size,FXdouble value,FXint& decimal,FXint precision,FXuint flags){
   volatile FXdouble number=value;
   FXchar *end=buffer+size;
   FXchar *dst=buffer;
   FXchar *src=end;
   FXchar *p;
-  FXint digits,binex,decex,negex,dex,x;
+  FXint digits,binex,decex,negex,dex,x,c;
   FXulong num,n;
 
   // Compute decimal point
@@ -355,13 +358,12 @@ static FXchar* cvt(FXchar* buffer,FXuval size,FXdouble value,FXint& decimal,FXin
   // Any digits left at all?
   if(0<digits){
 
-    // Sweep carry, rounding forward to more significant digits.
+    // Sweep carry rounding forward to more significant digits.
     // Add a leading '1' in front if the most significant digit
     // was a '9' and we have to add to it; also add this digit
-    // to the total and shift the decimal one place to the left.
+    // to the total and shift the decimal point by one.
     p=src+digits;
     if(p<end && '5'<=*p){
-      *p='0';
       while(src<p){
         if(++*--p<='9') goto n;
         *p='0';
