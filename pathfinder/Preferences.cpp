@@ -105,7 +105,7 @@ Preferences::Preferences(PathFinderMain *own):FXDialogBox(own,"PathFinder Prefer
 
   new FXLabel(matrix2,tr("Editor command:"),nullptr,JUSTIFY_LEFT|LAYOUT_CENTER_Y|LAYOUT_FILL_X);
   editor=new FXTextField(matrix2,6,nullptr,0,FRAME_SUNKEN|FRAME_THICK|LAYOUT_CENTER_Y|LAYOUT_FILL_X|LAYOUT_FILL_COLUMN,0,0,0,0, 2,2,2,2);
-  editor->setTipText(tr("Path to text editor program\nCommand line arguments are assembled from the selected file(s) as follows:\n  %f  Replaced by current filename;\n  %F  Replaced by selected filenames;\n  %u  Replaced by URL encoding of current filename;\n  %U  Replaced by URL encoding of selected files;\n  %d  Replaced by current working directory;\n  %%  Replaced by simply '%'."));
+  editor->setTipText(tr("Path to text editor program\nCommand line arguments are assembled from the selected file(s) as follows:\n  %f  Replaced by current pathname;\n  %F  Replaced by selected pathnames;\n  %n  Replaced by current filename;\n  %N  Replaced by selected filenames;\n  %u  Replaced by URL encoding of current filename;\n  %U  Replaced by URL encoding of selected files;\n  %d  Replaced by current working directory;\n  %%  Replaced by simply '%'."));
   new FXButton(matrix2,tr("\tBrowse..."),dir,this,ID_BROWSE_EDITOR,FRAME_RAISED|FRAME_THICK|LAYOUT_CENTER_Y);
 
   new FXLabel(matrix2,tr("Terminal command:"),nullptr,JUSTIFY_LEFT|LAYOUT_CENTER_Y|LAYOUT_FILL_X);
@@ -160,7 +160,7 @@ Preferences::Preferences(PathFinderMain *own):FXDialogBox(own,"PathFinder Prefer
   FXHorizontalFrame *commandset=new FXHorizontalFrame(commandgroup,LAYOUT_SIDE_TOP|LAYOUT_FILL_X);
   new FXButton(commandset,tr("\tBrowse..."),dir,this,ID_BROWSE_COMMAND,LAYOUT_RIGHT|LAYOUT_CENTER_Y|FRAME_RAISED|FRAME_THICK);
   command=new FXTextField(commandset,40,this,ID_COMMAND,LAYOUT_FILL_X|LAYOUT_CENTER_Y|FRAME_SUNKEN|FRAME_THICK);
-  command->setTipText(tr("Path to program associated with the file\nCommand line arguments are assembled from the selected file(s) as follows:\n  %f  Replaced by current filename;\n  %F  Replaced by selected filenames;\n  %u  Replaced by URL encoding of current filename;\n  %U  Replaced by URL encoding of selected files;\n  %d  Replaced by current working directory;\n  %%  Replaced by simply '%'."));
+  command->setTipText(tr("Path to program associated with the file\nCommand line arguments are assembled from the selected file(s) as follows:\n  %f  Replaced by current pathname;\n  %F  Replaced by selected pathnames;\n  %n  Replaced by current filename;\n  %N  Replaced by selected filenames;\n  %u  Replaced by URL encoding of current filename;\n  %U  Replaced by URL encoding of selected files;\n  %d  Replaced by current working directory;\n  %%  Replaced by simply '%'."));
   runinterminal=new FXCheckButton(commandgroup,tr("Run in terminal\t\tRun command in terminal."),this,ID_RUN_IN_TERMINAL,ICON_BEFORE_TEXT|LAYOUT_SIDE_LEFT);
   changedirectory=new FXCheckButton(commandgroup,tr("Change directory\t\tChange directory before running command."),this,ID_CHANGE_DIRECTORY,ICON_BEFORE_TEXT|LAYOUT_SIDE_LEFT);
 

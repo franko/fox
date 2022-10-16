@@ -30,6 +30,7 @@
 #include "FXIODevice.h"
 #include "FXStat.h"
 #include "FXFile.h"
+#include "FXParseBuffer.h"
 #include "FXException.h"
 #include "FXVariant.h"
 #include "FXVariantArray.h"
@@ -64,7 +65,7 @@ FXJSONFile::FXJSONFile(const FXString& filename,Direction d,FXuval sz){
 
 // Open archive for operation
 FXbool FXJSONFile::open(FXInputHandle h,Direction d,FXuval sz){
-  FXTRACE((101,"FXJSONFile::open(%lx,%s,%ld)\n",h,(d==Save)?"Save":(d==Load)?"Load":"Stop",sz));
+  FXTRACE((101,"FXJSONFile::open(%lx,%s,%ld)\n",(FXuval)h,(d==Save)?"Save":(d==Load)?"Load":"Stop",sz));
   FXchar *buffer;
   FXASSERT(dir==Stop);
   if(allocElms(buffer,sz)){

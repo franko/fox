@@ -46,7 +46,7 @@
 #define ROUNDUP(n)  (((n)+ROUNDVAL-1)&-ROUNDVAL)
 
 // Special empty object list value
-#define EMPTY       ((FXObject**)(__objectlist__empty__+1))
+#define EMPTY       (const_cast<FXObject**>((FXObject *const *)(__objectlist__empty__+1)))
 
 using namespace FX;
 
@@ -407,8 +407,8 @@ FXbool FXObjectList::pop(){
 
 
 // Clear the list
-void FXObjectList::clear(){
-  no(0);
+FXbool FXObjectList::clear(){
+  return no(0);
   }
 
 

@@ -21,14 +21,14 @@
 #include "xincs.h"
 #include "fxver.h"
 #include "fxdefs.h"
+#include "fxchar.h"
 #include "fxmath.h"
 #include "fxascii.h"
 #include "fxunicode.h"
 #include "FXElement.h"
 #include "FXArray.h"
 #include "FXString.h"
-#include "FXStat.h"
-#include "FXFile.h"
+#include "FXParseBuffer.h"
 #include "FXException.h"
 #include "FXStringDictionary.h"
 #include "FXCallback.h"
@@ -591,13 +591,13 @@ FXbool FXXML::encode(FXString& dst,const FXString& src,FXuint flags){
 /*******************************************************************************/
 
 // Construct XML parser instance
-FXXML::FXXML():begptr(nullptr),endptr(nullptr),wptr(nullptr),rptr(nullptr),sptr(nullptr),offset(0),current(nullptr),column(0),line(1),dir(Stop),enc(UTF8){
+FXXML::FXXML():offset(0),current(nullptr),column(0),line(1),enc(UTF8){
   FXTRACE((100,"FXXML::FXXML\n"));
   }
 
 
 // Construct XML parser instance and pass it external buffer
-FXXML::FXXML(FXchar* buffer,FXuval sz,Direction d):begptr(nullptr),endptr(nullptr),wptr(nullptr),rptr(nullptr),sptr(nullptr),offset(0),current(nullptr),column(0),line(1),dir(Stop),enc(UTF8){
+FXXML::FXXML(FXchar* buffer,FXuval sz,Direction d):FXParseBuffer(buffer,sz,d),offset(0),current(nullptr),column(0),line(1),enc(UTF8){
   FXTRACE((100,"FXXML::FXXML(%p,%ld,%s)\n",buffer,sz,d==Load?"Load":d==Save?"Save":"Stop"));
   open(buffer,sz,d);
   }
@@ -606,90 +606,16 @@ FXXML::FXXML(FXchar* buffer,FXuval sz,Direction d):begptr(nullptr),endptr(nullpt
 // Open XML stream for given direction d
 FXbool FXXML::open(FXchar* buffer,FXuval sz,Direction d){
   FXTRACE((101,"FXXML::open(%p,%ld,%s)\n",buffer,sz,d==Load?"Load":d==Save?"Save":"Stop"));
-  FXASSERT(dir==Stop);
-  if((dir==Stop) && (d!=Stop) && (0<sz) && buffer){
-    begptr=buffer;
-    endptr=buffer+sz;
-    wptr=(d==Load)?endptr:begptr;
-    rptr=begptr;
-    sptr=begptr;
-    offset=0;
+  if(FXParseBuffer::open(buffer,sz,d)){
     current=nullptr;
     column=0;
+    offset=0;
     line=1;
-    dir=d;
+    vers="1.0";
     enc=UTF8;
     return true;
     }
   return false;
-  }
-
-/*******************************************************************************/
-
-// Read at least count bytes into buffer; return bytes available, or -1 for error
-FXival FXXML::fill(FXival){
-  FXASSERT(dir==Load);
-  return wptr-sptr;
-  }
-
-
-// Write at least count bytes from buffer; return space available, or -1 for error
-FXival FXXML::flush(FXival){
-  FXASSERT(dir==Save);
-  return endptr-wptr;
-  }
-
-
-// Ensure we have a requisite number of bytes in the buffer, calling fill()
-// to load additional data into the buffer if needed.
-// Near the end of the file, there may be fewer than n bytes in the buffer
-// even after fill() is called.
-FXbool FXXML::need(FXival count){
-  FXASSERT(dir==Load);
-  if(sptr+count>wptr){
-    if(wptr==endptr){
-      if(fill(count)<0) return false;
-      }
-    return sptr<wptr;
-    }
-  return true;
-  }
-
-
-// Emit characters to buffer
-FXbool FXXML::emit(FXchar ch,FXint count){
-  FXival num;
-  FXASSERT(dir==Save);
-  while(0<count){
-    if(wptr>=endptr){
-      if(flush(count)<=0) return false;
-      }
-    FXASSERT(wptr<endptr);
-    num=FXMIN(count,endptr-wptr);
-    fillElms(wptr,ch,num);
-    wptr+=num;
-    count-=num;
-    }
-  return true;
-  }
-
-
-// Emit text to buffer
-FXbool FXXML::emit(const FXchar* str,FXint count){
-  FXival num;
-  FXASSERT(dir==Save);
-  while(0<count){
-    if(wptr>=endptr){
-      if(flush(count)<=0) return false;
-      }
-    FXASSERT(wptr<endptr);
-    num=FXMIN(count,endptr-wptr);
-    copyElms(wptr,str,num);
-    wptr+=num;
-    str+=num;
-    count-=num;
-    }
-  return true;
   }
 
 /*******************************************************************************/
@@ -899,7 +825,7 @@ FXbool FXXML::name(){
   if(nameStartChar(sptr[0])){
     rptr=sptr;
     do{
-      column+=FXISUTF8(*sptr);          // Increment if UTF8 leader only
+      column+=isUTF8(*sptr);            // Increment if UTF8 leader only
       offset++;
       sptr++;
       if(sptr>=wptr) return false;
@@ -927,7 +853,7 @@ FXbool FXXML::match(FXchar ch){
 // Match name with given name str of length len
 FXbool FXXML::match(const FXchar* str,FXint len){
   if(name() && rptr+len==sptr){
-    return compare(rptr,str,len)==0;
+    return FXString::compare(rptr,str,len)==0;
     }
   return false;
   }
@@ -978,7 +904,7 @@ nxt:    if((sptr-rptr)>=(endptr-begptr-MAXTOKEN)){
           str.append(rptr,sptr-rptr);
           rptr=sptr;
           }
-        column+=FXISUTF8(*sptr);        // Increment if UTF8 leader only
+        column+=isUTF8(*sptr);          // Increment if UTF8 leader only
         offset++;
         sptr++;
         continue;
@@ -1300,7 +1226,7 @@ nxt:    if((sptr-rptr)>=(endptr-begptr-MAXTOKEN)){
           data.append(rptr,sptr-rptr);  // Add another chunk
           rptr=sptr;
           }
-        column+=FXISUTF8(*sptr);        // Increment if UTF8 leader only
+        column+=isUTF8(*sptr);          // Increment if UTF8 leader only
         offset++;
         sptr++;
         continue;
@@ -1352,7 +1278,7 @@ nxt:  if((sptr-rptr)>=(endptr-begptr-MAXTOKEN)){
         text.append(rptr,sptr-rptr);    // Pass comment undecoded
         rptr=sptr;
         }
-      column+=FXISUTF8(*sptr);          // Increment if UTF8 leader only
+      column+=isUTF8(*sptr);            // Increment if UTF8 leader only
       offset++;
       sptr++;
       continue;
@@ -1513,7 +1439,7 @@ nxt:  if((sptr-rptr)>=(endptr-begptr-MAXTOKEN)){
         if((err=charactersCB(text))!=ErrOK) return err;
         rptr=sptr;
         }
-      column+=FXISUTF8(*sptr);          // Increment if UTF8 leader only
+      column+=isUTF8(*sptr);            // Increment if UTF8 leader only
       offset++;
       sptr++;
       continue;
@@ -1635,7 +1561,7 @@ FXXML::Error FXXML::parsecontents(Element& elm){
         // Eat text
         rptr=sptr;
         }
-      column+=FXISUTF8(*sptr);          // Increment if UTF8 leader only
+      column+=isUTF8(*sptr);            // Increment if UTF8 leader only
       offset++;
       sptr++;
       continue;
@@ -1771,23 +1697,9 @@ FXXML::Error FXXML::parse(){
 // Close it
 FXbool FXXML::close(){
   FXTRACE((101,"XML::close()\n"));
-  if(dir!=Stop){
-    if((dir==Load) || 0<=flush(0)){             // Error during final flush is possible
-      begptr=nullptr;
-      endptr=nullptr;
-      rptr=nullptr;
-      sptr=nullptr;
-      wptr=nullptr;
-      current=nullptr;
-      dir=Stop;
-      return true;
-      }
-    begptr=nullptr;
-    endptr=nullptr;
-    wptr=nullptr;
-    rptr=nullptr;
-    sptr=nullptr;
-    dir=Stop;
+  if(FXParseBuffer::close()){
+    current=nullptr;
+    return true;
     }
   return false;
   }

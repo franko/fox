@@ -163,8 +163,8 @@ void FXPopup::killFocus(){
 
 
 // Get owner; if it has none, it's owned by itself
-FXWindow* FXPopup::getGrabOwner() const {
-  return grabowner ? grabowner : (FXWindow*)this;
+FXWindow* FXPopup::getGrabOwner(){
+  return grabowner ? grabowner : this;
   }
 
 

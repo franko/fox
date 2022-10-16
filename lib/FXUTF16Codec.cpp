@@ -21,6 +21,7 @@
 #include "xincs.h"
 #include "fxver.h"
 #include "fxdefs.h"
+#include "fxchar.h"
 #include "fxmath.h"
 #include "FXArray.h"
 #include "FXHash.h"
@@ -59,10 +60,10 @@ FXint FXUTF16BECodec::mb2wc(FXwchar& wc,const FXchar* src,FXint nsrc) const {
   FXwchar w;
   if(nsrc<2) return 0;
   wc=(((FXuchar)src[0])<<8)|((FXuchar)src[1]);
-  if(__unlikely(FXISLEADUTF16(wc))){
+  if(__unlikely(leadUTF16(wc))){
     if(nsrc<4) return 0;
     w=(((FXuchar)src[2])<<8)|((FXuchar)src[3]);
-    if(__unlikely(!FXISFOLLOWUTF16(w))) return 0;
+    if(__unlikely(!followUTF16(w))) return 0;
     wc=(wc<<10)+w+SURROGATE_OFFSET;
     return 4;
     }
@@ -129,10 +130,10 @@ FXint FXUTF16LECodec::mb2wc(FXwchar& wc,const FXchar* src,FXint nsrc) const {
   FXwchar w;
   if(nsrc<2) return 0;
   wc=(((FXuchar)src[1])<<8)|((FXuchar)src[0]);
-  if(__unlikely(FXISLEADUTF16(wc))){
+  if(__unlikely(leadUTF16(wc))){
     if(nsrc<4) return 0;
     w=(((FXuchar)src[3])<<8)|((FXuchar)src[2]);
-    if(__unlikely(!FXISFOLLOWUTF16(w))) return 0;
+    if(__unlikely(!followUTF16(w))) return 0;
     wc=(wc<<10)+w+SURROGATE_OFFSET;
     return 4;
     }
@@ -202,10 +203,10 @@ FXint FXUTF16Codec::mb2wc(FXwchar& wc,const FXchar* src,FXint nsrc) const {
   if(wc==BOM_BE){
     if(nsrc<4) return 0;
     wc=(s[2]<<8)|s[3];
-    if(__unlikely(FXISLEADUTF16(wc))){
+    if(__unlikely(leadUTF16(wc))){
       if(nsrc<6) return 0;
       w=(s[4]<<8)|s[5];
-      if(__unlikely(!FXISFOLLOWUTF16(w))) return 0;
+      if(__unlikely(!followUTF16(w))) return 0;
       wc=(wc<<10)+w+SURROGATE_OFFSET;
       return 6;
       }
@@ -214,19 +215,19 @@ FXint FXUTF16Codec::mb2wc(FXwchar& wc,const FXchar* src,FXint nsrc) const {
   if(wc==BOM_LE){
     if(nsrc<4) return 0;
     wc=(s[3]<<8)|s[2];
-    if(__unlikely(FXISLEADUTF16(wc))){
+    if(__unlikely(leadUTF16(wc))){
       if(nsrc<6) return 0;
       w=(s[5]<<8)|s[4];
-      if(__unlikely(!FXISFOLLOWUTF16(w))) return 0;
+      if(__unlikely(!followUTF16(w))) return 0;
       wc=(wc<<10)+w+SURROGATE_OFFSET;
       return 6;
       }
     return 4;
     }
-  if(__unlikely(FXISLEADUTF16(wc))){
+  if(__unlikely(leadUTF16(wc))){
     if(nsrc<4) return 0;
     w=(s[2]<<8)|s[3];
-    if(__unlikely(!FXISFOLLOWUTF16(w))) return 0;
+    if(__unlikely(!followUTF16(w))) return 0;
     wc=(wc<<10)+w+SURROGATE_OFFSET;
     return 4;
     }
@@ -252,10 +253,10 @@ FXint FXUTF16Codec::mb2utflen(const FXchar* src,FXint nsrc) const {
         w=(((FXuchar)src[0])<<8)|((FXuchar)src[1]);
         src+=2;
         nsrc-=2;
-        if(__unlikely(FXISLEADUTF16(w))){
+        if(__unlikely(leadUTF16(w))){
           if(nsrc<2) return -2;
           v=(((FXuchar)src[0])<<8)|((FXuchar)src[1]);
-          if(__unlikely(!FXISFOLLOWUTF16(v))) return 0;
+          if(__unlikely(!followUTF16(v))) return 0;
           w=(w<<10)+v+SURROGATE_OFFSET;
           src+=2;
           nsrc-=2;
@@ -271,10 +272,10 @@ FXint FXUTF16Codec::mb2utflen(const FXchar* src,FXint nsrc) const {
         w=(((FXuchar)src[1])<<8)|((FXuchar)src[0]);
         src+=2;
         nsrc-=2;
-        if(__unlikely(FXISLEADUTF16(w))){
+        if(__unlikely(leadUTF16(w))){
           if(nsrc<2) return -2;
           v=(((FXuchar)src[1])<<8)|((FXuchar)src[0]);
-          if(__unlikely(!FXISFOLLOWUTF16(v))) return 0;
+          if(__unlikely(!followUTF16(v))) return 0;
           w=(w<<10)+v+SURROGATE_OFFSET;
           src+=2;
           nsrc-=2;
@@ -305,10 +306,10 @@ FXint FXUTF16Codec::mb2utf(FXchar* dst,FXint ndst,const FXchar* src,FXint nsrc) 
         w=(((FXuchar)src[0])<<8)|((FXuchar)src[1]);
         src+=2;
         nsrc-=2;
-        if(__unlikely(FXISLEADUTF16(w))){
+        if(__unlikely(leadUTF16(w))){
           if(nsrc<2) return -2;
           v=(((FXuchar)src[0])<<8)|((FXuchar)src[1]);
-          if(__unlikely(!FXISFOLLOWUTF16(v))) return 0;
+          if(__unlikely(!followUTF16(v))) return 0;
           w=(w<<10)+v+SURROGATE_OFFSET;
           src+=2;
           nsrc-=2;
@@ -328,10 +329,10 @@ FXint FXUTF16Codec::mb2utf(FXchar* dst,FXint ndst,const FXchar* src,FXint nsrc) 
         w=(((FXuchar)src[1])<<8)|((FXuchar)src[0]);
         src+=2;
         nsrc-=2;
-        if(__unlikely(FXISLEADUTF16(w))){
+        if(__unlikely(leadUTF16(w))){
           if(nsrc<2) return -2;
           v=(((FXuchar)src[1])<<8)|((FXuchar)src[0]);
-          if(__unlikely(!FXISFOLLOWUTF16(v))) return 0;
+          if(__unlikely(!followUTF16(v))) return 0;
           w=(w<<10)+v+SURROGATE_OFFSET;
           src+=2;
           nsrc-=2;

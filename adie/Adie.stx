@@ -489,7 +489,7 @@ language "C++"
   end
 
   rule "Keyword"
-    pattern "\<(alignas|alignof|and_eq|and|asm|auto|bitand|bitor|break|case|catch|class|compl|constexpr|const_cast|const|continue|decltype|default|delete|do|dynamic_cast|else|enum|explicit|export|extern|final|for|friend|goto|if|inline|mutable|namespace|new|noexcept|not_eq|not|nullptr|operator|or_eq|or|override|private|protected|public|reinterpret_cast|return|sizeof|static_assert|static_cast|static|struct|switch|template|this|thread_local|throw|try|typedef|typeid|typename|union|using|virtual|volatile|while|xor_eq|xor|true|false|maybe)\>"
+    pattern "\<(alignas|alignof|and_eq|and|asm|auto|bitand|bitor|break|case|catch|class|compl|concept|consteval|constexpr|constinit|const_cast|const|continue|decltype|default|delete|do|dynamic_cast|else|enum|explicit|export|extern|final|for|friend|goto|if|inline|mutable|namespace|new|noexcept|not_eq|not|nullptr|operator|or_eq|or|override|private|protected|public|reinterpret_cast|return|sizeof|static_assert|static_cast|static_assert|static|struct|switch|template|this|thread_local|throw|try|typedef|typeid|typename|union|using|virtual|volatile|while|xor_eq|xor|true|false|maybe)\>"
     style   "red"
   end
 
@@ -501,7 +501,7 @@ language "C++"
   end
 
   rule "Type"
-    pattern "\<(unsigned|signed|int|short|long|float|double|bool|void|char16_t|char32_t|char|wchar_t)\>"
+    pattern "\<(unsigned|signed|int|short|long|float|double|bool|void|char8_t|char16_t|char32_t|char|wchar_t)\>"
     style   "blue"
   end
 
@@ -702,6 +702,104 @@ language "C"
 
   rule "Operator"
     pattern "(\[|\]|\+\+|\+=|\+|--|-=|->\*|->|-|==|=|&&|&=|&|\|\||\|=|\||\^=|\^|<<=|<<|<=|<|>>=|>>|>=|>|!=|!|~=|~|\*=|\*|/=|/|%=|%|\?|:|\.\.\.|\.|;|,)"
+    style   "red"
+  end
+end
+
+
+# Rust programming language
+language "Rust"
+
+  # File patterns for this language mode
+  filesmatch "*.rs"
+
+  contextlines 1
+
+  # Word delimiters
+  delimiters "~.,/\`'!@#$%^&*()-=+{}|[]\":;<>?"
+
+  # All C-like languages use similar color schemes
+  group "C-Like"
+
+  # Comment
+  rule "Comment"
+    open  "//"
+    close "$"
+    style "darkgreen"
+    rule "FIXME"
+      pattern "FIXME"
+      style   "fuchsia"
+    end
+  end
+
+  # String
+  rule "String"
+    open  "\""
+    close "\""
+    stop  "$"
+    style "blue"
+    rule "OctalEscape"
+      pattern "\\[0-7]{1,3}"
+      style   "carrot"
+    end
+    rule "HexEscape"
+      pattern "\\x\h\h"
+      style   "carrot"
+    end
+    rule "ControlEscape"
+      pattern "\\."
+      style   "carrot"
+    end
+  end
+
+  # Char constant
+  rule "Char"
+    open  "'"
+    close "'"
+    stop  "$"
+    style "blue"
+    rule "OctalEscape"
+      pattern "\\[0-7]{1,3}"
+      style   "carrot"
+    end
+    rule "HexEscape"
+      pattern "\\x\h\h"
+      style   "carrot"
+    end
+    rule "ControlEscape"
+      pattern "\\."
+      style   "carrot"
+    end
+  end
+
+  # Special macros
+  rule "Keyword"
+    pattern "\<(as|async|await|break|const|continue|crate|dyn|else|enum|extern|false|fn|for|if|impl|in|let|loop|match|mod|move|mut|pub|ref|return|Self|self|static|struct|super|trait|true|type|union|unsafe|use|where|while|abstract|become|box|do|final|macro|override|priv|try|typeof|unsized|virtual|yield)\>"
+    style   "red"
+  end
+
+  rule "Number"
+    pattern "\<(((\.\d++|\d++((\.\d*+)?|(?=[Ee][+-]?\d++)))([eE][+-]?+\d++)?)(f(32|64))?|([1-9][0-9_]*+|0[xX]\h[\h_]*+|0o[0-7][0-7_]*+|0b[01][01_]*+|b'\\?.')([iu](8|16|32|64|128|size))?)\>"
+    style   "blue"
+  end
+
+  rule "Type"
+    pattern "\<(i8|u8|i16|u16|i32|u32|i64|u64|i128|i128|isize|usize|f32|f64|bool|char)\>"
+    style   "blue"
+  end
+
+  rule "Braces"
+    pattern "(\{|\})"
+    style   "red"
+  end
+
+  rule "Parentheses"
+    pattern "(\(|\))"
+    style   "red"
+  end
+
+  rule "Operator"
+    pattern "(\[|\]|\+\+|\+=|\+|--|-=|->\*|->|-|==|=|&&|&=|&|\|\||\|=|\||\^=|\^|<<=|<<|<=|<|>>=|>>|>=|>|!=|!|~=|~|\*=|\*|/=|/|%=|%|\?|:|\.\.\.|\.\.=|\.|;|,|@)"
     style   "red"
   end
 end
@@ -1532,7 +1630,9 @@ end
 # Python
 language "Python"
   filesmatch "*.py"
+  contentsmatch "\A#!(.*?)python"
   delimiters "~.,/\`'!@#$%^&*()-=+{}|[]\":;<>?"
+
   contextlines 1
 
   # Numbers
@@ -2209,7 +2309,7 @@ language "Shell"
   filesmatch "*.sh,.bashrc"
 
   # Or contents
-  contentsmatch "\A#(.*?)(ba)?sh"
+  contentsmatch "\A#!(.*?)(ba)?sh"
 
   contextlines 1
   rule "Comment"

@@ -207,7 +207,7 @@ FXImage::FXImage(FXApp* a,const FXColor *pix,FXuint opts,FXint w,FXint h):FXDraw
   FXTRACE((TOPIC_CONSTRUCT,"FXImage::FXImage %p\n",this));
   FXASSERT((opts&~(IMAGE_OWNED|IMAGE_MASK))==0);
   visual=getApp()->getDefaultVisual();
-  data=(FXColor*)pix;
+  data=const_cast<FXColor*>(pix);
   options=opts;
   if(!data && (options&IMAGE_OWNED)){           // This is confusing use of IMAGE_OWNED
     if(!callocElms(data,width*height)){ throw FXMemoryException("unable to construct image"); }

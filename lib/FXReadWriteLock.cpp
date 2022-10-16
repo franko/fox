@@ -79,7 +79,7 @@ FXReadWriteLock::FXReadWriteLock(){
   // machine and mail it to: jeroen@fox-toolkit.net!!
   //FXTRACE((150,"sizeof(pthread_rwlock_t)=%d\n",sizeof(pthread_rwlock_t)));
   FXASSERT_STATIC(sizeof(data)>=sizeof(pthread_rwlock_t));
-  pthread_rwlock_init((pthread_rwlock_t*)data,&rwlockatt);
+  pthread_rwlock_init((pthread_rwlock_t*)data,nullptr);
 #endif
   }
 

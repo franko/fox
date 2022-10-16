@@ -163,7 +163,7 @@ public:
   FXbool pop();
 
   /// Remove all objects
-  void clear();
+  FXbool clear();
 
   /// Save to a stream
   void save(FXStream& store) const;

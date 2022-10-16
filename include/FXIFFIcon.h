@@ -44,7 +44,7 @@ public:
 public:
 
   /// Construct an icon from memory stream formatted as IFF format
-  FXIFFIcon(FXApp* a,const void *pix=nullptr,FXColor clr=FXRGB(192,192,192),FXuint opts=0,FXint w=1,FXint h=1);
+  FXIFFIcon(FXApp* a,const FXuchar *pix=nullptr,FXColor clr=FXRGB(192,192,192),FXuint opts=0,FXint w=1,FXint h=1);
 
   /// Save pixels into stream in IFF format
   virtual FXbool savePixels(FXStream& store) const;

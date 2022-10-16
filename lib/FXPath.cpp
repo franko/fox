@@ -21,6 +21,7 @@
 #include "xincs.h"
 #include "fxver.h"
 #include "fxdefs.h"
+#include "fxchar.h"
 #include "fxascii.h"
 #include "fxunicode.h"
 #include "FXArray.h"
@@ -625,7 +626,7 @@ FXString FXPath::contract(const FXString& file,const FXString& user,const FXStri
     FXString result(file);
     if(FXPath::isAbsolute(result)){
       FXString val=FXSystem::getUserDirectory(user);
-      if(!val.empty() && compare(result,val,val.length())==0 && ((result.length()==val.length()) || ISPATHSEP(result[val.length()]))){
+      if(!val.empty() && FXString::compare(result,val,val.length())==0 && ((result.length()==val.length()) || ISPATHSEP(result[val.length()]))){
         result.replace(0,val.length(),"~"+user);
         }
       }
@@ -1315,11 +1316,11 @@ FXString FXPath::dequote(const FXString& file){
   if(0<result.length()){
     FXint e=file.length(),b=0,r=0,q=0,n=0;
 
-    // Trim tail
-    while(0<e && Ascii::isSpace(file[e-1])) --e;
-
     // Trim head
     while(b<e && Ascii::isSpace(file[b])) ++b;
+
+    // Trim tail
+    while(b<e && Ascii::isSpace(file[e-1])) --e;
 
     // Dequote the rest
     while(b<e){
@@ -1439,7 +1440,7 @@ FXString FXPath::enquote(const FXString& file,FXbool force){
 
 // Dequote filename to get original again
 // The input text may contain multiple quoted segments, or even no quoted
-// segments at all, but leading and trailing spaces are removed from the output.
+// segments at all, but leading and trailing spaces are removed.
 // Single quotes preserve the literal string exactly; escape sequences are
 // not allowed; not even \' - if you want a ' in the quoted text, you have
 // to do something like 'foo'\''bar'.
@@ -2114,7 +2115,7 @@ FXbool FXPath::hasExecExtension(const FXString& file){
     do{
       end=beg;
       while(end<pathext.length() && pathext[end]!=PATHLISTSEP) end++;
-      if(0<=(file.length()-end+beg) && comparecase(&file[file.length()-end+beg],&pathext[beg],end-beg)==0) return true;
+      if(0<=(file.length()-end+beg) && FXString::comparecase(&file[file.length()-end+beg],&pathext[beg],end-beg)==0) return true;
       beg=end+1;
       }
     while(end<pathext.length());

@@ -31,6 +31,8 @@
   - Which base85 is most useful? Adobe, rfc1924, Z85,
   - 85^5 = 4384852500, which is just larger than 256^4=4294967295; thus, 5
     bytes needed to encode each 4 bytes.
+  - Encode 4 bytes of source into 5 bytes of destination, using only 85 printable
+    ASCII symbols.
 
 */
 

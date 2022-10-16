@@ -49,7 +49,6 @@
 
 using namespace FX;
 
-
 /*******************************************************************************/
 
 namespace FX {
@@ -83,7 +82,7 @@ FXint FXVerticalFrame::getDefaultWidth(){
       if(hints&LAYOUT_FIX_WIDTH) w=child->getWidth();
       else if(options&PACK_UNIFORM_WIDTH) w=mw;
       else w=child->getDefaultWidth();
-      if((hints&LAYOUT_RIGHT)&&(hints&LAYOUT_CENTER_X)){        // LAYOUT_FIX_X
+      if((hints&LAYOUT_RIGHT)&&(hints&LAYOUT_CENTER_X)){
         w=child->getX()+w;
         if(w>wmax) wmax=w;
         }
@@ -110,7 +109,7 @@ FXint FXVerticalFrame::getDefaultHeight(){
       if(hints&LAYOUT_FIX_HEIGHT) h=child->getHeight();
       else if(options&PACK_UNIFORM_HEIGHT) h=mh;
       else h=child->getDefaultHeight();
-      if((hints&LAYOUT_BOTTOM)&&(hints&LAYOUT_CENTER_Y)){       // LAYOUT_FIX_Y
+      if((hints&LAYOUT_BOTTOM)&&(hints&LAYOUT_CENTER_Y)){
         h=child->getY()+h;
         if(h>hmax) hmax=h;
         }
@@ -151,7 +150,7 @@ void FXVerticalFrame::layout(){
   for(child=getFirst(); child; child=child->getNext()){
     if(child->shown()){
       hints=child->getLayoutHints();
-      if(!((hints&LAYOUT_BOTTOM)&&(hints&LAYOUT_CENTER_Y))){    // LAYOUT_FIX_Y
+      if(!((hints&LAYOUT_BOTTOM)&&(hints&LAYOUT_CENTER_Y))){
         if(hints&LAYOUT_FIX_HEIGHT) h=child->getHeight();
         else if(options&PACK_UNIFORM_HEIGHT) h=mh;
         else h=child->getDefaultHeight();
@@ -193,7 +192,7 @@ void FXVerticalFrame::layout(){
       if(hints&LAYOUT_FIX_HEIGHT) h=child->getHeight();
       else if(options&PACK_UNIFORM_HEIGHT) h=mh;
       else h=child->getDefaultHeight();
-      if(!((hints&LAYOUT_BOTTOM)&&(hints&LAYOUT_CENTER_Y))){    // LAYOUT_FIX_Y
+      if(!((hints&LAYOUT_BOTTOM)&&(hints&LAYOUT_CENTER_Y))){
         extra_space=0;
         total_space=0;
         if((hints&LAYOUT_FILL_Y) && !(hints&LAYOUT_FIX_HEIGHT)){
@@ -229,7 +228,7 @@ void FXVerticalFrame::layout(){
           }
         if(hints&LAYOUT_BOTTOM){
           y=bottom-h-extra_space;
-          bottom=bottom-h-hspacing-total_space;
+          bottom=bottom-h-vspacing-total_space;
           }
         else{
           y=top+extra_space;

@@ -42,7 +42,6 @@
   - The member variable invocation holds the address of the variable
     containing the innermost model loop currently running; so we can
     locate all model loops through invocation.
-
 */
 
 using namespace FX;
@@ -141,6 +140,12 @@ FXEventLoop::~FXEventLoop(){
 #if 0
 
 
+// Perform a single event dispatch
+FXbool FXEventLoop::runOneEvent(FXTime blocking,FXuint flags){
+  return dispatcher && dispatcher->dispatch(blocking,flags);
+  }
+
+
 
 // Run application
 FXint FXEventLoop::run(){
@@ -175,17 +180,6 @@ FXint FXEventLoop::runModalWhileEvents(FXWindow* window,FXTime blocking){
   FXEventLoop inv(&invocation,window,MODAL_FOR_WINDOW);
   while(!inv.done && runOneEvent(blocking)) blocking=1000;
   return !inv.done;
-  }
-
-
-// Perform one event dispatch
-FXbool FXEventLoop::runOneEvent(FXTime blocking){
-  FXRawEvent ev;
-  if(getNextEvent(ev,blocking)){
-    dispatchEvent(ev);
-    return true;
-    }
-  return false;
   }
 
 

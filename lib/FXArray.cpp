@@ -39,7 +39,7 @@
 
 
 // Special empty array value
-#define EMPTY   ((FXptr)(__array__empty__+1))
+#define EMPTY  (const_cast<void*>((const void*)(__array__empty__+1)))
 
 using namespace FX;
 

@@ -321,7 +321,7 @@ FXDesktopSetup::FXDesktopSetup(FXApp *ap):FXMainWindow(ap,FXString::null,nullptr
   new FXCheckButton(packer,tr("Change directory\t\tChange directory before running command."),this,ID_CHANGE_DIRECTORY,ICON_BEFORE_TEXT|LAYOUT_LEFT|LAYOUT_SIDE_BOTTOM);
   new FXButton(packer,"...",nullptr,this,ID_SELECT_COMMAND,LAYOUT_SIDE_RIGHT|LAYOUT_CENTER_Y|FRAME_RAISED|FRAME_THICK);
   FXTextField* command=new FXTextField(packer,2,&target_filebinding_command,FXDataTarget::ID_VALUE,LAYOUT_SIDE_LEFT|LAYOUT_FILL_X|LAYOUT_CENTER_Y|FRAME_SUNKEN|FRAME_THICK);
-  command->setTipText(tr("Path to program associated with the file\nCommand line arguments are assembled from the selected file(s) as follows:\n  %f  Replaced by current filename;\n  %F  Replaced by selected filenames;\n  %u  Replaced by URL encoding of current filename;\n  %U  Replaced by URL encoding of selected files;\n  %d  Replaced by current working directory;\n  %%  Replaced by simply '%'."));
+  command->setTipText(tr("Path to program associated with the file\nCommand line arguments are assembled from the selected file(s) as follows:\n  %f  Replaced by current pathname;\n  %F  Replaced by selected pathnames;\n  %n  Replaced by current filename;\n  %N  Replaced by selected filenames;\n  %u  Replaced by URL encoding of current filename;\n  %U  Replaced by URL encoding of selected files;\n  %d  Replaced by current working directory;\n  %%  Replaced by simply '%'."));
   new FXSeparator(vframe7,SEPARATOR_GROOVE|LAYOUT_FILL_X);
 
   // Mime types
@@ -351,7 +351,9 @@ FXDesktopSetup::FXDesktopSetup(FXApp *ap):FXMainWindow(ap,FXString::null,nullptr
 
   /// Miscellaneous Parameters Panel ///
   FXHorizontalFrame* hframe5=new FXHorizontalFrame(switcher,LAYOUT_FILL_X|LAYOUT_FILL_Y,0,0,0,0,0,0,0,0,0,0);
-  FXMatrix* matrix2=new FXMatrix(hframe5,3,LAYOUT_FILL_Y|MATRIX_BY_COLUMNS,0,0,0,0,DEFAULT_SPACING,DEFAULT_SPACING,DEFAULT_SPACING,DEFAULT_SPACING);
+
+  // First column of settings
+  FXMatrix* matrix2=new FXMatrix(hframe5,3,LAYOUT_FILL_X|LAYOUT_FILL_Y|MATRIX_BY_COLUMNS,0,0,0,0,DEFAULT_SPACING,DEFAULT_SPACING,DEFAULT_SPACING,DEFAULT_SPACING);
 
   // Type speed
   new FXLabel(matrix2,tr("Typing Speed\t\tTyping Speed"),nullptr,LAYOUT_RIGHT|LAYOUT_CENTER_Y);
@@ -428,25 +430,51 @@ FXDesktopSetup::FXDesktopSetup(FXApp *ap):FXMainWindow(ap,FXString::null,nullptr
   FXSpinner* spinner11=new FXSpinner(matrix2,4,&target_wheellines,FXDataTarget::ID_VALUE,FRAME_SUNKEN|FRAME_THICK);
   spinner11->setRange(1,100);
 
+  // Vertical separator
   new FXSeparator(hframe5,SEPARATOR_GROOVE|LAYOUT_FILL_Y);
 
-  FXMatrix* matrix3=new FXMatrix(hframe5,2,LAYOUT_FILL_Y|MATRIX_BY_COLUMNS,0,0,0,0,DEFAULT_SPACING,DEFAULT_SPACING,DEFAULT_SPACING,DEFAULT_SPACING);
+  // Second column of settings
+  FXMatrix* matrix3=new FXMatrix(hframe5,2,LAYOUT_FILL_X|LAYOUT_FILL_Y|MATRIX_BY_COLUMNS,0,0,0,0,DEFAULT_SPACING,DEFAULT_SPACING,DEFAULT_SPACING,DEFAULT_SPACING);
 
   // Maximum colors spinner
-  new FXLabel(matrix3,tr("Maximum Colors Allocated"));
+  new FXLabel(matrix3,tr("Maximum Colors Allocated"),nullptr,LAYOUT_RIGHT|LAYOUT_CENTER_Y);
   FXSpinner* spinner12=new FXSpinner(matrix3,3,&target_maxcolors,FXDataTarget::ID_VALUE,FRAME_SUNKEN|FRAME_THICK);
   spinner12->setRange(1,256);
 
   // Gamma correction spinner
-  new FXLabel(matrix3,tr("Gamma Correction"));
+  new FXLabel(matrix3,tr("Gamma Correction"),nullptr,LAYOUT_RIGHT|LAYOUT_CENTER_Y);
   FXRealSpinner* spinner13=new FXRealSpinner(matrix3,3,&target_gamma,FXDataTarget::ID_VALUE,FRAME_SUNKEN|FRAME_THICK);
   spinner13->setRange(0.0,5.0);
   spinner13->setIncrement(0.1);
 
   // Scrollbar size spinner
-  new FXLabel(matrix3,tr("Scrollbar Size"));
+  new FXLabel(matrix3,tr("Scrollbar Size"),nullptr,LAYOUT_RIGHT|LAYOUT_CENTER_Y);
   FXSpinner* spinner14=new FXSpinner(matrix3,3,&target_barsize,FXDataTarget::ID_VALUE,FRAME_SUNKEN|FRAME_THICK);
   spinner14->setRange(5,100);
+
+  // Xft hint style
+  new FXLabel(matrix3,tr("Xft font hint style"),nullptr,LAYOUT_RIGHT|LAYOUT_CENTER_Y);
+  FXListBox* list2=new FXListBox(matrix3,&target_hintstyle,FXDataTarget::ID_VALUE,FRAME_SUNKEN|FRAME_THICK|LAYOUT_TOP);
+  list2->fillItems(tr("None\nSlight\nMedium\nFull"));
+  list2->setNumVisible(4);
+
+  // Xft sub-pixel rendering
+  new FXLabel(matrix3,tr("Xft font sub-pixel rendering"),nullptr,LAYOUT_RIGHT|LAYOUT_CENTER_Y);
+  FXListBox* list3=new FXListBox(matrix3,&target_subpixel,FXDataTarget::ID_VALUE,FRAME_SUNKEN|FRAME_THICK|LAYOUT_TOP);
+  list3->fillItems(tr("Unknown\nRGB\nBGR\nVRGB\nVBGR\nNone"));
+  list3->setNumVisible(6);
+
+  // Xft font hinting
+  new FXLabel(matrix3,tr("Xft font hinting"),nullptr,LAYOUT_RIGHT|LAYOUT_CENTER_Y);
+  new FXCheckButton(matrix3,FXString::null,&target_hinting,FXDataTarget::ID_VALUE);
+
+  // Xft font autohint
+  new FXLabel(matrix3,tr("Xft font autohint"),nullptr,LAYOUT_RIGHT|LAYOUT_CENTER_Y);
+  new FXCheckButton(matrix3,FXString::null,&target_autohint,FXDataTarget::ID_VALUE);
+
+  // Xft font anti-aliasing
+  new FXLabel(matrix3,tr("Xft font anti-aliasing"),nullptr,LAYOUT_RIGHT|LAYOUT_CENTER_Y);
+  new FXCheckButton(matrix3,FXString::null,&target_antialias,FXDataTarget::ID_VALUE);
 
   // Close button etc.
   new FXSeparator(main,SEPARATOR_GROOVE|LAYOUT_FILL_X);
@@ -490,6 +518,13 @@ FXDesktopSetup::FXDesktopSetup(FXApp *ap):FXMainWindow(ap,FXString::null,nullptr
   maxcolors=125;
   gamma=1.0;
 
+  // Fonts stuff
+  subpixel=0;
+  hintstyle=3;
+  hinting=true;
+  autohint=false;
+  antialias=true;
+
   filebinding.flags=0;
 
   // Color data targets associations
@@ -519,6 +554,11 @@ FXDesktopSetup::FXDesktopSetup(FXApp *ap):FXMainWindow(ap,FXString::null,nullptr
   target_barsize.connect(barSize);
   target_maxcolors.connect(maxcolors);
   target_gamma.connect(gamma);
+  target_subpixel.connect(subpixel);
+  target_hintstyle.connect(hintstyle);
+  target_hinting.connect(hinting);
+  target_autohint.connect(autohint);
+  target_antialias.connect(antialias);
 
   // File data target associations
   target_filebinding_description.connect(filebinding.description);
@@ -1222,6 +1262,29 @@ FXbool FXDesktopSetup::readSettingsFile(const FXString& file){
     // Display tweaks
     maxcolors=desktopsettings.readUIntEntry("SETTINGS","maxcolors",125);
     gamma=desktopsettings.readRealEntry("SETTINGS","displaygamma",1.0);
+
+    // Xft font sub-pixel rendering
+    const FXchar *rgba=desktopsettings.readStringEntry("Xft","rgba","unknown");
+    if(rgba[0]=='u') subpixel=0;
+    else if(rgba[0]=='r') subpixel=1;
+    else if(rgba[0]=='b') subpixel=2;
+    else if(rgba[0]=='v' && rgba[1]=='r') subpixel=3;
+    else if(rgba[0]=='v' && rgba[1]=='b') subpixel=4;
+    else if(rgba[0]=='n') subpixel=5;
+    else subpixel=0;
+
+    // Xft font hint level
+    const FXchar *hints=desktopsettings.readStringEntry("Xft","hintstyle","full");
+    if(hints[0]=='s') hintstyle=1;
+    else if(hints[0]=='m') hintstyle=2;
+    else if(hints[0]=='f') hintstyle=3;
+    else if(hints[0]=='n') hintstyle=0;
+    else hintstyle=0;
+
+    // Xft font flags
+    hinting=desktopsettings.readBoolEntry("Xft","hinting",true);
+    autohint=desktopsettings.readBoolEntry("Xft","autohint",false);
+    antialias=desktopsettings.readBoolEntry("Xft","antialias",true);
     return true;
     }
   return false;
@@ -1271,6 +1334,30 @@ FXbool FXDesktopSetup::writeSettingsFile(const FXString& file){
   // Display tweaks
   desktopsettings.writeUIntEntry("SETTINGS","maxcolors",maxcolors);
   desktopsettings.writeRealEntry("SETTINGS","displaygamma",gamma);
+
+  // Xft font sub-pixel rendering
+  const FXchar *rgba="unknown";
+  if(subpixel==0) rgba="unknown";
+  else if(subpixel==1) rgba="rgb";
+  else if(subpixel==2) rgba="bgr";
+  else if(subpixel==3) rgba="vrgb";
+  else if(subpixel==4) rgba="vbgr";
+  else if(subpixel==5) rgba="none";
+  desktopsettings.writeStringEntry("Xft","rgba",rgba);
+
+  // Xft font hint level
+  const FXchar *hints="full";
+  if(hintstyle==1) hints="slight";
+  else if(hintstyle==2) hints="medium";
+  else if(hintstyle==3) hints="full";
+  else if(hintstyle==0) hints="none";
+  desktopsettings.writeStringEntry("Xft","hintstyle",hints);
+
+  // Xft font flags
+  desktopsettings.writeBoolEntry("Xft","hinting",hinting);
+  desktopsettings.writeBoolEntry("Xft","autohint",autohint);
+  desktopsettings.writeBoolEntry("Xft","antialias",antialias);
+
 
   // Write file
   if(FXDir::createDirectories(FXPath::upLevel(file))){

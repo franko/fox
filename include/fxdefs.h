@@ -239,32 +239,6 @@ union _XEvent;
 namespace FX {
 
 
-/// Third logic state: unknown/indeterminate
-enum { maybe=2 };
-
-
-/// Exponent display
-enum FXExponent {
-  EXP_NEVER=0,                          /// Never use exponential notation
-  EXP_ALWAYS=1,                         /// Always use exponential notation
-  EXP_AUTO=2                            /// Use exponential notation if needed
-  };
-
-
-/// Search modes for search/replace dialogs
-enum {
-  SEARCH_BACKWARD   = 1,                            /// Search backward
-  SEARCH_FORWARD    = 2,                            /// Search forward
-  SEARCH_NOWRAP     = 0,                            /// Don't wrap (default)
-  SEARCH_WRAP       = 4,                            /// Wrap around to start
-  SEARCH_EXACT      = 0,                            /// Exact match (default)
-  SEARCH_IGNORECASE = 8,                            /// Ignore case
-  SEARCH_REGEX      = 16,                           /// Regular expression match
-  SEARCH_PREFIX     = 32,                           /// Prefix of subject string
-  SEARCH_SUFFIX     = 64                            /// Suffix of subject string
-  };
-
-
 /*********************************  Typedefs  **********************************/
 
 // Forward declarations
@@ -377,7 +351,7 @@ typedef _XEvent                 FXRawEvent;
 #endif
 
 
-/// Drag and drop data type
+// Drag and drop data type
 #ifdef WIN32
 typedef FXushort                FXDragType;
 #else
@@ -385,9 +359,24 @@ typedef FXID                    FXDragType;
 #endif
 
 
-/// A time in the far, far future
+// Third logic state: unknown/indeterminate
+enum { maybe=2 };
+
+// A time in the far, far future
 const FXTime forever=FXLONG(9223372036854775807);
 
+// Search modes for search/replace dialogs
+enum {
+  SEARCH_BACKWARD   = 1,        /// Search backward
+  SEARCH_FORWARD    = 2,        /// Search forward
+  SEARCH_NOWRAP     = 0,        /// Don't wrap (default)
+  SEARCH_WRAP       = 4,        /// Wrap around to start
+  SEARCH_EXACT      = 0,        /// Exact match (default)
+  SEARCH_IGNORECASE = 8,        /// Ignore case
+  SEARCH_REGEX      = 16,       /// Regular expression match
+  SEARCH_PREFIX     = 32,       /// Prefix of subject string
+  SEARCH_SUFFIX     = 64        /// Suffix of subject string
+  };
 
 /**********************************  Macros  ***********************************/
 
@@ -456,35 +445,6 @@ const FXTime forever=FXLONG(9223372036854775807);
 
 /// Get ID from selector
 #define FXSELID(s)         ((FX::FXushort)((s)&0xffff))
-
-/// Test if character c is at the start of a utf8 sequence (not a follower byte)
-#define FXISUTF8(c)        (((c)&0xC0)!=0x80)
-
-/// Check if c is leader/follower of a utf8 multi-byte sequence
-#define FXISLEADUTF8(c)    (((c)&0xC0)==0xC0)
-#define FXISFOLLOWUTF8(c)  (((c)&0xC0)==0x80)
-
-/// Check if c is part of a utf8 multi-byte sequence
-#define FXISSEQUTF8(c)     (((c)&0x80)==0x80)
-
-/// Number of FXchars in utf8 sequence
-#define FXUTF8LEN(c)       (((0xE5000000>>((((FXuchar)(c))>>4)<<1))&3)+1)
-
-/// Test if character c is at start of utf16 sequence (not a follower from surrogate pair)
-#define FXISUTF16(c)       (((c)&0xFC00)!=0xDC00)
-
-/// Check if c is leader/follower of a utf16 surrogate pair sequence
-#define FXISLEADUTF16(c)   (((c)&0xFC00)==0xD800)
-#define FXISFOLLOWUTF16(c) (((c)&0xFC00)==0xDC00)
-
-/// Check if c is part of a utf16 surrogate pair sequence
-#define FXISSEQUTF16(c)    (((c)&0xF800)==0xD800)
-
-/// Number of FXnchars in utf16 sequence
-#define FXUTF16LEN(c)      (FXISLEADUTF16(c)+1)
-
-/// Test if c is a legal utf32 character
-#define FXISUTF32(c)       ((c)<0x110000)
 
 /// Average of two FXColor ca and FXColor cb
 #define FXAVGCOLOR(ca,cb)  (((ca)&(cb))+((((ca)^(cb))&0xFEFEFEFE)>>1))
@@ -777,106 +737,9 @@ extern FXAPI void setTraceLevel(FXuint level,FXbool flag=true);
 ///
 extern FXAPI FXbool setTraceTopics(const FXchar* topics,FXbool flag=true);
 
-/// Return wide character from utf8 string at ptr
-extern FXAPI FXwchar wc(const FXchar *ptr);
+/// Get operating system version string
+extern FXAPI FXival fxosversion(FXchar version[],FXival len);
 
-/// Return wide character from utf16 string at ptr
-extern FXAPI FXwchar wc(const FXnchar *ptr);
-
-
-/// Increment to start of next wide character in utf8 string
-extern FXAPI const FXchar* wcinc(const FXchar* ptr);
-
-/// Increment to start of next wide character in utf8 string
-extern FXAPI FXchar* wcinc(FXchar* ptr);
-
-/// Increment to start of next wide character in utf16 string
-extern FXAPI const FXnchar* wcinc(const FXnchar* ptr);
-
-/// Increment to start of next wide character in utf16 string
-extern FXAPI FXnchar* wcinc(FXnchar* ptr);
-
-/// Decrement to start of previous wide character in utf8 string
-extern FXAPI const FXchar* wcdec(const FXchar* ptr);
-
-/// Decrement to start of previous wide character in utf8 string
-extern FXAPI FXchar* wcdec(FXchar* ptr);
-
-/// Decrement to start of previous wide character in utf16 string
-extern FXAPI const FXnchar* wcdec(const FXnchar* ptr);
-
-/// Decrement to start of previous wide character in utf16 string
-extern FXAPI FXnchar* wcdec(FXnchar* ptr);
-
-/// Adjust ptr to point to leader of multi-byte sequence
-extern FXAPI const FXchar* wcstart(const FXchar* ptr);
-
-/// Adjust ptr to point to leader of multi-byte sequence
-extern FXAPI FXchar* wcstart(FXchar* ptr);
-
-/// Adjust ptr to point to leader of surrogate pair sequence
-extern FXAPI const FXnchar* wcstart(const FXnchar *ptr);
-
-/// Adjust ptr to point to leader of surrogate pair sequence
-extern FXAPI FXnchar* wcstart(FXnchar *ptr);
-
-/// Return number of FXchar's of wide character at ptr
-extern FXAPI FXival wclen(const FXchar *ptr);
-
-/// Return number of FXnchar's of narrow character at ptr
-extern FXAPI FXival wclen(const FXnchar *ptr);
-
-/// Check if valid utf8 wide character representation; returns length or 0
-extern FXAPI FXival wcvalid(const FXchar* ptr);
-
-/// Check if valid utf16 wide character representation; returns length or 0
-extern FXAPI FXival wcvalid(const FXnchar* ptr);
-
-
-/// Return number of bytes for utf8 representation of wide character w
-extern FXAPI FXival wc2utf(FXwchar w);
-
-/// Return number of narrow characters for utf16 representation of wide character w
-extern FXAPI FXival wc2nc(FXwchar w);
-
-/// Return number of bytes for utf8 representation of wide character string
-extern FXAPI FXival wcs2utf(const FXwchar* src,FXival srclen);
-extern FXAPI FXival wcs2utf(const FXwchar* src);
-
-/// Return number of bytes for utf8 representation of narrow character string
-extern FXAPI FXival ncs2utf(const FXnchar* src,FXival srclen);
-extern FXAPI FXival ncs2utf(const FXnchar* src);
-
-/// Return number of wide characters for utf8 character string
-extern FXAPI FXival utf2wcs(const FXchar src,FXival srclen);
-extern FXAPI FXival utf2wcs(const FXchar *src);
-
-/// Return number of narrow characters for utf8 character string
-extern FXAPI FXival utf2ncs(const FXchar *src,FXival srclen);
-extern FXAPI FXival utf2ncs(const FXchar *src);
-
-
-/// Convert wide character to utf8 string; return number of items written to dst
-extern FXAPI FXival wc2utf(FXchar *dst,FXwchar w);
-
-/// Convert wide character to narrow character string; return number of items written to dst
-extern FXAPI FXival wc2nc(FXnchar *dst,FXwchar w);
-
-/// Convert wide character string to utf8 string; return number of items written to dst
-extern FXAPI FXival wcs2utf(FXchar *dst,const FXwchar* src,FXival dstlen,FXival srclen);
-extern FXAPI FXival wcs2utf(FXchar *dst,const FXwchar* src,FXival dstlen);
-
-/// Convert narrow character string to utf8 string; return number of items written to dst
-extern FXAPI FXival ncs2utf(FXchar *dst,const FXnchar* src,FXival dsrlen,FXival srclen);
-extern FXAPI FXival ncs2utf(FXchar *dst,const FXnchar* src,FXival dsrlen);
-
-/// Convert utf8 string to wide character string; return number of items written to dst
-extern FXAPI FXival utf2wcs(FXwchar *dst,const FXchar* src,FXival dsrlen,FXival srclen);
-extern FXAPI FXival utf2wcs(FXwchar *dst,const FXchar* src,FXival dsrlen);
-
-/// Convert utf8 string to narrow character string; return number of items written to dst
-extern FXAPI FXival utf2ncs(FXnchar *dst,const FXchar* src,FXival dsrlen,FXival srclen);
-extern FXAPI FXival utf2ncs(FXnchar *dst,const FXchar* src,FXival dsrlen);
 
 }
 

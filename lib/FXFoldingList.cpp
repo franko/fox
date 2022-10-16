@@ -295,7 +295,7 @@ FXint FXFoldingItem::getNumChildren() const {
 
 // Get item (logically) below this one
 FXFoldingItem* FXFoldingItem::getBelow() const {
-  FXFoldingItem* item=(FXFoldingItem*)this;
+  FXFoldingItem* item=const_cast<FXFoldingItem*>(this);
   if(first) return first;
   while(!item->next && item->parent) item=item->parent;
   return item->next;
@@ -1992,7 +1992,9 @@ FXint FXFoldingList::compareSection(const FXchar *p,const FXchar* q,FXint s){
     c1=(FXuchar) *p++;
     c2=(FXuchar) *q++;
     }
-  while('\t'<c1 && (c1==c2));
+  while((c1==c2) && (' '<=c1));
+  if(c1<' ') c1=0;
+  if(c2<' ') c2=0;
   return c1-c2;
   }
 
@@ -2003,10 +2005,12 @@ FXint FXFoldingList::compareSectionCase(const FXchar *p,const FXchar* q,FXint s)
   for(x=s; x && *p; x-=(*p++=='\t')){}
   for(x=s; x && *q; x-=(*q++=='\t')){}
   do{
-    c1=Unicode::toLower(wc(p)); p=wcinc(p);
-    c2=Unicode::toLower(wc(q)); q=wcinc(q);
+    c1=Ascii::toLower(*p++);
+    c2=Ascii::toLower(*q++);
     }
-  while('\t'<c1 && (c1==c2));
+  while((c1==c2) && (' '<=c1));
+  if(c1<' ') c1=0;
+  if(c2<' ') c2=0;
   return c1-c2;
   }
 
@@ -2601,39 +2605,73 @@ void FXFoldingList::clearItems(FXbool notify){
   }
 
 
-typedef FXint (*FXCompareFunc)(const FXString&,const FXString &,FXint);
+// Compare strings up to n
+static FXint comp(const FXchar* s1,const FXchar* s2,FXint n){
+  if(0<n){
+    FXint c1,c2;
+    do{
+      c1=(FXuchar)*s1++;
+      c2=(FXuchar)*s2++;
+      }
+    while((c1==c2) && (' '<=c1) && --n);
+    if(c1<' ') c1=0;
+    if(c2<' ') c2=0;
+    return c1-c2;
+    }
+  return 0;
+  }
+
+
+// Compare strings case insensitive up to n
+static FXint compcase(const FXchar* s1,const FXchar* s2,FXint n){
+  if(0<n){
+    FXint c1,c2;
+    do{
+      c1=Ascii::toLower((FXuchar)*s1++);
+      c2=Ascii::toLower((FXuchar)*s2++);
+      }
+    while((c1==c2) && (' '<=c1) && --n);
+    if(c1<' ') c1=0;
+    if(c2<' ') c2=0;
+    return c1-c2;
+    }
+  return 0;
+  }
+
+
+typedef FXint (*FXCompareFunc)(const FXchar*,const FXchar*,FXint);
 
 
 // Get item by name
-FXFoldingItem* FXFoldingList::findItem(const FXString& text,FXFoldingItem* start,FXuint flgs) const {
-  FXCompareFunc comparefunc=(flgs&SEARCH_IGNORECASE) ? (FXCompareFunc)comparecase : (FXCompareFunc)compare;
+FXFoldingItem* FXFoldingList::findItem(const FXString& string,FXFoldingItem* start,FXuint flgs) const {
+  FXCompareFunc comparefunc=(flgs&SEARCH_IGNORECASE) ? compcase : comp;
   FXFoldingItem *item;
   FXint len;
   if(firstitem){
-    len=(flgs&SEARCH_PREFIX)?text.length():2147483647;
+    len=(flgs&SEARCH_PREFIX)?string.length():2147483647;
     if(flgs&SEARCH_BACKWARD){
       item=start;
       while(item!=nullptr){
-        if((*comparefunc)(item->getText(),text,len)==0) return item;
+        if((*comparefunc)(item->getText().text(),string.text(),len)==0) return item;
         item=item->getAbove();
         }
       if(start && !(flgs&SEARCH_WRAP)) return nullptr;
       for(item=lastitem; item->getLast(); item=item->getLast()){}
       while(item!=start){
-        if((*comparefunc)(item->getText(),text,len)==0) return item;
+        if((*comparefunc)(item->getText().text(),string.text(),len)==0) return item;
         item=item->getAbove();
         }
       }
     else{
       item=start;
       while(item!=nullptr){
-        if((*comparefunc)(item->getText(),text,len)==0) return item;
+        if((*comparefunc)(item->getText().text(),string.text(),len)==0) return item;
         item=item->getBelow();
         }
       if(start && !(flgs&SEARCH_WRAP)) return nullptr;
       item=firstitem;
       while(item!=start){
-        if((*comparefunc)(item->getText(),text,len)==0) return item;
+        if((*comparefunc)(item->getText().text(),string.text(),len)==0) return item;
         item=item->getBelow();
         }
       }

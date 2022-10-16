@@ -72,9 +72,9 @@ const FXbool FXTIFIcon::supported=false;
 
 
 // Initialize
-FXTIFIcon::FXTIFIcon(FXApp* a,const void *pix,FXColor clr,FXuint opts,FXint w,FXint h):FXIcon(a,nullptr,clr,opts,w,h),codec(0){
+FXTIFIcon::FXTIFIcon(FXApp* a,const FXuchar *pix,FXColor clr,FXuint opts,FXint w,FXint h):FXIcon(a,nullptr,clr,opts,w,h),codec(0){
   if(pix){
-    FXMemoryStream ms(FXStreamLoad,(FXuchar*)pix);
+    FXMemoryStream ms(FXStreamLoad,const_cast<FXuchar*>(pix));
     loadPixels(ms);
     }
   }

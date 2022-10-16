@@ -29,9 +29,25 @@
 #include <math.h>
 #include <string.h>
 
+// Intrinsics
+#if defined(WIN32)
+#if (_MSC_VER >= 1400)          // VC++ 2005 or newer
+#if defined(_M_IX86) || defined(_M_X64)
+#include <intrin.h>
+#endif
+#endif
+#else
+#if defined(__GNUC__) || defined(__INTEL_COMPILER)
+#if defined(__i386__) || defined(__x86_64__)
+#include <immintrin.h>
+#endif
+#endif
+#endif
+
 // FOX defines
 #include "fxver.h"
 #include "fxdefs.h"
+#include "fxchar.h"
 #include "fxkeys.h"
 #include "fxmath.h"
 #include "fxendian.h"
@@ -98,6 +114,7 @@
 #include "FXDate.h"
 #include "FXURL.h"
 #include "FXStringDictionary.h"
+#include "FXParseBuffer.h"
 #include "FXJSON.h"
 #include "FXJSONFile.h"
 #include "FXXML.h"

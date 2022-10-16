@@ -232,8 +232,6 @@ public:
     };
 
 public:
-
-  // Message handlers
   long onPaint(FXObject*,FXSelector,void*);
   long onMap(FXObject*,FXSelector,void*);
   long onUnmap(FXObject*,FXSelector,void*);
@@ -288,10 +286,7 @@ public:
   long onCmdUpdate(FXObject*,FXSelector,void*);
   long onUpdYes(FXObject*,FXSelector,void*);
   long onCmdDelete(FXObject*,FXSelector,void*);
-
 public:
-
-  // Message ID's common to most Windows
   enum {
     ID_NONE,
     ID_HIDE,
@@ -348,7 +343,6 @@ public:
     ID_MDI_PREV,
     ID_LAST
     };
-
 public:
 
   // Predefined DND type names

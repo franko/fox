@@ -40,6 +40,28 @@
     will not establish a handler callback, and thus when such a signal is raised,
     it must be filtered via overrides of dispatchSignal prior to being processed
     by this implementation of dispatchSignal(); otherwise, a core dump may result.
+
+  - Sample usage:
+
+    disp->addInterval(TimeoutCallback::create<MyClass,&MyClass::memfunc>(target),dt,ptr);
+
+    FIXME maybe this is better:
+
+    disp->addInterval(FXObject* tgt,FXSelector sel,FXTime ns=1000000000,FXptr ptr=nullptr);
+
+    OK, if message map only contains function-pointers [method_call() template-generated
+    function call addresses], then we can look up this method-call:
+
+      long (*caller)(FXObject*,FXSelector,void*);
+
+      caller=metaClass.search(sel);
+
+    We can store caller into callback struct!
+
+    Then:
+
+      caller(target,this,FXSEL(SEL_TIMEOUT,message),userdata);
+
 */
 
 using namespace FX;
@@ -238,6 +260,7 @@ FXbool FXDispatcher::dispatchTimeout(FXTime due){
     }
   return false;
   }
+
 
 /*******************************************************************************/
 

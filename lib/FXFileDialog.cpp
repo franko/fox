@@ -70,7 +70,6 @@ namespace FX {
 const FXchar FXFileDialog::sectionName[]="File Dialog";
 
 
-
 // Object implementation
 FXIMPLEMENT(FXFileDialog,FXDialogBox,nullptr,0)
 
@@ -82,7 +81,6 @@ FXFileDialog::FXFileDialog(FXWindow* own,const FXString& name,FXuint opts,FXint 
   filebox->acceptButton()->setSelector(FXDialogBox::ID_ACCEPT);
   filebox->cancelButton()->setTarget(this);
   filebox->cancelButton()->setSelector(FXDialogBox::ID_CANCEL);
-  loadSettings();
   }
 
 
@@ -93,12 +91,25 @@ FXFileDialog::FXFileDialog(FXApp* a,const FXString& name,FXuint opts,FXint x,FXi
   filebox->acceptButton()->setSelector(FXDialogBox::ID_ACCEPT);
   filebox->cancelButton()->setTarget(this);
   filebox->cancelButton()->setSelector(FXDialogBox::ID_CANCEL);
-  loadSettings();
+  }
+
+
+// Create server-side resources
+void FXFileDialog::create(){
+  readRegistry();
+  FXDialogBox::create();
+  }
+
+
+// Destroy server-side resources
+void FXFileDialog::destroy(){
+  FXDialogBox::destroy();
+  writeRegistry();
   }
 
 
 // Load settings from registry
-void FXFileDialog::loadSettings(){
+void FXFileDialog::readRegistry(){
   setWidth(getApp()->reg().readIntEntry(sectionName,"width",getWidth()));
   setHeight(getApp()->reg().readIntEntry(sectionName,"height",getHeight()));
   setFileBoxStyle(getApp()->reg().readUIntEntry(sectionName,"style",getFileBoxStyle()));
@@ -107,7 +118,7 @@ void FXFileDialog::loadSettings(){
 
 
 // Save settings to registry
-void FXFileDialog::saveSettings(){
+void FXFileDialog::writeRegistry(){
   getApp()->reg().writeIntEntry(sectionName,"width",getWidth());
   getApp()->reg().writeIntEntry(sectionName,"height",getHeight());
   getApp()->reg().writeUIntEntry(sectionName,"style",getFileBoxStyle());
@@ -395,7 +406,7 @@ void FXFileDialog::load(FXStream& store){
 
 // Cleanup
 FXFileDialog::~FXFileDialog(){
-  saveSettings();
+  destroy();
   filebox=(FXFileSelector*)-1L;
   }
 

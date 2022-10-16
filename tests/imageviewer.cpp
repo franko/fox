@@ -412,58 +412,58 @@ FXbool ImageWindow::loadimage(const FXString& file){
   FXString ext=FXPath::extension(file);
   FXImage *img=nullptr;
   FXImage *old;
-  if(comparecase(ext,"gif")==0){
+  if(FXString::comparecase(ext,"gif")==0){
     img=new FXGIFImage(getApp(),nullptr,IMAGE_KEEP|IMAGE_SHMI|IMAGE_SHMP);
     }
-  else if(comparecase(ext,"bmp")==0){
+  else if(FXString::comparecase(ext,"bmp")==0){
     img=new FXBMPImage(getApp(),nullptr,IMAGE_KEEP|IMAGE_SHMI|IMAGE_SHMP);
     }
-  else if(comparecase(ext,"xpm")==0){
+  else if(FXString::comparecase(ext,"xpm")==0){
     img=new FXXPMImage(getApp(),nullptr,IMAGE_KEEP|IMAGE_SHMI|IMAGE_SHMP);
     }
-  else if(comparecase(ext,"pcx")==0){
+  else if(FXString::comparecase(ext,"pcx")==0){
     img=new FXPCXImage(getApp(),nullptr,IMAGE_KEEP|IMAGE_SHMI|IMAGE_SHMP);
     }
-  else if(comparecase(ext,"ico")==0 || comparecase(ext,"cur")==0){
+  else if(FXString::comparecase(ext,"ico")==0 || FXString::comparecase(ext,"cur")==0){
     img=new FXICOImage(getApp(),nullptr,IMAGE_KEEP|IMAGE_SHMI|IMAGE_SHMP);
     }
-  else if(comparecase(ext,"tga")==0){
+  else if(FXString::comparecase(ext,"tga")==0){
     img=new FXTGAImage(getApp(),nullptr,IMAGE_KEEP|IMAGE_SHMI|IMAGE_SHMP);
     }
-  else if(comparecase(ext,"rgb")==0){
+  else if(FXString::comparecase(ext,"rgb")==0){
     img=new FXRGBImage(getApp(),nullptr,IMAGE_KEEP|IMAGE_SHMI|IMAGE_SHMP);
     }
-  else if(comparecase(ext,"xbm")==0){
+  else if(FXString::comparecase(ext,"xbm")==0){
     img=new FXXBMImage(getApp(),nullptr,nullptr,IMAGE_KEEP|IMAGE_SHMI|IMAGE_SHMP);
     }
-  else if(comparecase(ext,"ppm")==0 || comparecase(ext,"pbm")==0 || comparecase(ext,"pgm")==0 || comparecase(ext,"pnm")==0){
+  else if(FXString::comparecase(ext,"ppm")==0 || FXString::comparecase(ext,"pbm")==0 || FXString::comparecase(ext,"pgm")==0 || FXString::comparecase(ext,"pnm")==0){
     img=new FXPPMImage(getApp(),nullptr,IMAGE_KEEP|IMAGE_SHMI|IMAGE_SHMP);
     }
-  else if(comparecase(ext,"iff")==0 || comparecase(ext,"lbm")==0){
+  else if(FXString::comparecase(ext,"iff")==0 || FXString::comparecase(ext,"lbm")==0){
     img=new FXIFFImage(getApp(),nullptr,IMAGE_KEEP|IMAGE_SHMI|IMAGE_SHMP);
     }
-  else if(comparecase(ext,"ras")==0){
+  else if(FXString::comparecase(ext,"ras")==0){
     img=new FXRASImage(getApp(),nullptr,IMAGE_KEEP|IMAGE_SHMI|IMAGE_SHMP);
     }
-  else if(comparecase(ext,"png")==0){
+  else if(FXString::comparecase(ext,"png")==0){
     img=new FXPNGImage(getApp(),nullptr,IMAGE_KEEP|IMAGE_SHMI|IMAGE_SHMP);
     }
-  else if(comparecase(ext,"jpg")==0 || comparecase(ext,"jpeg")==0){
+  else if(FXString::comparecase(ext,"jpg")==0 || FXString::comparecase(ext,"jpeg")==0){
     img=new FXJPGImage(getApp(),nullptr,IMAGE_KEEP|IMAGE_SHMI|IMAGE_SHMP);
     }
-  else if(comparecase(ext,"jp2")==0){
+  else if(FXString::comparecase(ext,"jp2")==0){
     img=new FXJP2Image(getApp(),nullptr,IMAGE_KEEP|IMAGE_SHMI|IMAGE_SHMP);
     }
-  else if(comparecase(ext,"tif")==0 || comparecase(ext,"tiff")==0){
+  else if(FXString::comparecase(ext,"tif")==0 || FXString::comparecase(ext,"tiff")==0){
     img=new FXTIFImage(getApp(),nullptr,IMAGE_KEEP|IMAGE_SHMI|IMAGE_SHMP);
     }
-  else if(comparecase(ext,"dds")==0){
+  else if(FXString::comparecase(ext,"dds")==0){
     img=new FXDDSImage(getApp(),nullptr,IMAGE_KEEP|IMAGE_SHMI|IMAGE_SHMP);
     }
-  else if(comparecase(ext,"webp")==0){
+  else if(FXString::comparecase(ext,"webp")==0){
     img=new FXWEBPImage(getApp(),nullptr,IMAGE_KEEP|IMAGE_SHMI|IMAGE_SHMP);
     }
-  else if(comparecase(ext,"exe")==0 || comparecase(ext,"dll")==0){
+  else if(FXString::comparecase(ext,"exe")==0 || FXString::comparecase(ext,"dll")==0){
     img=new FXEXEImage(getApp(),nullptr,IMAGE_KEEP|IMAGE_SHMI|IMAGE_SHMP);
     }
 

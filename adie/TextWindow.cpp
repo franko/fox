@@ -321,8 +321,8 @@ FXDEFMAP(TextWindow) TextWindowMap[]={
   FXMAPFUNC(SEL_COMMAND,TextWindow::ID_SYNTAX,TextWindow::onCmdSyntax),
   FXMAPFUNC(SEL_UPDATE,TextWindow::ID_RESTYLE,TextWindow::onUpdRestyle),
   FXMAPFUNC(SEL_COMMAND,TextWindow::ID_RESTYLE,TextWindow::onCmdRestyle),
-  FXMAPFUNCS(SEL_UPDATE,TextWindow::ID_WINDOW_1,TextWindow::ID_WINDOW_10,TextWindow::onUpdWindow),
-  FXMAPFUNCS(SEL_COMMAND,TextWindow::ID_WINDOW_1,TextWindow::ID_WINDOW_10,TextWindow::onCmdWindow),
+  FXMAPFUNCS(SEL_UPDATE,TextWindow::ID_WINDOW_1,TextWindow::ID_WINDOW_15,TextWindow::onUpdWindow),
+  FXMAPFUNCS(SEL_COMMAND,TextWindow::ID_WINDOW_1,TextWindow::ID_WINDOW_15,TextWindow::onCmdWindow),
   FXMAPFUNCS(SEL_UPDATE,TextWindow::ID_SYNTAX_FIRST,TextWindow::ID_SYNTAX_LAST,TextWindow::onUpdSyntaxSwitch),
   FXMAPFUNCS(SEL_COMMAND,TextWindow::ID_SYNTAX_FIRST,TextWindow::ID_SYNTAX_LAST,TextWindow::onCmdSyntaxSwitch),
 
@@ -457,6 +457,7 @@ TextWindow::TextWindow(Adie* a):FXMainWindow(a,"Adie",nullptr,nullptr,DECOR_ALL,
   // Recent files
   mrufiles.setTarget(this);
   mrufiles.setSelector(ID_OPEN_RECENT);
+  mrufiles.setMaxFiles(15);
 
   // Initialize file name
   filename="untitled";
@@ -503,8 +504,8 @@ void TextWindow::createMenubar(){
   // File Menu entries
   new FXMenuCommand(filemenu,tr("&New...\tCtl-N\tCreate new document."),getApp()->newicon,this,ID_NEW);
   new FXMenuCommand(filemenu,tr("&Open...\tCtl-O\tOpen document file."),getApp()->openicon,this,ID_OPEN);
+  new FXMenuCommand(filemenu,tr("S&witch...\t\tSwitch to other file."),nullptr,this,ID_SWITCH);
   new FXMenuCommand(filemenu,tr("Open Selected...  \tCtl-Y\tOpen highlighted document file."),nullptr,this,ID_OPEN_SELECTED);
-  new FXMenuCommand(filemenu,tr("Switch...\t\tSwitch to other file."),nullptr,this,ID_SWITCH);
   new FXMenuCommand(filemenu,tr("&Reopen...\t\tReopen file."),getApp()->reloadicon,this,ID_REOPEN);
   new FXMenuCommand(filemenu,tr("&Save\tCtl-S\tSave changes to file."),getApp()->saveicon,this,ID_SAVE);
   new FXMenuCommand(filemenu,tr("Save &As...\tShift-Ctl-S\tSave document under a different file name."),getApp()->saveasicon,this,ID_SAVEAS);
@@ -528,6 +529,11 @@ void TextWindow::createMenubar(){
   new FXMenuCommand(filemenu,"&8",nullptr,&mrufiles,FXRecentFiles::ID_FILE_8);
   new FXMenuCommand(filemenu,"&9",nullptr,&mrufiles,FXRecentFiles::ID_FILE_9);
   new FXMenuCommand(filemenu,"1&0",nullptr,&mrufiles,FXRecentFiles::ID_FILE_10);
+  new FXMenuCommand(filemenu,"11",nullptr,&mrufiles,FXRecentFiles::ID_FILE_11);
+  new FXMenuCommand(filemenu,"12",nullptr,&mrufiles,FXRecentFiles::ID_FILE_12);
+  new FXMenuCommand(filemenu,"13",nullptr,&mrufiles,FXRecentFiles::ID_FILE_13);
+  new FXMenuCommand(filemenu,"14",nullptr,&mrufiles,FXRecentFiles::ID_FILE_14);
+  new FXMenuCommand(filemenu,"15",nullptr,&mrufiles,FXRecentFiles::ID_FILE_15);
   new FXMenuCommand(filemenu,tr("&Clear Recent Files"),nullptr,&mrufiles,FXRecentFiles::ID_CLEAR);
   new FXMenuSeparator(filemenu,&mrufiles,FXRecentFiles::ID_ANYFILES);
   new FXMenuCommand(filemenu,tr("&Quit\tCtl-Q\tQuit program."),getApp()->quiticon,getApp(),Adie::ID_CLOSEALL);
@@ -645,8 +651,8 @@ void TextWindow::createMenubar(){
   new FXMenuTitle(menubar,tr("&Options"),nullptr,optionmenu);
 
   // Options menu
-  new FXMenuCommand(optionmenu,tr("Preferences...\t\tChange preferences."),getApp()->configicon,this,ID_PREFERENCES);
-  new FXMenuCommand(optionmenu,tr("Font...\t\tChange text font."),getApp()->fontsicon,this,ID_FONT);
+  new FXMenuCommand(optionmenu,tr("&Preferences...\t\tChange preferences."),getApp()->configicon,this,ID_PREFERENCES);
+  new FXMenuCommand(optionmenu,tr("&Font...\t\tChange text font."),getApp()->fontsicon,this,ID_FONT);
   new FXMenuCheck(optionmenu,tr("Insert &tabs\t\tToggle insert tabs."),this,ID_INSERTTABS);
   new FXMenuCheck(optionmenu,tr("&Word wrap\t\tToggle word wrap mode."),this,ID_TOGGLE_WRAP);
   new FXMenuCheck(optionmenu,tr("&Overstrike\t\tToggle overstrike mode."),editor,FXText::ID_TOGGLE_OVERSTRIKE);
@@ -664,11 +670,11 @@ void TextWindow::createMenubar(){
   new FXMenuTitle(menubar,tr("&View"),nullptr,viewmenu);
 
   // View Menu entries
-  new FXMenuCheck(viewmenu,tr("File Browser\t\tDisplay file list."),this,ID_TOGGLE_BROWSER);
-  new FXMenuCheck(viewmenu,tr("Error Logger\t\tDisplay error logger."),loggerframe,FXWindow::ID_TOGGLESHOWN);
-  new FXMenuCheck(viewmenu,tr("Toolbar\t\tDisplay toolbar."),toolbar,FXWindow::ID_TOGGLESHOWN);
-  new FXMenuCheck(viewmenu,tr("Searchbar\t\tDisplay search bar."),searchbar,FXWindow::ID_TOGGLESHOWN);
-  new FXMenuCheck(viewmenu,tr("Status line\t\tDisplay status line."),statusbar,FXWindow::ID_TOGGLESHOWN);
+  new FXMenuCheck(viewmenu,tr("&File Browser\t\tDisplay file list."),this,ID_TOGGLE_BROWSER);
+  new FXMenuCheck(viewmenu,tr("&Error Logger\t\tDisplay error logger."),loggerframe,FXWindow::ID_TOGGLESHOWN);
+  new FXMenuCheck(viewmenu,tr("&Toolbar\t\tDisplay toolbar."),toolbar,FXWindow::ID_TOGGLESHOWN);
+  new FXMenuCheck(viewmenu,tr("&Searchbar\t\tDisplay search bar."),searchbar,FXWindow::ID_TOGGLESHOWN);
+  new FXMenuCheck(viewmenu,tr("Status &line\t\tDisplay status line."),statusbar,FXWindow::ID_TOGGLESHOWN);
   new FXMenuCheck(viewmenu,tr("Undo Counters\t\tShow undo/redo counters on status line."),undoredoblock,FXWindow::ID_TOGGLESHOWN);
   new FXMenuCheck(viewmenu,tr("Clock\t\tShow clock on status line."),clock,FXWindow::ID_TOGGLESHOWN);
 
@@ -687,6 +693,11 @@ void TextWindow::createMenubar(){
   new FXMenuRadio(windowmenu,"&8",this,ID_WINDOW_8);
   new FXMenuRadio(windowmenu,"&9",this,ID_WINDOW_9);
   new FXMenuRadio(windowmenu,"1&0",this,ID_WINDOW_10);
+  new FXMenuRadio(windowmenu,"11",this,ID_WINDOW_11);
+  new FXMenuRadio(windowmenu,"12",this,ID_WINDOW_12);
+  new FXMenuRadio(windowmenu,"13",this,ID_WINDOW_13);
+  new FXMenuRadio(windowmenu,"14",this,ID_WINDOW_14);
+  new FXMenuRadio(windowmenu,"15",this,ID_WINDOW_15);
 
   // Help menu
   helpmenu=new FXMenuPane(this);
@@ -874,7 +885,6 @@ void TextWindow::create(){
   if(!urilistType){urilistType=getApp()->registerDragType(urilistTypeName);}
   getApp()->addTimeout(this,ID_CLOCKTIME,CLOCKTIMER);
   editor->setFocus();
-  show(PLACEMENT_DEFAULT);
   }
 
 
@@ -1621,8 +1631,7 @@ long TextWindow::onCmdPreferences(FXObject*,FXSelector,void*){
   Preferences preferences(this);
   preferences.setPatternList(getPatternList());
   preferences.setSyntax(getSyntax());
-//  if(preferences.execute(PLACEMENT_OWNER)){
-  if(preferences.execute()){
+  if(preferences.execute(PLACEMENT_OWNER)){
     setPatternList(preferences.getPatternList());
     }
   return 1;
@@ -1634,8 +1643,7 @@ long TextWindow::onCmdFont(FXObject*,FXSelector,void*){
   FXFontDialog fontdlg(this,tr("Change Font"),DECOR_BORDER|DECOR_TITLE);
   FXFontDesc fontdesc=editor->getFont()->getFontDesc();
   fontdlg.setFontDesc(fontdesc);
-//  if(fontdlg.execute(PLACEMENT_OWNER)){
-  if(fontdlg.execute()){
+  if(fontdlg.execute(PLACEMENT_OWNER)){
     FXFont *oldfont=font;
     fontdesc=fontdlg.getFontDesc();
     font=new FXFont(getApp(),fontdesc);
@@ -1691,13 +1699,14 @@ long TextWindow::onUpdReopen(FXObject* sender,FXSelector,void* ptr){
 
 // New
 long TextWindow::onCmdNew(FXObject*,FXSelector,void*){
-  TextWindow *window=new TextWindow(getApp());
   FXString file=getApp()->unique(FXPath::directory(filename));
+  TextWindow *window=new TextWindow(getApp());
+  window->create();
   window->setFilename(file);
   window->setBrowserCurrentFile(file);
-  window->create();
   window->raise();
   window->setFocus();
+  window->show(PLACEMENT_DEFAULT);
   return 1;
   }
 
@@ -1711,7 +1720,6 @@ long TextWindow::onCmdOpen(FXObject*,FXSelector,void*){
   opendialog.setPatternList(getPatternList());
   opendialog.setCurrentPattern(getCurrentPattern());
   opendialog.setFilename(file);
-//  if(opendialog.execute(PLACEMENT_OWNER)){
   if(opendialog.execute()){
     setCurrentPattern(opendialog.getCurrentPattern());
     file=opendialog.getFilename();
@@ -1727,6 +1735,7 @@ long TextWindow::onCmdOpen(FXObject*,FXSelector,void*){
         window->readView(file);
         window->determineSyntax();
         window->parseModeline();
+        window->setBrowserCurrentFile(file);
         }
       else{
         FXMessageBox::error(window,MBOX_OK,tr("Error Loading File"),tr("Unable to load file: %s"),file.text());
@@ -1734,6 +1743,7 @@ long TextWindow::onCmdOpen(FXObject*,FXSelector,void*){
       }
     window->raise();
     window->setFocus();
+    window->show(PLACEMENT_DEFAULT);
     }
   return 1;
   }
@@ -1857,6 +1867,7 @@ long TextWindow::onCmdOpenSelected(FXObject*,FXSelector,void*){
             window->readView(file);
             window->determineSyntax();
             window->parseModeline();
+            window->setBrowserCurrentFile(file);
             }
           else{
             getApp()->beep();
@@ -1872,6 +1883,7 @@ long TextWindow::onCmdOpenSelected(FXObject*,FXSelector,void*){
         // Bring up the window
         window->raise();
         window->setFocus();
+        window->show(PLACEMENT_DEFAULT);
         return 1;
         }
       }
@@ -1896,6 +1908,7 @@ long TextWindow::onCmdOpenRecent(FXObject*,FXSelector,void* ptr){
       window->readView(file);
       window->determineSyntax();
       window->parseModeline();
+      window->setBrowserCurrentFile(file);
       }
     else{
       mrufiles.removeFile(file);
@@ -1905,6 +1918,7 @@ long TextWindow::onCmdOpenRecent(FXObject*,FXSelector,void* ptr){
     }
   window->raise();
   window->setFocus();
+  window->show(PLACEMENT_DEFAULT);
   return 1;
   }
 
@@ -1940,7 +1954,6 @@ long TextWindow::onCmdSwitch(FXObject*,FXSelector,void*){
     opendialog.setPatternList(getPatternList());
     opendialog.setCurrentPattern(getCurrentPattern());
     opendialog.setFilename(file);
-//    if(opendialog.execute(PLACEMENT_OWNER)){
     if(opendialog.execute()){
       setCurrentPattern(opendialog.getCurrentPattern());
       file=opendialog.getFilename();
@@ -1949,6 +1962,7 @@ long TextWindow::onCmdSwitch(FXObject*,FXSelector,void*){
         readView(file);
         determineSyntax();
         parseModeline();
+        setBrowserCurrentFile(file);
         }
       else{
         getApp()->beep();
@@ -1972,6 +1986,7 @@ long TextWindow::onTextDNDDrop(FXObject*,FXSelector,void*){
       readView(file);
       determineSyntax();
       parseModeline();
+      setBrowserCurrentFile(file);
       }
     else{
       getApp()->beep();
@@ -2006,7 +2021,6 @@ long TextWindow::onCmdReplaceFile(FXObject*,FXSelector,void*){
   opendialog.setPatternList(getPatternList());
   opendialog.setCurrentPattern(getCurrentPattern());
   opendialog.setDirectory(FXPath::directory(getFilename()));
-//  if(opendialog.execute(PLACEMENT_OWNER)){
   if(opendialog.execute()){
     setCurrentPattern(opendialog.getCurrentPattern());
     file=opendialog.getFilename();
@@ -2032,7 +2046,6 @@ long TextWindow::onCmdExtractFile(FXObject*,FXSelector,void*){
   savedialog.setCurrentPattern(getCurrentPattern());
   savedialog.setDirectory(FXPath::directory(getFilename()));
   savedialog.setFilename(file);
-//  if(savedialog.execute(PLACEMENT_OWNER)){
   if(savedialog.execute()){
     setCurrentPattern(savedialog.getCurrentPattern());
     file=savedialog.getFilename();
@@ -2061,7 +2074,6 @@ FXbool TextWindow::saveChanges(){
         savedialog.setPatternList(getPatternList());
         savedialog.setCurrentPattern(getCurrentPattern());
         savedialog.setFilename(file);
-//        if(!savedialog.execute(PLACEMENT_OWNER)) return false;
         if(!savedialog.execute()) return false;
         setCurrentPattern(savedialog.getCurrentPattern());
         file=savedialog.getFilename();
@@ -2108,7 +2120,6 @@ long TextWindow::onCmdSaveAs(FXObject*,FXSelector,void*){
   savedialog.setPatternList(getPatternList());
   savedialog.setCurrentPattern(getCurrentPattern());
   savedialog.setFilename(file);
-//  if(savedialog.execute(PLACEMENT_OWNER)){
   if(savedialog.execute()){
     setCurrentPattern(savedialog.getCurrentPattern());
     file=savedialog.getFilename();
@@ -2134,7 +2145,6 @@ long TextWindow::onCmdSaveTo(FXObject*,FXSelector,void*){
   savedialog.setPatternList(getPatternList());
   savedialog.setCurrentPattern(getCurrentPattern());
   savedialog.setFilename(file);
-//  if(savedialog.execute(PLACEMENT_OWNER)){
   if(savedialog.execute()){
     file=savedialog.getFilename();
     if(FXStat::exists(file)){
@@ -2222,7 +2232,6 @@ long TextWindow::onUpdate(FXObject* sender,FXSelector sel,void* ptr){
 long TextWindow::onCmdPrint(FXObject*,FXSelector,void*){
   FXPrintDialog dlg(this,tr("Print File"));
   FXPrinter printer;
-//  if(dlg.execute(PLACEMENT_OWNER)){
   if(dlg.execute()){
     dlg.getPrinter(printer);
     FXTRACE((100,"Printer = %s\n",printer.name.text()));
@@ -2424,7 +2433,7 @@ long TextWindow::onUpdShowActive(FXObject* sender,FXSelector,void*){
 
 // Toggle strip returns mode
 long TextWindow::onCmdStripReturns(FXObject*,FXSelector,void* ptr){
-  stripcr=(FXbool)(FXuval)ptr;
+  stripcr=!!ptr;
   return 1;
   }
 
@@ -2438,7 +2447,7 @@ long TextWindow::onUpdStripReturns(FXObject* sender,FXSelector,void*){
 
 // Enable warning if file changed externally
 long TextWindow::onCmdWarnChanged(FXObject*,FXSelector,void* ptr){
-  warnchanged=(FXbool)(FXuval)ptr;
+  warnchanged=!!ptr;
   return 1;
   }
 
@@ -2452,7 +2461,7 @@ long TextWindow::onUpdWarnChanged(FXObject* sender,FXSelector,void*){
 
 // Set initial size flag
 long TextWindow::onCmdUseInitialSize(FXObject*,FXSelector,void* ptr){
-  initialsize=(FXbool)(FXuval)ptr;
+  initialsize=!!ptr;
   return 1;
   }
 
@@ -2474,7 +2483,7 @@ long TextWindow::onCmdSetInitialSize(FXObject*,FXSelector,void*){
 
 // Toggle strip spaces mode
 long TextWindow::onCmdStripSpaces(FXObject*,FXSelector,void* ptr){
-  stripsp=(FXbool)(FXuval)ptr;
+  stripsp=!!ptr;
   return 1;
   }
 
@@ -2488,7 +2497,7 @@ long TextWindow::onUpdStripSpaces(FXObject* sender,FXSelector,void*){
 
 // Toggle append newline mode
 long TextWindow::onCmdAppendNewline(FXObject*,FXSelector,void* ptr){
-  appendnl=(FXbool)(FXuval)ptr;
+  appendnl=!!ptr;
   return 1;
   }
 
@@ -2503,7 +2512,7 @@ long TextWindow::onUpdAppendNewline(FXObject* sender,FXSelector,void*){
 
 // Toggle append carriage return mode
 long TextWindow::onCmdAppendCarriageReturn(FXObject*,FXSelector,void* ptr){
-  appendcr=(FXbool)(FXuval)ptr;
+  appendcr=!!ptr;
   return 1;
   }
 
@@ -3013,7 +3022,6 @@ FXbool TextWindow::doneCommand(){
 long TextWindow::onCmdShellDialog(FXObject*,FXSelector,void*){
   if(!shellCommand){
     FXInputDialog dialog(this,tr("Execute Command"),tr("&Execute shell command:"),nullptr,INPUTDIALOG_STRING,0,0,400,0);
-//    if(dialog.execute(PLACEMENT_OWNER)){
     if(dialog.execute()){
 
       // Get command
@@ -3041,7 +3049,6 @@ long TextWindow::onUpdShellDialog(FXObject* sender,FXSelector,void*){
 long TextWindow::onCmdShellFilter(FXObject*,FXSelector,void*){
   if(!shellCommand){
     FXInputDialog dialog(this,tr("Filter Selection"),tr("&Filter selection with shell command:"),nullptr,INPUTDIALOG_STRING,0,0,400,0);
-//    if(dialog.execute(PLACEMENT_OWNER)){
     if(dialog.execute()){
 
       // Get command

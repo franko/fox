@@ -21,10 +21,15 @@
 
 // Start
 int main(int argc,char* argv[]){
+  FXchar osver[100];
   FXint code;
 
   // Trace
   setTraceLevel(151);
+
+  // Get version
+  fxosversion(osver,100);
+  fxmessage("os version: %s\n",osver);
 
   // Make thread pool
   FXProcess process;

@@ -287,13 +287,13 @@ void FXComposeContext::create(){
       if(!window || !window->id()){ fxerror("FXComposeContext: illegal window parameter\n"); }
 
       // Get input style
-      if(comparecase(getApp()->inputstyle,"onthespot")==0)
+      if(FXString::comparecase(getApp()->inputstyle,"onthespot")==0)
         style=XIMPreeditCallbacks|XIMStatusNothing;
-      else if(comparecase(getApp()->inputstyle,"overthespot")==0)
+      else if(FXString::comparecase(getApp()->inputstyle,"overthespot")==0)
         style=XIMPreeditPosition|XIMStatusNothing;
-      else if(comparecase(getApp()->inputstyle,"offthespot")==0)
+      else if(FXString::comparecase(getApp()->inputstyle,"offthespot")==0)
         style=XIMPreeditArea|XIMStatusArea;
-      else if(comparecase(getApp()->inputstyle,"root")==0)
+      else if(FXString::comparecase(getApp()->inputstyle,"root")==0)
         style=XIMPreeditNothing|XIMStatusNothing;
       else
         style=XIMPreeditNone|XIMStatusNone;

@@ -21,6 +21,7 @@
 #include "xincs.h"
 #include "fxver.h"
 #include "fxdefs.h"
+#include "fxchar.h"
 #include "fxmath.h"
 #include "FXException.h"
 #include "FXString.h"
@@ -285,6 +286,21 @@ void FXThread::yield(){
   }
 
 
+// Processor pause/back-off
+void FXThread::pause(){
+#if defined(_WIN32)
+#if defined(_MSC_VER)
+  YieldProcessor();
+#endif
+#elif (defined(__GNUC__) || defined(__INTEL_COMPILER)) && (defined(__i386__) || defined(__x86_64__))
+  __asm__ __volatile__("rep; nop\n" : : : "memory" );
+//  _mm_pause();
+#elif defined(__GNUC__) && defined(__aarch64__)
+  __asm__ __volatile__("yield" ::: "memory");
+#endif
+  }
+
+
 #if defined(WIN32)
 
 // Convert 100ns since 01/01/1601 to ns since 01/01/1970
@@ -486,6 +502,7 @@ FXint FXThread::processors(){
   SYSTEM_INFO info={{0}};
   GetSystemInfo(&info);
   return info.dwNumberOfProcessors;
+//return GetActiveProcessorCount(ALL_PROCESSOR_GROUPS);
 #elif defined(_SC_NPROCESSORS_ONLN)                             // Linux
   int result;
   if((result=sysconf(_SC_NPROCESSORS_ONLN))>0){

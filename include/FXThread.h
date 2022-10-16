@@ -166,6 +166,11 @@ public:
   static void yield();
 
   /**
+  * Processor pause/back-off.
+  */
+  static void pause();
+
+  /**
   * Return time in nanoseconds since Epoch (Jan 1, 1970).
   */
   static FXTime time();

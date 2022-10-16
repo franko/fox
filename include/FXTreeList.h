@@ -429,7 +429,7 @@ public:
   * passing SEARCH_PREFIX causes searching for a prefix of the item name.
   * Return NULL if no matching item is found.
   */
-  FXTreeItem* findItem(const FXString& name,FXTreeItem* start=nullptr,FXuint flags=SEARCH_FORWARD|SEARCH_WRAP) const;
+  FXTreeItem* findItem(const FXString& string,FXTreeItem* start=nullptr,FXuint flags=SEARCH_FORWARD|SEARCH_WRAP) const;
 
   /**
   * Search items by associated user data, beginning from item start. If the

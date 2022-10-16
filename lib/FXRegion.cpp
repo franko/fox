@@ -72,7 +72,7 @@ FXRegion::FXRegion(const FXRectangle& rect){
   region=(void*)CreateRectRgn(rect.x,rect.y,rect.x+rect.w,rect.y+rect.h);
 #else
   region=XCreateRegion();
-  XUnionRectWithRegion((XRectangle*)&rect,(Region)region,(Region)region);
+  XUnionRectWithRegion(const_cast<XRectangle*>((const XRectangle*)&rect),(Region)region,(Region)region);
 #endif
   }
 
@@ -88,7 +88,7 @@ FXRegion::FXRegion(const FXPoint* points,FXuint npoints,FXbool winding){
     }
   region=(void*)CreatePolygonRgn(pts,npoints,winding?WINDING:ALTERNATE);
 #else
-  region=XPolygonRegion((XPoint*)points,npoints,winding?WindingRule:EvenOddRule);
+  region=XPolygonRegion(const_cast<XPoint*>((const XPoint*)points),npoints,winding?WindingRule:EvenOddRule);
 #endif
   }
 

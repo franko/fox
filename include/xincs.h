@@ -200,6 +200,9 @@
 #ifdef HAVE_SYS_INOTIFY_H
 #include <sys/inotify.h>
 #endif
+#ifdef HAVE_SYS_UTSNAME_H
+#include <sys/utsname.h>
+#endif
 #ifdef HAVE_SYS_SYSCTL_H
 #if !defined(__linux__)
 #include <sys/sysctl.h>

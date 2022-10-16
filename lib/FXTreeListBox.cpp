@@ -549,8 +549,8 @@ void FXTreeListBox::clearItems(FXbool notify){
 
 
 // Get item by name
-FXTreeItem* FXTreeListBox::findItem(const FXString& text,FXTreeItem* start,FXuint flgs) const {
-  return tree->findItem(text,start,flgs);
+FXTreeItem* FXTreeListBox::findItem(const FXString& string,FXTreeItem* start,FXuint flgs) const {
+  return tree->findItem(string,start,flgs);
   }
 
 

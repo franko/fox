@@ -42,7 +42,7 @@ public:
 public:
 
   /// Construct an image from memory stream formatted as CompuServe GIF format
-  FXGIFImage(FXApp* a,const void *pix=nullptr,FXuint opts=0,FXint w=1,FXint h=1);
+  FXGIFImage(FXApp* a,const FXuchar *pix=nullptr,FXuint opts=0,FXint w=1,FXint h=1);
 
   /// Save pixels into stream in [un]GIF format
   virtual FXbool savePixels(FXStream& store) const;

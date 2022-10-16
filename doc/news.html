@@ -18,6 +18,56 @@ News  <A href='news.html' target="_top" align=left><font  size=-2>[Remove Frame]
 <!--- TOPIC TITLE -->
 <p>
 <table width=100% cellpadding=0 cellspacing=2><tr><td width=100% valign=bottom id=HEADLINE><b>
+October 10 - FOX DEVELOPMENT 1.7.80
+<br><img src='art/line.gif' width=100% height=1></b></td></tr></table>
+<p>
+<!--- TOPIC TITLE -->
+<ul>
+<li>New Visual C++ 2015 build project files for FOX distribution; you should be able to import them to any post-2015 version
+of Visual Studio.</li>
+<li>Conversions to smaller integer sizes in FXVariant now saturate to maximum (unsigned) values; success-flag will
+be set false if saturation happens.</li>
+<li>ControlPanel has new section for configuring "sub-pixel rendering" feature for Linux font system.</li>
+<li>New feature in JSON parser/unparser is to allow saving in JSON5 mode; default is still regular JSON mode.</li>
+<li>JSON unparser allow setting preferred quote type.</li>
+<li>JSON unparser allows unicode identifiers for keys.</li>
+<li>Minor bug in JSON parser when parsing and unescaping string: ensure we're using the correct quote type (JSON5 allows two
+quote types).</li>
+<li>Improved matrix to quaternion code.</li>
+<li>In FXVariantMap, space reserved for 32-bit machines was updated.</li>
+<li>FXVariant now has some API's to remove item from map (if map type), or array (if array type).</li>
+<li>Allow for a few more items in Adie's window list and recent file list.</li>
+<li>Minor updates to Adie man page for new commands format.</li>
+<li>Adie FindInFiles now remembers previous search directory when scrolling back to prior search commands.</li>
+<li>Can start Adie with given window size now.</li>
+<li>Slightly simpler syntax is possible to open file onto given line number (and column).</li>
+<li>Allow ascii mode when reading registry on Windows; is command line parameter in FXApp.</li>
+<li>Silenced numerous warnings introduced enabling new compiler flags.</li>
+<li>Small layout problem fixed in PathFinder.</li>
+<li>Updated VC++ Studio project files: 64-bit build now default..</li>
+<li>Some bug fixes in fxendian bit manipulation APIs.</li>
+<li>API added to find system directory.</li>
+<li>Also __snprintf() and __vsnprintf() now handle denormal floats even when library was compiled for release (with FTZ/DAZ).</li>
+<li>Bug fixes in FXText.</li>
+<li>Minor warning fixes.</li>
+<li>More user-friendly type-names in FXVariant.</li>
+<li>Fixes in FXReadWriteLock for MacOS.</li>
+<li>Calling adopt() on FXSettings sets both instances to modified, as it should have.</li>
+<li>FXColorDialog remembers its size from last time it was used.</li>
+<li>FXFileSelector/FXFileDialog change: in SELECTFILE_MULTIPLE and SELECTFILE_MULTIPLE_ALL more user-friendly
+encoding of multiple filenames in text box using commas ','.</li>
+<li>Adie editor Find In Files remembers search-folder as well as previous search-parameters in search-history scrollback.</li>
+<li>Launching Adie with not just file, but optionally line and column number as well.  Handy for compiler warnings.</li>
+<li>Also, can pass geometry specification on command-line to bring up Adie with given window size and location.</li>
+<li>FOX applications can now load registry settings from text file on windows, thanks to new command-option parsed by FXApp.</li>
+<li>Use some intrinsic x86-64 (or x86) instructions for bit-manipulations where possible.</li>
+<li>Backward scanning UTF8 API, plus many other UTF8 APIs now inlined; some macroes replaced by inlines.</li>
+</ul>
+
+
+<!--- TOPIC TITLE -->
+<p>
+<table width=100% cellpadding=0 cellspacing=2><tr><td width=100% valign=bottom id=HEADLINE><b>
 March 11 - FOX DEVELOPMENT 1.7.79
 <br><img src='art/line.gif' width=100% height=1></b></td></tr></table>
 <p>

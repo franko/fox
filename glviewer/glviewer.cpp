@@ -975,7 +975,7 @@ int main(int argc,char *argv[]){
 
 
 // Here we begin
-int main(int argc,char *argv[]){
+int main(int,char*[]){
   fxmessage("The FOX Library was compiled without OpenGL\n");
   return 0;
   }

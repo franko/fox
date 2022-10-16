@@ -269,8 +269,8 @@ public:
     }
 
   /// Remove all objects
-  void clear(){
-    no(0);
+  FXbool clear(){
+    return no(0);
     }
 
   /// Delete data

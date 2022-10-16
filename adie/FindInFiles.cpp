@@ -91,6 +91,12 @@ static const FXchar skey[20][3]={
   };
 
 
+// Registry keys for folder strings
+static const FXchar fkey[20][3]={
+  "FA","FB","FC","FD","FE","FF","FG","FH","FI","FJ","FK","FL","FM","FN","FO","FP","FQ","FR","FS","FT"
+  };
+
+
 // Registry keys for file pattern options
 static const FXchar pkey[20][3]={
   "PA","PB","PC","PD","PE","PF","PG","PH","PI","PJ","PK","PL","PM","PN","PO","PP","PQ","PR","PS","PT"
@@ -300,6 +306,7 @@ void FindInFiles::readRegistry(){
   for(FXint i=0; i<20; ++i){
     searchHistory[i]=getApp()->reg().readStringEntry(sectionName,skey[i],FXString::null);
     if(searchHistory[i].empty()) break;
+    folderHistory[i]=getApp()->reg().readStringEntry(sectionName,fkey[i],FXString::null);
     patternHistory[i]=getApp()->reg().readUIntEntry(sectionName,pkey[i],0);
     optionsHistory[i]=getApp()->reg().readUIntEntry(sectionName,mkey[i],SearchExact);
     }
@@ -318,11 +325,13 @@ void FindInFiles::writeRegistry(){
   for(FXint i=0; i<20; ++i){
     if(!searchHistory[i].empty()){
       getApp()->reg().writeStringEntry(sectionName,skey[i],searchHistory[i].text());
+      getApp()->reg().writeStringEntry(sectionName,fkey[i],folderHistory[i].text());
       getApp()->reg().writeUIntEntry(sectionName,pkey[i],patternHistory[i]);
       getApp()->reg().writeUIntEntry(sectionName,mkey[i],optionsHistory[i]);
       }
     else{
       getApp()->reg().deleteEntry(sectionName,skey[i]);
+      getApp()->reg().deleteEntry(sectionName,fkey[i]);
       getApp()->reg().deleteEntry(sectionName,pkey[i]);
       getApp()->reg().deleteEntry(sectionName,mkey[i]);
       }
@@ -331,16 +340,18 @@ void FindInFiles::writeRegistry(){
 
 
 // Add string to history buffer
-void FindInFiles::appendHistory(const FXString& text,FXuint patt,FXuint opts){
+void FindInFiles::appendHistory(const FXString& text,const FXString& dir,FXuint patt,FXuint opts){
   if(!text.empty()){
     if(text!=searchHistory[0]){
       for(FXint i=19; i>0; i--){
         swap(searchHistory[i],searchHistory[i-1]);
+        swap(folderHistory[i],folderHistory[i-1]);
         swap(patternHistory[i],patternHistory[i-1]);
         swap(optionsHistory[i],optionsHistory[i-1]);
         }
       }
     searchHistory[0]=text;
+    folderHistory[0]=dir;
     patternHistory[0]=patt;
     optionsHistory[0]=opts;
     index=0;
@@ -563,7 +574,7 @@ long FindInFiles::onCmdSearch(FXObject*,FXSelector,void*){
   if(!(getSearchMode()&SearchRegex)) rexmode|=FXRex::Verbatim;                  // Verbatim match
   if(getSearchMode()&SeachHidden) opts|=FXDir::HiddenFiles|FXDir::HiddenDirs;   // Visit hidden files and directories
   if(!(getSearchMode()&SearchRecurse)) limit=2;                                 // Don't recurse
-  appendHistory(getSearchText(),getCurrentPattern(),getSearchMode());
+  appendHistory(getSearchText(),getDirectory(),getCurrentPattern(),getSearchMode());
   proceed=1;
   visitor.traverse(getDirectory(),getSearchText(),getPattern(),rexmode,opts,limit);
   setSearchingText(tr("<stopped>"));
@@ -650,10 +661,12 @@ long FindInFiles::onCmdHistoryUp(FXObject*,FXSelector,void*){
     ++index;
     if(index==0){
       savedsearchtext=getSearchText();
+      savedsearchfolder=getDirectory();
       savedsearchmode=getSearchMode();
       savedcurrentpattern=getCurrentPattern();
       }
     setSearchText(searchHistory[index]);
+    setDirectory(folderHistory[index]);
     setCurrentPattern(patternHistory[index]);
     setSearchMode(optionsHistory[index]);
     }
@@ -670,11 +683,13 @@ long FindInFiles::onCmdHistoryDn(FXObject*,FXSelector,void*){
     --index;
     if(0<=index){
       setSearchText(searchHistory[index]);
+      setDirectory(folderHistory[index]);
       setCurrentPattern(patternHistory[index]);
       setSearchMode(optionsHistory[index]);
       }
     else{
       setSearchText(savedsearchtext);
+      setDirectory(savedsearchfolder);
       setSearchMode(savedsearchmode);
       setCurrentPattern(savedcurrentpattern);
       }
@@ -717,7 +732,10 @@ long FindInFiles::onCmdFileDblClicked(FXObject*,FXSelector,void* ptr){
     FXint lineno=0;
     FXint column=0;
     if(locations->getItem(which)->getText().scan("%1023[^:]:%d:%d",name,&lineno,&column)==3){
-      getApp()->openFileWindow(FXPath::absolute(getDirectory(),name),lineno,column);
+      FXString filename=FXPath::absolute(getDirectory(),name);
+      TextWindow* window=getApp()->openFileWindow(filename);
+      window->visitLine(lineno,column);
+      window->show(PLACEMENT_DEFAULT);
       }
     }
   return 1;

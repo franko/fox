@@ -111,7 +111,7 @@ FXCursor::FXCursor(FXApp* a,const FXuchar* src,const FXuchar* msk,FXint w,FXint 
 // Make cursor from FXColor pixels
 FXCursor::FXCursor(FXApp* a,const FXColor *pix,FXint w,FXint h,FXint hx,FXint hy):FXId(a){
   FXTRACE((TOPIC_CONSTRUCT,"FXCursor::FXCursor %p\n",this));
-  data=(FXColor*)pix;
+  data=const_cast<FXColor*>(pix);
   width=w;
   height=h;
   hotx=FXCLAMP(0,hx,width-1);

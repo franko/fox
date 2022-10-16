@@ -42,8 +42,8 @@ protected:
   static const FXchar sectionName[];
 protected:
   FXFileDialog(){}
-  void loadSettings();
-  void saveSettings();
+  void readRegistry();
+  void writeRegistry();
 private:
   FXFileDialog(const FXFileDialog&);
   FXFileDialog &operator=(const FXFileDialog&);
@@ -54,6 +54,12 @@ public:
 
   /// Construct free-floating file dialog box
   FXFileDialog(FXApp* a,const FXString& name,FXuint opts=0,FXint x=0,FXint y=0,FXint w=500,FXint h=300);
+
+  /// Create server-side resources
+  virtual void create();
+
+  /// Destroy server-side resources
+  virtual void destroy();
 
   /// Change file name
   void setFilename(const FXString& path);

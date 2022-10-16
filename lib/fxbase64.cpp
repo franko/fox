@@ -26,7 +26,9 @@
   Notes:
   - Encode/decode binary data to or from base64 ascii.
   - New implementation should be both faster and safer.
-  -
+  - Encode 3 bytes of source into 4 bytes to destination, allowing
+    binary data to be safely transmitted using only 64 safe printable letters,
+    numbers, and other printable ASCII symbols.
 */
 
 using namespace FX;

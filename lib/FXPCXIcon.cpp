@@ -69,9 +69,9 @@ FXIMPLEMENT(FXPCXIcon,FXIcon,nullptr,0)
 
 
 // Initialize nicely
-FXPCXIcon::FXPCXIcon(FXApp* a,const void *pix,FXColor clr,FXuint opts,FXint w,FXint h):FXIcon(a,nullptr,clr,opts,w,h){
+FXPCXIcon::FXPCXIcon(FXApp* a,const FXuchar *pix,FXColor clr,FXuint opts,FXint w,FXint h):FXIcon(a,nullptr,clr,opts,w,h){
   if(pix){
-    FXMemoryStream ms(FXStreamLoad,(FXuchar*)pix);
+    FXMemoryStream ms(FXStreamLoad,const_cast<FXuchar*>(pix));
     loadPixels(ms);
     }
   }

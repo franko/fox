@@ -42,7 +42,7 @@ public:
 public:
 
   /// Construct icon from memory stream formatted in Portable Pixmap format
-  FXPPMIcon(FXApp* a,const void *pix=nullptr,FXColor clr=FXRGB(192,192,192),FXuint opts=0,FXint w=1,FXint h=1);
+  FXPPMIcon(FXApp* a,const FXuchar *pix=nullptr,FXColor clr=FXRGB(192,192,192),FXuint opts=0,FXint w=1,FXint h=1);
 
   /// Save pixels into stream in Portable Pixmap format
   virtual FXbool savePixels(FXStream& store) const;

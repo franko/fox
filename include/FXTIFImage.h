@@ -44,7 +44,7 @@ public:
 public:
 
   /// Construct an image from memory stream formatted in TIFF format
-  FXTIFImage(FXApp *a,const void *pix=nullptr,FXuint opts=0,FXint w=1,FXint h=1);
+  FXTIFImage(FXApp *a,const FXuchar *pix=nullptr,FXuint opts=0,FXint w=1,FXint h=1);
 
   /// True if format is supported
   static const FXbool supported;

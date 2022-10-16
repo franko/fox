@@ -39,7 +39,6 @@ enum {
   };
 
 
-
 /**
 * The tab bar layout manager arranges tab items side by side,
 * and raises the active tab item above the neighboring tab items.

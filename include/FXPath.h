@@ -96,7 +96,7 @@ namespace FXPath {
   extern FXAPI FXString expand(const FXString& file,FXint level=4);
 
   /**
- * Convert a foreign path(s) or paths to local conventions,
+  * Convert a foreign path(s) or paths to local conventions,
   * replacing environment variables etc.
   */
   extern FXAPI FXString convert(const FXString& path);

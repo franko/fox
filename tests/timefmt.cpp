@@ -368,7 +368,7 @@ int main(int argc,char* argv[]){
   for(FXint d=0; d<=365; ++d){
     FXSystem::systemTimeFromTime(st,z);
     string=FXSystem::systemTimeFormat(st,"%Y-%m-%d %H:%M:%S");
-    fxmessage("date=%s dst=%d\n",string.text(),FXSystem::daylightSavingsActive(z));
+    fxmessage("date=%s dst=%lld\n",string.text(),FXSystem::daylightSavingsActive(z));
     z+=DAY;
     }
   fxmessage("\n");

@@ -48,6 +48,8 @@ protected:
   static const FXchar sectionName[];
 protected:
   FXColorDialog(){}
+  void readRegistry();
+  void writeRegistry();
 private:
   FXColorDialog(const FXColorDialog&);
   FXColorDialog &operator=(const FXColorDialog&);

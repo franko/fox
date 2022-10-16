@@ -93,11 +93,11 @@ FXBitmap::FXBitmap(){
 
 
 // Initialize
-FXBitmap::FXBitmap(FXApp* a,const void *pix,FXuint opts,FXint w,FXint h):FXDrawable(a,w,h){
+FXBitmap::FXBitmap(FXApp* a,const FXuchar *pix,FXuint opts,FXint w,FXint h):FXDrawable(a,w,h){
   FXTRACE((100,"FXBitmap::FXBitmap %p\n",this));
   FXASSERT((opts&~(BITMAP_OWNED|BITMAP_MASK))==0);
   visual=getApp()->getMonoVisual();
-  data=(FXuchar*)pix;
+  data=const_cast<FXuchar*>(pix);
   bytewidth=(width+7)>>3;
   options=opts;
   if(!data && (options&BITMAP_OWNED)){

@@ -21,6 +21,7 @@
 #include "xincs.h"
 #include "fxver.h"
 #include "fxdefs.h"
+#include "fxchar.h"
 #include "fxmath.h"
 #include "fxascii.h"
 #include "FXArray.h"
@@ -362,6 +363,36 @@ FXString FXSystem::getHomeDirectory(){
   return FXSystem::getUserDirectory(FXString::null);
   }
 
+
+// Return temporary directory.
+FXString FXSystem::getTempDirectory(){
+#if defined(WIN32)
+  TCHAR buffer[MAXPATHLEN];
+  DWORD len=GetTempPath(MAXPATHLEN,buffer);
+  if(1<len && ISPATHSEP(buffer[len-1]) && !ISPATHSEP(buffer[len-2])) len--;
+  return FXString(buffer,len);
+#else
+  const FXchar* dir;
+  if((dir=getenv("TMPDIR"))!=nullptr){
+    return FXString(dir);
+    }
+  return FXString("/tmp");
+#endif
+  }
+
+
+// Return system directory
+FXString FXSystem::getSystemDirectory(){
+#if defined(WIN32)
+  TCHAR buffer[MAXPATHLEN];
+  DWORD len=GetSystemDirectory(buffer,MAXPATHLEN);
+  return FXString(buffer,len);
+#else
+  return FXString("/bin");
+#endif
+  }
+
+
 /*
 BOOL WINAPI LookupAccountName(
   _In_opt_   LPCTSTR lpSystemName,
@@ -513,23 +544,6 @@ FXString FXSystem::getUserDirectory(const FXString& user){
     return FXString(pwd->pw_dir);
     }
   return FXString::null;
-#endif
-  }
-
-
-// Return temporary directory.
-FXString FXSystem::getTempDirectory(){
-#if defined(WIN32)
-  TCHAR buffer[MAXPATHLEN];
-  DWORD len=GetTempPath(MAXPATHLEN,buffer);
-  if(1<len && ISPATHSEP(buffer[len-1]) && !ISPATHSEP(buffer[len-2])) len--;
-  return FXString(buffer,len);
-#else
-  const FXchar* dir;
-  if((dir=getenv("TMPDIR"))!=nullptr){
-    return FXString(dir);
-    }
-  return FXString("/tmp");
 #endif
   }
 

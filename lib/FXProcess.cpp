@@ -21,6 +21,7 @@
 #include "xincs.h"
 #include "fxver.h"
 #include "fxdefs.h"
+#include "fxchar.h"
 #include "FXElement.h"
 #include "FXString.h"
 #include "FXIO.h"
@@ -171,7 +172,7 @@ static const FXchar* extravars[]={
 
 // Sort environment variables
 static int CDECL comparison(const void *a1, const void *a2){
-  return compare(*((const FXchar**)a1),*((const FXchar**)a2));
+  return FXString::compare(*((const FXchar**)a1),*((const FXchar**)a2));
   }
 
 
@@ -523,12 +524,12 @@ FXbool FXProcess::start(const FXchar* exec,const FXchar *const *args,const FXcha
 
           // Kick off with arguments and environment
           if(env){
-            ::execve(exec,(char* const*)args,(char* const*)env);
+            ::execve(exec,const_cast<char* const*>(args),const_cast<char* const*>(env));
             }
 
           // Kick off with just arguments
           else{
-            ::execv(exec,(char* const*)args);
+            ::execv(exec,const_cast<char* const*>(args));
             }
 
           // Failed to kick off child

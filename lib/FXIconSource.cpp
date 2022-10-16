@@ -129,68 +129,68 @@ FXImage* FXIconSource::scaleToSize(FXImage *image,FXint size,FXint qual) const {
 
 // Create icon from file type
 FXIcon *FXIconSource::iconFromType(FXApp* app,const FXString& type) const {
-  if(comparecase(FXBMPIcon::fileExt,type)==0){
+  if(FXString::comparecase(FXBMPIcon::fileExt,type)==0){
     return new FXBMPIcon(app,nullptr,0,IMAGE_ALPHAGUESS);
     }
-  if(comparecase(FXGIFIcon::fileExt,type)==0){
+  if(FXString::comparecase(FXGIFIcon::fileExt,type)==0){
     return new FXGIFIcon(app);
     }
-  if(comparecase(FXICOIcon::fileExt,type)==0 || comparecase("cur",type)==0){
+  if(FXString::comparecase(FXICOIcon::fileExt,type)==0 || FXString::comparecase("cur",type)==0){
     return new FXICOIcon(app);
     }
-  if(comparecase(FXIFFIcon::fileExt,type)==0 || comparecase("lbm",type)==0){
+  if(FXString::comparecase(FXIFFIcon::fileExt,type)==0 || FXString::comparecase("lbm",type)==0){
     return new FXIFFIcon(app);
     }
-  if(comparecase(FXPCXIcon::fileExt,type)==0){
+  if(FXString::comparecase(FXPCXIcon::fileExt,type)==0){
     return new FXPCXIcon(app);
     }
-  if(comparecase(FXPPMIcon::fileExt,type)==0 || comparecase("pbm",type)==0 || comparecase("pgm",type)==0 || comparecase("pnm",type)==0){
+  if(FXString::comparecase(FXPPMIcon::fileExt,type)==0 || FXString::comparecase("pbm",type)==0 || FXString::comparecase("pgm",type)==0 || FXString::comparecase("pnm",type)==0){
     return new FXPPMIcon(app);
     }
-  if(comparecase(FXRASIcon::fileExt,type)==0){
+  if(FXString::comparecase(FXRASIcon::fileExt,type)==0){
     return new FXRASIcon(app);
     }
-  if(comparecase(FXRGBIcon::fileExt,type)==0){
+  if(FXString::comparecase(FXRGBIcon::fileExt,type)==0){
     return new FXRGBIcon(app);
     }
-  if(comparecase(FXTGAIcon::fileExt,type)==0){
+  if(FXString::comparecase(FXTGAIcon::fileExt,type)==0){
     return new FXTGAIcon(app);
     }
-  if(comparecase(FXXBMIcon::fileExt,type)==0){
+  if(FXString::comparecase(FXXBMIcon::fileExt,type)==0){
     return new FXXBMIcon(app);
     }
-  if(comparecase(FXXPMIcon::fileExt,type)==0){
+  if(FXString::comparecase(FXXPMIcon::fileExt,type)==0){
     return new FXXPMIcon(app);
     }
-  if(comparecase(FXDDSIcon::fileExt,type)==0){
+  if(FXString::comparecase(FXDDSIcon::fileExt,type)==0){
     return new FXDDSIcon(app);
     }
-  if(comparecase(FXEXEIcon::fileExt,type)==0){
+  if(FXString::comparecase(FXEXEIcon::fileExt,type)==0){
     return new FXEXEIcon(app);
     }
 #ifndef CORE_IMAGE_FORMATS
 #ifdef HAVE_JPEG_H
-  if(comparecase(FXJPGIcon::fileExt,type)==0 || comparecase("jpeg",type)==0){
+  if(FXString::comparecase(FXJPGIcon::fileExt,type)==0 || FXString::comparecase("jpeg",type)==0){
     return new FXJPGIcon(app);
     }
 #endif
 #ifdef HAVE_PNG_H
-  if(comparecase(FXPNGIcon::fileExt,type)==0){
+  if(FXString::comparecase(FXPNGIcon::fileExt,type)==0){
     return new FXPNGIcon(app);
     }
 #endif
 #ifdef HAVE_TIFF_H
-  if(comparecase(FXTIFIcon::fileExt,type)==0 || comparecase("tiff",type)==0){
+  if(FXString::comparecase(FXTIFIcon::fileExt,type)==0 || FXString::comparecase("tiff",type)==0){
     return new FXTIFIcon(app);
     }
 #endif
 #ifdef HAVE_JP2_H
-  if(comparecase(FXJP2Icon::fileExt,type)==0){
+  if(FXString::comparecase(FXJP2Icon::fileExt,type)==0){
     return new FXJP2Icon(app);
     }
 #endif
 #ifdef HAVE_WEBP_H
-  if(comparecase(FXWEBPIcon::fileExt,type)==0){
+  if(FXString::comparecase(FXWEBPIcon::fileExt,type)==0){
     return new FXWEBPIcon(app);
     }
 #endif
@@ -201,68 +201,68 @@ FXIcon *FXIconSource::iconFromType(FXApp* app,const FXString& type) const {
 
 // Create image from file type
 FXImage *FXIconSource::imageFromType(FXApp* app,const FXString& type) const {
-  if(comparecase(FXBMPImage::fileExt,type)==0){
+  if(FXString::comparecase(FXBMPImage::fileExt,type)==0){
     return new FXBMPImage(app);
     }
-  if(comparecase(FXGIFImage::fileExt,type)==0){
+  if(FXString::comparecase(FXGIFImage::fileExt,type)==0){
     return new FXGIFImage(app);
     }
-  if(comparecase(FXICOImage::fileExt,type)==0 || comparecase("cur",type)==0){
+  if(FXString::comparecase(FXICOImage::fileExt,type)==0 || FXString::comparecase("cur",type)==0){
     return new FXICOImage(app);
     }
-  if(comparecase(FXIFFImage::fileExt,type)==0 || comparecase("lbm",type)==0){
+  if(FXString::comparecase(FXIFFImage::fileExt,type)==0 || FXString::comparecase("lbm",type)==0){
     return new FXIFFImage(app);
     }
-  if(comparecase(FXPCXImage::fileExt,type)==0){
+  if(FXString::comparecase(FXPCXImage::fileExt,type)==0){
     return new FXPCXImage(app);
     }
-  if(comparecase(FXPPMImage::fileExt,type)==0 || comparecase("pbm",type)==0 || comparecase("pgm",type)==0 || comparecase("pnm",type)==0){
+  if(FXString::comparecase(FXPPMImage::fileExt,type)==0 || FXString::comparecase("pbm",type)==0 || FXString::comparecase("pgm",type)==0 || FXString::comparecase("pnm",type)==0){
     return new FXPPMImage(app);
     }
-  if(comparecase(FXRASImage::fileExt,type)==0){
+  if(FXString::comparecase(FXRASImage::fileExt,type)==0){
     return new FXRASImage(app);
     }
-  if(comparecase(FXRGBImage::fileExt,type)==0){
+  if(FXString::comparecase(FXRGBImage::fileExt,type)==0){
     return new FXRGBImage(app);
     }
-  if(comparecase(FXTGAImage::fileExt,type)==0){
+  if(FXString::comparecase(FXTGAImage::fileExt,type)==0){
     return new FXTGAImage(app);
     }
-  if(comparecase(FXXBMImage::fileExt,type)==0){
+  if(FXString::comparecase(FXXBMImage::fileExt,type)==0){
     return new FXXBMImage(app);
     }
-  if(comparecase(FXXPMImage::fileExt,type)==0){
+  if(FXString::comparecase(FXXPMImage::fileExt,type)==0){
     return new FXXPMImage(app);
     }
-  if(comparecase(FXDDSImage::fileExt,type)==0){
+  if(FXString::comparecase(FXDDSImage::fileExt,type)==0){
     return new FXDDSImage(app);
     }
-  if(comparecase(FXEXEImage::fileExt,type)==0){
+  if(FXString::comparecase(FXEXEImage::fileExt,type)==0){
     return new FXEXEImage(app);
     }
 #ifndef CORE_IMAGE_FORMATS
 #ifdef HAVE_JPEG_H
-  if(comparecase(FXJPGImage::fileExt,type)==0 || comparecase("jpeg",type)==0){
+  if(FXString::comparecase(FXJPGImage::fileExt,type)==0 || FXString::comparecase("jpeg",type)==0){
     return new FXJPGImage(app);
     }
 #endif
 #ifdef HAVE_PNG_H
-  if(comparecase(FXPNGImage::fileExt,type)==0){
+  if(FXString::comparecase(FXPNGImage::fileExt,type)==0){
     return new FXPNGImage(app);
     }
 #endif
 #ifdef HAVE_TIFF_H
-  if(comparecase(FXTIFImage::fileExt,type)==0 || comparecase("tiff",type)==0){
+  if(FXString::comparecase(FXTIFImage::fileExt,type)==0 || FXString::comparecase("tiff",type)==0){
     return new FXTIFImage(app);
     }
 #endif
 #ifdef HAVE_JP2_H
-  if(comparecase(FXJP2Image::fileExt,type)==0){
+  if(FXString::comparecase(FXJP2Image::fileExt,type)==0){
     return new FXJP2Image(app);
     }
 #endif
 #ifdef HAVE_WEBP_H
-  if(comparecase(FXWEBPImage::fileExt,type)==0){
+  if(FXString::comparecase(FXWEBPImage::fileExt,type)==0){
     return new FXWEBPImage(app);
     }
 #endif
@@ -436,11 +436,11 @@ FXIcon *FXIconSource::loadIconFile(FXApp* app,const FXString& filename,const FXS
 
 
 // Load from data array
-FXIcon *FXIconSource::loadIconData(FXApp* app,const void *pixels,const FXString& type) const {
+FXIcon *FXIconSource::loadIconData(FXApp* app,const FXuchar *pixels,const FXString& type) const {
   FXIcon *icon=nullptr;
   if(pixels){
     FXMemoryStream store;
-    store.open(FXStreamLoad,(FXuchar*)pixels);
+    store.open(FXStreamLoad,const_cast<FXuchar*>(pixels));
     icon=loadIconStream(app,store,type);
     store.close();
     }
@@ -486,11 +486,11 @@ FXImage *FXIconSource::loadImageFile(FXApp* app,const FXString& filename,const F
 
 
 // Load from data array
-FXImage *FXIconSource::loadImageData(FXApp* app,const void *pixels,const FXString& type) const {
+FXImage *FXIconSource::loadImageData(FXApp* app,const FXuchar *pixels,const FXString& type) const {
   FXImage *image=nullptr;
   if(pixels){
     FXMemoryStream store;
-    store.open(FXStreamLoad,(FXuchar*)pixels);
+    store.open(FXStreamLoad,const_cast<FXuchar*>(pixels));
     image=loadImageStream(app,store,type);
     store.close();
     }
@@ -522,7 +522,7 @@ FXIcon *FXIconSource::loadScaledIconFile(FXApp* app,const FXString& filename,FXi
 
 
 // Load from data array
-FXIcon *FXIconSource::loadScaledIconData(FXApp* app,const void *pixels,FXint size,FXint qual,const FXString& type) const {
+FXIcon *FXIconSource::loadScaledIconData(FXApp* app,const FXuchar *pixels,FXint size,FXint qual,const FXString& type) const {
   return (FXIcon*)scaleToSize(loadIconData(app,pixels,type),size,qual);
   }
 
@@ -540,7 +540,7 @@ FXImage *FXIconSource::loadScaledImageFile(FXApp* app,const FXString& filename,F
 
 
 // Load from data array
-FXImage *FXIconSource::loadScaledImageData(FXApp* app,const void *pixels,FXint size,FXint qual,const FXString& type) const {
+FXImage *FXIconSource::loadScaledImageData(FXApp* app,const FXuchar *pixels,FXint size,FXint qual,const FXString& type) const {
   return (FXImage*)scaleToSize(loadImageData(app,pixels,type),size,qual);
   }
 

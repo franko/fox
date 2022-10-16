@@ -13,6 +13,9 @@ void printusage(const char* prog){
   fxmessage("  --dent <dent>            Set indentation amount.\n");
   fxmessage("  --wrap <columns>         Set line wrap columns.\n");
   fxmessage("  --esc <mode>             Set unicode escape mode (0=OFF,1=\\xHH,2=\\uHHHH).\n");
+  fxmessage("  --ver 5                  Set JSON version (currently, 1...5).\n");
+  fxmessage("  --single-quotes          Set single quotes mode (JSON5 only).\n");
+  fxmessage("  --double-quotes          Set double quotes mode.\n");
   fxmessage("  -h, --help               Print help.\n");
   }
 
@@ -26,7 +29,10 @@ int main(int argc,char *argv[]){
   FXint flow;
   FXint dent;
   FXint wrap;
+  FXint quote;
   FXint esc;
+  FXint ver;
+  FXbool ok=true;
 
   // JSON I/O
   FXJSONFile json;
@@ -40,7 +46,18 @@ int main(int argc,char *argv[]){
   flow=json.getOutputFlow();
   dent=json.getIndentation();
   wrap=json.getLineWrap();
+  quote=json.getQuote();
   esc=json.getEscapeMode();
+  ver=json.getVersion();
+
+  fxmessage("sizeof(FXVariant) = %ld\n",sizeof(FXVariant));
+  fxmessage("sizeof(FXVariantMap) = %ld\n",sizeof(FXVariantMap));
+  fxmessage("sizeof(FXVariantArray) = %ld\n",sizeof(FXVariantArray));
+  fxmessage("sizeof(FXString) = %ld\n",sizeof(FXString));
+  fxmessage("sizeof(FXHash) = %ld\n",sizeof(FXHash));
+  fxmessage("sizeof(FXStringDictionary) = %ld\n",sizeof(FXStringDictionary));
+  fxmessage("sizeof(FXDictionary) = %ld\n",sizeof(FXDictionary));
+  fxmessage("sizeof(FXReverseDictionary) = %ld\n",sizeof(FXReverseDictionary));
 
   // Grab a few arguments
   for(FXint arg=1; arg<argc; ++arg){
@@ -84,6 +101,16 @@ int main(int argc,char *argv[]){
       if(++arg>=argc){ fxmessage("Missing escape mode argument.\n"); exit(1); }
       esc=strtoul(argv[arg],nullptr,0);
       }
+    else if(strcmp(argv[arg],"--ver")==0){
+      if(++arg>=argc){ fxmessage("Missing version argument.\n"); exit(1); }
+      ver=strtoul(argv[arg],nullptr,0);
+      }
+    else if(strcmp(argv[arg],"--single-quotes")==0){
+      quote='\'';
+      }
+    else if(strcmp(argv[arg],"--double-quotes")==0){
+      quote='"';
+      }
     else{
       fxmessage("Bad argument.\n");
       printusage(argv[0]);
@@ -114,8 +141,8 @@ int main(int argc,char *argv[]){
     var["map"]["more"]["c"]=299792458.0;
     var["map"]["more"]["answer"]=42.0;
     var["map"]["more"]["letter"]="Unicode: \xC3\xBC Hex:\377\xff\b\n\f\v\"";
-    var["emptymap"].setType(FXVariant::VMap);
-    var["emptyarray"].setType(FXVariant::VArray);
+    var["emptymap"].setType(FXVariant::MapType);
+    var["emptyarray"].setType(FXVariant::ArrayType);
     for(FXival i=0; i<100; ++i){
       var["bigarray"][i]=Math::sin(0.005*i/PI);
       }
@@ -131,7 +158,7 @@ int main(int argc,char *argv[]){
       }
     fxmessage("Start load from: %s\n",loadfile);
     FXJSON::Error loaderr=json.load(var);
-    fxmessage("Loaded %lld bytes, %lld lines\n",json.getOffset(),json.getLine());
+    fxmessage("Loaded %lld bytes, %d lines\n",json.getOffset(),json.getLine());
     if(loaderr!=FXJSON::ErrOK){
       fxmessage("Error: %s:%d:%d: %s\n",loadfile,json.getLine(),json.getColumn(),FXJSON::getError(loaderr));
       }
@@ -151,6 +178,8 @@ int main(int argc,char *argv[]){
     json.setOutputFlow(flow);
     json.setLineWrap(wrap);
     json.setEscapeMode(esc);
+    json.setQuote(quote);
+    json.setVersion(ver);
 
     // Report float precision used to save
     fxmessage("Precision: %d format: %d flow: %d dent: %d wrap: %d\n",precision,format,flow,dent,wrap);
@@ -162,7 +191,7 @@ int main(int argc,char *argv[]){
       }
     fxmessage("Start save to: %s\n",savefile);
     FXJSON::Error saveerr=json.save(var);
-    fxmessage("Stored %lld bytes, %lld lines\n",json.getOffset(),json.getLine());
+    fxmessage("Stored %lld bytes, %d lines\n",json.getOffset(),json.getLine());
     if(saveerr!=FXJSON::ErrOK){
       fxmessage("Error: %s:%d:%d: %s\n",savefile,json.getLine(),json.getColumn(),FXJSON::getError(saveerr));
       }

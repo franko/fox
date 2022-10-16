@@ -44,7 +44,7 @@ public:
 public:
 
   /// Construct an image from memory stream formatted in JPEG-2000 format
-  FXJP2Image(FXApp *a,const void *pix=nullptr,FXuint opts=0,FXint w=1,FXint h=1,FXint q=100);
+  FXJP2Image(FXApp *a,const FXuchar *pix=nullptr,FXuint opts=0,FXint w=1,FXint h=1,FXint q=100);
 
   /// True if format is supported
   static const FXbool supported;

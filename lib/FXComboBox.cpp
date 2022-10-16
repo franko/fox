@@ -539,8 +539,8 @@ void FXComboBox::clearItems(FXbool notify){
 
 
 // Get item by name
-FXint FXComboBox::findItem(const FXString& text,FXint start,FXuint flgs) const {
-  return list->findItem(text,start,flgs);
+FXint FXComboBox::findItem(const FXString& string,FXint start,FXuint flgs) const {
+  return list->findItem(string,start,flgs);
   }
 
 

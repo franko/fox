@@ -41,7 +41,7 @@ public:
 public:
 
   /// Construct image from memory stream formatted in PCX file
-  FXPCXImage(FXApp* a,const void *pix=nullptr,FXuint opts=0,FXint w=1,FXint h=1);
+  FXPCXImage(FXApp* a,const FXuchar *pix=nullptr,FXuint opts=0,FXint w=1,FXint h=1);
 
   /// Save pixels into stream in PCX file
   virtual FXbool savePixels(FXStream& store) const;

@@ -21,6 +21,7 @@
 #include "xincs.h"
 #include "fxver.h"
 #include "fxdefs.h"
+#include "fxchar.h"
 #include "fxmath.h"
 #include "fxascii.h"
 #include "fxunicode.h"
@@ -503,7 +504,7 @@
 */
 
 #define TOPIC_CONSTRUCT 1000
-#define TOPIC_REXDUMP   1014          // Debugging regex code
+//#define TOPIC_REXDUMP   1014          // Debugging regex code
 
 
 // As close to infinity as we're going to get; this seems big enough.  We can not make
@@ -520,6 +521,9 @@
 // Maximum number of pieces reversed
 #define MAXPIECES     256
 
+// Empty regex
+#define EMPTY         (const_cast<FXuchar*>(FXRex::fallback))
+
 
 // Access to opcode
 #define SETOP(p,op)   (*(p)=(op))
@@ -527,7 +531,7 @@
 // Access to argument
 #if defined(__i386__) || defined(__x86_64__)            // No alignment limits on shorts
 #define SETARG(p,val) (*((FXshort*)(p))=(val))
-#define GETARG(p)     (*((FXshort*)(p)))
+#define GETARG(p)     (*((const FXshort*)(p)))
 #elif (FOX_BIGENDIAN == 1)                              // Big-endian machines
 #define SETARG(p,val) (*((p)+0)=(val)>>8,*((p)+1)=(val))
 #define GETARG(p)     ((FXshort)((*((p)+0)<<8)+(*((p)+1))))
@@ -4639,15 +4643,16 @@ const FXuchar FXRex::fallback[]={
 #endif
   };
 
+//const_cast<TUChar*>(fallback)
 
 // Construct empty regular expression object
-FXRex::FXRex():code((FXuchar*)(void*)fallback){
+FXRex::FXRex():code(EMPTY){
   FXTRACE((TOPIC_CONSTRUCT,"FXRex::FXRex()\n"));
   }
 
 
 // Copy regex object
-FXRex::FXRex(const FXRex& orig):code((FXuchar*)(void*)fallback){
+FXRex::FXRex(const FXRex& orig):code(EMPTY){
   FXTRACE((TOPIC_CONSTRUCT,"FXRex::FXRex(FXRex)\n"));
   if(orig.code!=fallback){
     dupElms(code,orig.code,GETARG(orig.code));
@@ -4656,7 +4661,7 @@ FXRex::FXRex(const FXRex& orig):code((FXuchar*)(void*)fallback){
 
 
 // Compile expression from pattern; fail if error
-FXRex::FXRex(const FXchar* pattern,FXint mode,FXRex::Error* error):code((FXuchar*)(void*)fallback){
+FXRex::FXRex(const FXchar* pattern,FXint mode,FXRex::Error* error):code(EMPTY){
   FXTRACE((TOPIC_CONSTRUCT,"FXRex::FXRex(%s,%u,%p)\n",pattern,mode,error));
   FXRex::Error err=parse(pattern,mode);
   if(error){ *error=err; }
@@ -4664,7 +4669,7 @@ FXRex::FXRex(const FXchar* pattern,FXint mode,FXRex::Error* error):code((FXuchar
 
 
 // Compile expression from pattern; fail if error
-FXRex::FXRex(const FXString& pattern,FXint mode,FXRex::Error* error):code((FXuchar*)(void*)fallback){
+FXRex::FXRex(const FXString& pattern,FXint mode,FXRex::Error* error):code(EMPTY){
   FXTRACE((TOPIC_CONSTRUCT,"FXRex::FXRex(%s,%u,%p)\n",pattern.text(),mode,error));
   FXRex::Error err=parse(pattern.text(),mode);
   if(error){ *error=err; }
@@ -4913,9 +4918,9 @@ FXStream& operator>>(FXStream& store,FXRex& s){
 
 // Clear program
 void FXRex::clear(){
-  if(code!=fallback){
+  if(code!=EMPTY){
     freeElms(code);
-    code=(FXuchar*)(void*)fallback;
+    code=EMPTY;
     }
   }
 

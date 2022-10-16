@@ -197,9 +197,9 @@ FXString FXDirBox::getItemPathname(FXTreeItem *item) const {
 static FXTreeItem* findItemChild(FXTreeItem* item,const FXString& name){
   while(item){
 #ifdef WIN32
-    if(comparecase(name,item->getText())==0) return item;
+    if(FXString::comparecase(name,item->getText())==0) return item;
 #else
-    if(compare(name,item->getText())==0) return item;
+    if(FXString::compare(name,item->getText())==0) return item;
 #endif
     item=item->getNext();
     }
@@ -391,7 +391,7 @@ FXTreeItem* FXDirBox::getPathnameItem(const FXString& path){
         it=appendItem(nullptr,drivename,icon,icon);
 
         // Rest of path under this root
-        if(comparecase(path,drivename,end)==0) item=it;
+        if(FXString::comparecase(path,drivename,end)==0) item=it;
         }
       drivemask>>=1;
       }
@@ -412,7 +412,7 @@ FXTreeItem* FXDirBox::getPathnameItem(const FXString& path){
     it=appendItem(nullptr,"\\\\",icon,icon);
 
     // Rest of path under this root maybe
-    if(comparecase(path,"\\\\",end)==0) item=it;
+    if(FXString::comparecase(path,"\\\\",end)==0) item=it;
 */
     // Got root?
     if(item){

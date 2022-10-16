@@ -43,6 +43,8 @@ class FXAPI FXDirDialog : public FXDialogBox {
 protected:
   FXDirSelector *dirbox;          // Directory selection widget
 protected:
+  static const FXchar sectionName[];
+protected:
   FXDirDialog(){}
   void initdialog();
 private:

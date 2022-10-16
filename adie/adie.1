@@ -26,38 +26,38 @@ at the same place in the file, and the text will be colorized like last time.
 
 .SH OPTIONS
 .TP
-\fB\-?\fR, \fB\-h\fR, or \fB\--help\fR
+\fB\-h\fR, or \fB\--help\fR
 Print summary usage information of all the supported options.
 
 .TP
-\fB\-v\fR \fB\--view\fR
+\fB\--view\fR
 Open the file for viewing only.  Editor commands which change the text are not allowed.
 
 .TP
-\fB\-e\fR \fB\--edit\fR
+\fB\--edit\fR
 Open the file for editing.
 
 .TP
-\fB\-V\fR \fB\--version\fR
+\fB\--version\fR
 Display version and license information.
 
 .TP
-\fB\-l\fR\fI <number>\fR \fB\--line\fR\fI <number>\fR
+\fR \fB\--line=\fR\fI<number>\fR
 Jump to given line number after opening file for editing.
 
 .TP
-\fB\-c\fR\fI <number>\fR \fB\--col\fR\fI <number>\fR
+\fR \fB\--column=\fR\fI<number>\fR
 Jump to given column number after opening file for editing; often used in addition to the previous
 parameter to jump to a particular place in the text.
 
 .TP
-\fB\-S\fR\fI <syntax>\fR \fB\--syntax\fR\fI <syntax>\fR
+\fR \fB\--syntax=\fR\fI<syntax>\fR
 Load the syntax rules from the given syntax file rather than searching for the syntax file in the
 usual places (a file called "Adie.stx" in one of the $PATH directories, or the syntax file listed
 in the configuration settings).
 
 .TP
-\fB\-L\fR\fI <language>\fR \fB\--lang\fR\fI <language>\fR
+\fB\--lang=\fR\fI<language>\fR
 After loading the file, switch to the given programming language for syntax coloring.  The normal rules
 for determining the file's syntax (file extension of content maching) are ignored.
 

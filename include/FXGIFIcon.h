@@ -42,7 +42,7 @@ public:
 public:
 
   /// Construct an icon from memory stream formatted as GIF format
-  FXGIFIcon(FXApp* a,const void *pix=nullptr,FXColor clr=FXRGB(192,192,192),FXuint opts=0,FXint w=1,FXint h=1);
+  FXGIFIcon(FXApp* a,const FXuchar *pix=nullptr,FXColor clr=FXRGB(192,192,192),FXuint opts=0,FXint w=1,FXint h=1);
 
   /// Save pixels into stream in GIF format
   virtual FXbool savePixels(FXStream& store) const;

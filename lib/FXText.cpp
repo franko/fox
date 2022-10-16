@@ -23,6 +23,7 @@
 #include "fxdefs.h"
 #include "fxmath.h"
 #include "fxkeys.h"
+#include "fxchar.h"
 #include "fxascii.h"
 #include "fxunicode.h"
 #include "FXColors.h"
@@ -544,7 +545,7 @@ void FXText::setOverstrike(FXbool over){
 // Check if w is delimiter
 FXbool FXText::isdelimiter(FXwchar w) const {
   FXchar wcs[5]={'\0','\0','\0','\0','\0'};
-  if(__unlikely(128<=w)){
+  if(128<=w){
     wc2utf(wcs,w);
     return (strstr(delimiters,wcs)!=nullptr);
     }
@@ -617,9 +618,9 @@ FXwchar FXText::getChar(FXint pos) const {
   FXASSERT(0<=pos && pos<=length);
   const FXuchar* ptr=(FXuchar*)&buffer[pos+((gapend-gapstart)&((~pos+gapstart)>>31))];
   FXwchar w=ptr[0];
-  if(__unlikely(0xC0<=w)){ w=(w<<6)^ptr[1]^0x3080;
-  if(__unlikely(0x800<=w)){ w=(w<<6)^ptr[2]^0x20080;
-  if(__unlikely(0x10000<=w)){ w=(w<<6)^ptr[3]^0x400080; }}}
+  if(0xC0<=w){ w=(w<<6)^ptr[1]^0x3080;
+  if(0x800<=w){ w=(w<<6)^ptr[2]^0x20080;
+  if(0x10000<=w){ w=(w<<6)^ptr[3]^0x400080; }}}
   return w;
   }
 
@@ -627,7 +628,7 @@ FXwchar FXText::getChar(FXint pos) const {
 // Get length of wide character at position pos
 FXint FXText::getCharLen(FXint pos) const {
   FXASSERT(0<=pos && pos<=length);
-  return FXUTF8LEN(buffer[pos+((gapend-gapstart)&((~pos+gapstart)>>31))]);
+  return lenUTF8(buffer[pos+((gapend-gapstart)&((~pos+gapstart)>>31))]);
   }
 
 
@@ -637,13 +638,22 @@ FXint FXText::getStyle(FXint pos) const {
   return (FXuchar)sbuffer[pos+((gapend-gapstart)&((~pos+gapstart)>>31))];
   }
 
+
 /*******************************************************************************/
+
+// Make a valid position, at the start of a wide character
+FXint FXText::validPos(FXint pos) const {
+  const FXchar* ptr=&buffer[(gapend-gapstart)&((~pos+gapstart)>>31)];
+  if(pos<=0) return 0;
+  if(pos>=length) return length;
+  return (isUTF8(ptr[pos]) || --pos<=0 || isUTF8(ptr[pos]) || --pos<=0 || isUTF8(ptr[pos]) || --pos), pos;
+  }
 
 // Decrement; a wide character does not cross the gap, so if pos is at
 // or below below the gap, we read from the segment below the gap
 FXint FXText::dec(FXint pos) const {
   const FXchar* ptr=&buffer[(gapend-gapstart)&((gapstart-pos)>>31)];
-  return (--pos<=0 || FXISUTF8(ptr[pos]) || --pos<=0 || FXISUTF8(ptr[pos]) || --pos<=0 || FXISUTF8(ptr[pos]) || --pos), pos;
+  return (--pos<=0 || isUTF8(ptr[pos]) || --pos<=0 || isUTF8(ptr[pos]) || --pos<=0 || isUTF8(ptr[pos]) || --pos), pos;
   }
 
 
@@ -651,7 +661,7 @@ FXint FXText::dec(FXint pos) const {
 // start under the gap the last character accessed is below the gap
 FXint FXText::inc(FXint pos) const {
   const FXchar* ptr=&buffer[(gapend-gapstart)&((~pos+gapstart)>>31)];
-  return (++pos>=length || FXISUTF8(ptr[pos]) || ++pos>=length || FXISUTF8(ptr[pos]) || ++pos>=length || FXISUTF8(ptr[pos]) || ++pos), pos;
+  return (++pos>=length || isUTF8(ptr[pos]) || ++pos>=length || isUTF8(ptr[pos]) || ++pos>=length || isUTF8(ptr[pos]) || ++pos), pos;
   }
 
 /*******************************************************************************/
@@ -668,8 +678,8 @@ FXint FXText::inc(FXint pos) const {
 
 // Character width
 FXint FXText::charWidth(FXwchar ch,FXint indent) const {
-  if(__likely(' '<=ch)) return font->getCharWidth(ch);
-  if(__likely(ch=='\t')) return (tabwidth-indent%tabwidth);
+  if(' '<=ch) return font->getCharWidth(ch);
+  if(ch=='\t') return (tabwidth-indent%tabwidth);
   return font->getCharWidth('^')+font->getCharWidth(ch|0x40);
   }
 
@@ -776,6 +786,19 @@ FXint FXText::posFromColumn(FXint start,FXint col) const {
     start+=getCharLen(start);
     }
   return start;
+  }
+
+
+// Determine logical indent of text on line at start, up to
+// given position pos.
+FXint FXText::indentOfLine(FXint start,FXint pos) const {
+  FXint indent=0; FXuchar c;
+  FXASSERT(0<=start && pos<=length);
+  while(start<pos && ((c=getByte(start))==' ' || c=='\t')){
+    indent+=CC(c,indent);
+    start+=getCharLen(start);
+    }
+  return indent;
   }
 
 /*******************************************************************************/
@@ -1078,14 +1101,6 @@ FXint FXText::wordEnd(FXint pos) const {
   }
 
 
-// Make a valid position, at the start of a wide character
-FXint FXText::validPos(FXint pos) const {
-  const FXchar* ptr=&buffer[(gapend-gapstart)&((~pos+gapstart)>>31)];
-  if(pos<=0) return 0;
-  if(pos>=length) return length;
-  return (FXISUTF8(ptr[pos]) || --pos<=0 || FXISUTF8(ptr[pos]) || --pos<=0 || FXISUTF8(ptr[pos]) || --pos), pos;
-  }
-
 /*******************************************************************************/
 
 // Count number of columns; start should be on a row start
@@ -1096,12 +1111,12 @@ FXint FXText::countCols(FXint start,FXint end) const {
   FXASSERT(0<=start && start<=end && end<=length);
   while(start<end){
     c=getChar(start);
-    if(c=='\n'){ start++; result=FXMAX(result,in); in=0; continue; }
+    if(c=='\n'){ start++; result=Math::imax(result,in); in=0; continue; }
     if(c=='\t'){ start++; in+=(tabcolumns-in%tabcolumns); continue; }
     start+=getCharLen(start);
     in++;
     }
-  result=FXMAX(result,in);
+  result=Math::imax(result,in);
   return result;
   }
 
@@ -1184,7 +1199,7 @@ FXint FXText::measureText(FXint start,FXint end,FXint& wmax,FXint& hmax) const {
     while(start<end){
       c=getChar(start);
       if(c=='\n'){                      // Break at newline
-        wmax=FXMAX(wmax,w);
+        wmax=Math::imax(wmax,w);
         result++;
         start++;
         w=0;
@@ -1193,7 +1208,7 @@ FXint FXText::measureText(FXint start,FXint end,FXint& wmax,FXint& hmax) const {
       w+=charWidth(c,w);
       start+=getCharLen(start);
       }
-    wmax=FXMAX(wmax,w);
+    wmax=Math::imax(wmax,w);
     }
   hmax=result*font->getFontHeight();
   return result;
@@ -1263,7 +1278,7 @@ void FXText::recompute(){
   // Update text dimensions in terms of pixels and rows; note one extra
   // row always added, as there is always at least one row, even though
   // it may be empty of any characters.
-  textWidth=FXMAX(ww1,ww2);
+  textWidth=Math::imax(ww1,ww2);
   textHeight=hh1+hh2+hh;
   nrows=toprow+botrow+1;
 
@@ -1504,10 +1519,10 @@ FXbool FXText::findText(const FXString& string,FXint* beg,FXint* end,FXint start
     // Search forward
     if(flgs&SEARCH_FORWARD){
       if(start<=length){
-        if(rex.search(buffer,length,FXMAX(start,0),length,FXRex::Normal,beg,end,npar)>=0) return true;
+        if(rex.search(buffer,length,Math::imax(start,0),length,FXRex::Normal,beg,end,npar)>=0) return true;
         }
       if((flgs&SEARCH_WRAP) && (start>0)){
-        if(rex.search(buffer,length,0,FXMIN(start,length),FXRex::Normal,beg,end,npar)>=0) return true;
+        if(rex.search(buffer,length,0,Math::imin(start,length),FXRex::Normal,beg,end,npar)>=0) return true;
         }
       return false;
       }
@@ -1515,10 +1530,10 @@ FXbool FXText::findText(const FXString& string,FXint* beg,FXint* end,FXint start
     // Search backward
     if(flgs&SEARCH_BACKWARD){
       if(0<=start){
-        if(rex.search(buffer,length,FXMIN(start,length),0,FXRex::Normal,beg,end,npar)>=0) return true;
+        if(rex.search(buffer,length,Math::imin(start,length),0,FXRex::Normal,beg,end,npar)>=0) return true;
         }
       if((flgs&SEARCH_WRAP) && (start<length)){
-        if(rex.search(buffer,length,length,FXMAX(start,0),FXRex::Normal,beg,end,npar)>=0) return true;
+        if(rex.search(buffer,length,length,Math::imax(start,0),FXRex::Normal,beg,end,npar)>=0) return true;
         }
       return false;
       }
@@ -1949,8 +1964,8 @@ void FXText::setCursorPos(FXint pos,FXbool notify){
 
 // Set cursor row, column
 void FXText::setCursorRowColumn(FXint row,FXint col,FXbool notify){
-  row=FXCLAMP(0,row,nrows-1);
-  col=FXMAX(col,0);
+  row=Math::iclamp(0,row,nrows-1);
+  col=Math::imax(col,0);
   if((row!=cursorrow) || (col!=cursorvcol)){
     FXint newstart=posFromRow(row);             // Row start of new row
     FXint newpos=posFromColumn(newstart,col);   // Position of column on that row
@@ -2025,8 +2040,8 @@ void FXText::setAnchorPos(FXint pos){
 
 // Set anchor row and column
 void FXText::setAnchorRowColumn(FXint row,FXint col){
-  row=FXCLAMP(0,row,nrows-1);
-  col=FXMAX(col,0);
+  row=Math::iclamp(0,row,nrows-1);
+  col=Math::imax(col,0);
   if((row!=anchorrow) || (col!=anchorvcol)){
     FXint newstart=posFromRow(row);             // Row start of new row
     FXint newpos=posFromColumn(newstart,col);   // Position of column on that row
@@ -2157,7 +2172,7 @@ void FXText::mutation(FXint pos,FXint ncins,FXint ncdel,FXint nrins,FXint nrdel)
 
   // Changed text begins above first and ends below last visible line
   else{
-    toprow=FXMAX(0,FXMIN(toprow,nrows-nvisrows));
+    toprow=Math::iclamp(0,toprow,nrows-nvisrows);
     toppos=nextRow(0,toprow);
     keeppos=toppos;
     pos_y=-toprow*th;
@@ -2242,7 +2257,7 @@ FXint FXText::changeEnd(FXint pos) const {
   }
 
 
-// Replace m characters at pos by n characters
+// Replace #del characters at pos by #ins characters
 void FXText::replace(FXint pos,FXint del,const FXchar *text,FXint ins,FXint style){
   FXint nrdel,nrins,ncdel,ncins,wbeg,wend,diff,wdel,hdel,wins,hins,cursorstartpos,anchorstartpos;
 
@@ -2264,7 +2279,7 @@ void FXText::replace(FXint pos,FXint del,const FXchar *text,FXint ins,FXint styl
   // Move the gap to current position
   movegap(pos);
 
-  // Grow the gap if needed
+  // Grow the gap if too small
   if(diff>(gapend-gapstart)){ sizegap(diff+MINSIZE); }
 
   // Modify the buffer
@@ -2274,7 +2289,7 @@ void FXText::replace(FXint pos,FXint del,const FXchar *text,FXint ins,FXint styl
   gapend+=del;
   length+=diff;
 
-  // Shrink the gap to avoid getting too large
+  // Shrink the gap if too large
   if(MAXSIZE<(gapend-gapstart)){ sizegap(MAXSIZE); }
 
   // Measure stuff after change
@@ -2291,7 +2306,7 @@ void FXText::replace(FXint pos,FXint del,const FXchar *text,FXint ins,FXint styl
 
   // Fix text metrics
   textHeight=textHeight+hins-hdel;
-  textWidth=FXMAX(textWidth,wins);
+  textWidth=Math::imax(textWidth,wins);
 
   // Keep anchorpos at same place relative to its surrounding text.
   // When inside the changed region, move it to the end of the change.
@@ -2468,23 +2483,13 @@ FXint FXText::replaceStyledText(FXint pos,FXint del,const FXString& text,FXint s
 
 /*******************************************************************************/
 
-// Count number of characters equal to ch
-static FXint countchars(const FXchar* beg,const FXchar* end,FXchar ch){
-  FXint result=0;
-  while(beg<end){
-    result+=(*beg++==ch);
-    }
-  return result;
-  }
-
-
 // Maximum number of columns in a string
-static FXint maxcolumns(const FXchar* beg,const FXchar* end,FXint tabcols){
-  FXint result=0,cols=0; FXuchar c;
-  while(beg<end){
-    c=*beg++;
+static FXint maxColumns(const FXString& text,FXint tabcols){
+  FXint result=0,cols=0,p=0; FXuchar c;
+  while(p<text.length()){
+    c=text[p++];
     if(c=='\n'){                                // End of the line; keep track of the longest
-      result=FXMAX(result,cols);
+      result=Math::imax(result,cols);
       cols=0;
       continue;
       }
@@ -2494,88 +2499,14 @@ static FXint maxcolumns(const FXchar* beg,const FXchar* end,FXint tabcols){
       }
     cols++;
     if(c<0xC0) continue;
-    beg++;
+    p++;
     if(c<0xE0) continue;
-    beg++;
+    p++;
     if(c<0xF0) continue;
-    beg++;
+    p++;
     }
-  result=FXMAX(result,cols);                    // In case of unterminated last line
+  result=Math::imax(result,cols);               // In case of unterminated last line
   return result;
-  }
-
-
-// Expand tabs to spaces
-// Parse a character at a time, replacing tabs with the equivalent amount of spaces.
-static FXchar *detab(FXchar* dst,FXchar* dstend,const FXchar* src,const FXchar* srcend,FXint tabcols=8){
-  FXint ie=0; FXuchar c;
-  while(src<srcend && dst<dstend){
-    c=*dst++=*src++;
-    if(c=='\t'){                                // Generate spaces till tab-column
-      dst--;
-      do{*dst++=' ';}while(++ie%tabcols);
-      continue;
-      }
-    if(c=='\n'){                                // Reset columns
-      ie=0;
-      continue;
-      }
-    ie++;                                       // One UTF8 character
-    if(c<0xC0) continue;
-    *dst++=*src++;
-    if(c<0xE0) continue;
-    *dst++=*src++;
-    if(c<0xF0) continue;
-    *dst++=*src++;
-    }
-  FXASSERT(dst<=dstend);
-  FXASSERT(src<=srcend);
-  return dst;
-  }
-
-
-// Compress spaces to tabs
-// Parse a character at a time, replacing runs of more than 2 spaces with tabs.
-static FXchar* entab(FXchar* dst,FXchar* dstend,const FXchar* src,const FXchar* srcend,FXint tabcols=8){
-  FXint is=0,ie=0,ts; FXuchar c;
-  while(src<srcend && dst<dstend){
-    c=*dst++=*src++;
-    if(c==' '){                                 // Accumulate spaces
-      ie+=1;
-      if((ie-is)<3) continue;                   // Run of less than 3
-      ts=is+tabcols-is%tabcols;
-      if(ie<ts) continue;                       // Not crossing tabstop
-      dst-=(ie-is);                             // Back up to first space of run
-      *dst++='\t';                              // Write a tab there
-      is=ts;                                    // Advance to tabstop
-      dst+=(ie-is);                             // Skip over spaces
-      continue;
-      }
-    if(c=='\t'){                                // Keep the tab
-      dst-=(ie-is+1);                           // Back up to first space of the run
-      *dst++='\t';                              // Replace by tab
-      ie+=tabcols-ie%tabcols;                   // New tab-column
-      is+=tabcols-is%tabcols;
-      if(is==ie) continue;                      // Reached tabstop
-      *dst++='\t';
-      is+=tabcols-is%tabcols;
-      continue;
-      }
-    if(c=='\n'){                                // Reset columns
-      is=ie=0;
-      continue;
-      }
-    is=++ie;                                    // One UTF8 character
-    if(c<0xC0) continue;
-    *dst++=*src++;
-    if(c<0xE0) continue;
-    *dst++=*src++;
-    if(c<0xF0) continue;
-    *dst++=*src++;
-    }
-  FXASSERT(dst<=dstend);
-  FXASSERT(src<=srcend);
-  return dst;
   }
 
 
@@ -2697,20 +2628,25 @@ static FXchar* extractcolumns(FXchar* dst,FXchar* dstend,const FXchar* src,const
 
 // Insert same text at given column on each line.
 static FXchar* insertcolumns(FXchar* dst,FXchar* dstend,const FXchar* src,const FXchar* srcend,const FXchar *ins,const FXchar* insend,FXint startcol,FXint inscols){
-  FXint sc;
-  while(dst<dstend && src<srcend){
+  FXint sc,c;
+  while(dst<dstend && (src<srcend || ins<insend)){
     sc=copycols(dst,dstend,src,srcend,startcol);                // Copy to startcol
     if(ins<insend && *ins!='\n'){                               // Inserted block non-empty
-      sc+=padcols(dst,dstend,startcol-sc);                      // Pad up to startcol where insert starts
-      sc+=copycols(dst,dstend,ins,insend,inscols);              // Insert string, up to newline
+      sc+=padcols(dst,dstend,startcol-sc);                      // Pad up to startcol
+      sc+=copycols(dst,dstend,ins,insend,inscols);              // Copy inserted block, up to inscols
       }
     if(src<srcend && *src!='\n'){                               // Stuff past endcol
       padcols(dst,dstend,startcol+inscols-sc);                  // Pad to startcol+ninscols
       copycols(dst,dstend,src,srcend);                          // Copy the rest
       }
-    if(dst<dstend && src<srcend && *src=='\n'){                 // Copy newline
-      *dst++=*src++;
+    c=0;
+    if(dst<dstend && ins<insend && *ins=='\n'){                 // Advance over line end
+      *dst=*ins++; c=1;
       }
+    if(dst<dstend && src<srcend && *src=='\n'){
+      *dst=*src++; c=1;
+      }
+    dst+=c;
     }
   FXASSERT(src<=srcend);
   FXASSERT(ins<=insend);
@@ -2750,21 +2686,287 @@ static FXchar* replacecolumns(FXchar* dst,FXchar* dstend,const FXchar* src,const
   }
 
 
+// Count (maximum) columns in text
+static FXint countColumns(const FXString& text,FXint tabcols=8){
+  FXint result=0,indent=0,p=0;
+  FXuchar c;
+  while(p<text.length()){
+    c=text[p++];
+    if(c=='\t'){
+      indent+=(tabcols-indent%tabcols);
+      continue;
+      }
+    if(c=='\n'){
+      result=Math::imax(result,indent);
+      indent=0;
+      continue;
+      }
+    indent++;
+    if(c<0xC0) continue;
+    p++;
+    if(c<0xE0) continue;
+    p++;
+    if(c<0xF0) continue;
+    p++;
+    }
+  return result;
+  }
+
+
+// Overstrike text at startcol
+static FXString overstrikeColumns(const FXString& src,const FXString& ovr,FXint startcol){
+  FXString result;
+  if(result.length(src.length()+ovr.length()+startcol)){
+    FXint srccol=0,ovrcol=0,skpcol=0,d=0,s=0,o=0;
+    FXuchar c;
+    while(s<src.length() && srccol<startcol){
+      c=result[d++]=src[s++]; srccol++;
+      if(c<0xC0) continue;
+      result[d++]=src[s++];
+      if(c<0xE0) continue;
+      result[d++]=src[s++];
+      if(c<0xF0) continue;
+      result[d++]=src[s++];
+      }
+    if(0<ovr.length()){
+      while(srccol<startcol){
+        result[d++]=' '; srccol++;
+        }
+      while(o<ovr.length()){
+        c=result[d++]=ovr[o++]; ovrcol++;
+        if(c<0xC0) continue;
+        result[d++]=ovr[o++];
+        if(c<0xE0) continue;
+        result[d++]=ovr[o++];
+        if(c<0xF0) continue;
+        result[d++]=ovr[o++];
+        }
+      while(s<src.length() && skpcol<ovrcol){
+        c=src[s++]; skpcol++;
+        if(c<0xC0) continue;
+        s++;
+        if(c<0xE0) continue;
+        s++;
+        if(c<0xF0) continue;
+        s++;
+        }
+      }
+    while(s<src.length()){
+      c=result[d++]=src[s++];
+      if(c<0xC0) continue;
+      result[d++]=src[s++];
+      if(c<0xE0) continue;
+      result[d++]=src[s++];
+      if(c<0xF0) continue;
+      result[d++]=src[s++];
+      }
+    FXASSERT(d<result.length());
+    result.length(d);
+    }
+  return result;
+  }
+
+
+// Insert inscols of text at startcol
+static FXString insertColumns(const FXString& src,const FXString& ins,FXint startcol,FXint numcols){
+  FXString result;
+  if(result.length(src.length()+ins.length()+startcol+numcols)){
+    FXint srccol=0,d=0,s=0,i=0;
+    FXuchar c;
+    while(s<src.length() && srccol<startcol){
+      c=result[d++]=src[s++]; srccol++;
+      if(c<0xC0) continue;
+      result[d++]=src[s++];
+      if(c<0xE0) continue;
+      result[d++]=src[s++];
+      if(c<0xF0) continue;
+      result[d++]=src[s++];
+      }
+    if(0<ins.length()){
+      while(srccol<startcol){
+        result[d++]=' '; srccol++;
+        }
+      while(i<ins.length() && srccol<startcol+numcols){
+        c=result[d++]=ins[i++]; srccol++;
+        if(c<0xC0) continue;
+        result[d++]=ins[i++];
+        if(c<0xE0) continue;
+        result[d++]=ins[i++];
+        if(c<0xF0) continue;
+        result[d++]=ins[i++];
+        }
+      }
+    if(s<src.length()){
+      while(srccol<startcol+numcols){
+        result[d++]=' '; srccol++;
+        }
+      while(s<src.length()){
+        c=result[d++]=src[s++];
+        if(c<0xC0) continue;
+        result[d++]=src[s++];
+        if(c<0xE0) continue;
+        result[d++]=src[s++];
+        if(c<0xF0) continue;
+        result[d++]=src[s++];
+        }
+      }
+    FXASSERT(d<result.length());
+    result.length(d);
+    }
+  return result;
+  }
+
+
+// Replace columns from text at startcol
+static FXString replaceColumns(const FXString& src,const FXString& ins,FXint startcol,FXint endcol,FXint numcols){
+  FXString result;
+  if(result.length(src.length()+ins.length()+startcol+numcols)){
+    FXint srccol=0,inscol=0,d=0,s=0,i=0;
+    FXuchar c;
+    while(s<src.length() && srccol<startcol){
+      c=result[d++]=src[s++];
+      srccol++;
+      if(c<0xC0) continue;
+      result[d++]=src[s++];
+      if(c<0xE0) continue;
+      result[d++]=src[s++];
+      if(c<0xF0) continue;
+      result[d++]=src[s++];
+      }
+    while(s<src.length() && srccol<endcol){
+      c=src[s++];
+      srccol++;
+      if(c<0xC0) continue;
+      s++;
+      if(c<0xE0) continue;
+      s++;
+      if(c<0xF0) continue;
+      s++;
+      }
+    if(0<ins.length()){
+      while(srccol<startcol){
+        result[d++]=' ';
+        srccol++;
+        }
+      while(i<ins.length()){
+        c=result[d++]=ins[i++];
+        inscol++;
+        if(c<0xC0) continue;
+        result[d++]=ins[i++];
+        if(c<0xE0) continue;
+        result[d++]=ins[i++];
+        if(c<0xF0) continue;
+        result[d++]=ins[i++];
+        }
+      }
+    if(s<src.length()){
+      while(inscol<numcols){
+        result[d++]=' ';
+        inscol++;
+        }
+      while(s<src.length()){
+        c=result[d++]=src[s++];
+        if(c<0xC0) continue;
+        result[d++]=src[s++];
+        if(c<0xE0) continue;
+        result[d++]=src[s++];
+        if(c<0xF0) continue;
+        result[d++]=src[s++];
+        }
+      }
+    FXASSERT(d<result.length());
+    result.length(d);
+    }
+  return result;
+  }
+
+
+// Remove remcols of text at startcol
+static FXString removeColumns(const FXString& src,FXint startcol,FXint numcols){
+  FXString result;
+  if(result.length(src.length())){
+    FXint srccol=0,remcol=0,d=0,s=0;
+    FXuchar c;
+    while(s<src.length() && srccol<startcol){
+      c=result[d++]=src[s++]; srccol++;
+      if(c<0xC0) continue;
+      result[d++]=src[s++];
+      if(c<0xE0) continue;
+      result[d++]=src[s++];
+      if(c<0xF0) continue;
+      result[d++]=src[s++];
+      }
+    while(s<src.length() && remcol<numcols){
+      c=src[s++]; remcol++;
+      if(c<0xC0) continue;
+      s++;
+      if(c<0xE0) continue;
+      s++;
+      if(c<0xF0) continue;
+      s++;
+      }
+    while(s<src.length()){
+      c=result[d++]=src[s++];
+      if(c<0xC0) continue;
+      result[d++]=src[s++];
+      if(c<0xE0) continue;
+      result[d++]=src[s++];
+      if(c<0xF0) continue;
+      result[d++]=src[s++];
+      }
+    FXASSERT(d<result.length());
+    result.length(d);
+    }
+  return result;
+  }
+
+
+// Extract columns of text at startcol
+static FXString extractColumns(const FXString& src,FXint startcol,FXint numcols){
+  FXString result;
+  if(result.length(src.length())){
+    FXint srccol=0,dstcol=0,s=0,d=0;
+    FXuchar c;
+    while(s<src.length() && srccol<startcol){
+      c=src[s++]; srccol++;
+      if(c<0xC0) continue;
+      s++;
+      if(c<0xE0) continue;
+      s++;
+      if(c<0xF0) continue;
+      s++;
+      }
+    while(s<src.length() && dstcol<numcols){
+      c=result[d++]=src[s++]; dstcol++;
+      if(c<0xC0) continue;
+      result[d++]=src[s++];
+      if(c<0xE0) continue;
+      result[d++]=src[s++];
+      if(c<0xF0) continue;
+      result[d++]=src[s++];
+      }
+    FXASSERT(d<result.length());
+    result.length(d);
+    }
+  return result;
+  }
+
+
 // Overstrike columns starting at startcol with new text; assume inputs have been detabbed.
 static FXchar* overstrikecolumns(FXchar* dst,FXchar* dstend,const FXchar* src,const FXchar* srcend,const FXchar* ovr,const FXchar* ovrend,FXint startcol){
   FXint sc,ec; FXuchar c;
-  while(dst<dstend && src<srcend){
-    sc=ec=copycols(dst,dstend,src,srcend,startcol);     // Copy up to startcol
-    if(ovr<ovrend && *ovr!='\n'){                       // Overstrike block is non-empty
-      ec+=padcols(dst,dstend,startcol-ec);              // Pad up to column where overstrike starts
-      ec+=copycols(dst,dstend,ovr,ovrend);              // Copy new overstruck block
+  while(dst<dstend && (src<srcend || ovr<ovrend)){
+    sc=ec=copycols(dst,dstend,src,srcend,startcol);             // Copy up to startcol
+    if(ovr<ovrend && *ovr!='\n'){                               // Overstrike block is non-empty
+      ec+=padcols(dst,dstend,startcol-ec);                      // Pad up to column where overstrike starts
+      ec+=copycols(dst,dstend,ovr,ovrend);                      // Copy new overstruck block
       }
-    if(src<srcend && *src!='\n'){                       // More stuff past startcol
-      sc+=skipcols(src,srcend,ec-sc);                   // Skip past overstruck text
-      copycols(dst,dstend,src,srcend);                  // Copy the rest
+    if(src<srcend && *src!='\n'){                               // More stuff past startcol
+      sc+=skipcols(src,srcend,ec-sc);                           // Skip past overstruck text
+      copycols(dst,dstend,src,srcend);                          // Copy the rest
       }
     c=0;
-    if(dst<dstend && src<srcend && *src=='\n'){         // Advance over line end
+    if(dst<dstend && src<srcend && *src=='\n'){                 // Advance over line end
       *dst=*src++; c=1;
       }
     if(dst<dstend && ovr<ovrend && *ovr=='\n'){
@@ -2837,31 +3039,18 @@ FXint FXText::replaceTextBlock(FXint startpos,FXint endpos,FXint startcol,FXint 
 // amount of padding needed, its simpler just to over-estimate in a way which is guaranteed
 // to be enough; this is done by just addding the whole rectangle; so we just add an extra
 // (startcol+ninscols)*max(ninsrows,norgrows) as total padding for A,C, and R.
-//
 FXint FXText::replaceStyledTextBlock(FXint startpos,FXint endpos,FXint startcol,FXint endcol,const FXchar *text,FXint num,FXint style,FXbool notify){
   if(0<=startpos && startpos<=endpos && endpos<=length && 0<=startcol && startcol<=endcol){
-    FXint norgrows,norgtabs,ninsrows,ninstabs,ninscols;
-    FXchar *insend,*orgend,*repend;
-    FXString org,rep,ins;
-    extractText(rep,startpos,endpos-startpos);
-    norgrows=countchars(&rep[0],&rep[rep.length()],'\n')+1;
-    norgtabs=countchars(&rep[0],&rep[rep.length()],'\t');
-    ninsrows=countchars(text,text+num,'\n')+1;
-    ninstabs=countchars(text,text+num,'\t');
-    ninscols=maxcolumns(text,text+num,tabcolumns);
-    ins.length(num+ninstabs*tabcolumns);
-    org.length(endpos-startpos+norgtabs*tabcolumns);
-    insend=detab(&ins[0],&ins[ins.length()],text,text+num,tabcolumns);
-    orgend=detab(&org[0],&org[org.length()],&rep[0],&rep[rep.length()],tabcolumns);
-
-//    (orgend-&org[0]) + (startcol+ninscols+1)*Math::imax(ninsrows,norgrows) + (insend-&ins[0])
-
-    rep.length(endpos-startpos+num+(norgtabs+ninstabs)*tabcolumns+(startcol+ninscols+1)*FXMAX(ninsrows,norgrows));
-    repend=replacecolumns(&rep[0],&rep[rep.length()],&org[0],orgend,&ins[0],insend,startcol,endcol,ninscols);
-    if(!(options&TEXT_NO_TABS)){
-      repend=entab(&rep[0],repend,&rep[0],repend,tabcolumns);
-      }
-    return replaceStyledText(startpos,endpos-startpos,&rep[0],repend-&rep[0],style,notify);
+    FXString org=FXString::detab(extractText(startpos,endpos-startpos),tabcolumns);
+    FXString ins=FXString::detab(text,num,tabcolumns);
+    FXint norgrows=org.contains('\n')+1;
+    FXint ninsrows=ins.contains('\n')+1;
+    FXint ninscols=maxColumns(ins,tabcolumns);
+    FXString rep(' ',org.length()+ins.length()+(startcol+ninscols+1)*Math::imax(ninsrows,norgrows));
+    FXchar* repend=replacecolumns(rep.text(),rep.text()+rep.length(),org.text(),org.text()+org.length(),ins.text(),ins.text()+ins.length(),startcol,endcol,ninscols);
+    rep.trunc(repend-rep.text());
+    if(!(options&TEXT_NO_TABS)){ rep=FXString::entab(rep,tabcolumns); }
+    return replaceStyledText(startpos,endpos-startpos,rep,style,notify);
     }
   return 0;
   }
@@ -2875,60 +3064,57 @@ FXint FXText::replaceStyledTextBlock(FXint startpos,FXint endpos,FXint startcol,
 /*******************************************************************************/
 
 // Overstrike text block
-FXint FXText::overstrikeTextBlock(FXint startpos,FXint endpos,FXint startcol,FXint endcol,const FXchar *text,FXint n,FXbool notify){
-  return overstrikeStyledTextBlock(startpos,endpos,startcol,endcol,text,n,0,notify);
+FXint FXText::overstrikeTextBlock(FXint startpos,FXint endpos,FXint startcol,const FXchar *text,FXint num,FXbool notify){
+  return overstrikeStyledTextBlock(startpos,endpos,startcol,text,num,0,notify);
   }
 
 
 // Overstrike text block
-FXint FXText::overstrikeTextBlock(FXint startpos,FXint endpos,FXint startcol,FXint endcol,const FXString& text,FXbool notify){
-  return overstrikeStyledTextBlock(startpos,endpos,startcol,endcol,text.text(),text.length(),0,notify);
+FXint FXText::overstrikeTextBlock(FXint startpos,FXint endpos,FXint startcol,const FXString& text,FXbool notify){
+  return overstrikeStyledTextBlock(startpos,endpos,startcol,text.text(),text.length(),0,notify);
   }
 
 
+#if 0
+// Overstrike styled text block (version only affecting overstruck rows)
+FXint FXText::overstrikeStyledTextBlock(FXint startpos,FXint endpos,FXint startcol,const FXchar *text,FXint num,FXint style,FXbool notify){
+  if(0<=startpos && startpos<=endpos && endpos<=length && 0<=startcol){
+    FXString ovr=FXString::detab(text,num,tabcolumns);
+    FXint novrcols=maxColumns(ovr,tabcolumns);
+    FXint novrrows=ovr.contains('\n')+1;
+    FXint end=lineEnd(nextLine(startpos,novrrows-1));
+    FXString org=FXString::detab(extractText(startpos,end-startpos),tabcolumns);
+    FXString rep(' ',org.length()+ovr.length()+(startcol+novrcols+1)*novrrows);
+    FXchar* repend=overstrikecolumns(rep.text(),rep.text()+rep.length(),org.text(),org.text()+org.length(),ovr.text(),ovr.text()+ovr.length(),startcol);
+    rep.trunc(repend-rep.text());
+    if(!(options&TEXT_NO_TABS)){ rep=FXString::entab(rep,tabcolumns); }
+    return replaceStyledText(startpos,end-startpos,rep,style,notify);
+    }
+  return 0;
+  }
+#endif
+
 // Overstrike styled text block
-FXint FXText::overstrikeStyledTextBlock(FXint startpos,FXint endpos,FXint startcol,FXint endcol,const FXchar *text,FXint n,FXint style,FXbool notify){
-  if(0<=startpos && startpos<=endpos && endpos<=length && 0<=startcol && startcol<=endcol){
-    FXint norgrows,norgtabs,novrrows,novrtabs,novrcols;
-    FXchar *ovrend,*orgend,*repend;
-    FXString org,rep,ovr;
-
-    extractText(rep,startpos,endpos-startpos);
-
-    norgrows=countchars(&rep[0],&rep[rep.length()],'\n')+1;
-    norgtabs=countchars(&rep[0],&rep[rep.length()],'\t');
-
-    novrrows=countchars(text,text+n,'\n')+1;
-    novrtabs=countchars(text,text+n,'\t');
-    novrcols=maxcolumns(text,text+n,tabcolumns);
-
-    ovr.length(n+novrtabs*tabcolumns);
-    org.length(endpos-startpos+norgtabs*tabcolumns);
-
-    ovrend=detab(&ovr[0],&ovr[ovr.length()],text,text+n,tabcolumns);
-    orgend=detab(&org[0],&org[org.length()],&rep[0],&rep[rep.length()],tabcolumns);
-
-//    Math::imax((orgend-&org[0]),(startcol+novrcols+1)*Math::imax(novrrows,norgrows)+(ovrend-&ovr[0]))
-
-    // Estimate sux
-    rep.length(endpos-startpos+n+(norgtabs+novrtabs)*tabcolumns+(startcol+novrcols+1)*FXMAX(novrrows,norgrows));
-
-    repend=overstrikecolumns(&rep[0],&rep[rep.length()],&org[0],orgend,&ovr[0],ovrend,startcol);
-
-    if(!(options&TEXT_NO_TABS)){
-      repend=entab(&rep[0],repend,&rep[0],repend,tabcolumns);
-      }
-    return replaceStyledText(startpos,endpos-startpos,&rep[0],repend-&rep[0],style,notify);
+FXint FXText::overstrikeStyledTextBlock(FXint startpos,FXint endpos,FXint startcol,const FXchar *text,FXint num,FXint style,FXbool notify){
+  if(0<=startpos && startpos<=endpos && endpos<=length && 0<=startcol){
+    FXString org=FXString::detab(extractText(startpos,endpos-startpos),tabcolumns);
+    FXString ovr=FXString::detab(text,num,tabcolumns);
+    FXint norgrows=org.contains('\n')+1;
+    FXint novrrows=ovr.contains('\n')+1;
+    FXint novrcols=maxColumns(ovr,tabcolumns);
+    FXString rep(' ',org.length()+ovr.length()+(startcol+novrcols+1)*Math::imax(novrrows,norgrows));
+    FXchar* repend=overstrikecolumns(rep.text(),rep.text()+rep.length(),org.text(),org.text()+org.length(),ovr.text(),ovr.text()+ovr.length(),startcol);
+    rep.trunc(repend-rep.text());
+    if(!(options&TEXT_NO_TABS)){ rep=FXString::entab(rep,tabcolumns); }
+    return replaceStyledText(startpos,endpos-startpos,rep,style,notify);
     }
   return 0;
   }
 
-
 // Overstrike styled text block
-FXint FXText::overstrikeStyledTextBlock(FXint startpos,FXint endpos,FXint startcol,FXint endcol,const FXString& text,FXint style,FXbool notify){
-  return overstrikeStyledTextBlock(startpos,endpos,startcol,endcol,text.text(),text.length(),style,notify);
+FXint FXText::overstrikeStyledTextBlock(FXint startpos,FXint endpos,FXint startcol,const FXString& text,FXint style,FXbool notify){
+  return overstrikeStyledTextBlock(startpos,endpos,startcol,text.text(),text.length(),style,notify);
   }
-
 
 /*******************************************************************************/
 
@@ -3020,29 +3206,41 @@ FXint FXText::insertTextBlock(FXint startpos,FXint endpos,FXint startcol,const F
   }
 
 
-// Insert text columns at startcol in line starting at startpos to endpos with given style
+#if 0
+// Insert text columns at startcol in line starting at startpos to endpos with given style (version only affecting inserted rows)
 FXint FXText::insertStyledTextBlock(FXint startpos,FXint endpos,FXint startcol,const FXchar *text,FXint num,FXint style,FXbool notify){
   if(0<=startpos && startpos<=endpos && endpos<=length && 0<=startcol){
-    FXint norgrows,norgtabs,ninstabs,ninscols;
-    FXchar *orgend,*repend;
-    FXString org,rep;
-    extractText(rep,startpos,endpos-startpos);
-    norgrows=countchars(&rep[0],&rep[rep.length()],'\n')+1;
-    norgtabs=countchars(&rep[0],&rep[rep.length()],'\t');
-    org.length(endpos-startpos+norgtabs*tabcolumns);
-    orgend=detab(&org[0],&org[org.length()],&rep[0],&rep[rep.length()],tabcolumns);
-    ninstabs=countchars(text,text+num,'\t');
-    ninscols=maxcolumns(text,text+num,tabcolumns);
-    rep.length(orgend-&org[0]+norgrows*(num+ninstabs*tabcolumns));
-    repend=insertcolumns(&rep[0],&rep[rep.length()],&org[0],orgend,text,text+num,startcol,ninscols);
-    if(!(options&TEXT_NO_TABS)){
-      repend=entab(&rep[0],repend,&rep[0],repend,tabcolumns);
-      }
-    return replaceStyledText(startpos,endpos-startpos,&rep[0],repend-&rep[0],style,notify);
+    FXString ins=FXString::detab(text,num,tabcolumns);
+    FXint ninscols=maxColumns(ins,tabcolumns);
+    FXint ninsrows=ins.contains('\n')+1;
+    FXint end=lineEnd(nextLine(startpos,ninsrows-1));
+    FXString org=FXString::detab(extractText(startpos,end-startpos),tabcolumns);
+    FXString rep(' ',org.length()+ins.length()+(startcol+ninscols+1)*ninsrows);
+    FXchar *repend=insertcolumns(&rep[0],&rep[rep.length()],org.text(),org.text()+org.length(),ins.text(),ins.text()+ins.length(),startcol,ninscols);
+    rep.trunc(repend-rep.text());
+    if(!(options&TEXT_NO_TABS)){ rep=FXString::entab(rep,tabcolumns); }
+    return replaceStyledText(startpos,end-startpos,rep,style,notify);
     }
   return 0;
   }
+#endif
 
+// Insert text columns at startcol in line starting at startpos to endpos with given style
+FXint FXText::insertStyledTextBlock(FXint startpos,FXint endpos,FXint startcol,const FXchar *text,FXint num,FXint style,FXbool notify){
+  if(0<=startpos && startpos<=endpos && endpos<=length && 0<=startcol){
+    FXString org=FXString::detab(extractText(startpos,endpos-startpos),tabcolumns);
+    FXString ins=FXString::detab(text,num,tabcolumns);
+    FXint norgrows=org.contains('\n')+1;
+    FXint ninsrows=ins.contains('\n')+1;
+    FXint ninscols=maxColumns(ins,tabcolumns);
+    FXString rep(' ',org.length()+ins.length()+(startcol+ninscols+1)*Math::imax(ninsrows,norgrows));
+    FXchar *repend=insertcolumns(&rep[0],&rep[rep.length()],org.text(),org.text()+org.length(),ins.text(),ins.text()+ins.length(),startcol,ninscols);
+    rep.trunc(repend-rep.text());
+    if(!(options&TEXT_NO_TABS)){ rep=FXString::entab(rep,tabcolumns); }
+    return replaceStyledText(startpos,endpos-startpos,rep,style,notify);
+    }
+  return 0;
+  }
 
 // Insert text columns at startcol in line starting at startpos to endpos with given style
 FXint FXText::insertStyledTextBlock(FXint startpos,FXint endpos,FXint startcol,const FXString& text,FXint style,FXbool notify){
@@ -3127,22 +3325,16 @@ FXint FXText::removeText(FXint pos,FXint num,FXbool notify){
 // Remove columns startcol to endcol from lines starting at startpos to endpos
 FXint FXText::removeTextBlock(FXint startpos,FXint endpos,FXint startcol,FXint endcol,FXbool notify){
   if(0<=startpos && startpos<=endpos && endpos<=length && 0<=startcol && startcol<=endcol){
-    FXchar *orgend,*repend;
-    FXString src,org,rep;
-    FXint nsrctabs;
-    extractText(src,startpos,endpos-startpos);
-    nsrctabs=countchars(&src[0],&src[src.length()],'\t');
-    org.length(endpos-startpos+nsrctabs*tabcolumns);
-    orgend=detab(&org[0],&org[org.length()],&src[0],&src[src.length()],tabcolumns);
-    rep.length(orgend-&org[0]);
-    repend=removecolumns(&rep[0],&rep[rep.length()],&org[0],orgend,startcol,endcol);
-    if(!(options&TEXT_NO_TABS)){
-      repend=entab(&rep[0],repend,&rep[0],repend,tabcolumns);
-      }
-    return replaceStyledText(startpos,endpos-startpos,&rep[0],repend-&rep[0],0,notify);
+    FXString org=FXString::detab(extractText(startpos,endpos-startpos),tabcolumns);
+    FXString rep(' ',org.length());
+    FXchar* repend=removecolumns(rep.text(),rep.text()+rep.length(),org.text(),org.text()+org.length(),startcol,endcol);
+    rep.trunc(repend-rep.text());
+    if(!(options&TEXT_NO_TABS)){ rep=FXString::entab(rep,tabcolumns); }
+    return replaceStyledText(startpos,endpos-startpos,rep,0,notify);
     }
   return 0;
   }
+
 
 /*******************************************************************************/
 
@@ -3262,18 +3454,11 @@ void FXText::extractStyle(FXString& style,FXint pos,FXint num) const {
 // Extract block of columns
 void FXText::extractTextBlock(FXString& text,FXint startpos,FXint endpos,FXint startcol,FXint endcol) const {
   if(startpos<endpos && startcol<=endcol){
-    FXchar *textend;
-    FXString src;
-    FXint ntabs;
-    extractText(src,startpos,endpos-startpos);
-    ntabs=countchars(&src[0],&src[endpos-startpos],'\t');
-    text.length(endpos-startpos+ntabs*tabcolumns);
-    textend=detab(&text[0],&text[text.length()],&src[0],&src[endpos-startpos],tabcolumns);
-    textend=extractcolumns(&text[0],textend,&text[0],textend,startcol,endcol);
-    if(!(options&TEXT_NO_TABS)){
-      textend=entab(&text[0],textend,&text[0],textend,tabcolumns);
-      }
-    text.trunc(textend-&text[0]);
+    FXString org=FXString::detab(extractText(startpos,endpos-startpos),tabcolumns);
+    text.length(org.length());
+    FXchar* textend=extractcolumns(text.text(),text.text()+text.length(),org.text(),org.text()+org.length(),startcol,endcol);
+    text.trunc(textend-text.text());
+    if(!(options&TEXT_NO_TABS)){ text=FXString::entab(text,tabcolumns); }
     }
   else{
     text.clear();
@@ -3337,35 +3522,6 @@ FXint FXText::overstruck(FXint start,FXint end,const FXchar *text,FXint num){
     end=p;
     }
   return end;
-  }
-
-/*******************************************************************************/
-
-// Shift block of lines from position start up to end by given indent
-FXint FXText::shiftText(FXint startpos,FXint endpos,FXint shift,FXbool notify){
-  if(0<=startpos && startpos<endpos && endpos<=length){
-    FXString org=extractText(startpos,endpos-startpos);
-    FXString rep=FXString::tabbify(org,tabcolumns,0,0,shift,!(options&TEXT_NO_TABS));
-    return replaceStyledText(startpos,endpos-startpos,rep,0,notify);
-    }
-  return 0;
-  }
-
-/*******************************************************************************/
-
-// Shift case of text
-FXint FXText::caseShift(FXint startpos,FXint endpos,FXint upper,FXbool notify){
-  if(startpos<endpos){
-    FXString text;
-    extractText(text,startpos,endpos-startpos);
-    switch(upper){
-      case 1: text.upper(); break;
-      case 0: text.lower(); break;
-      }
-    replaceText(startpos,endpos-startpos,text,notify);
-    return text.length();
-    }
-  return 0;
   }
 
 /*******************************************************************************/
@@ -3577,6 +3733,7 @@ FXbool FXText::isPosSelected(FXint pos) const {
   return select.startpos<=pos && pos<=select.endpos && select.startpos<select.endpos && select.startcol>select.endcol;
   }
 
+/*******************************************************************************/
 
 // Get selected text
 FXString FXText::getSelectedText() const {
@@ -3589,7 +3746,6 @@ FXString FXText::getSelectedText() const {
   return FXString::null;
   }
 
-/*******************************************************************************/
 
 // Copy selection to clipboard
 FXbool FXText::copySelection(){
@@ -3615,21 +3771,18 @@ FXbool FXText::cutSelection(FXbool notify){
 
 // Replace selection by other text
 FXbool FXText::replaceSelection(const FXString& text,FXbool notify){
-  if(select.startpos<=select.endpos){
-    FXint pos,cols,ins;
-    if(select.startcol<=select.endcol){
-      cols=maxcolumns(text.text(),text.text()+text.length(),tabcolumns);
-      ins=replaceTextBlock(select.startpos,select.endpos,select.startcol,select.endcol,text,notify);
-      pos=posFromColumn(lineStart(select.startpos+ins),select.startcol+cols);
-      moveCursor(pos,notify);
-      return true;
-      }
-    if(select.startpos<select.endpos){
-      ins=replaceText(select.startpos,select.endpos-select.startpos,text,notify);
-      pos=select.startpos+ins;
-      moveCursor(pos,notify);
-      return true;
-      }
+  if((select.startcol<select.endcol) && (select.startpos<=select.endpos)){
+    FXint cols=maxColumns(text,tabcolumns);
+    FXint ins=replaceTextBlock(select.startpos,select.endpos,select.startcol,select.endcol,text,notify);
+    FXint pos=posFromColumn(lineStart(select.startpos+ins),select.startcol+cols);
+    moveCursor(pos,notify);
+    return true;
+    }
+  if((select.startcol>select.endcol) && (select.startpos<select.endpos)){
+    FXint ins=replaceText(select.startpos,select.endpos-select.startpos,text,notify);
+    FXint pos=select.startpos+ins;
+    moveCursor(pos,notify);
+    return true;
     }
   return false;
   }
@@ -3637,19 +3790,16 @@ FXbool FXText::replaceSelection(const FXString& text,FXbool notify){
 
 // Delete selection
 FXbool FXText::deleteSelection(FXbool notify){
-  if(select.startpos<=select.endpos){
-    FXint pos,ins;
-    if(select.startcol<select.endcol){
-      ins=removeTextBlock(select.startpos,select.endpos,select.startcol,select.endcol,notify);
-      pos=posFromColumn(lineStart(select.startpos+ins),select.startcol);
-      moveCursor(pos,notify);
-      return true;
-      }
-    if(select.startpos<select.endpos){
-      removeText(select.startpos,select.endpos-select.startpos,notify);
-      moveCursor(select.startpos,notify);
-      return true;
-      }
+  if((select.startcol<select.endcol) && (select.startpos<=select.endpos)){
+    FXint ins=removeTextBlock(select.startpos,select.endpos,select.startcol,select.endcol,notify);
+    FXint pos=posFromColumn(lineStart(select.startpos+ins),select.startcol);
+    moveCursor(pos,notify);
+    return true;
+    }
+  if((select.startcol>select.endcol) && (select.startpos<select.endpos)){
+    removeText(select.startpos,select.endpos-select.startpos,notify);
+    moveCursor(select.startpos,notify);
+    return true;
     }
   return false;
   }
@@ -3665,13 +3815,29 @@ FXbool FXText::deletePendingSelection(FXbool notify){
 FXbool FXText::pasteSelection(FXbool notify){
 
   // Don't paste inside selection
-  if((select.startpos>select.endpos) || (cursorpos<=select.startpos) || (select.endpos<=cursorpos)){
+  if(!isPosSelected(cursorpos,cursorvcol)){
     FXString string;
 
     // Try UTF-8, then UTF-16, then 8859-1
     if(getDNDData(FROM_SELECTION,utf8Type,string) || getDNDData(FROM_SELECTION,utf16Type,string) || getDNDData(FROM_SELECTION,stringType,string)){
-      FXint pos=cursorpos;
-      FXint ins;
+      FXint pos=cursorpos,ins;
+
+      // Insert at vertical cursor
+      if((select.startcol<=select.endcol) && (select.startpos<=select.endpos)){
+        FXint cols=maxColumns(string,tabcolumns);
+        if(isOverstrike()){
+          ins=overstrikeTextBlock(select.startpos,select.endpos,select.startcol,string,notify);
+          }
+        else{
+          ins=insertTextBlock(select.startpos,select.endpos,select.startcol,string,notify);
+          }
+        pos=posFromColumn(lineStart(select.startpos+ins),select.startcol+cols);
+        makePositionVisible(pos);
+        setCursorPos(pos,notify);
+        setAnchorPos(pos);
+        flashMatching();
+        return true;
+        }
 
       // Overstrike mode, extent
       if(isOverstrike()){       // FIXME should overstrike always be block-mode?
@@ -3703,8 +3869,7 @@ FXbool FXText::pasteClipboard(FXbool notify){
 
   // Try UTF-8, then UTF-16, then 8859-1
   if(getDNDData(FROM_CLIPBOARD,utf8Type,string) || getDNDData(FROM_CLIPBOARD,utf16Type,string) || getDNDData(FROM_CLIPBOARD,stringType,string)){
-    FXint pos=cursorpos;
-    FXint ins;
+    FXint pos=cursorpos,ins;
 
     // De-DOS
 #ifdef WIN32
@@ -3716,6 +3881,20 @@ FXbool FXText::pasteClipboard(FXbool notify){
       return true;
       }
 
+    // Insert at vertical cursor
+    if((select.startcol<=select.endcol) && (select.startpos<=select.endpos)){
+      FXint cols=maxColumns(string,tabcolumns);
+      if(isOverstrike()){
+        ins=overstrikeTextBlock(select.startpos,select.endpos,select.startcol,string,notify);
+        }
+      else{
+        ins=insertTextBlock(select.startpos,select.endpos,select.startcol,string,notify);
+        }
+      pos=posFromColumn(lineStart(select.startpos+ins),select.startcol+cols);
+      moveCursor(pos,notify);
+      return true;
+      }
+
     // Overstrike
     if(isOverstrike()){         // FIXME should overstrike always be block-mode?
       ins=overstruck(pos,pos,string.text(),string.length());
@@ -3724,7 +3903,7 @@ FXbool FXText::pasteClipboard(FXbool notify){
       return true;
       }
 
-    // Default is insert
+    // Default is to insert at cursor
     ins=insertText(pos,string,notify);
     moveCursor(pos+ins,notify);
     return true;
@@ -3833,9 +4012,9 @@ void FXText::eraseCursor(FXDCWindow& dc) const {
         dc.setFont(font);
         dc.setForeground(backColor);
         dc.fillRectangle(cursorx-2,cursory,tw+4,th);
-        cx=FXMAX(cursorx-2,getVisibleX()+marginleft);
+        cx=Math::imax(cursorx-2,getVisibleX()+marginleft);
         cy=getVisibleY()+margintop;
-        cw=FXMIN(cursorx+tw+2,getVisibleX()+getVisibleWidth()-marginright)-cx;
+        cw=Math::imin(cursorx+tw+2,getVisibleX()+getVisibleWidth()-marginright)-cx;
         ch=getVisibleHeight()-margintop-marginbottom;
         dc.setClipRectangle(cx,cy,cw,ch);
         FXASSERT(toprow<=cursorrow && cursorrow<toprow+nvisrows);
@@ -4461,14 +4640,16 @@ long FXText::onUpdIsEditable(FXObject* sender,FXSelector,void*){
 
 // Update somebody who works on the selection
 long FXText::onUpdHaveSelection(FXObject* sender,FXSelector,void*){
-  sender->handle(this,(select.startpos<=select.endpos)?FXSEL(SEL_COMMAND,ID_ENABLE):FXSEL(SEL_COMMAND,ID_DISABLE),nullptr);
+  FXbool selection=((select.startcol<select.endcol) && (select.startpos<=select.endpos)) || ((select.startcol>select.endcol) && (select.startpos<select.endpos));
+  sender->handle(this,selection?FXSEL(SEL_COMMAND,ID_ENABLE):FXSEL(SEL_COMMAND,ID_DISABLE),nullptr);
   return 1;
   }
 
 
 // Update somebody who works on the selection and change the text
 long FXText::onUpdHaveEditableSelection(FXObject* sender,FXSelector,void*){
-  sender->handle(this,isEditable() && (select.startpos<=select.endpos)?FXSEL(SEL_COMMAND,ID_ENABLE):FXSEL(SEL_COMMAND,ID_DISABLE),nullptr);
+  FXbool selection=((select.startcol<select.endcol) && (select.startpos<=select.endpos)) || ((select.startcol>select.endcol) && (select.startpos<select.endpos));
+  sender->handle(this,isEditable() && selection?FXSEL(SEL_COMMAND,ID_ENABLE):FXSEL(SEL_COMMAND,ID_DISABLE),nullptr);
   return 1;
   }
 
@@ -5407,7 +5588,7 @@ long FXText::onCmdCursorDown(FXObject*,FXSelector,void*){
 // Page up
 long FXText::onCmdCursorPageUp(FXObject*,FXSelector,void*){
   FXint col=(0<=prefcol) ? prefcol : cursorcol;
-  FXint lines=FXMAX(nvisrows-2,1);
+  FXint lines=Math::imax(nvisrows-2,1);
   setTopLine(prevRow(toppos,lines));
   moveCursor(posFromColumn(prevRow(cursorpos,lines),col),true);
   prefcol=col;
@@ -5418,7 +5599,7 @@ long FXText::onCmdCursorPageUp(FXObject*,FXSelector,void*){
 // Page down
 long FXText::onCmdCursorPageDown(FXObject*,FXSelector,void*){
   FXint col=(0<=prefcol) ? prefcol : cursorcol;
-  FXint lines=FXMAX(nvisrows-2,1);
+  FXint lines=Math::imax(nvisrows-2,1);
   setTopLine(nextRow(toppos,lines));
   moveCursor(posFromColumn(nextRow(cursorpos,lines),col),true);
   prefcol=col;
@@ -5503,7 +5684,7 @@ long FXText::onCmdCursorShiftDown(FXObject*,FXSelector,void*){
 // Process cursor shift+page up
 long FXText::onCmdCursorShiftPageUp(FXObject*,FXSelector,void*){
   FXint col=(0<=prefcol) ? prefcol : cursorcol;
-  FXint lines=FXMAX(nvisrows-2,1);
+  FXint lines=Math::imax(nvisrows-2,1);
   setTopLine(prevRow(toppos,lines));
   moveCursorAndSelect(posFromColumn(prevRow(cursorpos,lines),col),SelectChars,true);
   prefcol=col;
@@ -5514,7 +5695,7 @@ long FXText::onCmdCursorShiftPageUp(FXObject*,FXSelector,void*){
 // Process cursor shift+page down
 long FXText::onCmdCursorShiftPageDown(FXObject*,FXSelector,void*){
   FXint col=(0<=prefcol) ? prefcol : cursorcol;
-  FXint lines=FXMAX(nvisrows-2,1);
+  FXint lines=Math::imax(nvisrows-2,1);
   setTopLine(nextRow(toppos,lines));
   moveCursorAndSelect(posFromColumn(nextRow(cursorpos,lines),col),SelectChars,true);
   prefcol=col;
@@ -5610,7 +5791,7 @@ long FXText::onCmdInsertString(FXObject*,FXSelector,void* ptr){
     FXint len=strlen(txt);
     FXint beg=cursorpos;
     FXint end=cursorpos;
-    FXint rows,cols,ins;
+    FXint rows,ins;
     FXString rep;
 
     // Position is selected
@@ -5621,15 +5802,14 @@ long FXText::onCmdInsertString(FXObject*,FXSelector,void* ptr){
       // Block selection
       if(select.startcol<select.endcol){
         rows=countLines(beg,end);
-        cols=maxcolumns(txt,txt+len,tabcolumns);
+        if(0<len && txt[len-1]=='\n'){ --len; }
         for(FXint i=0; i<rows; ++i){
           rep.append(txt,len);
           rep.append('\n');
           }
         rep.append(txt,len);
-//        ins=replaceTextBlock(select.startpos,select.endpos,select.startcol,select.endcol,txt,len,true);
         ins=replaceTextBlock(select.startpos,select.endpos,select.startcol,select.endcol,rep,true);
-        beg=posFromColumn(lineStart(beg+ins),select.startcol+cols);
+        beg=posFromColumn(lineStart(beg+ins),select.startcol)+len;
         moveCursor(beg,true);
         return 1;
         }
@@ -5676,24 +5856,40 @@ long FXText::onCmdInsertNewlineOnly(FXObject*,FXSelector,void*){
   }
 
 
-// Insert a character
-// For block-select, just delete the block
-long FXText::onCmdInsertNewlineIndent(FXObject*,FXSelector,void*){
-  FXString string;
-  FXint start,n;
-  if(isPosSelected(cursorpos,cursorvcol)){
-    if(select.startcol>=select.endcol){
-      start=lineStart(select.startpos);
-      string="\n"+extractText(start,select.startpos-start);
-      n=string.find_first_not_of(" \t\v\n");
-      if(0<=n) string.trunc(n);
+// Create indent string
+static FXString makeIndentString(FXint indent,FXint tabcols){
+  FXString result(' ',indent+1);
+  result[0]='\n';
+  if(0<tabcols){
+    FXint i=1;
+    while(tabcols<=indent){
+      result[i++]='\t';
+      indent-=tabcols;
       }
+    while(0<indent){
+      result[i++]=' ';
+      indent-=1;
+      }
+    result.trunc(i);
     }
-  else{
-    start=lineStart(cursorpos);
-    string="\n"+extractText(start,cursorpos-start);
-    n=string.find_first_not_of(" \t\v\n");
-    if(0<=n) string.trunc(n);
+  return result;
+  }
+
+
+// Insert newline with optional indent
+// If block-selection in effect, delete the block selection; if range-selection in effect,
+// replace it with indented empty line; otherwise, append indented empty line.
+long FXText::onCmdInsertNewlineIndent(FXObject*,FXSelector,void*){
+  FXString string("\n");
+  if(select.startcol>select.endcol){
+    FXint pos,start,indent;
+    pos=cursorpos;
+    if(isPosSelected(cursorpos)){
+      pos=select.endpos;
+      }
+    start=lineStart(pos);
+    indent=indentOfLine(start,pos);     // Indent to up to position, or first non-blank
+    string=makeIndentString(indent,(options&TEXT_NO_TABS)?0:tabcolumns);
     }
   return onCmdInsertString(this,FXSEL(SEL_COMMAND,ID_INSERT_STRING),(void*)string.text());
   }
@@ -5992,20 +6188,35 @@ long FXText::onCmdDeleteAll(FXObject*,FXSelector,void*){
 
 /*******************************************************************************/
 
+// Shift block of lines from position start up to end by given indent
+FXint FXText::shiftText(FXint startpos,FXint endpos,FXint shift,FXbool notify){
+  if(0<=startpos && startpos<endpos && endpos<=length){
+    FXString org=extractText(startpos,endpos-startpos);
+    FXString rep=FXString::tabbify(org,tabcolumns,0,0,shift,!(options&TEXT_NO_TABS));
+    return replaceStyledText(startpos,endpos-startpos,rep,0,notify);
+    }
+  return 0;
+  }
+
+
 // Shift selected lines left or right, or clean indent
 // Try keep the cursor on same row and (adjusted) column as before
 long FXText::onCmdShiftText(FXObject*,FXSelector sel,void*){
   if(isEditable()){
     FXint startpos,endpos,len;
-    FXint curc=getCursorColumn();
-    FXint curr=getCursorRow();
+    FXint currow=getCursorRow();
+    FXint cursta=rowStart(getCursorPos());
+    FXint curcol=columnFromPos(cursta,getCursorPos());
+    FXint curind=indentOfLine(cursta,getCursorPos());
     FXint indent=0;
+    FXint newcol;
     switch(FXSELID(sel)){
       case ID_SHIFT_LEFT: indent=-1; break;
       case ID_SHIFT_RIGHT: indent=1; break;
       case ID_SHIFT_TABLEFT: indent=-tabcolumns; break;
       case ID_SHIFT_TABRIGHT: indent=tabcolumns; break;
       }
+    newcol=curcol-curind+Math::imax(curind+indent,0);
     if(select.startpos<=select.endpos){
       startpos=lineStart(select.startpos);
       endpos=nextLine(select.endpos-1);
@@ -6017,8 +6228,8 @@ long FXText::onCmdShiftText(FXObject*,FXSelector sel,void*){
       }
     len=shiftText(startpos,endpos,indent,true);
     setSelection(startpos,len,true);
-    setAnchorRowColumn(curr,FXMAX(curc+indent,0));
-    setCursorRowColumn(curr,FXMAX(curc+indent,0),true);
+    setAnchorRowColumn(currow,newcol);
+    setCursorRowColumn(currow,newcol,true);
     }
   else{
     getApp()->beep();
@@ -6031,26 +6242,23 @@ long FXText::onCmdShiftText(FXObject*,FXSelector sel,void*){
 // Make selected text upper case
 long FXText::onCmdChangeCase(FXObject*,FXSelector sel,void*){
   if(isEditable()){
-    FXint startpos,endpos,len;
-    FXint upper=(FXSELID(sel)==ID_UPPER_CASE);
     FXint curc=getCursorColumn();
     FXint curr=getCursorRow();
-    if(select.startpos<=select.endpos){
-      startpos=select.startpos;
-      endpos=select.endpos;
+    if((select.startcol<select.endcol) && (select.startpos<=select.endpos)){
+      FXString string=extractTextBlock(select.startpos,select.endpos,select.startcol,select.endcol);
+      if(FXSELID(sel)==ID_UPPER_CASE){string.upper();} else{string.lower();}
+      replaceTextBlock(select.startpos,select.endpos,select.startcol,select.endcol,string,true);
       }
-    else{
-      startpos=cursorpos;
-      endpos=inc(cursorpos);
+    if((select.startcol>select.endcol) && (select.startpos<select.endpos)){
+      FXString string=extractText(select.startpos,select.endpos-select.startpos);
+      if(FXSELID(sel)==ID_UPPER_CASE){string.upper();} else{string.lower();}
+      replaceText(select.startpos,select.endpos-select.startpos,string,true);
       }
-    len=caseShift(startpos,endpos,upper,true);
-    setSelection(startpos,len,true);
     setAnchorRowColumn(curr,curc);
     setCursorRowColumn(curr,curc,true);
+    return 1;
     }
-  else{
-    getApp()->beep();
-    }
+  getApp()->beep();
   return 1;
   }
 
@@ -6404,7 +6612,7 @@ void FXText::setWrapColumns(FXint cols){
 
 // Set tab columns
 void FXText::setTabColumns(FXint cols){
-  cols=FXCLAMP(1,cols,MAXTABCOLUMNS);
+  cols=Math::iclamp(1,cols,MAXTABCOLUMNS);
   if(cols!=tabcolumns){
     tabcolumns=cols;
     tabwidth=tabcolumns*font->getTextWidth(" ",1);

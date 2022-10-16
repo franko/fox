@@ -48,6 +48,32 @@ namespace FX {
 
 /*******************************************************************************/
 
+/// EXPERIMENT ///
+
+
+typedef long (*NewMethod)(FX::FXObject*,FX::FXObject*,FX::FXSelector,void*);
+
+struct NewMapEntry {
+  FX::FXSelector keylo;
+  FX::FXSelector keyhi;
+  FX::NewMethod  method;
+  };
+
+extern const NewMapEntry messagemap[];
+
+
+template <typename T,long (T::*mfn)(FX::FXObject*,FX::FXSelector,void*)>
+static long method_call(FX::FXObject* tgt,FX::FXObject* obj,FX::FXSelector sel,void* ptr){
+  return (tgt->*mfn)(obj,sel,ptr);
+  }
+
+const NewMapEntry messagemap[]={
+  {100,200,&method_call<FXObject,&FXObject::onDefault>},
+  };
+
+
+/// EXPERIMENT ///
+
 // Have to do this one `by hand' as it has no base class
 const FXMetaClass FXObject::metaClass("FXObject",FXObject::manufacture,nullptr,nullptr,0,0);
 

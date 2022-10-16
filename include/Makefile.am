@@ -227,6 +227,7 @@ FXPPMIcon.h \
 FXPPMImage.h \
 FXPacker.h \
 FXParallel.h \
+FXParseBuffer.h \
 FXPath.h \
 FXPicker.h \
 FXPipe.h \
@@ -351,6 +352,7 @@ FXXPMImage.h \
 fx.h \
 fx3d.h \
 fxascii.h \
+fxchar.h \
 fxcpuid.h \
 fxdefs.h \
 fxmath.h \

@@ -21,6 +21,7 @@
 #include "xincs.h"
 #include "fxver.h"
 #include "fxdefs.h"
+#include "fxchar.h"
 #include "fxmath.h"
 #include "fxkeys.h"
 #include "FXArray.h"
@@ -148,7 +149,7 @@ namespace FX {
 *                                   MS-Windows                                  *
 ********************************************************************************/
 
-#ifdef WIN32
+#if defined(WIN32)
 
 // This one is not defined in the Cygwin header files
 #ifndef PS_JOIN_MASK
@@ -1862,14 +1863,14 @@ void FXDCWindow::drawPoint(FXint x,FXint y){
 // Draw points
 void FXDCWindow::drawPoints(const FXPoint* points,FXuint npoints){
   if(!surface){ fxerror("FXDCWindow::drawPoints: DC not connected to drawable.\n"); }
-  XDrawPoints((Display*)getApp()->getDisplay(),surface->id(),(GC)ctx,(XPoint*)points,npoints,CoordModeOrigin);
+  XDrawPoints((Display*)getApp()->getDisplay(),surface->id(),(GC)ctx,const_cast<XPoint*>((const XPoint*)points),npoints,CoordModeOrigin);
   }
 
 
 // Draw points relative
 void FXDCWindow::drawPointsRel(const FXPoint* points,FXuint npoints){
   if(!surface){ fxerror("FXDCWindow::drawPointsRel: DC not connected to drawable.\n"); }
-  XDrawPoints((Display*)getApp()->getDisplay(),surface->id(),(GC)ctx,(XPoint*)points,npoints,CoordModePrevious);
+  XDrawPoints((Display*)getApp()->getDisplay(),surface->id(),(GC)ctx,const_cast<XPoint*>((const XPoint*)points),npoints,CoordModePrevious);
   }
 
 
@@ -1883,21 +1884,21 @@ void FXDCWindow::drawLine(FXint x1,FXint y1,FXint x2,FXint y2){
 // Draw lines
 void FXDCWindow::drawLines(const FXPoint* points,FXuint npoints){
   if(!surface){ fxerror("FXDCWindow::drawLines: DC not connected to drawable.\n"); }
-  XDrawLines((Display*)getApp()->getDisplay(),surface->id(),(GC)ctx,(XPoint*)points,npoints,CoordModeOrigin);
+  XDrawLines((Display*)getApp()->getDisplay(),surface->id(),(GC)ctx,const_cast<XPoint*>((const XPoint*)points),npoints,CoordModeOrigin);
   }
 
 
 // Draw lines relative
 void FXDCWindow::drawLinesRel(const FXPoint* points,FXuint npoints){
   if(!surface){ fxerror("FXDCWindow::drawLinesRel: DC not connected to drawable.\n"); }
-  XDrawLines((Display*)getApp()->getDisplay(),surface->id(),(GC)ctx,(XPoint*)points,npoints,CoordModePrevious);
+  XDrawLines((Display*)getApp()->getDisplay(),surface->id(),(GC)ctx,const_cast<XPoint*>((const XPoint*)points),npoints,CoordModePrevious);
   }
 
 
 // Draw line segments
 void FXDCWindow::drawLineSegments(const FXSegment* segments,FXuint nsegments){
   if(!surface){ fxerror("FXDCWindow::drawLineSegments: DC not connected to drawable.\n"); }
-  XDrawSegments((Display*)getApp()->getDisplay(),surface->id(),(GC)ctx,(XSegment*)segments,nsegments);
+  XDrawSegments((Display*)getApp()->getDisplay(),surface->id(),(GC)ctx,const_cast<XSegment*>((const XSegment*)segments),nsegments);
   }
 
 
@@ -1911,7 +1912,7 @@ void FXDCWindow::drawRectangle(FXint x,FXint y,FXint w,FXint h){
 // Draw rectangles
 void FXDCWindow::drawRectangles(const FXRectangle* rectangles,FXuint nrectangles){
   if(!surface){ fxerror("FXDCWindow::drawRectangles: DC not connected to drawable.\n"); }
-  XDrawRectangles((Display*)getApp()->getDisplay(),surface->id(),(GC)ctx,(XRectangle*)rectangles,nrectangles);
+  XDrawRectangles((Display*)getApp()->getDisplay(),surface->id(),(GC)ctx,const_cast<XRectangle*>((const XRectangle*)rectangles),nrectangles);
   }
 
 
@@ -1962,7 +1963,7 @@ void FXDCWindow::drawArc(FXint x,FXint y,FXint w,FXint h,FXint ang1,FXint ang2){
 // Draw arcs
 void FXDCWindow::drawArcs(const FXArc* arcs,FXuint narcs){
   if(!surface){ fxerror("FXDCWindow::drawArcs: DC not connected to drawable.\n"); }
-  XDrawArcs((Display*)getApp()->getDisplay(),surface->id(),(GC)ctx,(XArc*)arcs,narcs);
+  XDrawArcs((Display*)getApp()->getDisplay(),surface->id(),(GC)ctx,const_cast<XArc*>((const XArc*)arcs),narcs);
   }
 
 
@@ -1983,7 +1984,7 @@ void FXDCWindow::fillRectangle(FXint x,FXint y,FXint w,FXint h){
 // Fill rectangles
 void FXDCWindow::fillRectangles(const FXRectangle* rectangles,FXuint nrectangles){
   if(!surface){ fxerror("FXDCWindow::fillRectangles: DC not connected to drawable.\n"); }
-  XFillRectangles((Display*)getApp()->getDisplay(),surface->id(),(GC)ctx,(XRectangle*)rectangles,nrectangles);
+  XFillRectangles((Display*)getApp()->getDisplay(),surface->id(),(GC)ctx,const_cast<XRectangle*>((const XRectangle*)rectangles),nrectangles);
   }
 
 
@@ -2034,7 +2035,7 @@ void FXDCWindow::fillChord(FXint x,FXint y,FXint w,FXint h,FXint ang1,FXint ang2
 void FXDCWindow::fillChords(const FXArc* chords,FXuint nchords){
   if(!surface){ fxerror("FXDCWindow::fillChords: DC not connected to drawable.\n"); }
   XSetArcMode((Display*)getApp()->getDisplay(),(GC)ctx,ArcChord);
-  XFillArcs((Display*)getApp()->getDisplay(),surface->id(),(GC)ctx,(XArc*)chords,nchords);
+  XFillArcs((Display*)getApp()->getDisplay(),surface->id(),(GC)ctx,const_cast<XArc*>((const XArc*)chords),nchords);
   XSetArcMode((Display*)getApp()->getDisplay(),(GC)ctx,ArcPieSlice);
   }
 
@@ -2049,7 +2050,7 @@ void FXDCWindow::fillArc(FXint x,FXint y,FXint w,FXint h,FXint ang1,FXint ang2){
 // Fill arcs
 void FXDCWindow::fillArcs(const FXArc* arcs,FXuint narcs){
   if(!surface){ fxerror("FXDCWindow::fillArcs: DC not connected to drawable.\n"); }
-  XFillArcs((Display*)getApp()->getDisplay(),surface->id(),(GC)ctx,(XArc*)arcs,narcs);
+  XFillArcs((Display*)getApp()->getDisplay(),surface->id(),(GC)ctx,const_cast<XArc*>((const XArc*)arcs),narcs);
   }
 
 
@@ -2063,42 +2064,42 @@ void FXDCWindow::fillEllipse(FXint x,FXint y,FXint w,FXint h){
 // Fill polygon
 void FXDCWindow::fillPolygon(const FXPoint* points,FXuint npoints){
   if(!surface){ fxerror("FXDCWindow::fillArcs: DC not connected to drawable.\n"); }
-  XFillPolygon((Display*)getApp()->getDisplay(),surface->id(),(GC)ctx,(XPoint*)points,npoints,Convex,CoordModeOrigin);
+  XFillPolygon((Display*)getApp()->getDisplay(),surface->id(),(GC)ctx,const_cast<XPoint*>((const XPoint*)points),npoints,Convex,CoordModeOrigin);
   }
 
 
 // Fill concave polygon
 void FXDCWindow::fillConcavePolygon(const FXPoint* points,FXuint npoints){
   if(!surface){ fxerror("FXDCWindow::fillConcavePolygon: DC not connected to drawable.\n"); }
-  XFillPolygon((Display*)getApp()->getDisplay(),surface->id(),(GC)ctx,(XPoint*)points,npoints,Nonconvex,CoordModeOrigin);
+  XFillPolygon((Display*)getApp()->getDisplay(),surface->id(),(GC)ctx,const_cast<XPoint*>((const XPoint*)points),npoints,Nonconvex,CoordModeOrigin);
   }
 
 
 // Fill complex polygon
 void FXDCWindow::fillComplexPolygon(const FXPoint* points,FXuint npoints){
   if(!surface){ fxerror("FXDCWindow::fillComplexPolygon: DC not connected to drawable.\n"); }
-  XFillPolygon((Display*)getApp()->getDisplay(),surface->id(),(GC)ctx,(XPoint*)points,npoints,Complex,CoordModeOrigin);
+  XFillPolygon((Display*)getApp()->getDisplay(),surface->id(),(GC)ctx,const_cast<XPoint*>((const XPoint*)points),npoints,Complex,CoordModeOrigin);
   }
 
 
 // Fill polygon relative
 void FXDCWindow::fillPolygonRel(const FXPoint* points,FXuint npoints){
   if(!surface){ fxerror("FXDCWindow::fillPolygonRel: DC not connected to drawable.\n"); }
-  XFillPolygon((Display*)getApp()->getDisplay(),surface->id(),(GC)ctx,(XPoint*)points,npoints,Convex,CoordModePrevious);
+  XFillPolygon((Display*)getApp()->getDisplay(),surface->id(),(GC)ctx,const_cast<XPoint*>((const XPoint*)points),npoints,Convex,CoordModePrevious);
   }
 
 
 // Fill concave polygon relative
 void FXDCWindow::fillConcavePolygonRel(const FXPoint* points,FXuint npoints){
   if(!surface){ fxerror("FXDCWindow::fillConcavePolygonRel: DC not connected to drawable.\n"); }
-  XFillPolygon((Display*)getApp()->getDisplay(),surface->id(),(GC)ctx,(XPoint*)points,npoints,Nonconvex,CoordModePrevious);
+  XFillPolygon((Display*)getApp()->getDisplay(),surface->id(),(GC)ctx,const_cast<XPoint*>((const XPoint*)points),npoints,Nonconvex,CoordModePrevious);
   }
 
 
 // Fill complex polygon relative
 void FXDCWindow::fillComplexPolygonRel(const FXPoint* points,FXuint npoints){
   if(!surface){ fxerror("FXDCWindow::fillComplexPolygonRel: DC not connected to drawable.\n"); }
-  XFillPolygon((Display*)getApp()->getDisplay(),surface->id(),(GC)ctx,(XPoint*)points,npoints,Complex,CoordModePrevious);
+  XFillPolygon((Display*)getApp()->getDisplay(),surface->id(),(GC)ctx,const_cast<XPoint*>((const XPoint*)points),npoints,Complex,CoordModePrevious);
   }
 
 

@@ -268,31 +268,51 @@ FXTreeItem* FXDirList::createItem(const FXString& text,FXIcon* oi,FXIcon* ci,voi
 // Sort ascending order, keeping directories first
 FXint FXDirList::ascending(const FXTreeItem* pa,const FXTreeItem* pb){
   FXint diff=static_cast<const FXDirItem*>(pb)->isDirectory() - static_cast<const FXDirItem*>(pa)->isDirectory();
-  return diff ? diff : compare(pa->label,pb->label);
+  return diff ? diff : FXString::comparenatural(pa->label,pb->label);
   }
 
 
 // Sort descending order, keeping directories first
 FXint FXDirList::descending(const FXTreeItem* pa,const FXTreeItem* pb){
   FXint diff=static_cast<const FXDirItem*>(pb)->isDirectory() - static_cast<const FXDirItem*>(pa)->isDirectory();
-  return diff ? diff : compare(pb->label,pa->label);
+  return diff ? diff : FXString::comparenatural(pb->label,pa->label);
   }
 
 
 // Sort ascending order, case insensitive, keeping directories first
 FXint FXDirList::ascendingCase(const FXTreeItem* pa,const FXTreeItem* pb){
   FXint diff=static_cast<const FXDirItem*>(pb)->isDirectory() - static_cast<const FXDirItem*>(pa)->isDirectory();
-  return diff ? diff : comparecase(pa->label,pb->label);
+  return diff ? diff : FXString::comparenaturalcase(pa->label,pb->label);
   }
 
 
 // Sort descending order, case insensitive, keeping directories first
 FXint FXDirList::descendingCase(const FXTreeItem* pa,const FXTreeItem* pb){
   FXint diff=static_cast<const FXDirItem*>(pb)->isDirectory() - static_cast<const FXDirItem*>(pa)->isDirectory();
-  return diff ? diff : comparecase(pb->label,pa->label);
+  return diff ? diff : FXString::comparenaturalcase(pb->label,pa->label);
   }
 
 /*******************************************************************************/
+
+// Select files matching wildcard pattern
+FXbool FXDirList::selectMatching(const FXString& ptrn,FXuint mode,FXbool notify){
+  FXTreeItem *item=getFirstItem();
+  FXbool changes=false;
+  while(item){
+    if(FXPath::match(getItemText(item),ptrn,mode)){
+      changes|=selectItem(item,notify);
+      }
+    if(item->getFirst()){
+      item=item->getFirst();
+      }
+    else{
+      while(!item->getNext() && item->getParent()) item=item->getParent();
+      item=item->getNext();
+      }
+    }
+  return changes;
+  }
+
 
 // Return uri-list of selected files
 FXString FXDirList::getSelectedFiles() const {
@@ -839,7 +859,7 @@ void FXDirList::listRootItems(FXbool force,FXbool notify){
 
     // Find it, and take it out from the old list if found
     for(FXDirItem** pp=po; (item=*pp)!=nullptr; pp=&item->link){
-      if(comparecase(item->label,name)==0){
+      if(FXString::comparecase(item->label,name)==0){
         *pp=item->link; item->link=nullptr;
         goto fnd;
         }
@@ -1029,7 +1049,7 @@ FXbool FXDirList::listChildItems(FXDirItem *par,FXbool force,FXbool notify){
 
           // Find it, and take it out from the old list if found
           for(FXDirItem** pp=po; (olditem=*pp)!=nullptr; pp=&olditem->link){
-            if(compare(olditem->label,name)==0){
+            if(FXString::compare(olditem->label,name)==0){
               *pp=olditem->link; olditem->link=nullptr;
               break;
               }
@@ -1126,9 +1146,9 @@ FXbool FXDirList::listChildItems(FXDirItem *par,FXbool force,FXbool notify){
 static FXTreeItem* findChildItem(FXTreeItem* item,const FXString& name){
   while(item){
 #ifdef WIN32
-    if(comparecase(name,item->getText())==0) return item;
+    if(FXString::comparecase(name,item->getText())==0) return item;
 #else
-    if(compare(name,item->getText())==0) return item;
+    if(FXString::compare(name,item->getText())==0) return item;
 #endif
     item=item->getNext();
     }

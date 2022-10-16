@@ -65,9 +65,9 @@ FXIMPLEMENT(FXTGAImage,FXImage,nullptr,0)
 
 
 // Initialize
-FXTGAImage::FXTGAImage(FXApp* a,const void *pix,FXuint opts,FXint w,FXint h):FXImage(a,nullptr,opts,w,h){
+FXTGAImage::FXTGAImage(FXApp* a,const FXuchar *pix,FXuint opts,FXint w,FXint h):FXImage(a,nullptr,opts,w,h){
   if(pix){
-    FXMemoryStream ms(FXStreamLoad,(FXuchar*)pix);
+    FXMemoryStream ms(FXStreamLoad,const_cast<FXuchar*>(pix));
     loadPixels(ms);
     }
   }

@@ -42,7 +42,7 @@ public:
 public:
 
   /// Construct icon from memory stream formatted in IRIS-RGB format
-  FXRGBIcon(FXApp* a,const void *pix=nullptr,FXColor clr=FXRGB(192,192,192),FXuint opts=0,FXint w=1,FXint h=1);
+  FXRGBIcon(FXApp* a,const FXuchar *pix=nullptr,FXColor clr=FXRGB(192,192,192),FXuint opts=0,FXint w=1,FXint h=1);
 
   /// Save pixels into stream in IRIS-RGB format
   virtual FXbool savePixels(FXStream& store) const;

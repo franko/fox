@@ -250,7 +250,7 @@ static const FXint militaryzoneoffsets[]={
 static const FXchar *findstring(FXint& result,const FXchar *string,const FXchar *const *list,FXint nlist){
   for(FXint i=0; i<nlist; i++){
     FXuval len=strlen(list[i]);
-    if(comparecase(list[i],string,len)==0){
+    if(FXString::comparecase(list[i],string,len)==0){
       result=i;
       return string+len;
       }
