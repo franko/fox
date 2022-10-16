@@ -21,6 +21,7 @@
 #include "xincs.h"
 #include "fxver.h"
 #include "fxdefs.h"
+#include "fxchar.h"
 #include "fxmath.h"
 #include "fxascii.h"
 #include "fxunicode.h"
@@ -78,7 +79,7 @@
 #define ROUNDUP(n)  (((n)+ROUNDVAL-1)&-ROUNDVAL)
 
 // Special empty string value
-#define EMPTY       ((FXchar*)(void*)(__string__empty__+1))
+#define EMPTY       (const_cast<FXchar*>((const FXchar*)(__string__empty__+1)))
 
 using namespace FX;
 
@@ -134,27 +135,6 @@ const FXschar FXString::digit2Value[256]={
   };
 
 
-// Length of a utf8 character representation
-const FXschar FXString::utfBytes[256]={
-  1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
-  1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
-  1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
-  1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
-  1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
-  1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
-  1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
-  1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
-  1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
-  1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
-  1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
-  1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
-  2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,
-  2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,
-  3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,
-  4,4,4,4,4,4,4,4,5,5,5,5,6,6,1,1
-  };
-
-
 // Furnish our own versions
 extern FXAPI FXint __vsscanf(const FXchar* string,const FXchar* format,va_list arg_ptr);
 extern FXAPI FXint __vsnprintf(FXchar* string,FXint length,const FXchar* format,va_list args);
@@ -189,659 +169,6 @@ static inline FXint strlen(const FXwchar *src){
   FXint i=0;
   while(src[i]) i++;
   return i;
-  }
-
-/*******************************************************************************/
-
-// Return wide character from utf8 string at ptr
-FXwchar wc(const FXchar* ptr){
-  FXwchar w=(FXuchar)ptr[0];
-  if(__unlikely(0xC0<=w)){ w=(w<<6)^(FXuchar)ptr[1]^0x3080;
-  if(__unlikely(0x800<=w)){ w=(w<<6)^(FXuchar)ptr[2]^0x20080;
-  if(__unlikely(0x10000<=w)){ w=(w<<6)^(FXuchar)ptr[3]^0x400080; }}}
-  return w;
-  }
-
-
-// Return wide character from utf16 string at ptr
-FXwchar wc(const FXnchar* ptr){
-  FXwchar w=ptr[0];
-  if(__unlikely(FXISLEADUTF16(w))){ w=SURROGATE_OFFSET+(w<<10)+ptr[1]; }
-  return w;
-  }
-
-
-// Increment to start of next wide character in utf8 string
-const FXchar* wcinc(const FXchar* ptr){
-  return (FXISUTF8(*++ptr) || FXISUTF8(*++ptr) || FXISUTF8(*++ptr) || ++ptr), ptr;
-  }
-
-
-// Increment to start of next wide character in utf8 string
-FXchar* wcinc(FXchar* ptr){
-  return (FXISUTF8(*++ptr) || FXISUTF8(*++ptr) || FXISUTF8(*++ptr) || ++ptr), ptr;
-  }
-
-
-// Increment to start of next wide character in utf16 string
-const FXnchar* wcinc(const FXnchar* ptr){
-  return (FXISUTF16(*++ptr) || ++ptr), ptr;
-  }
-
-
-// Increment to start of next wide character in utf16 string
-FXnchar* wcinc(FXnchar* ptr){
-  return (FXISUTF16(*++ptr) || ++ptr), ptr;
-  }
-
-
-// Decrement to start of previous wide character in utf8 string
-const FXchar* wcdec(const FXchar* ptr){
-  return (FXISUTF8(*--ptr) || FXISUTF8(*--ptr) || FXISUTF8(*--ptr) || --ptr), ptr;
-  }
-
-// Decrement to start of previous wide character in utf8 string
-FXchar* wcdec(FXchar* ptr){
-  return (FXISUTF8(*--ptr) || FXISUTF8(*--ptr) || FXISUTF8(*--ptr) || --ptr), ptr;
-  }
-
-
-// Decrement to start of previous wide character in utf16 string
-const FXnchar* wcdec(const FXnchar* ptr){
-  return (FXISUTF16(*--ptr) || --ptr), ptr;
-  }
-
-
-// Decrement to start of previous wide character in utf16 string
-FXnchar* wcdec(FXnchar* ptr){
-  return (FXISUTF16(*--ptr) || --ptr), ptr;
-  }
-
-
-// Return start of utf8 character containing position
-const FXchar* wcstart(const FXchar* ptr){
-  return (FXISUTF8(*ptr) || FXISUTF8(*--ptr) || FXISUTF8(*--ptr) || --ptr), ptr;
-  }
-
-
-// Adjust ptr to point to leader of multi-byte sequence
-FXchar* wcstart(FXchar* ptr){
-  return (FXISUTF8(*ptr) || FXISUTF8(*--ptr) || FXISUTF8(*--ptr) || --ptr), ptr;
-  }
-
-
-// Adjust ptr to point to leader of surrogate pair sequence
-const FXnchar* wcstart(const FXnchar *ptr){
-  return (FXISUTF16(*ptr) || --ptr), ptr;
-  }
-
-
-// Adjust ptr to point to leader of surrogate pair sequence
-FXnchar* wcstart(FXnchar *ptr){
-  return (FXISUTF16(*ptr) || --ptr), ptr;
-  }
-
-
-// Return number of FXchar's of wide character at ptr
-FXival wclen(const FXchar *ptr){
-  return FXUTF8LEN(*ptr);
-  }
-
-
-// Return number of FXnchar's of narrow character at ptr
-FXival wclen(const FXnchar *ptr){
-  return FXUTF16LEN(*ptr);
-  }
-
-
-// Return true if valid utf8 character sequence
-FXival wcvalid(const FXchar* ptr){
-  if((FXuchar)ptr[0]<0x80) return 1;
-  if((FXuchar)ptr[0]<0xC0) return 0;
-  if((FXuchar)ptr[1]<0x80) return 0;
-  if((FXuchar)ptr[1]>0xBF) return 0;
-  if((FXuchar)ptr[0]<0xE0) return 2;
-  if((FXuchar)ptr[2]<0x80) return 0;
-  if((FXuchar)ptr[2]>0xBF) return 0;
-  if((FXuchar)ptr[0]<0xF0) return 3;
-  if((FXuchar)ptr[3]<0x80) return 0;
-  if((FXuchar)ptr[3]>0xBF) return 0;
-  if((FXuchar)ptr[0]>0xF7) return 0;
-  return 4;
-  }
-
-
-// Return true if valid utf16 character sequence
-FXival wcvalid(const FXnchar* ptr){
-  if(ptr[0]<0xD800) return 1;
-  if(ptr[0]>0xDFFF) return 1;
-  if(ptr[0]>0xDBFF) return 0;
-  if(ptr[1]<0xDC00) return 0;
-  if(ptr[1]>0xDFFF) return 0;
-  return 2;
-  }
-
-/*******************************************************************************/
-
-// Return number of bytes for utf8 representation of wide character w
-FXival wc2utf(FXwchar w){
-  return (w>=0x80)+(w>=0x800)+(w>=0x10000)+1;
-  }
-
-
-// Return number of narrow characters for utf16 representation of wide character w
-FXival wc2nc(FXwchar w){
-  return (w>=0x10000)+1;
-  }
-
-
-// Return number of bytes for utf8 representation of wide character string
-FXival wcs2utf(const FXwchar* src,FXival srclen){
-  const FXwchar* srcend=src+srclen;
-  FXival p=0;
-  FXwchar w;
-  while(src<srcend && (w=*src++)!=0){
-    p+=wc2utf(w);
-    }
-  return p;
-  }
-
-
-// Return number of bytes for utf8 representation of wide character string
-FXival wcs2utf(const FXwchar *src){
-  FXival p=0;
-  FXwchar w;
-  while((w=*src++)!=0){
-    p+=wc2utf(w);
-    }
-  return p;
-  }
-
-
-// Return number of bytes for utf8 representation of narrow character string
-FXival ncs2utf(const FXnchar *src,FXival srclen){
-  const FXnchar* srcend=src+srclen;
-  FXival p=0;
-  FXnchar w;
-  while(src<srcend && (w=*src++)!=0){
-    if(FXISLEADUTF16(w)){
-      if(__unlikely(src>=srcend)) break;
-      if(__unlikely(!FXISFOLLOWUTF16(*src))) break;
-      w=SURROGATE_OFFSET+(w<<10)+*src++;
-      }
-    p+=wc2utf(w);
-    }
-  return p;
-  }
-
-
-// Return number of bytes for utf8 representation of narrow character string
-FXival ncs2utf(const FXnchar *src){
-  FXival p=0;
-  FXnchar w;
-  while((w=*src++)!=0){
-    if(FXISLEADUTF16(w)){
-      if(__unlikely(!FXISFOLLOWUTF16(*src))) break;
-      w=SURROGATE_OFFSET+(w<<10)+*src++;
-      }
-    p+=wc2utf(w);
-    }
-  return p;
-  }
-
-
-// Return number of wide characters for utf8 character string
-FXival utf2wcs(const FXchar *src,FXival srclen){
-  const FXchar* srcend=src+srclen;
-  FXival p=0;
-  FXuchar c;
-  while(src<srcend && (c=src[0])!=0){
-    if(0xC0<=c){
-      if(__unlikely(src+1>=srcend)) break;
-      if(__unlikely(!FXISFOLLOWUTF8(src[1]))) break;
-      if(0xE0<=c){
-        if(__unlikely(src+2>=srcend)) break;
-        if(__unlikely(!FXISFOLLOWUTF8(src[2]))) break;
-        if(0xF0<=c){
-          if(__unlikely(src+3>=srcend)) break;
-          if(__unlikely(!FXISFOLLOWUTF8(src[3]))) break;
-          src++;
-          }
-        src++;
-        }
-      src++;
-      }
-    src++;
-    p++;
-    }
-  return p;
-  }
-
-
-// Return number of wide characters for utf8 character string
-FXival utf2wcs(const FXchar *src){
-  FXival p=0;
-  FXuchar c;
-  while((c=src[0])!=0){
-    if(0xC0<=c){
-      if(__unlikely(!FXISFOLLOWUTF8(src[1]))) break;
-      if(0xE0<=c){
-        if(__unlikely(!FXISFOLLOWUTF8(src[2]))) break;
-        if(0xF0<=c){
-          if(__unlikely(!FXISFOLLOWUTF8(src[3]))) break;
-          src++;
-          }
-        src++;
-        }
-      src++;
-      }
-    src++;
-    p++;
-    }
-  return p;
-  }
-
-
-// Return number of narrow characters for utf8 character string
-FXival utf2ncs(const FXchar *src,FXival len){
-  const FXchar* end=src+len;
-  FXival p=0;
-  FXuchar c;
-  while(src<end && (c=src[0])!=0){
-    if(0xC0<=c){
-      if(__unlikely(src+1>=end)) break;
-      if(__unlikely(!FXISFOLLOWUTF8(src[1]))) break;
-      if(0xE0<=c){
-        if(__unlikely(src+2>=end)) break;
-        if(__unlikely(!FXISFOLLOWUTF8(src[2]))) break;
-        if(0xF0<=c){
-          if(__unlikely(src+3>=end)) break;
-          if(__unlikely(!FXISFOLLOWUTF8(src[3]))) break;
-          src++;
-          p++;
-          }
-        src++;
-        }
-      src++;
-      }
-    src++;
-    p++;
-    }
-  return p;
-  }
-
-
-// Return number of narrow characters for utf8 character string
-FXival utf2ncs(const FXchar *src){
-  FXival p=0;
-  FXuchar c;
-  while((c=src[0])!=0){
-    if(0xC0<=c){
-      if(__unlikely(!FXISFOLLOWUTF8(src[1]))) break;
-      if(0xE0<=c){
-        if(__unlikely(!FXISFOLLOWUTF8(src[2]))) break;
-        if(0xF0<=c){
-          if(__unlikely(!FXISFOLLOWUTF8(src[3]))) break;
-          src++;
-          p++;
-          }
-        src++;
-        }
-      src++;
-      }
-    src++;
-    p++;
-    }
-  return p;
-  }
-
-
-// Convert wide character to utf8 string
-FXival wc2utf(FXchar *dst,FXwchar w){
-  if(__likely(w<0x80)){
-    dst[0]=w;
-    return 1;
-    }
-  if(__likely(w<0x800)){
-    dst[0]=(w>>6)|0xC0;
-    dst[1]=(w&0x3F)|0x80;
-    return 2;
-    }
-  if(__likely(w<0x10000)){
-    dst[0]=(w>>12)|0xE0;
-    dst[1]=((w>>6)&0x3F)|0x80;
-    dst[2]=(w&0x3F)|0x80;
-    return 3;
-    }
-  dst[0]=(w>>18)|0xF0;
-  dst[1]=((w>>12)&0x3F)|0x80;
-  dst[2]=((w>>6)&0x3F)|0x80;
-  dst[3]=(w&0x3F)|0x80;
-  return 4;
-  }
-
-
-// Convert wide character to narrow character string
-FXival wc2nc(FXnchar *dst,FXwchar w){
-  if(__likely(w<0x10000)){
-    dst[0]=w;
-    return 1;
-    }
-  dst[0]=LEAD_OFFSET+(w>>10);
-  dst[1]=TAIL_OFFSET+(w&0x3FF);
-  return 2;
-  }
-
-
-// Convert wide character string to utf8 string
-FXival wcs2utf(FXchar *dst,const FXwchar* src,FXival dstlen,FXival srclen){
-  const FXwchar* srcend=src+srclen;
-  FXchar* ptrend=dst+dstlen;
-  FXchar* ptr=dst;
-  FXwchar w;
-  while(src<srcend && (w=*src++)!=0){
-    if(w<0x80){
-      if(__unlikely(ptr>=ptrend)) break;
-      *ptr++=w;
-      continue;
-      }
-    if(w<0x800){
-      if(__unlikely(ptr+1>=ptrend)) break;
-      *ptr++=(w>>6)|0xC0;
-      *ptr++=(w&0x3F)|0x80;
-      continue;
-      }
-    if(w<0x10000){
-      if(__unlikely(ptr+2>=ptrend)) break;
-      *ptr++=(w>>12)|0xE0;
-      *ptr++=((w>>6)&0x3F)|0x80;
-      *ptr++=(w&0x3F)|0x80;
-      continue;
-      }
-    if(w<0x110000){
-      if(__unlikely(ptr+3>=ptrend)) break;
-      *ptr++=(w>>18)|0xF0;
-      *ptr++=((w>>12)&0x3F)|0x80;
-      *ptr++=((w>>6)&0x3F)|0x80;
-      *ptr++=(w&0x3F)|0x80;
-      continue;
-      }
-    break;
-    }
-  if(ptr<ptrend){
-    *ptr='\0';
-    }
-  return ptr-dst;
-  }
-
-
-// Convert wide character string to utf8 string
-FXival wcs2utf(FXchar *dst,const FXwchar* src,FXival dstlen){
-  FXchar* ptrend=dst+dstlen;
-  FXchar* ptr=dst;
-  FXwchar w;
-  while((w=*src++)!=0){
-    if(w<0x80){
-      if(__unlikely(ptr>=ptrend)) break;
-      *ptr++=w;
-      continue;
-      }
-    if(w<0x800){
-      if(__unlikely(ptr+1>=ptrend)) break;
-      *ptr++=(w>>6)|0xC0;
-      *ptr++=(w&0x3F)|0x80;
-      continue;
-      }
-    if(w<0x10000){
-      if(__unlikely(ptr+2>=ptrend)) break;
-      *ptr++=(w>>12)|0xE0;
-      *ptr++=((w>>6)&0x3F)|0x80;
-      *ptr++=(w&0x3F)|0x80;
-      continue;
-      }
-    if(w<0x110000){
-      if(__unlikely(ptr+3>=ptrend)) break;
-      *ptr++=(w>>18)|0xF0;
-      *ptr++=((w>>12)&0x3F)|0x80;
-      *ptr++=((w>>6)&0x3F)|0x80;
-      *ptr++=(w&0x3F)|0x80;
-      continue;
-      }
-    break;
-    }
-  if(ptr<ptrend){
-    *ptr='\0';
-    }
-  return ptr-dst;
-  }
-
-
-// Convert narrow character string to utf8 string
-FXival ncs2utf(FXchar *dst,const FXnchar* src,FXival dstlen,FXival srclen){
-  const FXnchar* srcend=src+srclen;
-  FXchar* ptrend=dst+dstlen;
-  FXchar* ptr=dst;
-  FXwchar w;
-  while(src<srcend && (w=*src++)!=0){
-    if(w<0x80){
-      if(__unlikely(ptr>=ptrend)) break;
-      *ptr++=w;
-      continue;
-      }
-    if(w<0x800){
-      if(__unlikely(ptr+1>=ptrend)) break;
-      *ptr++=(w>>6)|0xC0;
-      *ptr++=(w&0x3F)|0x80;
-      continue;
-      }
-    if(!FXISLEADUTF16(w)){
-      if(__unlikely(ptr+2>=ptrend)) break;
-      *ptr++=(w>>12)|0xE0;
-      *ptr++=((w>>6)&0x3F)|0x80;
-      *ptr++=(w&0x3F)|0x80;
-      continue;
-      }
-    if(src<srcend && FXISFOLLOWUTF16(*src)){
-      if(__unlikely(ptr+3>=ptrend)) break;
-      w=SURROGATE_OFFSET+(w<<10)+*src++;
-      *ptr++=(w>>18)|0xF0;
-      *ptr++=((w>>12)&0x3F)|0x80;
-      *ptr++=((w>>6)&0x3F)|0x80;
-      *ptr++=(w&0x3F)|0x80;
-      continue;
-      }
-    break;
-    }
-  if(ptr<ptrend){
-    *ptr='\0';
-    }
-  return ptr-dst;
-  }
-
-
-// Convert narrow character string to utf8 string
-FXival ncs2utf(FXchar *dst,const FXnchar* src,FXival dstlen){
-  FXchar* ptrend=dst+dstlen;
-  FXchar* ptr=dst;
-  FXwchar w;
-  while((w=*src++)!=0){
-    if(w<0x80){
-      if(__unlikely(ptr>=ptrend)) break;
-      *ptr++=w;
-      continue;
-      }
-    if(w<0x800){
-      if(__unlikely(ptr+1>=ptrend)) break;
-      *ptr++=(w>>6)|0xC0;
-      *ptr++=(w&0x3F)|0x80;
-      continue;
-      }
-    if(!FXISSEQUTF16(w)){
-      if(__unlikely(ptr+2>=ptrend)) break;
-      *ptr++=(w>>12)|0xE0;
-      *ptr++=((w>>6)&0x3F)|0x80;
-      *ptr++=(w&0x3F)|0x80;
-      continue;
-      }
-    if(FXISFOLLOWUTF16(*src)){
-      if(__unlikely(ptr+3>=ptrend)) break;
-      w=SURROGATE_OFFSET+(w<<10)+*src++;
-      *ptr++=(w>>18)|0xF0;
-      *ptr++=((w>>12)&0x3F)|0x80;
-      *ptr++=((w>>6)&0x3F)|0x80;
-      *ptr++=(w&0x3F)|0x80;
-      continue;
-      }
-    break;
-    }
-  if(ptr<ptrend){
-    *ptr='\0';
-    }
-  return ptr-dst;
-  }
-
-
-// Convert utf8 string to wide character string
-FXival utf2wcs(FXwchar *dst,const FXchar* src,FXival dstlen,FXival srclen){
-  const FXchar* srcend=src+srclen;
-  FXwchar* ptrend=dst+dstlen;
-  FXwchar* ptr=dst;
-  FXwchar w;
-  FXuchar c;
-  while(src<srcend && (w=c=*src++)!=0){
-    if(0xC0<=w){
-      if(__unlikely(src>=srcend)) break;
-      c=*src++;
-      if(__unlikely(!FXISFOLLOWUTF8(c))) break;
-      w=(w<<6) ^ c ^ 0x3080;
-      if(0x800<=w){
-        if(__unlikely(src>=srcend)) break;
-        c=*src++;
-        if(__unlikely(!FXISFOLLOWUTF8(c))) break;
-        w=(w<<6) ^ c ^ 0x20080;
-        if(0x10000<=w){
-          if(__unlikely(src>=srcend)) break;
-          c=*src++;
-          if(__unlikely(!FXISFOLLOWUTF8(c))) break;
-          w=(w<<6) ^ c ^ 0x400080;
-          }
-        }
-      }
-    if(__unlikely(ptr>=ptrend)) break;
-    *ptr++=w;
-    }
-  if(ptr<ptrend){
-    *ptr=0;
-    }
-  return ptr-dst;
-  }
-
-
-// Convert utf8 string to wide character string
-FXival utf2wcs(FXwchar *dst,const FXchar* src,FXival dstlen){
-  FXwchar* ptrend=dst+dstlen;
-  FXwchar* ptr=dst;
-  FXwchar w;
-  FXuchar c;
-  while((w=c=*src++)!=0){
-    if(0xC0<=c){
-      c=*src++;
-      if(__unlikely(!FXISFOLLOWUTF8(c))) break;
-      w=(w<<6) ^ c ^ 0x3080;
-      if(0x800<=w){
-        c=*src++;
-        if(__unlikely(!FXISFOLLOWUTF8(c))) break;
-        w=(w<<6) ^ c ^ 0x20080;
-        if(0x10000<=w){
-          c=*src++;
-          if(__unlikely(!FXISFOLLOWUTF8(c))) break;
-          w=(w<<6) ^ c ^ 0x400080;
-          }
-        }
-      }
-    if(__unlikely(ptr>=ptrend)) break;
-    *ptr++=w;
-    }
-  if(ptr<ptrend){
-    *ptr=0;
-    }
-  return ptr-dst;
-  }
-
-
-// Convert utf8 string to narrow character string
-FXival utf2ncs(FXnchar *dst,const FXchar* src,FXival dstlen,FXival srclen){
-  const FXchar* srcend=src+srclen;
-  FXnchar* ptrend=dst+dstlen;
-  FXnchar* ptr=dst;
-  FXwchar w;
-  FXuchar c;
-  while(src<srcend && (w=c=*src++)!=0){
-    if(0xC0<=w){
-      if(__unlikely(src>=srcend)) break;
-      c=*src++;
-      if(__unlikely(!FXISFOLLOWUTF8(c))) break;
-      w=(w<<6) ^ c ^ 0x3080;
-      if(0x800<=w){
-        if(__unlikely(src>=srcend)) break;
-        c=*src++;
-        if(__unlikely(!FXISFOLLOWUTF8(c))) break;
-        w=(w<<6) ^ c ^ 0x20080;
-        if(0x10000<=w){
-          if(__unlikely(src>=srcend)) break;
-          c=*src++;
-          if(__unlikely(!FXISFOLLOWUTF8(c))) break;
-          w=(w<<6) ^ c ^ 0x400080;
-          if(__unlikely(ptr+1>=ptrend)) break;
-          *ptr++=LEAD_OFFSET+(w>>10);
-          *ptr++=TAIL_OFFSET+(w&0x3FF);
-          continue;
-          }
-        }
-      }
-    if(__unlikely(ptr>=ptrend)) break;
-    *ptr++=w;
-    }
-  if(ptr<ptrend){
-    *ptr=0;
-    }
-  return ptr-dst;
-  }
-
-
-// Convert utf8 string to narrow character string
-FXival utf2ncs(FXnchar *dst,const FXchar* src,FXival dstlen){
-  FXnchar* ptrend=dst+dstlen;
-  FXnchar* ptr=dst;
-  FXwchar w;
-  FXuchar c;
-  while((w=c=*src++)!=0){
-    if(0xC0<=w){
-      c=*src++;
-      if(__unlikely(!FXISFOLLOWUTF8(c))) break;
-      w=(w<<6) ^ c ^ 0x3080;
-      if(0x800<=w){
-        c=*src++;
-        if(__unlikely(!FXISFOLLOWUTF8(c))) break;
-        w=(w<<6) ^ c ^ 0x20080;
-        if(0x10000<=w){
-          c=*src++;
-          if(__unlikely(!FXISFOLLOWUTF8(c))) break;
-          w=(w<<6) ^ c ^ 0x400080;
-          if(__unlikely(ptr+1>=ptrend)) break;
-          *ptr++=LEAD_OFFSET+(w>>10);
-          *ptr++=TAIL_OFFSET+(w&0x3FF);
-          continue;
-          }
-        }
-      }
-    if(__unlikely(ptr>=ptrend)) break;
-    *ptr++=w;
-    }
-  if(ptr<ptrend){
-    *ptr=0;
-    }
-  return ptr-dst;
   }
 
 /*******************************************************************************/
@@ -951,19 +278,39 @@ FXString::~FXString(){
   }
 
 
-// Return wide character starting at offset i
+// Return wide character starting at p
 FXwchar FXString::wc(FXint p) const {
   FXwchar w=(FXuchar)str[p];
-  if(__unlikely(0xC0<=w)){ w=(w<<6)^(FXuchar)str[p+1]^0x3080;
-  if(__unlikely(0x800<=w)){ w=(w<<6)^(FXuchar)str[p+2]^0x20080;
-  if(__unlikely(0x10000<=w)){ w=(w<<6)^(FXuchar)str[p+3]^0x400080; }}}
+  if(0xC0<=w){ w = (w<<6) ^ (FXuchar)str[p+1] ^ 0x3080;
+  if(0x800<=w){ w = (w<<6) ^ (FXuchar)str[p+2] ^ 0x20080;
+  if(0x10000<=w){ w = (w<<6) ^ (FXuchar)str[p+3] ^ 0x400080; }}}
+  return w;
+  }
+
+
+//  Return wide character at p and advance to next
+FXwchar FXString::wcnxt(FXint& p) const {
+  FXwchar w=(FXuchar)str[p++];
+  if(0xC0<=w){ w=(w<<6) ^ (FXuchar)str[p++] ^ 0x3080;
+  if(0x800<=w){ w=(w<<6) ^ (FXuchar)str[p++] ^ 0x20080;
+  if(0x10000<=w){ w=(w<<6) ^ (FXuchar)str[p++] ^ 0x400080; }}}
+  return w;
+  }
+
+
+// Retreat to wide character previous to p and return it
+FXwchar FXString::wcprv(FXint& p) const {
+  FXwchar w=(FXuchar)str[--p];
+  if(0x80<=w){ w = ((FXuchar)str[--p]<<6) ^ w ^ 0x3080;
+  if(0x1000<=w){ w = ((FXuchar)str[--p]<<12) ^ w ^ 0xE1000;
+  if(0x20000<=w){ w = ((FXuchar)str[--p]<<18) ^ w ^ 0x3C60000; }}}
   return w;
   }
 
 
 // Increment byte offset by one utf8 character
 FXint FXString::inc(FXint p) const {
-  return (++p>=length() || FXISUTF8(str[p]) || ++p>=length() || FXISUTF8(str[p]) || ++p>=length() || FXISUTF8(str[p]) || ++p), p;
+  return (++p>=length() || isUTF8(str[p]) || ++p>=length() || isUTF8(str[p]) || ++p>=length() || isUTF8(str[p]) || ++p), p;
   }
 
 
@@ -976,7 +323,7 @@ FXint FXString::inc(FXint p,FXint n) const {
 
 // Decrement byte offset by one utf8 character
 FXint FXString::dec(FXint p) const {
-  return (--p<=0 || FXISUTF8(str[p]) || --p<=0 || FXISUTF8(str[p]) || --p<=0 || FXISUTF8(str[p]) || --p), p;
+  return (--p<=0 || isUTF8(str[p]) || --p<=0 || isUTF8(str[p]) || --p<=0 || isUTF8(str[p]) || --p), p;
   }
 
 
@@ -991,7 +338,7 @@ FXint FXString::dec(FXint p,FXint n) const {
 FXint FXString::count(FXint start,FXint end) const {
   FXint cnt=0;
   while(start<end){
-    start+=FXUTF8LEN(str[start]);
+    start+=lenUTF8(str[start]);
     cnt++;
     }
   return cnt;
@@ -1000,7 +347,14 @@ FXint FXString::count(FXint start,FXint end) const {
 
 // Count number of utf8 characters
 FXint FXString::count() const {
-  return count(0,length());
+  FXint len=length();
+  FXint cnt=0;
+  FXint s=0;
+  while(s<len){
+    s+=lenUTF8(str[s]);
+    cnt++;
+    }
+  return cnt;
   }
 
 
@@ -1010,7 +364,7 @@ FXint FXString::offset(FXint indx) const {
   FXint i=0;
   FXint p=0;
   while(i<indx && p<len){
-    p+=FXUTF8LEN(str[p]);
+    p+=lenUTF8(str[p]);
     i++;
     }
   return p;
@@ -1019,11 +373,11 @@ FXint FXString::offset(FXint indx) const {
 
 // Return index of utf8 character at byte offset
 FXint FXString::index(FXint offs) const {
-   FXint len=length();
-   FXint i=0;
-   FXint p=0;
+  FXint len=length();
+  FXint i=0;
+  FXint p=0;
   while(p<offs && p<len){
-    p+=FXUTF8LEN(str[p]);
+    p+=lenUTF8(str[p]);
     i++;
     }
   return i;
@@ -1032,7 +386,7 @@ FXint FXString::index(FXint offs) const {
 
 // Return start of utf8 character containing position
 FXint FXString::validate(FXint p) const {
-  return (p<=0 || FXISUTF8(str[p]) || --p<=0 || FXISUTF8(str[p]) || --p<=0 || FXISUTF8(str[p]) || --p), p;
+  return (p<=0 || isUTF8(str[p]) || --p<=0 || isUTF8(str[p]) || --p<=0 || isUTF8(str[p]) || --p), p;
   }
 
 
@@ -1702,7 +1056,7 @@ FXString& FXString::erase(FXint pos,FXint n){
 
 // Truncate string
 FXString& FXString::trunc(FXint pos){
-  length(FXMIN(pos,length()));
+  length(FXMAX(FXMIN(pos,length()),0));
   return *this;
   }
 
@@ -1732,7 +1086,7 @@ FXint FXString::contains(const FXchar* sub,FXint n) const {
   FXint m=0;
   FXint i=0;
   while(i<=len){
-    if(compare(str+i,sub,n)==0){
+    if(FXString::compare(str+i,sub,n)==0){
       m++;
       }
     i++;
@@ -1776,7 +1130,7 @@ FXString& FXString::substitute(const FXchar* org,FXint olen,const FXchar* rep,FX
     FXint len=length();
     FXint pos=0;
     while(pos<=len-olen){
-      if(compare(str+pos,org,olen)==0){
+      if(FXString::compare(str+pos,org,olen)==0){
         replace(pos,olen,rep,rlen);
         if(!all) break;
         len+=rlen-olen;
@@ -2102,7 +1456,7 @@ FXint FXString::find(const FXchar* substr,FXint n,FXint pos) const {
     len=len-n+1;
     while(pos<len){
       if(str[pos]==c){
-        if(!compare(str+pos,substr,n)){
+        if(!FXString::compare(str+pos,substr,n)){
           return pos;
           }
         }
@@ -2134,7 +1488,7 @@ FXint FXString::rfind(const FXchar* substr,FXint n,FXint pos) const {
     if(pos>len) pos=len;
     while(0<=pos){
       if(str[pos]==c){
-        if(!compare(str+pos,substr,n)){
+        if(!FXString::compare(str+pos,substr,n)){
           return pos;
           }
         }
@@ -2460,7 +1814,7 @@ FXString& FXString::fromULong(FXulong number,FXint base){
 
 
 // Formatting for reals
-static const char conversionformat[8][8]={"%.*lF","%.*lE","%.*lG","%.*lF","%'.*lF","%'.*lE","%'.*lG","%'.*lF"};
+static const char conversionformat[8][8]={"%.*lF","%.*lE","%.*lG","%.*lA","%'.*lF","%'.*lE","%'.*lG","%.*lA"};
 
 
 // Convert from float
@@ -2539,6 +1893,21 @@ FXString FXString::vvalue(const FXchar* fmt,va_list args){
 
 /*******************************************************************************/
 
+// Compute hash value of string
+FXuint FXString::hash(const FXchar* s,FXint n){
+  FXuint result=0x811C9DC5;
+  FXuchar c;
+  if(0<n){
+    do{
+      c=*s++;
+      result=(result^c)*0x01000193;
+      }
+    while(--n);
+    }
+  return result;
+  }
+
+
 // Compute FNV1a hash value of string
 FXuint FXString::hash(const FXchar* s){
   FXuint result=0x811C9DC5;
@@ -2557,24 +1926,316 @@ FXuint FXString::hash() const {
 
 /*******************************************************************************/
 
-// Check if the string contains special characters or leading or trailing whitespace, or contains utf8 if flag!=0
-FXbool FXString::shouldEscape(const FXString& str,FXchar lquote,FXchar rquote,FXint flag){
-  if(0<str.length()){
-    FXint p=0; FXuchar c;
-    c=str.head();
-    if(c<=0x20) return true;
-    c=str.tail();
-    if(c<=0x20) return true;
-    while(p<str.length()){
-      c=str[p++];
-      if(c<=0x1F || 0xF8<=c || c==0x7F) return true;
-      if(c=='\\' || c==lquote || c==rquote) return true;
-      if(0x80<=c && flag) return true;
+// Compare string and string
+FXint FXString::compare(const FXchar* s1,const FXchar* s2){
+  FXint c1,c2;
+  do{
+    c1=*s1++;
+    c2=*s2++;
+    }
+  while((c1==c2) && c1);
+  return c1-c2;
+  }
+
+
+// Compare string and FXString
+FXint FXString::compare(const FXchar* s1,const FXString& s2){
+  return FXString::compare(s1,s2.text());
+  }
+
+
+// Compare FXString and string
+FXint FXString::compare(const FXString& s1,const FXchar* s2){
+  return FXString::compare(s1.text(),s2);
+  }
+
+
+// Compare FXString and FXString
+FXint FXString::compare(const FXString& s1,const FXString& s2){
+  return FXString::compare(s1.text(),s2.text());
+  }
+
+/*******************************************************************************/
+
+// Compare string and string, up to n
+FXint FXString::compare(const FXchar* s1,const FXchar* s2,FXint n){
+  if(0<n){
+    FXint c1,c2;
+    do{
+      c1=*s1++;
+      c2=*s2++;
       }
+    while((c1==c2) && c1 && --n);
+    return c1-c2;
+    }
+  return 0;
+  }
+
+
+// Compare string and FXString, up to n
+FXint FXString::compare(const FXchar* s1,const FXString& s2,FXint n){
+  return FXString::compare(s1,s2.text(),n);
+  }
+
+
+// Compare FXString and string, up to n
+FXint FXString::compare(const FXString& s1,const FXchar* s2,FXint n){
+  return FXString::compare(s1.text(),s2,n);
+  }
+
+
+// Compare FXString and FXString, up to n
+FXint FXString::compare(const FXString& s1,const FXString& s2,FXint n){
+  return FXString::compare(s1.text(),s2.text(),n);
+  }
+
+/*******************************************************************************/
+
+// Compare string and string case insensitive
+FXint FXString::comparecase(const FXchar* s1,const FXchar* s2){
+  FXint c1,c2;
+  do{
+    c1=Ascii::toLower(*s1++);
+    c2=Ascii::toLower(*s2++);
+    }
+  while((c1==c2) && c1);
+  return c1-c2;
+  }
+
+
+// Compare string and FXString case insensitive
+FXint FXString::comparecase(const FXchar* s1,const FXString& s2){
+  return FXString::comparecase(s1,s2.text());
+  }
+
+
+// Compare FXString and string case insensitive
+FXint FXString::comparecase(const FXString& s1,const FXchar* s2){
+  return FXString::comparecase(s1.text(),s2);
+  }
+
+
+// Compare FXString and FXString case insensitive
+FXint FXString::comparecase(const FXString& s1,const FXString& s2){
+  return FXString::comparecase(s1.text(),s2.text());
+  }
+
+/*******************************************************************************/
+
+// Compare string and string case insensitive, up to n
+FXint FXString::comparecase(const FXchar* s1,const FXchar* s2,FXint n){
+  if(0<n){
+    FXint c1,c2;
+    do{
+      c1=Ascii::toLower(*s1++);
+      c2=Ascii::toLower(*s2++);
+      }
+    while((c1==c2) && c1 && --n);
+    return c1-c2;
+    }
+  return 0;
+  }
+
+
+// Compare string and FXString case insensitive, up to n
+FXint FXString::comparecase(const FXchar* s1,const FXString& s2,FXint n){
+  return FXString::comparecase(s1,s2.text(),n);
+  }
+
+
+// Compare FXString and string case insensitive, up to n
+FXint FXString::comparecase(const FXString& s1,const FXchar* s2,FXint n){
+  return FXString::comparecase(s1.text(),s2,n);
+  }
+
+
+// Compare FXString and FXString case insensitive, up to n
+FXint FXString::comparecase(const FXString& s1,const FXString& s2,FXint n){
+  return FXString::comparecase(s1.text(),s2.text(),n);
+  }
+
+
+/*******************************************************************************/
+
+// Compare with natural interpretation of decimal numbers
+FXint FXString::comparenatural(const FXchar* s1,const FXchar* s2){
+  const FXchar *ns1,*ne1,*ns2,*ne2;
+  FXint diff=0,c1=0,c2=0,d;
+  while((c1=(FXuchar)*s1)!='\0' && (c2=(FXuchar)*s2)!='\0'){
+
+    // Both are numbers: special treatment
+    if(c1<='9' && c2<='9' && '0'<=c1 && '0'<=c2){
+
+      // Parse over leading zeroes
+      for(ns1=s1; *ns1=='0'; ++ns1){ }
+      for(ns2=s2; *ns2=='0'; ++ns2){ }
+
+      // Use number of leading zeroes as tie-breaker
+      if(diff==0){ diff=(ns1-s1)-(ns2-s2); }
+
+      // Parse over numbers
+      for(ne1=ns1; '0'<=*ne1 && *ne1<='9'; ++ne1){ }
+      for(ne2=ns2; '0'<=*ne2 && *ne2<='9'; ++ne2){ }
+
+      // Check length difference of the numbers
+      if((d=(ne1-ns1)-(ne2-ns2))!=0){ return d; }
+
+      // Compare the numbers
+      while(ns1<ne1){
+        if((d=*ns1++ - *ns2++)!=0){ return d; }
+        }
+
+      // Continue with the rest
+      s1=ne1;
+      s2=ne2;
+      continue;
+      }
+
+    // Characters differ
+    if(c1!=c2){ return c1-c2; }
+
+    // Advance
+    s1++;
+    s2++;
+    }
+
+  // Characters differ
+  if(c1!=c2){ return c1-c2; }
+
+  // Use tie-breaker
+  return diff;
+  }
+
+
+// Compare with natural interpretation of decimal numbers
+FXint FXString::comparenatural(const FXchar* s1,const FXString& s2){
+  return FXString::comparenatural(s1,s2.text());
+  }
+
+
+// Compare with natural interpretation of decimal numbers
+FXint FXString::comparenatural(const FXString& s1,const FXchar* s2){
+  return FXString::comparenatural(s1.text(),s2);
+  }
+
+
+// Compare with natural interpretation of decimal numbers
+FXint FXString::comparenatural(const FXString& s1,const FXString& s2){
+  return FXString::comparenatural(s1.text(),s2.text());
+  }
+
+/*******************************************************************************/
+
+// Compare case insensitive with natural interpretation of decimal numbers
+FXint FXString::comparenaturalcase(const FXchar* s1,const FXchar* s2){
+  const FXchar *ns1,*ne1,*ns2,*ne2;
+  FXint diff=0,c1=0,c2=0,d;
+  while((c1=(FXuchar)*s1)!='\0' && (c2=(FXuchar)*s2)!='\0'){
+
+    // Both are numbers: special treatment
+    if(c1<='9' && c2<='9' && '0'<=c1 && '0'<=c2){
+
+      // Parse over leading zeroes
+      for(ns1=s1; *ns1=='0'; ++ns1){ }
+      for(ns2=s2; *ns2=='0'; ++ns2){ }
+
+      // Use number of leading zeroes as tie-breaker
+      if(diff==0){ diff=(ns1-s1)-(ns2-s2); }
+
+      // Parse over numbers
+      for(ne1=ns1; '0'<=*ne1 && *ne1<='9'; ++ne1){ }
+      for(ne2=ns2; '0'<=*ne2 && *ne2<='9'; ++ne2){ }
+
+      // Check length difference of the numbers
+      if((d=(ne1-ns1)-(ne2-ns2))!=0){ return d; }
+
+      // Compare the numbers
+      while(ns1<ne1){
+        if((d=*ns1++ - *ns2++)!=0){ return d; }
+        }
+
+      // Continue with the rest
+      s1=ne1;
+      s2=ne2;
+      continue;
+      }
+
+    // Get lower-case
+    c1=Ascii::toLower(c1);
+    c2=Ascii::toLower(c2);
+
+    // Characters differ
+    if(c1!=c2){ return c1-c2; }
+
+    // Advance
+    s1++;
+    s2++;
+    }
+
+  // Characters differ
+  if(c1!=c2){ return c1-c2; }
+
+  // Use tie-breaker
+  return diff;
+  }
+
+
+// Compare case insensitive with natural interpretation of decimal numbers
+FXint FXString::comparenaturalcase(const FXchar* s1,const FXString& s2){
+  return FXString::comparenaturalcase(s1,s2.text());
+  }
+
+
+// Compare case insensitive with natural interpretation of decimal numbers
+FXint FXString::comparenaturalcase(const FXString& s1,const FXchar* s2){
+  return FXString::comparenaturalcase(s1.text(),s2);
+  }
+
+
+// Compare case insensitive with natural interpretation of decimal numbers
+FXint FXString::comparenaturalcase(const FXString& s1,const FXString& s2){
+  return FXString::comparenaturalcase(s1.text(),s2.text());
+  }
+
+/*******************************************************************************/
+
+// Check if the string should be escaped
+FXbool FXString::shouldEscape(const FXchar* str,FXint num,FXchar lquote,FXchar rquote,FXint flag){
+  const FXchar* end=str+num;
+  if(str<end){
+    FXuchar c;
+    if((c=str[0])<=0x20) return true;
+    if((c=end[-1])<=0x20) return true;
+    do{
+      c=*str++;
+      if(0x80<=c){
+        if(flag) return true;
+        if(0xF8<=c) return true;
+        continue;
+        }
+      if(c<=0x1F) return true;
+      if(c==0x7F) return true;
+      if(c=='\\') return true;
+      if(c==lquote) return true;
+      if(c==rquote) return true;
+      }
+    while(str<end);
     }
   return false;
   }
 
+// Check if the string should be escaped
+FXbool FXString::shouldEscape(const FXchar* str,FXchar lquote,FXchar rquote,FXint flag){
+  return FXString::shouldEscape(str,strlen(str),lquote,rquote,flag);
+  }
+
+
+// Check if the string should be escaped
+FXbool FXString::shouldEscape(const FXString& str,FXchar lquote,FXchar rquote,FXint flag){
+  return FXString::shouldEscape(str.text(),str.length(),lquote,rquote,flag);
+  }
+
+/*******************************************************************************/
 
 // Escape special characters, and optionally enclose with left and right quotes
 // and escape utf8 as \xHH if flag=1, or as \uHHHH if flag=2.
@@ -2583,13 +2244,13 @@ FXbool FXString::shouldEscape(const FXString& str,FXchar lquote,FXchar rquote,FX
 // encoded as hex-encoded surrogate-pairs (\uHHHH\uHHHH) in Unicode escape mode.
 // UTF8 followers will be always escaped if not preceeded by UTF8 leaders, if
 // escaping is enabled.
-FXString FXString::escape(const FXString& str,FXchar lquote,FXchar rquote,FXint flag){
+FXString FXString::escape(const FXchar* str,FXint num,FXchar lquote,FXchar rquote,FXint flag){
   FXString result;
   FXint p,q,w,v;
   FXuchar c,cc;
   p=q=0;
   if(lquote) q++;                               // Opening quote
-  while(p<str.length()){                        // Measure length of converted string
+  while(p<num){                                 // Measure length of converted string
     c=str[p++];
     switch(c){
       case '\a':                                // Special control characters
@@ -2762,15 +2423,15 @@ hex1:   q+=4;                                   // Escape as \xHH
         if(flag==0) goto nml1;                  // Pass UTF8 through
         if(flag==1) goto hex1;                  // Simple hex escaping
         cc=str[p];
-        if(!FXISFOLLOWUTF8(cc)) goto hex1;      // UTF8 follower?
+        if(!followUTF8(cc)) goto hex1;          // UTF8 follower?
         w=(c<<6)^cc^0x3080;
         if(0x800<=w){
           cc=str[p+1];
-          if(!FXISFOLLOWUTF8(cc)) goto hex1;    // UTF8 follower?
+          if(!followUTF8(cc)) goto hex1;        // UTF8 follower?
           w=(w<<6)^cc^0x20080;
           if(0x10000<=w){                       // Surrogate pair needed
             cc=str[p+2];
-            if(!FXISFOLLOWUTF8(cc)) goto hex1;  // UTF8 follower?
+            if(!followUTF8(cc)) goto hex1;      // UTF8 follower?
             w=(w<<6)^cc^0x400080;
             if(0x110000<=w) goto hex1;          // Beyond assigned code space?
             q+=6;
@@ -2798,7 +2459,7 @@ nml1:   q+=1;                                   // Normal characters
   result.length(q);
   p=q=0;
   if(lquote) result[q++]=lquote;                // Opening quote
-  while(p<str.length()){                        // Then convert the string
+  while(p<num){                                 // Then convert the string
     c=str[p++];
     switch(c){
       case '\a':                                // Special control characters
@@ -2996,15 +2657,15 @@ hex2:   result[q++]='\\';                       // Escape as \xHH
         if(flag==0) goto nml2;                  // Pass UTF8 through
         if(flag==1) goto hex2;                  // Simple hex escaping
         cc=str[p];
-        if(!FXISFOLLOWUTF8(cc)) goto hex2;      // UTF8 follower?
+        if(!followUTF8(cc)) goto hex2;          // UTF8 follower?
         w=(c<<6)^cc^0x3080;
         if(0x800<=w){
           cc=str[p+1];
-          if(!FXISFOLLOWUTF8(cc)) goto hex2;    // UTF8 follower?
+          if(!followUTF8(cc)) goto hex2;        // UTF8 follower?
           w=(w<<6)^cc^0x20080;
           if(0x10000<=w){                       // Surrogate pair needed
             cc=str[p+2];
-            if(!FXISFOLLOWUTF8(cc)) goto hex2;  // UTF8 follower?
+            if(!followUTF8(cc)) goto hex2;      // UTF8 follower?
             w=(w<<6)^cc^0x400080;
             if(0x110000<=w) goto hex2;          // Beyond assigned code space?
             v=LEAD_OFFSET+(w>>10);
@@ -3047,19 +2708,31 @@ nml2:   result[q++]=c;                          // Normal characters
   return result;
   }
 
+
+// Escape special characters
+FXString FXString::escape(const FXchar* str,FXchar lquote,FXchar rquote,FXint flag){
+  return FXString::escape(str,strlen(str),lquote,rquote,flag);
+  }
+
+
+// Escape special characters
+FXString FXString::escape(const FXString& str,FXchar lquote,FXchar rquote,FXint flag){
+  return FXString::escape(str.text(),str.length(),lquote,rquote,flag);
+  }
+
 /*******************************************************************************/
 
 // Unescape special characters in a string; optionally strip quote characters
-FXString FXString::unescape(const FXString& str,FXchar lquote,FXchar rquote){
+FXString FXString::unescape(const FXchar* str,FXint num,FXchar lquote,FXchar rquote){
   FXString result;
   FXint p,q,w,c;
   p=q=c=0;
   if(str[p]==lquote && lquote) p++;     // Opening quote
-  while(p<str.length()){                // Measure length of converted string
+  while(p<num){                         // Measure length of converted string
     w=c;                                // Keep previous decoded character
     c=str[p++];
     if(c==rquote && rquote) break;      // Closing quote
-    if(c=='\\' && p<str.length()){      // Escape sequence
+    if(c=='\\' && p<num){               // Escape sequence
       switch((c=str[p++])){
         case 'u':                       // Unicode escape
           c=0;
@@ -3075,9 +2748,9 @@ FXString FXString::unescape(const FXString& str,FXchar lquote,FXchar rquote){
                 }
               }
             }
-          if(FXISLEADUTF16(c)) continue;
-          if(FXISFOLLOWUTF16(c)){
-            if(!FXISLEADUTF16(w)) continue;
+          if(leadUTF16(c)) continue;
+          if(followUTF16(c)){
+            if(!leadUTF16(w)) continue;
             c=SURROGATE_OFFSET+(w<<10)+c;
             }
           q+=wc2utf(c);
@@ -3127,11 +2800,11 @@ FXString FXString::unescape(const FXString& str,FXchar lquote,FXchar rquote){
   result.length(q);                     // Resize result string
   p=q=c=0;
   if(str[p]==lquote && lquote) p++;     // Opening quote
-  while(p<str.length()){                // Then convert the string
+  while(p<num){                         // Then convert the string
     w=c;                                // Keep previous decoded character
     c=str[p++];
     if(c==rquote && rquote) break;      // Closing quote
-    if(c=='\\' && p<str.length()){      // Escape sequence
+    if(c=='\\' && p<num){               // Escape sequence
       switch((c=str[p++])){
         case 'u':                       // Unicode escape
           if(Ascii::isHexDigit(str[p])){
@@ -3146,9 +2819,9 @@ FXString FXString::unescape(const FXString& str,FXchar lquote,FXchar rquote){
                 }
               }
             }
-          if(FXISLEADUTF16(c)) continue;
-          if(FXISFOLLOWUTF16(c)){
-            if(!FXISLEADUTF16(w)) continue;
+          if(leadUTF16(c)) continue;
+          if(followUTF16(c)){
+            if(!leadUTF16(w)) continue;
             c=SURROGATE_OFFSET+(w<<10)+c;
             }
           q+=wc2utf(&result[q],c);
@@ -3222,6 +2895,18 @@ FXString FXString::unescape(const FXString& str,FXchar lquote,FXchar rquote){
   return result;
   }
 
+
+// Unescape special characters
+FXString FXString::unescape(const FXchar* str,FXchar lquote,FXchar rquote){
+  return FXString::unescape(str,strlen(str),lquote,rquote);
+  }
+
+
+// Unescape special characters
+FXString FXString::unescape(const FXString& str,FXchar lquote,FXchar rquote){
+  return FXString::unescape(str.text(),str.length(),lquote,rquote);
+  }
+
 /*******************************************************************************/
 
 // Save
@@ -3241,357 +2926,6 @@ FXStream& operator>>(FXStream& store,FXString& s){
   store.load(s.str,len);
   return store;
   }
-
-/*******************************************************************************/
-
-// Compare string and string
-FXint compare(const FXchar* s1,const FXchar* s2){
-  FXint c1,c2;
-  do{
-    c1=(FXuchar) *s1++;
-    c2=(FXuchar) *s2++;
-    }
-  while(c1 && (c1==c2));
-  return c1-c2;
-  }
-
-
-// Compare string and FXString
-FXint compare(const FXchar* s1,const FXString& s2){
-  return compare(s1,s2.text());
-  }
-
-
-// Compare FXString and string
-FXint compare(const FXString& s1,const FXchar* s2){
-  return compare(s1.text(),s2);
-  }
-
-
-// Compare FXString and FXString
-FXint compare(const FXString& s1,const FXString& s2){
-  return compare(s1.text(),s2.text());
-  }
-
-
-// Compare string and string, up to n
-FXint compare(const FXchar* s1,const FXchar* s2,FXint n){
-  if(0<n){
-    const FXchar* e1=s1+n;
-    FXint c1,c2;
-    do{
-      c1=(FXuchar) *s1++;
-      c2=(FXuchar) *s2++;
-      }
-    while(c1 && (c1==c2) && (s1<e1));
-    return c1-c2;
-    }
-  return 0;
-  }
-
-
-// Compare string and FXString, up to n
-FXint compare(const FXchar* s1,const FXString& s2,FXint n){
-  return compare(s1,s2.text(),n);
-  }
-
-
-// Compare FXString and string, up to n
-FXint compare(const FXString& s1,const FXchar* s2,FXint n){
-  return compare(s1.text(),s2,n);
-  }
-
-
-// Compare FXString and FXString, up to n
-FXint compare(const FXString& s1,const FXString& s2,FXint n){
-  return compare(s1.text(),s2.text(),n);
-  }
-
-
-// Compare string and string case insensitive
-FXint comparecase(const FXchar* s1,const FXchar* s2){
-  FXint c1,c2;
-  do{
-    c1=Unicode::toLower(wc(s1));
-    c2=Unicode::toLower(wc(s2));
-    if(!c1 || (c1!=c2)) break;
-    s1=wcinc(s1);
-    s2=wcinc(s2);
-    }
-  while(1);
-  return c1-c2;
-  }
-
-
-// Compare string and FXString case insensitive
-FXint comparecase(const FXchar* s1,const FXString& s2){
-  return comparecase(s1,s2.text());
-  }
-
-
-// Compare FXString and string case insensitive
-FXint comparecase(const FXString& s1,const FXchar* s2){
-  return comparecase(s1.text(),s2);
-  }
-
-
-// Compare FXString and FXString case insensitive
-FXint comparecase(const FXString& s1,const FXString& s2){
-  return comparecase(s1.text(),s2.text());
-  }
-
-
-// Compare string and string case insensitive, up to n
-FXint comparecase(const FXchar* s1,const FXchar* s2,FXint n){
-  if(0<n){
-    const FXchar* e1=s1+n;
-    const FXchar* e2=s2+n;
-    FXint c1,c2;
-    do{
-      c1=Unicode::toLower(wc(s1));
-      c2=Unicode::toLower(wc(s2));
-      if(!c1 || (c1!=c2)) break;
-      s1=wcinc(s1);
-      s2=wcinc(s2);
-      }
-    while((s1<e1) && (s2<e2));
-    return c1-c2;
-    }
-  return 0;
-  }
-
-
-// Compare string and FXString case insensitive, up to n
-FXint comparecase(const FXchar* s1,const FXString& s2,FXint n){
-  return comparecase(s1,s2.text(),n);
-  }
-
-
-// Compare FXString and string case insensitive, up to n
-FXint comparecase(const FXString& s1,const FXchar* s2,FXint n){
-  return comparecase(s1.text(),s2,n);
-  }
-
-
-// Compare FXString and FXString case insensitive, up to n
-FXint comparecase(const FXString& s1,const FXString& s2,FXint n){
-  return comparecase(s1.text(),s2.text(),n);
-  }
-
-
-/*******************************************************************************/
-
-enum {
-  S_N = 0x0,    // Normal
-  S_I = 0x4,    // Comparing integral part
-  S_F = 0x8,    // Comparing fractional parts
-  S_Z = 0xC     // Idem but with leading zeroes only
-  };
-
-
-enum {
-  CMP = 2,      // Return diff
-  LEN = 3       // Compare using len_diff/diff
-  };
-
-
-// Symbol(s)    0       [1-9]   others  (padding)
-// Transition   (10) 0  (01) d  (00) x  (11) -
-static const unsigned int next_state[]={
-  /* state    x    d    0    - */
-  /* S_N */  S_N, S_I, S_Z, S_N,
-  /* S_I */  S_N, S_I, S_I, S_I,
-  /* S_F */  S_N, S_F, S_F, S_F,
-  /* S_Z */  S_N, S_F, S_Z, S_Z
-  };
-
-static const int result_type[]={
-  /* state   x/x  x/d  x/0  x/-  d/x  d/d  d/0  d/-  0/x  0/d  0/0  0/-  -/x  -/d  -/0  -/- */
-  /* S_N */  CMP, CMP, CMP, CMP, CMP, LEN, CMP, CMP, CMP, CMP, CMP, CMP, CMP, CMP, CMP, CMP,
-  /* S_I */  CMP,  -1,  -1, CMP,  +1, LEN, LEN, CMP,  +1, LEN, LEN, CMP, CMP, CMP, CMP, CMP,
-  /* S_F */  CMP, CMP, CMP, CMP, CMP, LEN, CMP, CMP, CMP, CMP, CMP, CMP, CMP, CMP, CMP, CMP,
-  /* S_Z */  CMP,  +1,  +1, CMP,  -1, CMP, CMP, CMP,  -1, CMP, CMP, CMP
-  };
-
-
-// Compare string and string as versions numbers
-FXint compareversion(const FXchar *s1,const FXchar *s2){
-  const FXuchar *p1=(const FXuchar*)s1;
-  const FXuchar *p2=(const FXuchar*)s2;
-  FXuchar c1,c2;
-  FXint state;
-  FXint diff;
-
-  c1 = *p1++;
-  c2 = *p2++;
-
-  // Hint: '0' is a digit too.
-  state=S_N | ((c1=='0')+(Ascii::isDigit(c1)!=0));
-  while((diff=c1-c2)==0 && c1!='\0'){
-    state=next_state[state];
-    c1=*p1++;
-    c2=*p2++;
-    state|=(c1=='0')+(Ascii::isDigit(c1)!=0);
-    }
-  state=result_type[state<<2 | (((c2=='0')+(Ascii::isDigit(c2)!=0)))];
-  switch(state){
-    case LEN:
-      while(Ascii::isDigit(*p1++)){
-	if(!Ascii::isDigit(*p2++)) return 1;
-        }
-      if(Ascii::isDigit(*p2)) return -1;
-    case CMP:
-      return diff;
-    }
-  return state;
-  }
-
-
-// Compare string and FXString natural interpretation
-FXint compareversion(const FXchar* s1,const FXString& s2){
-  return compareversion(s1,s2.text());
-  }
-
-
-// Compare FXString and string natural interpretation
-FXint compareversion(const FXString& s1,const FXchar* s2){
-  return compareversion(s1.text(),s2);
-  }
-
-
-// Compare FXString and FXString natural interpretation
-FXint compareversion(const FXString& s1,const FXString& s2){
-  return compareversion(s1.text(),s2.text());
-  }
-
-
-// Compare case insensitive with natural interpretation
-FXint compareversioncase(const FXchar* s1,const FXchar* s2){
-  const FXuchar *p1=(const FXuchar*)s1;
-  const FXuchar *p2=(const FXuchar*)s2;
-  FXuchar c1,c2;
-  FXint state;
-  FXint diff;
-
-  if(p1==p2) return 0;
-
-  c1=Ascii::toLower(*p1++);
-  c2=Ascii::toLower(*p2++);
-
-  // Hint: '0' is a digit too.
-  state=S_N | ((c1=='0')+(Ascii::isDigit(c1)!=0));
-  while((diff=c1-c2)==0 && c1!='\0'){
-    state=next_state[state];
-    c1=Ascii::toLower(*p1++);
-    c2=Ascii::toLower(*p2++);
-    state|=(c1=='0')+(Ascii::isDigit(c1)!=0);
-    }
-  state=result_type[state<<2 | (((c2=='0')+(Ascii::isDigit(c2)!=0)))];
-  switch(state){
-    case LEN:
-      while(Ascii::isDigit(*p1++)){
-	if(!Ascii::isDigit(*p2++)) return 1;
-        }
-      if(Ascii::isDigit(*p2)) return -1;
-    case CMP:
-      return diff;
-    }
-  return state;
-  }
-
-
-// Compare case insensitive with natural interpretation
-FXint compareversioncase(const FXchar* s1,const FXString& s2){
-  return compareversioncase(s1,s2.text());
-  }
-
-
-// Compare case insensitive with natural interpretation
-FXint compareversioncase(const FXString& s1,const FXchar* s2){
-  return compareversioncase(s1.text(),s2);
-  }
-
-
-// Compare case insensitive with natural interpretation
-FXint compareversioncase(const FXString& s1,const FXString& s2){
-  return compareversioncase(s1.text(),s2.text());
-  }
-
-/*******************************************************************************/
-
-// Comparison operators
-FXbool operator==(const FXString& s1,const FXString& s2){
-  return compare(s1.text(),s2.text())==0;
-  }
-
-FXbool operator==(const FXString& s1,const FXchar* s2){
-  return compare(s1.text(),s2)==0;
-  }
-
-FXbool operator==(const FXchar* s1,const FXString& s2){
-  return compare(s1,s2.text())==0;
-  }
-
-FXbool operator!=(const FXString& s1,const FXString& s2){
-  return compare(s1.text(),s2.text())!=0;
-  }
-
-FXbool operator!=(const FXString& s1,const FXchar* s2){
-  return compare(s1.text(),s2)!=0;
-  }
-
-FXbool operator!=(const FXchar* s1,const FXString& s2){
-  return compare(s1,s2.text())!=0;
-  }
-
-FXbool operator<(const FXString& s1,const FXString& s2){
-  return compare(s1.text(),s2.text())<0;
-  }
-
-FXbool operator<(const FXString& s1,const FXchar* s2){
-  return compare(s1.text(),s2)<0;
-  }
-
-FXbool operator<(const FXchar* s1,const FXString& s2){
-  return compare(s1,s2.text())<0;
-  }
-
-FXbool operator<=(const FXString& s1,const FXString& s2){
-  return compare(s1.text(),s2.text())<=0;
-  }
-
-FXbool operator<=(const FXString& s1,const FXchar* s2){
-  return compare(s1.text(),s2)<=0;
-  }
-
-FXbool operator<=(const FXchar* s1,const FXString& s2){
-  return compare(s1,s2.text())<=0;
-  }
-
-FXbool operator>(const FXString& s1,const FXString& s2){
-  return compare(s1.text(),s2.text())>0;
-  }
-
-FXbool operator>(const FXString& s1,const FXchar* s2){
-  return compare(s1.text(),s2)>0;
-  }
-
-FXbool operator>(const FXchar* s1,const FXString& s2){
-  return compare(s1,s2.text())>0;
-  }
-
-FXbool operator>=(const FXString& s1,const FXString& s2){
-  return compare(s1.text(),s2.text())>=0;
-  }
-
-FXbool operator>=(const FXString& s1,const FXchar* s2){
-  return compare(s1.text(),s2)>=0;
-  }
-
-FXbool operator>=(const FXchar* s1,const FXString& s2){
-  return compare(s1,s2.text())>=0;
-  }
-
 
 /*******************************************************************************/
 

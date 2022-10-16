@@ -42,7 +42,7 @@ public:
 public:
 
   /// Construct image from memory stream formatted in TARGA file
-  FXTGAImage(FXApp* a,const void *pix=nullptr,FXuint opts=0,FXint w=1,FXint h=1);
+  FXTGAImage(FXApp* a,const FXuchar *pix=nullptr,FXuint opts=0,FXint w=1,FXint h=1);
 
   /// Save pixels into stream in TARGA file
   virtual FXbool savePixels(FXStream& store) const;

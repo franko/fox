@@ -265,7 +265,7 @@ void FXFontSelector::listFontFaces(){
     FXASSERT(0<numfonts);
     for(f=0; f<numfonts; f++){
       familylist->appendItem(fonts[f].face,nullptr,(void*)(FXuval)fonts[f].flags);
-      if(compare(selected.face,fonts[f].face)==0) selindex=f;
+      if(FXString::compare(selected.face,fonts[f].face)==0) selindex=f;
       }
     if(selindex==-1) selindex=0;
     if(0<familylist->getNumItems()){

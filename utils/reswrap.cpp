@@ -221,7 +221,7 @@ static void prologue(OPTIONS* opts){
       }
     }
   if(opts->comments){
-    clock=time(nullptr);
+    clock=time(NULL);
     strftime(date,sizeof(date),"%Y/%m/%d %H:%M:%S",localtime(&clock));
     fprintf(opts->outfile,"/*********** Generated on %s by reswrap version %s *********/\n\n",date,version);
     }
@@ -680,7 +680,7 @@ int main(int argc,char **argv){
 
       /* Process resource file */
       if(!processresourcefile(argv[arg],resource,&opts)){
-        fprintf(stderr,"reswrap: error reading resource file: %s\n",argv[arg]);
+        fprintf(stderr,"reswrap: error reading resource file: \"%s\"\n",argv[arg]);
         break;
         }
 

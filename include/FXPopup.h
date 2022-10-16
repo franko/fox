@@ -174,7 +174,7 @@ public:
   virtual void popdown();
 
   /// Return current grab owner
-  FXWindow* getGrabOwner() const;
+  FXWindow* getGrabOwner();
 
 //   /// Popup the menu and grab to the given owner
 //   virtual FXint popup(FXint x,FXint y,FXint w=0,FXint h=0);

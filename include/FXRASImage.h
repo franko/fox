@@ -42,7 +42,7 @@ public:
 public:
 
   /// Construct image from memory stream formatted in SUN Raster Image format
-  FXRASImage(FXApp* a,const void *pix=nullptr,FXuint opts=0,FXint w=1,FXint h=1);
+  FXRASImage(FXApp* a,const FXuchar *pix=nullptr,FXuint opts=0,FXint w=1,FXint h=1);
 
   /// Save pixels into stream in SUN Raster Image format
   virtual FXbool savePixels(FXStream& store) const;

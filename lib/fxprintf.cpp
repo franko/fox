@@ -1160,23 +1160,8 @@ static FXchar* fmtlng(FXchar* buffer,FXint& len,FXlong value,FXint base,FXint pr
         }
       }
 
-    // Convert to string using base
-    if(!(flags&FLG_THOUSAND)){
-      do{
-        --precision;
-        n=number/base;
-        *--ptr=digits[number-n*base];
-        number=n;
-        }
-      while(number);
-      while(0<precision){       // Pad with zeros if needed
-        --precision;
-        *--ptr='0';
-        }
-      }
-
-    // Convert to string in decimal
-    else{
+    // Output decimal with thousands separator
+    if(flags&FLG_THOUSAND){
       do{
         ++digs;
         --precision;
@@ -1191,6 +1176,21 @@ static FXchar* fmtlng(FXchar* buffer,FXint& len,FXlong value,FXint base,FXint pr
         ++digs;
         --precision;
         *--ptr=' ';
+        }
+      }
+
+    // Output with arbitrary base
+    else{
+      do{
+        --precision;
+        n=number/base;
+        *--ptr=digits[number-n*base];
+        number=n;
+        }
+      while(number);
+      while(0<precision){       // Pad with zeros if needed
+        --precision;
+        *--ptr='0';
         }
       }
 

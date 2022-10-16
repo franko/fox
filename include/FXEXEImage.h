@@ -44,7 +44,7 @@ public:
 public:
 
   /// Construct image from memory stream comprising Microsoft Windows executable
-  FXEXEImage(FXApp* a,const void *pix=nullptr,FXuint opts=0,FXint w=1,FXint h=1,FXint ri=-1,FXint rt=3);
+  FXEXEImage(FXApp* a,const FXuchar *pix=nullptr,FXuint opts=0,FXint w=1,FXint h=1,FXint ri=-1,FXint rt=3);
 
   /// Set resource group (type) to load from
   void setResType(FXint rt){ rtype=rt; }

@@ -164,7 +164,7 @@ FXbool Modeline::parseEmacsModeline(const FXchar* s){
     while(*s!='\0' && *s!=';' &&  *s!='\t' && *s!=' '){
       val+=*s++;
       }
-    if(comparecase(key,"Mode")==0){
+    if(FXString::comparecase(key,"Mode")==0){
       setLanguage(val);
       }
     else if(key=="tab-width"){

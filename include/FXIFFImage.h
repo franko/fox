@@ -44,7 +44,7 @@ public:
 public:
 
   /// Construct an image from memory stream formatted as IFF format
-  FXIFFImage(FXApp* a,const void *pix=nullptr,FXuint opts=0,FXint w=1,FXint h=1);
+  FXIFFImage(FXApp* a,const FXuchar *pix=nullptr,FXuint opts=0,FXint w=1,FXint h=1);
 
   /// Save pixels into stream in IFF format
   virtual FXbool savePixels(FXStream& store) const;

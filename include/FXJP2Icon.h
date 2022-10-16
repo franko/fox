@@ -44,7 +44,7 @@ public:
 public:
 
   /// Construct an icon from memory stream formatted in JPEG-2000 format
-  FXJP2Icon(FXApp *a,const void *pix=nullptr,FXColor clr=FXRGB(192,192,192),FXuint opts=0,FXint w=1,FXint h=1,FXint q=100);
+  FXJP2Icon(FXApp *a,const FXuchar *pix=nullptr,FXColor clr=FXRGB(192,192,192),FXuint opts=0,FXint w=1,FXint h=1,FXint q=100);
 
   /// True if format is supported
   static const FXbool supported;

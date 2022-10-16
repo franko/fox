@@ -1473,7 +1473,7 @@ FXColor colorFromName(const FXchar* name){
       h=ARRAYNUMBER(colorName)-1;
       do{
         m=(h+l)>>1;
-        eq=comparecase(temp,colorName[m]);
+        eq=FXString::comparecase(temp,colorName[m]);
         if(eq==0) return colorValue[m];
         if(eq<0) h=m-1; else l=m+1;
         }

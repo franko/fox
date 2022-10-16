@@ -21,6 +21,7 @@
 #include "xincs.h"
 #include "fxver.h"
 #include "fxdefs.h"
+#include "fxchar.h"
 #include "fxkeys.h"
 #include "fxmath.h"
 #include "fxascii.h"
@@ -323,11 +324,11 @@ FXHotKey FXAccelTable::parseAccel(const FXchar* string){
   while(*ptr){
 
     // Modifier
-    if(comparecase(ptr,"ctl",3)==0){ mods|=CONTROLMASK; ptr+=3; }
-    else if(comparecase(ptr,"ctrl",4)==0){ mods|=CONTROLMASK; ptr+=4; }
-    else if(comparecase(ptr,"alt",3)==0){ mods|=ALTMASK; ptr+=3; }
-    else if(comparecase(ptr,"meta",4)==0){ mods|=METAMASK; ptr+=4; }
-    else if(comparecase(ptr,"shift",5)==0){ mods|=SHIFTMASK; ptr+=5; }
+    if(FXString::comparecase(ptr,"ctl",3)==0){ mods|=CONTROLMASK; ptr+=3; }
+    else if(FXString::comparecase(ptr,"ctrl",4)==0){ mods|=CONTROLMASK; ptr+=4; }
+    else if(FXString::comparecase(ptr,"alt",3)==0){ mods|=ALTMASK; ptr+=3; }
+    else if(FXString::comparecase(ptr,"meta",4)==0){ mods|=METAMASK; ptr+=4; }
+    else if(FXString::comparecase(ptr,"shift",5)==0){ mods|=SHIFTMASK; ptr+=5; }
     else break;
 
     // Separator
@@ -335,61 +336,61 @@ FXHotKey FXAccelTable::parseAccel(const FXchar* string){
     }
 
   // Test for some special keys
-  if(comparecase(ptr,"home",4)==0){
+  if(FXString::comparecase(ptr,"home",4)==0){
     code=KEY_Home;
     }
-  else if(comparecase(ptr,"end",3)==0){
+  else if(FXString::comparecase(ptr,"end",3)==0){
     code=KEY_End;
     }
-  else if(comparecase(ptr,"pgup",4)==0){
+  else if(FXString::comparecase(ptr,"pgup",4)==0){
     code=KEY_Page_Up;
     }
-  else if(comparecase(ptr,"pgdn",4)==0){
+  else if(FXString::comparecase(ptr,"pgdn",4)==0){
     code=KEY_Page_Down;
     }
-  else if(comparecase(ptr,"left",4)==0){
+  else if(FXString::comparecase(ptr,"left",4)==0){
     code=KEY_Left;
     }
-  else if(comparecase(ptr,"right",5)==0){
+  else if(FXString::comparecase(ptr,"right",5)==0){
     code=KEY_Right;
     }
-  else if(comparecase(ptr,"up",2)==0){
+  else if(FXString::comparecase(ptr,"up",2)==0){
     code=KEY_Up;
     }
-  else if(comparecase(ptr,"down",4)==0){
+  else if(FXString::comparecase(ptr,"down",4)==0){
     code=KEY_Down;
     }
-  else if(comparecase(ptr,"ins",3)==0){
+  else if(FXString::comparecase(ptr,"ins",3)==0){
     code=KEY_Insert;
     }
-  else if(comparecase(ptr,"del",3)==0){
+  else if(FXString::comparecase(ptr,"del",3)==0){
     code=KEY_Delete;
     }
-  else if(comparecase(ptr,"delete",6)==0){
+  else if(FXString::comparecase(ptr,"delete",6)==0){
     code=KEY_Delete;
     }
-  else if(comparecase(ptr,"esc",3)==0){
+  else if(FXString::comparecase(ptr,"esc",3)==0){
     code=KEY_Escape;
     }
-  else if(comparecase(ptr,"tab",3)==0){
+  else if(FXString::comparecase(ptr,"tab",3)==0){
     code=KEY_Tab;
     }
-  else if(comparecase(ptr,"return",6)==0){
+  else if(FXString::comparecase(ptr,"return",6)==0){
     code=KEY_Return;
     }
-  else if(comparecase(ptr,"enter",5)==0){
+  else if(FXString::comparecase(ptr,"enter",5)==0){
     code=KEY_Return;
     }
-  else if(comparecase(ptr,"back",4)==0){
+  else if(FXString::comparecase(ptr,"back",4)==0){
     code=KEY_BackSpace;
     }
-  else if(comparecase(ptr,"backspace",9)==0){
+  else if(FXString::comparecase(ptr,"backspace",9)==0){
     code=KEY_BackSpace;
     }
-  else if(comparecase(ptr,"spc",3)==0){
+  else if(FXString::comparecase(ptr,"spc",3)==0){
     code=KEY_space;
     }
-  else if(comparecase(ptr,"space",5)==0){
+  else if(FXString::comparecase(ptr,"space",5)==0){
     code=KEY_space;
     }
 

@@ -492,7 +492,7 @@ static const FXchar sourcefiles[]="All Files (*)\nC++ Source Files (*.cpp,*.cxx,
 
 // Open any file
 long GroupWindow::onCmdFileDlgAny(FXObject*,FXSelector,void*){
-  FXString file=FXFileDialog::getSaveFilename(this,"Save file","/home/1337/newfile.txt",sourcefiles,1);
+  FXString file=FXFileDialog::getSaveFilename(this,"Save file",FXPath::absolute(FXSystem::getHomeDirectory(),"newfile.txt"),sourcefiles,1);
   fxmessage("File=\"%s\"\n",file.text());
   return 1;
   }
@@ -500,7 +500,7 @@ long GroupWindow::onCmdFileDlgAny(FXObject*,FXSelector,void*){
 
 // Open existing file
 long GroupWindow::onCmdFileDlgExisting(FXObject*,FXSelector,void*){
-  FXString file=FXFileDialog::getOpenFilename(this,"Open file","dippy.h",sourcefiles,3);
+  FXString file=FXFileDialog::getOpenFilename(this,"Open file","groupbox.cpp",sourcefiles,1);
   fxmessage("File=\"%s\"\n",file.text());
   return 1;
   }
@@ -523,6 +523,8 @@ long GroupWindow::onCmdFileDlgMultiple(FXObject*,FXSelector,void*){
 long GroupWindow::onCmdFileDlgMultipleAll(FXObject*,FXSelector,void*){
   FXFileDialog open(this,"Open files or directories");
   open.setSelectMode(SELECTFILE_MULTIPLE_ALL);
+  open.setDirectory(FXSystem::getHomeDirectory());
+  //open.allowNavigation(false);  // No changing directories
   if(open.execute(PLACEMENT_CURSOR)){
     FXString* files=open.getFilenames();
     if(files){
@@ -538,7 +540,7 @@ long GroupWindow::onCmdFileDlgMultipleAll(FXObject*,FXSelector,void*){
 
 // Open existing directory
 long GroupWindow::onCmdFileDlgDirectory(FXObject*,FXSelector,void*){
-  FXString dir=FXFileDialog::getOpenDirectory(this,"Open directory",PATHSEPSTRING);
+  FXString dir=FXFileDialog::getOpenDirectory(this,"Open directory",FXSystem::getHomeDirectory());
   fxmessage("Dir=\"%s\"\n",dir.text());
   return 1;
   }
@@ -548,7 +550,7 @@ long GroupWindow::onCmdFileDlgDirectory(FXObject*,FXSelector,void*){
 long GroupWindow::onCmdDirDlg(FXObject*,FXSelector,void*){
   FXDirDialog open(this,"Open directory");
   open.showFiles(true);
-  open.setDirectory("/etc/sysconfig/networking");
+  open.setDirectory(FXSystem::getHomeDirectory());
   if(open.execute()){
     fxmessage("Dir=%s\n",open.getDirectory().text());
     }

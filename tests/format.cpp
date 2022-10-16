@@ -169,6 +169,63 @@ int main(int argc,char* argv[]){
   FXchar buffer[1024];
   FXuval x,y;
 
+/*
+*/
+  fxmessage("clz32(0x12345678) = %d\n",clz32(0x12345678));      // 3
+  fxmessage("clz32(0x01234567) = %d\n",clz32(0x01234567));      // 7
+  fxmessage("clz32(0x00123456) = %d\n",clz32(0x00123456));      // 11
+  fxmessage("clz32(0x00012345) = %d\n",clz32(0x00012345));      // 15
+  fxmessage("clz32(0x00001234) = %d\n",clz32(0x00001234));      // 19
+  fxmessage("clz32(0x00000123) = %d\n",clz32(0x00000123));      // 23
+  fxmessage("clz32(0x00000012) = %d\n",clz32(0x00000012));      // 27
+  fxmessage("clz32(0x00000001) = %d\n",clz32(0x00000001));      // 31
+
+  fxmessage("clz64(0x123456789ABCDEF0) = %lld\n",clz64(FXULONG(0x123456789ABCDEF0)));    // 3
+  fxmessage("clz64(0x0123456789ABCDEF) = %lld\n",clz64(FXULONG(0x0123456789ABCDEF)));    // 7
+  fxmessage("clz64(0x00123456789ABCDE) = %lld\n",clz64(FXULONG(0x00123456789ABCDE)));    // 11
+  fxmessage("clz64(0x000123456789ABCD) = %lld\n",clz64(FXULONG(0x000123456789ABCD)));    // 15
+  fxmessage("clz64(0x0000123456789ABC) = %lld\n",clz64(FXULONG(0x0000123456789ABC)));    // 19
+  fxmessage("clz64(0x00000123456789AB) = %lld\n",clz64(FXULONG(0x00000123456789AB)));    // 23
+  fxmessage("clz64(0x000000123456789A) = %lld\n",clz64(FXULONG(0x000000123456789A)));    // 27
+  fxmessage("clz64(0x0000000123456789) = %lld\n",clz64(FXULONG(0x0000000123456789)));    // 31
+  fxmessage("clz64(0x0000000012345678) = %lld\n",clz64(FXULONG(0x0000000012345678)));    // 35
+  fxmessage("clz64(0x0000000001234567) = %lld\n",clz64(FXULONG(0x0000000001234567)));    // 39
+  fxmessage("clz64(0x0000000000123456) = %lld\n",clz64(FXULONG(0x0000000000123456)));    // 43
+  fxmessage("clz64(0x0000000000012345) = %lld\n",clz64(FXULONG(0x0000000000012345)));    // 47
+  fxmessage("clz64(0x0000000000001234) = %lld\n",clz64(FXULONG(0x0000000000001234)));    // 51
+  fxmessage("clz64(0x0000000000000123) = %lld\n",clz64(FXULONG(0x0000000000000123)));    // 55
+  fxmessage("clz64(0x0000000000000012) = %lld\n",clz64(FXULONG(0x0000000000000012)));    // 59
+  fxmessage("clz64(0x0000000000000001) = %lld\n",clz64(FXULONG(0x0000000000000001)));    // 63
+
+  fxmessage("ctz32(0x87654321) = %d\n",ctz32(0x87654321));      // 0
+  fxmessage("ctz32(0x87654320) = %d\n",ctz32(0x87654320));      // 5
+  fxmessage("ctz32(0x87654300) = %d\n",ctz32(0x87654300));      // 8
+  fxmessage("ctz32(0x87654000) = %d\n",ctz32(0x87654000));      // 14
+  fxmessage("ctz32(0x87650000) = %d\n",ctz32(0x87650000));      // 16
+  fxmessage("ctz32(0x87600000) = %d\n",ctz32(0x87600000));      // 21
+  fxmessage("ctz32(0x87000000) = %d\n",ctz32(0x87000000));      // 24
+  fxmessage("ctz32(0x80000000) = %d\n",ctz32(0x80000000));      // 31
+
+  fxmessage("ctz64(0x8FEDCBA987654321) = %lld\n",ctz64(FXULONG(0x8FEDCBA987654321)));      // 0
+  fxmessage("ctz64(0x8FEDCBA987654320) = %lld\n",ctz64(FXULONG(0x8FEDCBA987654320)));      // 5
+  fxmessage("ctz64(0x8FEDCBA987654300) = %lld\n",ctz64(FXULONG(0x8FEDCBA987654300)));      // 8
+  fxmessage("ctz64(0x8FEDCBA987654000) = %lld\n",ctz64(FXULONG(0x8FEDCBA987654000)));      // 14
+  fxmessage("ctz64(0x8FEDCBA987650000) = %lld\n",ctz64(FXULONG(0x8FEDCBA987650000)));      // 16
+  fxmessage("ctz64(0x8FEDCBA987600000) = %lld\n",ctz64(FXULONG(0x8FEDCBA987600000)));      // 21
+  fxmessage("ctz64(0x8FEDCBA987000000) = %lld\n",ctz64(FXULONG(0x8FEDCBA987000000)));      // 24
+  fxmessage("ctz64(0x8FEDCBA980000000) = %lld\n",ctz64(FXULONG(0x8FEDCBA980000000)));      // 31
+  fxmessage("ctz64(0x8FEDCBA900000000) = %lld\n",ctz64(FXULONG(0x8FEDCBA900000000)));      // 32
+  fxmessage("ctz64(0x8FEDCBA000000000) = %lld\n",ctz64(FXULONG(0x8FEDCBA000000000)));      // 37
+  fxmessage("ctz64(0x8FEDCB0000000000) = %lld\n",ctz64(FXULONG(0x8FEDCB0000000000)));      // 40
+  fxmessage("ctz64(0x8FEDC00000000000) = %lld\n",ctz64(FXULONG(0x8FEDC00000000000)));      // 46
+  fxmessage("ctz64(0x8FED000000000000) = %lld\n",ctz64(FXULONG(0x8FED000000000000)));      // 48
+  fxmessage("ctz64(0x8FE0000000000000) = %lld\n",ctz64(FXULONG(0x8FE0000000000000)));      // 53
+  fxmessage("ctz64(0x8F00000000000000) = %lld\n",ctz64(FXULONG(0x8F00000000000000)));      // 56
+  fxmessage("ctz64(0x8000000000000000) = %lld\n",ctz64(FXULONG(0x8000000000000000)));      // 63
+
+  fxmessage("pop32(0x12345678) = %d\n", pop32(0x12345678));                // 13
+  fxmessage("ctz64(0x123456789ABCDEF0) = %lld\n", pop64(FXULONG(0x123456789ABCDEF0)));      // 32
+
   //setlocale(LC_ALL,"");
   if(3<=argc){
     const FXchar *num=argv[1];
@@ -211,8 +268,8 @@ int main(int argc,char* argv[]){
     }
 
   for(y=0; y<ARRAYNUMBER(floatnumbers); y++){
-    __snprintf(buffer,sizeof(buffer),"0x%016lx",Math::fpBits(floatnumbers[y]));
-    fprintf(stdout,"format=\"%s\" output=\"%s\"\n","0x%016lx",buffer);
+    __snprintf(buffer,sizeof(buffer),"0x%016llx",Math::fpBits(floatnumbers[y]));
+    fprintf(stdout,"format=\"%s\" output=\"%s\"\n","0x%016llx",buffer);
     }
 
   fprintf(stdout,"\n");

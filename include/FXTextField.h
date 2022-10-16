@@ -189,7 +189,6 @@ public:
   static const FXchar textDelimiters[];
 
 public:
-
   enum{
     ID_CURSOR_HOME=FXFrame::ID_LAST,
     ID_CURSOR_END,
@@ -224,7 +223,6 @@ public:
     ID_AUTOSCROLL,
     ID_LAST
     };
-
 public:
 
   /// Construct text field wide enough to display ncols columns

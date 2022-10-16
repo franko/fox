@@ -554,7 +554,7 @@ FXbool fxloadEXE(FXStream& store,FXColor*& data,FXint& width,FXint& height,FXint
             FXTRACE((100,"sec%d.characteristics: %#08x\n\n",s,sec.characteristics));
 
             // Found the resource section in the pe file
-            if(compare(sec.name,".rsrc")==0){
+            if(FXString::compare(sec.name,".rsrc")==0){
               Context context={sec.pointerToRawData,sec.virtualAddress,sec.sizeOfRawData,{type,id,-1}};
 
               // Scan resources in resource section

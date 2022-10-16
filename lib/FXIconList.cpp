@@ -1134,16 +1134,16 @@ FXint FXIconList::getItemAt(FXint x,FXint y) const {
 
 
 // Compare strings up to n
-static FXint comp(const FXString& s1,const FXString& s2,FXint n){
-  const FXuchar *p1=(const FXuchar *)s1.text();
-  const FXuchar *p2=(const FXuchar *)s2.text();
-  FXint c1,c2;
+static FXint comp(const FXchar* s1,const FXchar* s2,FXint n){
   if(0<n){
+    FXint c1,c2;
     do{
-      c1=*p1++; if(c1=='\t') c1=0;
-      c2=*p2++; if(c2=='\t') c2=0;
+      c1=(FXuchar)*s1++;
+      c2=(FXuchar)*s2++;
       }
-    while(--n && c1 && (c1==c2));
+    while((c1==c2) && (' '<=c1) && --n);
+    if(c1<' ') c1=0;
+    if(c2<' ') c2=0;
     return c1-c2;
     }
   return 0;
@@ -1151,49 +1151,49 @@ static FXint comp(const FXString& s1,const FXString& s2,FXint n){
 
 
 // Compare strings case insensitive up to n
-static FXint compcase(const FXString& s1,const FXString& s2,FXint n){
-  const FXuchar *p1=(const FXuchar *)s1.text();
-  const FXuchar *p2=(const FXuchar *)s2.text();
-  FXint c1,c2;
+static FXint compcase(const FXchar* s1,const FXchar* s2,FXint n){
   if(0<n){
+    FXint c1,c2;
     do{
-      c1=Ascii::toLower(*p1++); if(c1=='\t') c1=0;      // FIXME UTF8 version
-      c2=Ascii::toLower(*p2++); if(c2=='\t') c2=0;
+      c1=Ascii::toLower((FXuchar)*s1++);
+      c2=Ascii::toLower((FXuchar)*s2++);
       }
-    while(--n && c1 && (c1==c2));
+    while((c1==c2) && (' '<=c1) && --n);
+    if(c1<' ') c1=0;
+    if(c2<' ') c2=0;
     return c1-c2;
     }
   return 0;
   }
 
 
-typedef FXint (*FXCompareFunc)(const FXString&,const FXString&,FXint);
+typedef FXint (*FXCompareFunc)(const FXchar*,const FXchar*,FXint);
 
 
 // Get item by name
-FXint FXIconList::findItem(const FXString& text,FXint start,FXuint flgs) const {
-  FXCompareFunc comparefunc=(flgs&SEARCH_IGNORECASE) ? (FXCompareFunc)compcase : (FXCompareFunc)comp;
+FXint FXIconList::findItem(const FXString& string,FXint start,FXuint flgs) const {
+  FXCompareFunc comparefunc=(flgs&SEARCH_IGNORECASE) ? compcase : comp;
   FXint index,len;
   if(0<items.no()){
-    len=(flgs&SEARCH_PREFIX)?text.length():2147483647;
+    len=(flgs&SEARCH_PREFIX)?string.length():2147483647;
     if(flgs&SEARCH_BACKWARD){
       if(start<0) start=items.no()-1;
       for(index=start; 0<=index; index--){
-        if((*comparefunc)(items[index]->getText(),text,len)==0) return index;
+        if((*comparefunc)(items[index]->getText().text(),string.text(),len)==0) return index;
         }
       if(!(flgs&SEARCH_WRAP)) return -1;
       for(index=items.no()-1; start<index; index--){
-        if((*comparefunc)(items[index]->getText(),text,len)==0) return index;
+        if((*comparefunc)(items[index]->getText().text(),string.text(),len)==0) return index;
         }
       }
     else{
       if(start<0) start=0;
       for(index=start; index<items.no(); index++){
-        if((*comparefunc)(items[index]->getText(),text,len)==0) return index;
+        if((*comparefunc)(items[index]->getText().text(),string.text(),len)==0) return index;
         }
       if(!(flgs&SEARCH_WRAP)) return -1;
       for(index=0; index<start; index++){
-        if((*comparefunc)(items[index]->getText(),text,len)==0) return index;
+        if((*comparefunc)(items[index]->getText().text(),string.text(),len)==0) return index;
         }
       }
     }
@@ -1916,10 +1916,12 @@ FXint FXIconList::compareSection(const FXchar *p,const FXchar* q,FXint s){
   for(x=s; x && *p; x-=(*p++=='\t')){}
   for(x=s; x && *q; x-=(*q++=='\t')){}
   do{
-    c1=(FXuchar) *p++;
-    c2=(FXuchar) *q++;
+    c1=*p++;
+    c2=*q++;
     }
-  while('\t'<c1 && (c1==c2));
+  while((c1==c2) && (' '<=c1));
+  if(c1<' ') c1=0;
+  if(c2<' ') c2=0;
   return c1-c2;
   }
 
@@ -1930,10 +1932,12 @@ FXint FXIconList::compareSectionCase(const FXchar *p,const FXchar* q,FXint s){
   for(x=s; x && *p; x-=(*p++=='\t')){}
   for(x=s; x && *q; x-=(*q++=='\t')){}
   do{
-    c1=Unicode::toLower(wc(p)); p=wcinc(p);
-    c2=Unicode::toLower(wc(q)); q=wcinc(q);
+    c1=Ascii::toLower(*p++);
+    c2=Ascii::toLower(*q++);
     }
-  while('\t'<c1 && (c1==c2));
+  while((c1==c2) && (' '<=c1));
+  if(c1<' ') c1=0;
+  if(c2<' ') c2=0;
   return c1-c2;
   }
 

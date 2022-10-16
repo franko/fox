@@ -45,7 +45,7 @@ public:
 public:
 
   /// Construct image from memory stream formatted in DDS format
-  FXDDSImage(FXApp* a,const void *pix=nullptr,FXuint opts=0,FXint w=1,FXint h=1);
+  FXDDSImage(FXApp* a,const FXuchar *pix=nullptr,FXuint opts=0,FXint w=1,FXint h=1);
 
   /// Save pixels into stream in DDS format
   virtual FXbool savePixels(FXStream& store) const;

@@ -376,9 +376,9 @@ FXbool fxsaveJPG(FXStream& store,const FXColor* data,FXint width,FXint height,FX
   while(dstinfo.next_scanline<dstinfo.image_height){
     qq=buffer[0];
     for(FXint i=0; i<width; i++,pp++){
-      *qq++=((FXuchar*)pp)[2];
-      *qq++=((FXuchar*)pp)[1];
-      *qq++=((FXuchar*)pp)[0];
+      *qq++=((const FXuchar*)pp)[2];
+      *qq++=((const FXuchar*)pp)[1];
+      *qq++=((const FXuchar*)pp)[0];
       }
     jpeg_write_scanlines(&dstinfo,buffer,1);
     }

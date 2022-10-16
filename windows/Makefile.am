@@ -1,55 +1,97 @@
 ## Process this file with automake to produce Makefile.in
 
-htmldir = $(prefix)/@PACKAGE@/html
 
 # Microsoft Visual C++
-VCPP_FILES = \
-vcpp/adie/adie.vcproj \
-vcpp/bitmapviewer/bitmapviewer.vcproj \
-vcpp/button/button.vcproj \
-vcpp/calculator/calculator.vcproj \
-vcpp/chart/chart.vcproj \
-vcpp/datatarget/datatarget.vcproj \
-vcpp/dctest/dctest.vcproj \
-vcpp/dialog/dialog.vcproj \
-vcpp/dirlist/dirlist.vcproj \
-vcpp/expression/expression.vcproj \
-vcpp/format/format.vcproj \
-vcpp/foursplit/foursplit.vcproj \
-vcpp/fox/fox.vcproj \
-vcpp/foxdll/foxdll.vcproj \
-vcpp/gltest/gltest.vcproj \
-vcpp/glviewer/glviewer.vcproj \
-vcpp/groupbox/groupbox.vcproj \
-vcpp/header/header.vcproj \
-vcpp/hello/hello.vcproj \
-vcpp/hello2/hello2.vcproj \
-vcpp/iconlist/iconlist.vcproj \
-vcpp/image/image.vcproj \
-vcpp/imageviewer/imageviewer.vcproj \
-vcpp/layout/layout.vcproj \
-vcpp/mditest/mditest.vcproj \
-vcpp/memmap/memmap.vcproj \
-vcpp/minheritance/minheritance.vcproj \
-vcpp/pathfinder/pathfinder.vcproj \
-vcpp/ratio/ratio.vcproj \
-vcpp/reswrap/reswrap.vcproj \
-vcpp/scribble/scribble.vcproj \
-vcpp/shutter/shutter.vcproj \
-vcpp/shutterbug/shutterbug.vcproj \
-vcpp/splitter/splitter.vcproj \
-vcpp/switcher/switcher.vcproj \
-vcpp/tabbook/tabbook.vcproj \
-vcpp/table/table.vcproj \
-vcpp/wizard/wizard.vcproj \
-vcpp/win32.sln
+VS_FILES = \
+BitmapViewer/BitmapViewer.vcxproj.filters \
+BitmapViewer/BitmapViewer.vcxproj \
+Button/Button.vcxproj.filters \
+Button/Button.vcxproj \
+Calculator/Calculator.vcxproj \
+Calculator/Calculator.vcxproj.filters \
+Calendar/Calendar.vcxproj.filters \
+Calendar/Calendar.vcxproj \
+DataTarget/DataTarget.vcxproj.filters \
+DataTarget/DataTarget.vcxproj \
+DirList/DirList.vcxproj \
+DirList/DirList.vcxproj.filters \
+Expression/Expression.vcxproj.filters \
+Expression/Expression.vcxproj \
+Format/Format.vcxproj.filters \
+Format/Format.vcxproj \
+FourSplit/FourSplit.vcxproj \
+FourSplit/FourSplit.vcxproj.filters \
+GLTest/GLTest.vcxproj.filters \
+GLTest/GLTest.vcxproj \
+GLViewer/GLViewer.vcxproj.filters \
+GLViewer/GLViewer.vcxproj \
+GaugeTest/GaugeTest.vcxproj.filters \
+GaugeTest/GaugeTest.vcxproj \
+GroupBox/GroupBox.vcxproj.filters \
+GroupBox/GroupBox.vcxproj \
+Header/Header.vcxproj.filters \
+Header/Header.vcxproj \
+Hello/Hello.vcxproj \
+Hello/Hello.vcxproj.filters \
+Hello2/Hello2.vcxproj.filters \
+Hello2/Hello2.vcxproj \
+Image/Image.vcxproj \
+Image/Image.vcxproj.filters \
+ImageViewer/ImageViewer.vcxproj.filters \
+ImageViewer/ImageViewer.vcxproj \
+Layout/Layout.vcxproj.filters \
+Layout/Layout.vcxproj \
+MDITest/MDITest.vcxproj.filters \
+MDITest/MDITest.vcxproj \
+PathFinder/PathFinder.vcxproj \
+PathFinder/PathFinder.vcxproj.filters \
+Process/Process.vcxproj.filters \
+Process/Process.vcxproj \
+Ratio/Ratio.vcxproj \
+Ratio/Ratio.vcxproj.filters \
+Rex/Rex.vcxproj \
+Rex/Rex.vcxproj.filters \
+Scribble/Scribble.vcxproj \
+Scribble/Scribble.vcxproj.filters \
+Shutter/Shutter.vcxproj \
+Shutter/Shutter.vcxproj.filters \
+ShutterBug/ShutterBug.vcxproj \
+ShutterBug/ShutterBug.vcxproj.filters \
+Splitter/Splitter.vcxproj.filters \
+Splitter/Splitter.vcxproj \
+Switcher/Switcher.vcxproj \
+Switcher/Switcher.vcxproj.filters \
+TabBook/TabBook.vcxproj \
+TabBook/TabBook.vcxproj.filters \
+Table/Table.vcxproj \
+Table/Table.vcxproj.filters \
+Thread/Thread.vcxproj \
+Thread/Thread.vcxproj.filters \
+Timefmt/Timefmt.vcxproj \
+Timefmt/Timefmt.vcxproj.filters \
+Unicode/Unicode.vcxproj \
+Unicode/Unicode.vcxproj.filters \
+Variant/Variant.vcxproj.filters \
+Variant/Variant.vcxproj \
+Wizard/Wizard.vcxproj.filters \
+Wizard/Wizard.vcxproj \
+XML/XML.vcxproj \
+XML/XML.vcxproj.filters \
+adie/adie.vcxproj.filters \
+adie/adie.vcxproj \
+dctest/dctest.vcxproj \
+dctest/dctest.vcxproj.filters \
+foxdll/foxdll.vcxproj \
+foxdll/foxdll.vcxproj.filters \
+foxlib/foxlib.vcxproj.filters \
+foxlib/foxlib.vcxproj \
+reswrap/reswrap.vcxproj.filters \
+reswrap/reswrap.vcxproj \
+vs.sln \
+vs.vcxproj \
+vs.vcxproj.filters
 
-
-EXTRA_DIST = $(VCPP_FILES)
-
-
-
-
+EXTRA_DIST = $(VS_FILES)
 
 
 

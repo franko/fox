@@ -262,7 +262,7 @@ FXint FXTreeItem::getNumChildren() const {
 
 // Get item (logically) below this one
 FXTreeItem* FXTreeItem::getBelow() const {
-  FXTreeItem* item=(FXTreeItem*)this;
+  FXTreeItem* item=const_cast<FXTreeItem*>(this);
   if(first) return first;
   while(!item->next && item->parent) item=item->parent;
   return item->next;
@@ -1854,25 +1854,25 @@ long FXTreeList::onTripleClicked(FXObject*,FXSelector,void* ptr){
 
 // Sort items in ascending order
 FXint FXTreeList::ascending(const FXTreeItem* a,const FXTreeItem* b){
-  return compare(a->getText(),b->getText());
+  return FXString::compare(a->getText(),b->getText());
   }
 
 
 // Sort items in descending order
 FXint FXTreeList::descending(const FXTreeItem* a,const FXTreeItem* b){
-  return compare(b->getText(),a->getText());
+  return FXString::compare(b->getText(),a->getText());
   }
 
 
 // Sort ascending order, case insensitive
 FXint FXTreeList::ascendingCase(const FXTreeItem* a,const FXTreeItem* b){
-  return comparecase(a->getText(),b->getText());
+  return FXString::comparecase(a->getText(),b->getText());
   }
 
 
 // Sort descending order, case insensitive
 FXint FXTreeList::descendingCase(const FXTreeItem* a,const FXTreeItem* b){
-  return comparecase(b->getText(),a->getText());
+  return FXString::comparecase(b->getText(),a->getText());
   }
 
 
@@ -2444,39 +2444,39 @@ void FXTreeList::clearItems(FXbool notify){
   }
 
 
-typedef FXint (*FXCompareFunc)(const FXString&,const FXString&,FXint);
+typedef FXint (*FXCompareFunc)(const FXchar*,const FXchar*,FXint);
 
 
 // Get item by name
-FXTreeItem* FXTreeList::findItem(const FXString& text,FXTreeItem* start,FXuint flgs) const {
-  FXCompareFunc comparefunc=(flgs&SEARCH_IGNORECASE) ? (FXCompareFunc)comparecase : (FXCompareFunc)compare;
+FXTreeItem* FXTreeList::findItem(const FXString& string,FXTreeItem* start,FXuint flgs) const {
+  FXCompareFunc comparefunc=(flgs&SEARCH_IGNORECASE) ? (FXCompareFunc)FXString::comparecase : (FXCompareFunc)FXString::compare;
   FXTreeItem *item;
   FXint len;
   if(firstitem){
-    len=(flgs&SEARCH_PREFIX)?text.length():2147483647;
+    len=(flgs&SEARCH_PREFIX)?string.length():2147483647;
     if(flgs&SEARCH_BACKWARD){
       item=start;
       while(item!=nullptr){
-        if((*comparefunc)(item->getText(),text,len)==0) return item;
+        if((*comparefunc)(item->getText().text(),string.text(),len)==0) return item;
         item=item->getAbove();
         }
       if(start && !(flgs&SEARCH_WRAP)) return nullptr;
       for(item=lastitem; item->getLast(); item=item->getLast()){}
       while(item!=start){
-        if((*comparefunc)(item->getText(),text,len)==0) return item;
+        if((*comparefunc)(item->getText().text(),string.text(),len)==0) return item;
         item=item->getAbove();
         }
       }
     else{
       item=start;
       while(item!=nullptr){
-        if((*comparefunc)(item->getText(),text,len)==0) return item;
+        if((*comparefunc)(item->getText().text(),string.text(),len)==0) return item;
         item=item->getBelow();
         }
       if(start && !(flgs&SEARCH_WRAP)) return nullptr;
       item=firstitem;
       while(item!=start){
-        if((*comparefunc)(item->getText(),text,len)==0) return item;
+        if((*comparefunc)(item->getText().text(),string.text(),len)==0) return item;
         item=item->getBelow();
         }
       }

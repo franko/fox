@@ -486,7 +486,7 @@ public:
   * passing SEARCH_PREFIX causes searching for a prefix of the item name.
   * Return NULL if no matching item is found.
   */
-  FXFoldingItem* findItem(const FXString& text,FXFoldingItem* start=nullptr,FXuint flags=SEARCH_FORWARD|SEARCH_WRAP) const;
+  FXFoldingItem* findItem(const FXString& string,FXFoldingItem* start=nullptr,FXuint flags=SEARCH_FORWARD|SEARCH_WRAP) const;
 
   /**
   * Search items by associated user data, beginning from item start. If the

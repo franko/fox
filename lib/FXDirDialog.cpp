@@ -31,6 +31,7 @@
 #include "FXSize.h"
 #include "FXPoint.h"
 #include "FXRectangle.h"
+#include "FXPath.h"
 #include "FXStat.h"
 #include "FXFile.h"
 #include "FXStringDictionary.h"
@@ -67,6 +68,11 @@ using namespace FX;
 
 namespace FX {
 
+
+// File dialog registry section name
+const FXchar FXDirDialog::sectionName[]="Directory Dialog";
+
+
 // Object implementation
 FXIMPLEMENT(FXDirDialog,FXDialogBox,nullptr,0)
 
@@ -90,16 +96,16 @@ void FXDirDialog::initdialog(){
   dirbox->acceptButton()->setSelector(FXDialogBox::ID_ACCEPT);
   dirbox->cancelButton()->setTarget(this);
   dirbox->cancelButton()->setSelector(FXDialogBox::ID_CANCEL);
-  setWidth(getApp()->reg().readIntEntry("Directory Dialog","width",getWidth()));
-  setHeight(getApp()->reg().readIntEntry("Directory Dialog","height",getHeight()));
+  setWidth(getApp()->reg().readIntEntry(sectionName,"width",getWidth()));
+  setHeight(getApp()->reg().readIntEntry(sectionName,"height",getHeight()));
   }
 
 
 // Hide window and save settings
 void FXDirDialog::hide(){
   FXDialogBox::hide();
-  getApp()->reg().writeIntEntry("Directory Dialog","width",getWidth());
-  getApp()->reg().writeIntEntry("Directory Dialog","height",getHeight());
+  getApp()->reg().writeIntEntry(sectionName,"width",getWidth());
+  getApp()->reg().writeIntEntry(sectionName,"height",getHeight());
   }
 
 

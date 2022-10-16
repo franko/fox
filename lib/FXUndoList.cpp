@@ -55,7 +55,7 @@
   - To keep track of when we get back to an "unmodified" state, a mark
     can be set.  The mark is basically a counter which is incremented
     with every undo record added, and decremented when undoing a command.
-    When we get back to 0, we are back to the unmodified state.
+    When we get back to 0, we are back to the "unmodified" state.
 
     If, after setting the mark, we have called undo(), then the mark can be
     reached by calling redo().

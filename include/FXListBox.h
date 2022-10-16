@@ -177,7 +177,7 @@ public:
   * passing SEARCH_PREFIX causes searching for a prefix of the item name.
   * Return -1 if no matching item is found.
   */
-  FXint findItem(const FXString& text,FXint start=-1,FXuint flags=SEARCH_FORWARD|SEARCH_WRAP) const;
+  FXint findItem(const FXString& string,FXint start=-1,FXuint flags=SEARCH_FORWARD|SEARCH_WRAP) const;
 
   /**
   * Search items by associated user data, beginning from item start. If the

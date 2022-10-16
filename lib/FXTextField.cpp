@@ -22,6 +22,7 @@
 #include "fxver.h"
 #include "fxdefs.h"
 #include "fxkeys.h"
+#include "fxchar.h"
 #include "fxmath.h"
 #include "fxascii.h"
 #include "fxunicode.h"
@@ -426,7 +427,7 @@ FXint FXTextField::index(FXint x) const {
     else xx=mm-font->getTextWidth(contents.text(),contents.length())/2;
     xx+=shift;
     for(pos=0; pos<contents.length(); pos=contents.inc(pos)){
-      cw=font->getTextWidth(&contents[pos],contents.extent(pos));
+      cw=font->getTextWidth(&contents[pos],wclen(&contents[pos]));
       if(x<(xx+(cw>>1))) break;
       xx+=cw;
       }

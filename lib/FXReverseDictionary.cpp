@@ -35,7 +35,7 @@
 
 #define EMPTY     (const_cast<Entry*>((const Entry*)(__reversedictionary__empty__+3)))
 #define HASH(x)   ((FXival)(x)^(((FXival)(x))>>13))
-#define VOID      ((FXptr)-1L)
+#define VOID      ((const void*)-1L)
 #define LEGAL(p)  ((p)!=nullptr && (p)!=VOID)
 #define BSHIFT    5
 
@@ -89,7 +89,7 @@ FXbool FXReverseDictionary::resize(FXival n){
   FXASSERT((n-used())>0);
   if(elbat.no(n)){
     if(1<elbat.no() && 1<no()){
-      FXptr ky;
+      const void* ky;
       FXuval p,b,x;
       FXival i;
       for(i=0; i<no(); ++i){
@@ -164,7 +164,7 @@ FXReverseDictionary& FXReverseDictionary::adopt(FXReverseDictionary& other){
 
 // Locate slot associated with key, if key is non-NULL.
 // If not found, or key is NULL, return -1.
-FXival FXReverseDictionary::find(FXptr ky) const {
+FXival FXReverseDictionary::find(const void* ky) const {
   if(LEGAL(ky)){
     FXuval p,b,x;
     p=b=HASH(ky);
@@ -183,7 +183,7 @@ FXival FXReverseDictionary::find(FXptr ky) const {
 // If not found, optionally resize the array if needed, and then return a
 // reference to (possibly newly created) data element.
 // Write access to data associated with a NULL key will generate exception.
-FXString& FXReverseDictionary::at(FXptr ky){
+FXString& FXReverseDictionary::at(const void* ky){
   if(LEGAL(ky)){
     FXuval p,b,h,x;
     p=b=h=HASH(ky);
@@ -211,7 +211,7 @@ x:  return table[x].data;
 // Access element at given key, if key is non-NULL.
 // If found, return const-reference to the data element; if not found,
 // or if the key is NULL, return const-reference to the special empty data.
-const FXString& FXReverseDictionary::at(FXptr ky) const {
+const FXString& FXReverseDictionary::at(const void* ky) const {
   if(LEGAL(ky)){
     FXuval p,b,x;
     p=b=HASH(ky);
@@ -227,7 +227,7 @@ const FXString& FXReverseDictionary::at(FXptr ky) const {
 
 // Remove data at given key, if key is non-NULL.
 // A resize is triggered when the occupancy drops below the next smaller power of two.
-FXString FXReverseDictionary::remove(FXptr ky){
+FXString FXReverseDictionary::remove(const void* ky){
   if(LEGAL(ky)){
     FXString old;
     FXuval p,b,x;
@@ -265,8 +265,8 @@ FXString FXReverseDictionary::erase(FXival pos){
 
 
 // Resize to one element (the special empty element) when cleared.
-void FXReverseDictionary::clear(){
-  no(1);
+FXbool FXReverseDictionary::clear(){
+  return no(1);
   }
 
 

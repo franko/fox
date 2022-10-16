@@ -163,6 +163,7 @@ protected:
   void delete_files(const FXString& files);
   void copy_files(const FXString& directory,const FXString& files);
   void move_files(const FXString& directory,const FXString& files);
+  static FXint compareSectionNatural(const FXchar* s1,const FXchar* s2,FXint s,FXbool ci=false);
 private:
   FXFileList(const FXFileList&);
   FXFileList &operator=(const FXFileList&);
@@ -330,14 +331,17 @@ public:
   /// Return the mode bits for this item
   FXuint getItemMode(FXint index) const;
 
+  /// Select files matching wildcard pattern
+  FXbool selectMatching(const FXString& ptrn="*",FXuint mode=FXPath::PathName|FXPath::NoEscape,FXbool notify=false);
+
   /// Change wildcard matching pattern
-  void setPattern(const FXString& ptrn,FXbool notify=false);
+  void setPattern(const FXString& ptrn="*",FXbool notify=false);
 
   /// Return wildcard pattern
   FXString getPattern() const { return pattern; }
 
   /// Change wildcard matching mode (see FXPath)
-  void setMatchMode(FXuint mode,FXbool notify=false);
+  void setMatchMode(FXuint mode=FXPath::PathName|FXPath::NoEscape,FXbool notify=false);
 
   /// Return wildcard matching mode
   FXuint getMatchMode() const { return matchmode; }

@@ -72,9 +72,9 @@ const FXbool FXJP2Icon::supported=false;
 
 
 // Initialize
-FXJP2Icon::FXJP2Icon(FXApp* a,const void *pix,FXColor clr,FXuint opts,FXint w,FXint h,FXint q):FXIcon(a,nullptr,clr,opts,w,h),quality(q){
+FXJP2Icon::FXJP2Icon(FXApp* a,const FXuchar *pix,FXColor clr,FXuint opts,FXint w,FXint h,FXint q):FXIcon(a,nullptr,clr,opts,w,h),quality(q){
   if(pix){
-    FXMemoryStream ms(FXStreamLoad,(FXuchar*)pix);
+    FXMemoryStream ms(FXStreamLoad,const_cast<FXuchar*>(pix));
     loadPixels(ms);
     }
   }

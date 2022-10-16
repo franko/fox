@@ -45,7 +45,7 @@ public:
 public:
 
   /// Construct icon from memory stream comprising Microsoft Windows executable
-  FXEXEIcon(FXApp* a,const void *pix=nullptr,FXColor clr=FXRGB(192,192,192),FXuint opts=0,FXint w=1,FXint h=1,FXint ri=-1,FXint rt=3);
+  FXEXEIcon(FXApp* a,const FXuchar *pix=nullptr,FXColor clr=FXRGB(192,192,192),FXuint opts=0,FXint w=1,FXint h=1,FXint ri=-1,FXint rt=3);
 
   /// Set resource group (type) to load from
   void setResType(FXint rt){ rtype=rt; }

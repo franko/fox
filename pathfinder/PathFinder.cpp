@@ -326,7 +326,7 @@ PathFinderMain::PathFinderMain(FXApp* a):FXMainWindow(a,"PathFinder",nullptr,nul
   // Header above folders
   FXHorizontalFrame *header1=new FXHorizontalFrame(group1,LAYOUT_FILL_X|FRAME_RAISED|FRAME_THICK,0,0,0,0, 0,0,0,0, 0,0);
   new FXLabel(header1,tr("Folders"),nullptr,LAYOUT_FILL_X|JUSTIFY_LEFT);
-  new FXButton(header1,"",closeicon,group1,FXWindow::ID_HIDE,BUTTON_TOOLBAR|FRAME_RAISED,0,0,0,0, 0,0,0,0);
+  new FXButton(header1,"",closeicon,group1,FXWindow::ID_HIDE,BUTTON_TOOLBAR|FRAME_RAISED|LAYOUT_CENTER_Y,0,0,0,0, 0,0,0,0);
 
   // Folder List
   dirlist=new FXDirList(group1,this,ID_DIRECTORYLIST,LAYOUT_FILL_X|LAYOUT_FILL_Y|LAYOUT_TOP|LAYOUT_RIGHT|TREELIST_SHOWS_LINES|TREELIST_SHOWS_BOXES|TREELIST_BROWSESELECT|DIRLIST_NO_OWN_ASSOC);
@@ -338,9 +338,9 @@ PathFinderMain::PathFinderMain(FXApp* a):FXMainWindow(a,"PathFinder",nullptr,nul
   FXLabel* fileslabel=new FXLabel(header2,tr("Files in: "),nullptr,LAYOUT_FILL_X|JUSTIFY_LEFT);
   fileslabel->setTarget(this);
   fileslabel->setSelector(ID_UPDATE_FILES);
-  new FXButton(header2,tr("\tRotate left\tRotate image leftward 90 degrees."),rotatelefticon,this,ID_IMAGE_ROTATE_LEFT,BUTTON_TOOLBAR|FRAME_RAISED,0,0,0,0,0,0,0,0);
-  new FXButton(header2,tr("\tRotate right\tRotate image rightward 90 degrees."),rotaterighticon,this,ID_IMAGE_ROTATE_RIGHT,BUTTON_TOOLBAR|FRAME_RAISED,0,0,0,0,0,0,0,0);
-  new FXButton(header2,FXString::null,closeicon,this,ID_CLOSE_PREVIEW,BUTTON_TOOLBAR|FRAME_RAISED,0,0,0,0, 0,0,0,0);
+  new FXButton(header2,tr("\tRotate left\tRotate image leftward 90 degrees."),rotatelefticon,this,ID_IMAGE_ROTATE_LEFT,BUTTON_TOOLBAR|FRAME_RAISED|LAYOUT_CENTER_Y,0,0,0,0,0,0,0,0);
+  new FXButton(header2,tr("\tRotate right\tRotate image rightward 90 degrees."),rotaterighticon,this,ID_IMAGE_ROTATE_RIGHT,BUTTON_TOOLBAR|FRAME_RAISED|LAYOUT_CENTER_Y,0,0,0,0,0,0,0,0);
+  new FXButton(header2,FXString::null,closeicon,this,ID_CLOSE_PREVIEW,BUTTON_TOOLBAR|FRAME_RAISED|LAYOUT_CENTER_Y,0,0,0,0, 0,0,0,0);
 
   // Switcher to either image or filelist
   switcher=new FXSwitcher(group2,LAYOUT_FILL_X|LAYOUT_FILL_Y, 0,0,0,0, 0,0,0,0);
@@ -377,9 +377,9 @@ PathFinderMain::PathFinderMain(FXApp* a):FXMainWindow(a,"PathFinder",nullptr,nul
   new FXMenuCommand(editmenu,tr("Delete\t\tDelete Selected files."),deleteicon,this,ID_DELETE);
   new FXMenuCommand(editmenu,tr("&Paste\tCtl-V\tPaste from clipboard."),pasteicon,filelist,FXFileList::ID_PASTE_SEL);
   new FXMenuSeparator(editmenu);
-  new FXMenuCommand(editmenu,tr("Select files\tCtl-S\tSelect files matching wildcard."),nullptr,this,ID_WILDCARD_SELECT);
-  new FXMenuCommand(editmenu,tr("&Select All\tCtl-A\tSelect all icons."),nullptr,filelist,FXFileList::ID_SELECT_ALL);
-  new FXMenuCommand(editmenu,tr("&Deselect All\t\tDeselect all icons."),nullptr,filelist,FXFileList::ID_DESELECT_ALL);
+  new FXMenuCommand(editmenu,tr("&Select All\tCtl-A\tSelect all files."),nullptr,filelist,FXFileList::ID_SELECT_ALL);
+  new FXMenuCommand(editmenu,tr("Select &Wildcard\tCtl-S\tSelect files matching wildcard."),nullptr,this,ID_WILDCARD_SELECT);
+  new FXMenuCommand(editmenu,tr("&Deselect All\t\tDeselect all files."),nullptr,filelist,FXFileList::ID_DESELECT_ALL);
   new FXMenuCommand(editmenu,tr("&Invert Selection\t\tInvert selection."),nullptr,filelist,FXFileList::ID_SELECT_INVERSE);
 
   // Go Menu Pane
@@ -440,7 +440,7 @@ PathFinderMain::PathFinderMain(FXApp* a):FXMainWindow(a,"PathFinder",nullptr,nul
   new FXMenuRadio(sortmenu,tr("&Name\t\tSort by file name."),filelist,FXFileList::ID_SORT_BY_NAME);
   new FXMenuRadio(sortmenu,tr("&Type\t\tSort by file type."),filelist,FXFileList::ID_SORT_BY_TYPE);
   new FXMenuRadio(sortmenu,tr("&Size\t\tSort by file size."),filelist,FXFileList::ID_SORT_BY_SIZE);
-  new FXMenuRadio(sortmenu,tr("T&ime\t\tSort by modification time."),filelist,FXFileList::ID_SORT_BY_TIME);
+  new FXMenuRadio(sortmenu,tr("&Date\t\tSort by modification time."),filelist,FXFileList::ID_SORT_BY_TIME);
   new FXMenuRadio(sortmenu,tr("&User\t\tSort by user name."),filelist,FXFileList::ID_SORT_BY_USER);
   new FXMenuRadio(sortmenu,tr("&Group\t\tSort by group name."),filelist,FXFileList::ID_SORT_BY_GROUP);
   new FXMenuSeparator(sortmenu);
@@ -1061,8 +1061,10 @@ FXbool PathFinderMain::executeCommandline(const FXString& commandline){
 //
 // The special codes are as follows:
 //
-//      %f or %s     Replaced by (quoted) current filename
-//      %F           Replaced by the (quoted) selected filenames
+//      %f or %s     Replaced by (quoted) current full path name
+//      %F           Replaced by the (quoted) selected full path names
+//      %n           Replaced by the (quoted) current file name
+//      %N           Replaced by the (quoted) selected file names
 //      %u           Replaced by (quoted) URL-encoded of the current filename
 //      %U           Replaced by the (quoted) URL-encoded selected filenames
 //      %d           Replaced by current working directory
@@ -1103,6 +1105,22 @@ FXString PathFinderMain::makeCommandline(const FXString& executable) const {
           while(f && !f->empty()){
             if(!commandline.empty()) commandline+=' ';
             commandline+=FXPath::enquote(*f);
+            f++;
+            }
+          continue;
+        case 'n':         // Name only
+          f=files;
+          if(f && !f->empty()){
+            if(!commandline.empty()) commandline+=' ';
+            commandline+=FXPath::enquote(FXPath::name(*f));
+            f++;
+            }
+          continue;
+        case 'N':         // Multiple files, names only
+          f=files;
+          while(f && !f->empty()){
+            if(!commandline.empty()) commandline+=' ';
+            commandline+=FXPath::enquote(FXPath::name(*f));
             f++;
             }
           continue;
@@ -1898,27 +1916,14 @@ long PathFinderMain::onCmdPreferences(FXObject*,FXSelector,void*){
 // Select files matching wildcard
 long PathFinderMain::onCmdWildcardSelect(FXObject*,FXSelector,void*){
   FXChoiceBox choices(this,tr("Select Files Matching"),tr("Select files matching wildcard pattern"),nullptr,getPatternList(),DECOR_TITLE|DECOR_BORDER|DECOR_RESIZE,0,0,400,300);
-  FXint pick=choices.execute(PLACEMENT_CURSOR);
+  FXint pick=choices.execute(PLACEMENT_OWNER);
   if(0<=pick && filelist->getNumItems()){
     FXString wildcard=FXFileSelector::patternFromText(pattern->getItemText(pick));
-    FXint anch=-1,curr=-1;
-    for(FXint i=0; i<filelist->getNumItems(); i++){
-      if(filelist->isItemNavigational(i)) continue;
 #if defined(WIN32)
-      if(FXPath::match(filelist->getItemFilename(i),wildcard,(FXPath::PathName|FXPath::NoEscape|FXPath::CaseFold))){
-        if(anch<0){ anch=i; } curr=i;
-        filelist->selectItem(i,true);
-        }
+    filelist->selectMatching(wildcard,(FXPath::PathName|FXPath::NoEscape|FXPath::CaseFold),true);
 #else
-      if(FXPath::match(filelist->getItemFilename(i),wildcard,(FXPath::PathName|FXPath::NoEscape))){
-        if(anch<0){ anch=i; } curr=i;
-        filelist->selectItem(i,true);
-        }
+    filelist->selectMatching(wildcard,(FXPath::PathName|FXPath::NoEscape),true);
 #endif
-      filelist->setAnchorItem(anch);
-      filelist->setCurrentItem(curr,true);
-      filelist->makeItemVisible(curr);
-      }
     }
   return 1;
   }
@@ -2120,62 +2125,62 @@ FXbool PathFinderMain::previewImage(const FXString& filename){
   FXImage *old=nullptr;
 
   // Determine type of image
-  if(comparecase(ext,"gif")==0){
+  if(FXString::comparecase(ext,"gif")==0){
     img=new FXGIFImage(getApp(),nullptr,IMAGE_KEEP|IMAGE_SHMI|IMAGE_SHMP);
     }
-  else if(comparecase(ext,"bmp")==0){
+  else if(FXString::comparecase(ext,"bmp")==0){
     img=new FXBMPImage(getApp(),nullptr,IMAGE_KEEP|IMAGE_SHMI|IMAGE_SHMP);
     }
-  else if(comparecase(ext,"xpm")==0){
+  else if(FXString::comparecase(ext,"xpm")==0){
     img=new FXXPMImage(getApp(),nullptr,IMAGE_KEEP|IMAGE_SHMI|IMAGE_SHMP);
     }
-  else if(comparecase(ext,"pcx")==0){
+  else if(FXString::comparecase(ext,"pcx")==0){
     img=new FXPCXImage(getApp(),nullptr,IMAGE_KEEP|IMAGE_SHMI|IMAGE_SHMP);
     }
-  else if(comparecase(ext,"ico")==0 || comparecase(ext,"cur")==0){
+  else if(FXString::comparecase(ext,"ico")==0 || FXString::comparecase(ext,"cur")==0){
     img=new FXICOImage(getApp(),nullptr,IMAGE_KEEP|IMAGE_SHMI|IMAGE_SHMP);
     }
-  else if(comparecase(ext,"tga")==0){
+  else if(FXString::comparecase(ext,"tga")==0){
     img=new FXTGAImage(getApp(),nullptr,IMAGE_KEEP|IMAGE_SHMI|IMAGE_SHMP);
     }
-  else if(comparecase(ext,"rgb")==0){
+  else if(FXString::comparecase(ext,"rgb")==0){
     img=new FXRGBImage(getApp(),nullptr,IMAGE_KEEP|IMAGE_SHMI|IMAGE_SHMP);
     }
-  else if(comparecase(ext,"pbm")==0 || comparecase(ext,"pgm")==0 || comparecase(ext,"pnm")==0 || comparecase(ext,"ppm")==0){
+  else if(FXString::comparecase(ext,"pbm")==0 || FXString::comparecase(ext,"pgm")==0 || FXString::comparecase(ext,"pnm")==0 || FXString::comparecase(ext,"ppm")==0){
     img=new FXPPMImage(getApp(),nullptr,IMAGE_KEEP|IMAGE_SHMI|IMAGE_SHMP);
     }
-  else if(comparecase(ext,"xbm")==0){
+  else if(FXString::comparecase(ext,"xbm")==0){
     img=new FXXBMImage(getApp(),nullptr,nullptr,IMAGE_KEEP|IMAGE_SHMI|IMAGE_SHMP);
     }
-  else if(comparecase(ext,"ppm")==0){
+  else if(FXString::comparecase(ext,"ppm")==0){
     img=new FXPPMImage(getApp(),nullptr,IMAGE_KEEP|IMAGE_SHMI|IMAGE_SHMP);
     }
-  else if(comparecase(ext,"iff")==0 || comparecase(ext,"lbm")==0){
+  else if(FXString::comparecase(ext,"iff")==0 || FXString::comparecase(ext,"lbm")==0){
     img=new FXIFFImage(getApp(),nullptr,IMAGE_KEEP|IMAGE_SHMI|IMAGE_SHMP);
     }
-  else if(comparecase(ext,"ras")==0){
+  else if(FXString::comparecase(ext,"ras")==0){
     img=new FXRASImage(getApp(),nullptr,IMAGE_KEEP|IMAGE_SHMI|IMAGE_SHMP);
     }
-  else if(comparecase(ext,"dds")==0){
+  else if(FXString::comparecase(ext,"dds")==0){
     img=new FXDDSImage(getApp(),nullptr,IMAGE_KEEP|IMAGE_SHMI|IMAGE_SHMP);
     }
 #ifdef HAVE_PNG_H
-  else if(comparecase(ext,"png")==0){
+  else if(FXString::comparecase(ext,"png")==0){
     img=new FXPNGImage(getApp(),nullptr,IMAGE_KEEP|IMAGE_SHMI|IMAGE_SHMP);
     }
 #endif
 #ifdef HAVE_JPEG_H
-  else if(comparecase(ext,"jpg")==0){
+  else if(FXString::comparecase(ext,"jpg")==0){
     img=new FXJPGImage(getApp(),nullptr,IMAGE_KEEP|IMAGE_SHMI|IMAGE_SHMP);
     }
 #endif
 #ifdef HAVE_TIFF_H
-  else if(comparecase(ext,"tif")==0 || comparecase(ext,"tiff")==0){
+  else if(FXString::comparecase(ext,"tif")==0 || FXString::comparecase(ext,"tiff")==0){
     img=new FXTIFImage(getApp(),nullptr,IMAGE_KEEP|IMAGE_SHMI|IMAGE_SHMP);
     }
 #endif
 #ifdef HAVE_WEBP_H
-  else if(comparecase(ext,"webp")==0){
+  else if(FXString::comparecase(ext,"webp")==0){
     img=new FXWEBPImage(getApp(),nullptr,IMAGE_KEEP|IMAGE_SHMI|IMAGE_SHMP);
     }
 #endif

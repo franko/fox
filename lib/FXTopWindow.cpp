@@ -21,6 +21,7 @@
 #include "xincs.h"
 #include "fxver.h"
 #include "fxdefs.h"
+#include "fxchar.h"
 #include "fxmath.h"
 #include "FXArray.h"
 #include "FXHash.h"
@@ -238,8 +239,8 @@ void FXTopWindow::create(){
       // In a perfect world this would be set in FXTopWindow, but for some strange reasons
       // some window-managers (e.g. fvwm) this will be too late and they will not recognize them.
       XClassHint hint;
-      hint.res_name=(char*)getApp()->getAppName().text();             // "FoxApp"
-      hint.res_class=(char*)getApp()->getVendorName().text();         // "FoxWindow"
+      hint.res_name=const_cast<char*>(getApp()->getAppName().text());           // "FoxApp"
+      hint.res_class=const_cast<char*>(getApp()->getVendorName().text());       // "FoxWindow"
       XSetClassHint((Display*)getApp()->getDisplay(),xid,&hint);
 
       // Set client machine name and application pid
@@ -1533,12 +1534,14 @@ long FXTopWindow::onCmdClose(FXObject*,FXSelector,void*){
 
 // Session is about to close, give opportunity to save data
 long FXTopWindow::onSessionNotify(FXObject*,FXSelector,void* ptr){
+  FXTRACE((100,"%s::onSessionNotify %p\n",getClassName(),this));
   return target && target->tryHandle(this,FXSEL(SEL_SESSION_NOTIFY,message),ptr);
   }
 
 
 // Session has closed, close the window with prejudice
 long FXTopWindow::onSessionClosed(FXObject*,FXSelector,void* ptr){
+  FXTRACE((100,"%s::onSessionClosed %p\n",getClassName(),this));
   if(target) target->tryHandle(this,FXSEL(SEL_SESSION_CLOSED,message),ptr);
   close(false);
   return 1;

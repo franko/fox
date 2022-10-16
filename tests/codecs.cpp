@@ -15,6 +15,7 @@
 #include "FXUTF16Codec.h"
 #include "FXUTF32Codec.h"
 #include "FXUTF8Codec.h"
+
 /*
 
 
@@ -35,142 +36,473 @@ FXUTF32Codec   utf32;
 FXUTF32BECodec utf32be;
 FXUTF32LECodec utf32le;
 
-
+const FXschar utf8Len[256]={
+  1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
+  1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
+  1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
+  1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
+  1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
+  1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
+  1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
+  1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
+  1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
+  1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
+  1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
+  1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
+  2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,
+  2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,
+  3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,
+  4,4,4,4,4,4,4,4,5,5,5,5,6,6,1,1
+  };
 
 // UTF8 string of 1, 2, 3, 4, 5, and 6 bytes
 const FXchar utfteststring[]="\x7f\xdf\xbf\xef\xbf\xbf\xf7\xbf\xbf\xbf\xfb\xbf\xbf\xbf\xbf\xfd\xbf\xbf\xbf\xbf\xbf";
+
+/*******************************************************************************/
+
+// Turns out this is the best one (when NO branch predict)
+static inline void inc3(const FXchar*& ptr){
+  FXival c=(FXuchar)*ptr;
+  ptr-=((191-c)>>63)+((223-c)>>63)+((239-c)>>63)-1;
+  }
+
+
+static inline FXival utf8len(FXival c){
+  return 1-((191-c)>>63)-((223-c)>>63)-((239-c)>>63);
+  }
+
+
+// Turns out this is the best one (when NO branch predict)
+// inc3 and inc4 are very close on Zen3
+static inline void inc4(const FXchar*& ptr){
+  FXuchar c=*ptr;
+  ptr+=(((0xE5000000>>((c>>4)<<1))&3)+1);
+  }
+
+
+static inline void inc5(const FXchar*& ptr){
+  FXuchar c=*ptr++;
+  if(0xC0<=c){ ptr++;
+  if(0xE0<=c){ ptr++;
+  if(0xF0<=c){ ptr++; }}}
+  }
+
+
+// The best one yet (when branch predict)
+static inline void inc6(const FXchar*& ptr){
+  if(0xC0<=(FXuchar)*ptr){ if(0xE0<=(FXuchar)*ptr){ if(0xF0<=(FXuchar)*ptr){ ptr++; } ptr++; } ptr++; } ptr++;
+  }
+
+
+// Not horrible but needs table...
+static inline void inc7(const FXchar*& ptr){
+  ptr+=utf8Len[(FXuchar)*ptr];
+  }
 
 
 // Test roundtrip for codec
 void roundtriptest(FXTextCodec *codec){
   FXchar dst[32],src[32];
-  FXint c,n,i,j;
+  FXint i,j;
   FXwchar wc;
-  printf("Roundtrip test for: %s..\n",codec->name());
+  fxmessage("Roundtrip test for: %s..\n",codec->name());
   for(i=0; i<256; i++){
     src[0]=i;
     codec->mb2wc(wc,src,1);
     codec->wc2mb(dst,32,wc);
     j=(FXuchar)dst[0];
-    printf("0x%02x -> 0x%04x -> 0x%02x %s\n",i,wc,j,(i!=j)?"BAD":"");
+    fxmessage("0x%02x -> 0x%04x -> 0x%02x %s\n",i,wc,j,(i!=j)?"BAD":"");
     }
-  printf("Roundtrip test done!\n");
+  fxmessage("Roundtrip test done!\n");
   }
 
 
 // Test utf8 roundtrip for codec
 void utf8roundtriptest(FXTextCodec *codec){
   FXchar dst[32],src[32];
-  FXint c,n,i,j;
-  FXwchar wc;
-  printf("UTF8 Roundtrip test for: %s..\n",codec->name());
+  FXint n,i,j;
+  fxmessage("UTF8 Roundtrip test for: %s..\n",codec->name());
   for(i=0; i<256; i++){
     src[0]=i;
     memset(dst,0,sizeof(dst));
     n=codec->mb2utf(dst,32,src,1);
-    if(n<=0) printf("mb2utf(0x%02x) gave error %d\n",i,n);
+    if(n<=0) fxmessage("mb2utf(0x%02x) gave error %d\n",i,n);
     memset(src,0,sizeof(src));
     n=codec->utf2mb(src,32,dst,n);
-    if(n<=0) printf("utf2mb(0x%02x) gave error %d\n",i,n);
+    if(n<=0) fxmessage("utf2mb(0x%02x) gave error %d\n",i,n);
     j=(FXuchar)src[0];
-    if(i!=j) printf("0x%02x -> utf8 -> 0x%02x\n",i,j);
+    if(i!=j) fxmessage("0x%02x -> utf8 -> 0x%02x\n",i,j);
     }
-  printf("UTF8 Roundtrip test done!\n");
+  fxmessage("UTF8 Roundtrip test done!\n");
   }
 
 
 // Test buffer
-static FXchar buffer[1024];
+static FXchar  buffer[1024];
 
 
 // Start the whole thing
-int main(int,char**){
-  FXTime beg,end;
+int main(int argc,char *argv[]){
+  const FXchar *ptr;
+  FXnchar scratch[32];
+  FXnchar hctarcs[32];
   FXwchar w1,w2;
-  FXint n,m;
+  FXint n,m,s;
+  FXint mode=0;
 
   // Round-trip tests
-  printf("Testing utf2wccvt(wc2utfcvt(wc)) == wc\n");
+  fxmessage("**** Testing utf2wcs(wcs2utf(str))\n");
+
+  // Probability distributions
+  if(1<argc){
+    mode=strtoul(argv[1],nullptr,0);
+    }
 
   // Test utf for codes of 4 bytes
-  printf("4-byte conversions\n");
-  beg=fxgetticks();
+  fxmessage("4-byte conversions\n");
   for(w1=0x10000; w1<0x110000; w1++){
     m=wcs2utf(buffer,&w1,4,1);
     n=utf2wcs(&w2,buffer,1,m);
-    if(w1!=w2 || m!=4 || n!=1) printf("%06X: Problem: %06X\n",w1,w2);
+    if(w1!=w2 || m!=4 || n!=1) fxmessage("%06X: Problem: %06X\n",w1,w2);
     }
-  end=fxgetticks();
-  printf("4-Byte case: %lld ticks/character\n",(end-beg)/(0x110000-0x10000));
 
   // Test utf for codes of 3 bytes
-  printf("3-byte conversions\n");
-  beg=fxgetticks();
+  fxmessage("3-byte conversions\n");
   for(w1=0x800; w1<0x10000; w1++){
     m=wcs2utf(buffer,&w1,4,1);
     n=utf2wcs(&w2,buffer,1,m);
-    if(w1!=w2 || m!=3 || n!=1) printf("%06X: Problem: %06X\n",w1,w2);
+    if(w1!=w2 || m!=3 || n!=1) fxmessage("%06X: Problem: %06X\n",w1,w2);
     }
-  end=fxgetticks();
-  printf("3-Byte case: %lld ticks/character\n",(end-beg)/(0x10000-0x800));
 
   // Test utf for codes of 2 bytes
-  printf("2-byte conversions\n");
-  beg=fxgetticks();
+  fxmessage("2-byte conversions\n");
   for(w1=0x80; w1<0x800; w1++){
     m=wcs2utf(buffer,&w1,4,1);
     n=utf2wcs(&w2,buffer,1,m);
-    if(w1!=w2 || m!=2 || n!=1) printf("%06X: Problem: %06X\n",w1,w2);
+    if(w1!=w2 || m!=2 || n!=1) fxmessage("%06X: Problem: %06X\n",w1,w2);
     }
-  end=fxgetticks();
-  printf("2-Byte case: %lld ticks/character\n",(end-beg)/(0x800-0x80));
 
   // Test utf for codes of 1 byte
-  printf("1-byte conversions\n");
-  beg=fxgetticks();
+  fxmessage("1-byte conversions\n");
   for(w1=0; w1<0x80; w1++){
     m=wcs2utf(buffer,&w1,4,1);
     n=utf2wcs(&w2,buffer,1,m);
-    if(w1!=w2 || m!=1 || n!=1) printf("%06X: Problem: %06X\n",w1,w2);
+    if(w1!=w2 || m!=1 || n!=1) fxmessage("%06X: Problem: %06X m=%d n=%d\n",w1,w2,m,n);
     }
-  end=fxgetticks();
-  printf("1-Byte case: %lld ticks/character\n",(end-beg)/0x80);
+
+  // Round-trip tests
+  fxmessage("**** Testing utf2ncs(ncs2utf(str))\n");
+
+  // Test utf16 for codes of 2 words
+  fxmessage("1-word and 2-word conversions\n");
+  for(w1=0; w1<0x110000; w1++){
+    s=wc2nc(scratch,w1);
+    m=ncs2utf(buffer,scratch,4,s);
+    n=utf2ncs(hctarcs,buffer,2,m);
+    if(n==1 && (scratch[0]!=hctarcs[0])) fxmessage("%06X: Problem: %04X s=%d n=%d\n",w1,hctarcs[0],s,n);
+    if(n==2 && (scratch[0]!=hctarcs[0] || scratch[1]!=hctarcs[1])) fxmessage("%06X: Problem: %04X %04X s=%d n=%d\n",w1,hctarcs[0],hctarcs[1],s,n);
+    }
+
+  fxmessage("**** Testing wcs2utf(wc)\n");
 
   // More tests
-  printf("4-byte conversions\n");
+  fxmessage("4-byte conversions\n");
   for(w1=0x10000; w1<0x110000; w1++){
     m=wcs2utf(buffer,&w1,4,1);
     w2=((FXuchar)buffer[0]<<18) ^ ((FXuchar)buffer[1]<<12) ^ ((FXuchar)buffer[2]<<6) ^ (FXuchar)buffer[3] ^ 0x3C82080;
-    if(w1!=w2) printf("%06X: Problem: %06X\n",w1,w2);
+    if(w1!=w2) fxmessage("%06X: Problem: %06X\n",w1,w2);
     }
 
   // Test utf for codes of 3 bytes
-  printf("3-byte conversions\n");
+  fxmessage("3-byte conversions\n");
   for(w1=0x800; w1<0x10000; w1++){
     m=wcs2utf(buffer,&w1,4,1);
     w2=((FXuchar)buffer[0]<<12) ^ ((FXuchar)buffer[1]<<6) ^ (FXuchar)buffer[2] ^ 0x0E2080;
-    if(w1!=w2) printf("%06X: Problem: %06X\n",w1,w2);
+    if(w1!=w2) fxmessage("%06X: Problem: %06X\n",w1,w2);
     }
 
   // Test utf for codes of 2 bytes
-  printf("2-byte conversions\n");
+  fxmessage("2-byte conversions\n");
   for(w1=0x80; w1<0x800; w1++){
     m=wcs2utf(buffer,&w1,4,1);
     w2=((FXuchar)buffer[0]<<6) ^ (FXuchar)buffer[1] ^ 0x3080;
-    if(w1!=w2) printf("%06X: Problem: %06X\n",w1,w2);
+    if(w1!=w2) fxmessage("%06X: Problem: %06X\n",w1,w2);
     }
 
   // Test utf for codes of 1 byte
-  printf("1-byte conversions\n");
+  fxmessage("1-byte conversions\n");
   for(w1=0; w1<0x80; w1++){
     m=wcs2utf(buffer,&w1,4,1);
     w2=(FXuchar)buffer[0];
-    if(w1!=w2) printf("%06X: Problem: %06X\n",w1,w2);
+    if(w1!=w2) fxmessage("%06X: Problem: %06X\n",w1,w2);
     }
+
+  fxmessage("**** Testing WCINC(ptr)\n");
+
+  // Forward step tests
+  fxmessage("4-byte step forward\n");
+  for(w1=0x10000; w1<0x110000; w1++){
+    m=wcs2utf(buffer,&w1,4,1);
+    ptr=buffer;
+    w2=wcnxt(ptr);
+    if(w1!=w2) fxmessage("%06X: Problem: %06X\n",w1,w2);
+    if(buffer+4!=ptr) fxmessage("%06X: Problem: %p!=%p\n",w1,buffer+4,ptr);
+    }
+  fxmessage("3-byte step forward\n");
+  for(w1=0x800; w1<0x10000; w1++){
+    m=wcs2utf(buffer,&w1,4,1);
+    ptr=buffer;
+    w2=wcnxt(ptr);
+    if(w1!=w2) fxmessage("%06X: Problem: %06X\n",w1,w2);
+    if(buffer+3!=ptr) fxmessage("%06X: Problem: %p!=%p\n",w1,buffer+3,ptr);
+    }
+
+  fxmessage("2-byte step forward\n");
+  for(w1=0x80; w1<0x800; w1++){
+    m=wcs2utf(buffer,&w1,4,1);
+    ptr=buffer;
+    w2=wcnxt(ptr);
+    if(w1!=w2) fxmessage("%06X: Problem: %06X\n",w1,w2);
+    if(buffer+2!=ptr) fxmessage("%06X: Problem: %p!=%p\n",w1,buffer+2,ptr);
+    }
+
+  fxmessage("1-byte step forward\n");
+  for(w1=0; w1<0x80; w1++){
+    m=wcs2utf(buffer,&w1,4,1);
+    ptr=buffer;
+    w2=wcnxt(ptr);
+    if(w1!=w2) fxmessage("%06X: Problem: %06X\n",w1,w2);
+    if(buffer+1!=ptr) fxmessage("%06X: Problem: %p!=%p\n",w1,buffer+1,ptr);
+    }
+
+  fxmessage("**** Testing WCDEC(ptr)\n");
+
+  // Backward step tests
+  fxmessage("4-byte step backward\n");
+  for(w1=0x10000; w1<0x110000; w1++){
+    m=wcs2utf(buffer,&w1,4,1);
+    ptr=buffer+4;
+    w2=wcprv(ptr);
+    if(w1!=w2) fxmessage("%06X: Problem: %06X\n",w1,w2);
+    if(buffer!=ptr) fxmessage("%06X: Problem: %p!=%p\n",w1,buffer,ptr);
+    }
+
+  fxmessage("3-byte step backward\n");
+  for(w1=0x800; w1<0x10000; w1++){
+    m=wcs2utf(buffer,&w1,4,1);
+    ptr=buffer+3;
+    w2=wcprv(ptr);
+    if(w1!=w2) fxmessage("%06X: Problem: %06X\n",w1,w2);
+    if(buffer!=ptr) fxmessage("%06X: Problem: %p!=%p\n",w1,buffer,ptr);
+    }
+
+  fxmessage("2-byte step backward\n");
+  for(w1=0x80; w1<0x800; w1++){
+    m=wcs2utf(buffer,&w1,4,1);
+    ptr=buffer+2;
+    w2=wcprv(ptr);
+    if(w1!=w2) fxmessage("%06X: Problem: %06X\n",w1,w2);
+    if(buffer!=ptr) fxmessage("%06X: Problem: %p!=%p\n",w1,buffer,ptr);
+    }
+
+  fxmessage("1-byte step backward\n");
+  for(w1=0; w1<0x80; w1++){
+    m=wcs2utf(buffer,&w1,4,1);
+    ptr=buffer+1;
+    w2=wcprv(ptr);
+    if(w1!=w2) fxmessage("%06X: Problem: %06X\n",w1,w2);
+    if(buffer!=ptr) fxmessage("%06X: Problem: %p!=%p\n",w1,buffer,ptr);
+    }
+
+  fxmessage("**** Performance tests\n");
+  FXRandom rnd(FXThread::time());
+  FXArray<FXchar> data('\0',100000000);
+  FXchar* head=data.data();
+  FXchar* tail=data.data()+data.no();
+  FXchar* p=head;
+  FXTime beg,end;
+  long count,sum;
+
+  fxmessage("ARRAY: head=%p tail=%p\n",head,tail);
+
+  count=0;
+  sum=0;
+  while(p+4<=tail){
+    if(mode==0){        // Uniformly 1,2,3, or 4
+      w1=rnd.randLong()&3;
+      switch(w1){
+        case 0:
+          w1=rnd.randLong()%0x80;
+          break;
+        case 1:
+          w1=0x80+rnd.randLong()%(0x800-0x80);
+          break;
+        case 2:
+          w1=0x800+rnd.randLong()%(0x10000-0x800);
+          break;
+        case 3:
+          w1=0x10000+rnd.randLong()%(0x110000-0x10000);
+          break;
+        }
+      }
+    else if(mode==1){   // Up to 1
+      w1=rnd.randLong()%0x80;
+      }
+    else if(mode==2){   // Up to 2
+      w1=rnd.randLong()%0x800;
+      }
+    else if(mode==3){   // Up to 3
+      w1=rnd.randLong()%0x10000;
+      }
+    else if(mode==4){   // Up to 4
+      w1=rnd.randLong()%0x110000;
+      }
+    p+=wc2utf(p,w1);
+    sum+=w1;
+    count++;
+    }
+  fxmessage("ARRAY: count=%'ld sum=%'ld end=%p\n",count,sum,p);
+
+  fxmessage("**** wcinc: move forward\n");
+  count=0;
+  sum=0;
+  ptr=head;
+  beg=fxgetticks();
+  do{
+    sum+=wcnxt(ptr);
+    count++;
+    }
+  while(ptr+4<=tail);
+  end=fxgetticks();
+  fxmessage("wcinc: count=%'ld sum=%'ld end=%p\n",count,sum,ptr);
+  fxmessage("wcinc: %'ld ticks %'ld chars %.2lf ticks/char\n",(long)(end-beg),count,(FXdouble)(end-beg)/count);
+
+  fxmessage("**** wcdec: move backward\n");
+  count=0;
+  sum=0;
+  beg=fxgetticks();
+  do{
+    sum+=wcprv(ptr);
+    count++;
+    }
+  while(head<ptr);
+  end=fxgetticks();
+  fxmessage("wcdec: count=%'ld sum=%'ld end=%p\n",count,sum,ptr);
+  fxmessage("wcdec: %'ld ticks %'ld chars %.2lf ticks/char\n",(long)(end-beg),count,(FXdouble)(end-beg)/count);
+
+  fxmessage("**** wcnxt: move forward\n");
+  count=0;
+  sum=0;
+  ptr=head;
+  beg=fxgetticks();
+  do{
+    wcnxt(ptr);
+    count++;
+    }
+  while(ptr+4<=tail);
+  end=fxgetticks();
+  fxmessage("wcnxt: count=%'ld sum=%'ld end=%p\n",count,sum,ptr);
+  fxmessage("wcnxt: %'ld ticks %'ld chars %.2lf ticks/char\n",(long)(end-beg),count,(FXdouble)(end-beg)/count);
+
+  fxmessage("**** wcprv: move backward\n");
+  count=0;
+  sum=0;
+  beg=fxgetticks();
+  do{
+    wcprv(ptr);
+    count++;
+    }
+  while(head<ptr);
+  end=fxgetticks();
+  fxmessage("wcprv: count=%'ld sum=%'ld end=%p\n",count,sum,ptr);
+  fxmessage("wcprv: %'ld ticks %'ld chars %.2lf ticks/char\n",(long)(end-beg),count,(FXdouble)(end-beg)/count);
+
+  fxmessage("**** inc3: move forward\n");
+  count=0;
+  sum=0;
+  ptr=head;
+  beg=fxgetticks();
+  do{
+    inc3(ptr);
+    count++;
+    }
+  while(ptr+4<=tail);
+  end=fxgetticks();
+  fxmessage("inc3: count=%'ld sum=%'ld end=%p\n",count,sum,ptr);
+  fxmessage("inc3: %'ld ticks %'ld chars %.2lf ticks/char\n",(long)(end-beg),count,(FXdouble)(end-beg)/count);
+
+  fxmessage("**** inc4: move forward\n");
+  count=0;
+  sum=0;
+  ptr=head;
+  beg=fxgetticks();
+  do{
+    inc4(ptr);
+    count++;
+    }
+  while(ptr+4<=tail);
+  end=fxgetticks();
+  fxmessage("inc4: count=%'ld sum=%'ld end=%p\n",count,sum,ptr);
+  fxmessage("inc4: %'ld ticks %'ld chars %.2lf ticks/char\n",(long)(end-beg),count,(FXdouble)(end-beg)/count);
+
+  fxmessage("**** inc5: move forward\n");
+  count=0;
+  sum=0;
+  ptr=head;
+  beg=fxgetticks();
+  do{
+    inc5(ptr);
+    count++;
+    }
+  while(ptr+4<=tail);
+  end=fxgetticks();
+  fxmessage("inc5: count=%'ld sum=%'ld end=%p\n",count,sum,ptr);
+  fxmessage("inc5: %'ld ticks %'ld chars %.2lf ticks/char\n",(long)(end-beg),count,(FXdouble)(end-beg)/count);
+
+  fxmessage("**** inc6: move forward\n");
+  count=0;
+  sum=0;
+  ptr=head;
+  beg=fxgetticks();
+  do{
+    inc6(ptr);
+    count++;
+    }
+  while(ptr+4<=tail);
+  end=fxgetticks();
+  fxmessage("inc6: count=%'ld sum=%'ld end=%p\n",count,sum,ptr);
+  fxmessage("inc6: %'ld ticks %'ld chars %.2lf ticks/char\n",(long)(end-beg),count,(FXdouble)(end-beg)/count);
+
+  fxmessage("**** inc7: move forward\n");
+  count=0;
+  sum=0;
+  ptr=head;
+  beg=fxgetticks();
+  do{
+    inc7(ptr);
+    count++;
+    }
+  while(ptr+4<=tail);
+  end=fxgetticks();
+  fxmessage("inc7: count=%'ld sum=%'ld end=%p\n",count,sum,ptr);
+  fxmessage("inc7: %'ld ticks %'ld chars %.2lf ticks/char\n",(long)(end-beg),count,(FXdouble)(end-beg)/count);
+
+  fxmessage("**** lenUTF8: move forward\n");
+  count=0;
+  sum=0;
+  ptr=head;
+  beg=fxgetticks();
+  do{
+    ptr+=lenUTF8((FXuchar)*ptr);
+    count++;
+    }
+  while(ptr+4<=tail);
+  end=fxgetticks();
+  fxmessage("lenUTF8: count=%'ld sum=%'ld end=%p\n",count,sum,ptr);
+  fxmessage("lenUTF8: %'ld ticks %'ld chars %.2lf ticks/char\n",(long)(end-beg),count,(FXdouble)(end-beg)/count);
 
 
 /*
-
 //    n=wc2utfs((FXchar*)buf,128,&wc,1);
 //    utf2wcs(&ww,1,(const FXchar*)buf,n);
   const FXwchar *wcdec;

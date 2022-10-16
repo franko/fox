@@ -64,9 +64,9 @@ FXIMPLEMENT(FXCURCursor,FXCursor,nullptr,0)
 
 
 // Constructor
-FXCURCursor::FXCURCursor(FXApp* a,const void *pix):FXCursor(a,nullptr,0,0,0,0){
+FXCURCursor::FXCURCursor(FXApp* a,const FXuchar *pix):FXCursor(a,nullptr,0,0,0,0){
   if(pix){
-    FXMemoryStream ms(FXStreamLoad,(FXuchar*)pix);
+    FXMemoryStream ms(FXStreamLoad,const_cast<FXuchar*>(pix));
     fxloadICO(ms,data,width,height,hotx,hoty);
     options|=CURSOR_OWNED;
     }

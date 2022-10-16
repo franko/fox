@@ -159,7 +159,7 @@ public:
   FXbool pop();
 
   /// Remove all objects
-  void clear();
+  FXbool clear();
 
   /// Destructor
  ~FXPtrList();

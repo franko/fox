@@ -134,7 +134,7 @@
       o On UNIX systems, the XDG standard is followed; this means the location of the
         Per-User settings should controlled by $XDG_CONFIG_HOME.   If this environment
         variable set, the root for the Per-User settings tree for all FOX applications
-        is $XDG_CONFIG_HOME/foxrc.
+        is $XDG_CONFIG_HOME/fox.rc.
 
       o Otherwise, it will have the default value: "~/.config".
 
@@ -162,7 +162,7 @@
 // Default locations and names
 #if defined(WIN32)
 #define FOXRC           "fox.ini"
-#define SYSTEMDIRS      "\\Program Files;\\Windows"
+#define SYSTEMDIRS      "C:\\Program Files;C:\\Windows"
 #define USERDIR         "%USERPROFILE%\\fox"
 #define FILEEXT         ".ini"
 #else
@@ -411,8 +411,8 @@ x:    continue;
 // Read registry
 FXbool FXRegistry::read(){
   FXbool ok=false;
-  FXString path;
   if(ascii){
+    FXString path;
 
     // Read system-wide settings from systemdirs
     if(!systemdirs.empty()){

@@ -44,7 +44,7 @@ public:
   * Construct a cursor from memory stream in Microsoft CUR format.
   * The image is limited to 32x32 pixels.
   */
-  FXCURCursor(FXApp* a,const void* pix);
+  FXCURCursor(FXApp* a,const FXuchar* pix);
 
   /// Save pixel data only, in CUR format
   virtual FXbool savePixels(FXStream& store) const;

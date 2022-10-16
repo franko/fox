@@ -71,10 +71,12 @@ protected:
   FXLabel        *searching;            // Show file being scanned
   FXString        filePattern;          // Search files matching pattern
   FXString        searchHistory[20];    // Search string history
+  FXString        folderHistory[20];    // Search folder history
   FXuint          patternHistory[20];   // Search wildcard history
   FXuint          optionsHistory[20];   // Search option history
   FXuint          searchmode;           // Search options
-  FXString        savedsearchtext;      // Saved seach text
+  FXString        savedsearchtext;      // Saved search text
+  FXString        savedsearchfolder;    // Saved search folder
   FXuint          savedsearchmode;      // Saved search mode
   FXuint          savedcurrentpattern;  // Saved search pattern
   FXint           index;                // History index
@@ -88,7 +90,7 @@ private:
 private:
   void readRegistry();
   void writeRegistry();
-  void appendHistory(const FXString& text,FXuint patt,FXuint opts);
+  void appendHistory(const FXString& text,const FXString& dir,FXuint patt,FXuint opts);
 public:
   long onUpdStop(FXObject*,FXSelector,void*);
   long onCmdStop(FXObject*,FXSelector,void*);

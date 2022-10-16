@@ -29,6 +29,8 @@ namespace FX {
 */
 class FXAPI FXDisplay {
 private:
+  FXptr   display;      // Display
+private:
   FXDisplay(const FXDisplay&);
   FXDisplay &operator=(const FXDisplay&);
 public:

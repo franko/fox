@@ -21,6 +21,7 @@
 #include "xincs.h"
 #include "fxver.h"
 #include "fxdefs.h"
+#include "fxchar.h"
 #include "fxmath.h"
 #include "fxascii.h"
 #include "FXArray.h"
@@ -414,9 +415,7 @@ void* FXFont::match(const FXString& wantfamily,const FXString& wantforge,FXuint 
   FXbool     fc_autohint=getApp()->reg().readBoolEntry("Xft","autohint",false);
   FXbool     fc_antialias=getApp()->reg().readBoolEntry("Xft","antialias",true);
   FXint      fc_rgba=FC_RGBA_UNKNOWN;
-#ifdef FC_HINT_STYLE
   FXint      fc_hintstyle=FC_HINT_FULL;
-#endif
   int        pp,sw,wt,sl;
   double     a,s,c,sz;
   FcPattern *pattern,*p;
@@ -438,21 +437,19 @@ void* FXFont::match(const FXString& wantfamily,const FXString& wantforge,FXuint 
   else if(rgba[0]=='b') fc_rgba=FC_RGBA_BGR;
   else if(rgba[0]=='v' && rgba[1]=='r') fc_rgba=FC_RGBA_VRGB;
   else if(rgba[0]=='v' && rgba[1]=='b') fc_rgba=FC_RGBA_VBGR;
+  else if(rgba[0]=='n') fc_rgba=FC_RGBA_NONE;
 
-#ifdef FC_HINT_STYLE
   if(hs[0]=='s') fc_hintstyle=FC_HINT_SLIGHT;
-  else if(hs[0]=='m') fc_hintstyle=FC_HINT_SLIGHT;
+  else if(hs[0]=='m') fc_hintstyle=FC_HINT_MEDIUM;
   else if(hs[0]=='f') fc_hintstyle=FC_HINT_FULL;
-#endif
+  else if(hs[0]=='n') fc_hintstyle=FC_HINT_NONE;
 
   // Set additional hints
   FcPatternAddBool(pattern,FC_HINTING,fc_hinting);
   FcPatternAddBool(pattern,FC_ANTIALIAS,fc_antialias);
   FcPatternAddBool(pattern,FC_AUTOHINT,fc_autohint);
   FcPatternAddInteger(pattern,FC_RGBA,fc_rgba);
-#ifdef FC_HINT_STYLE
   FcPatternAddInteger(pattern,FC_HINT_STYLE,fc_hintstyle);
-#endif
 
   // Set family
   if(!wantfamily.empty()){
@@ -2665,7 +2662,7 @@ static FXString findbyvalue(const ENTRY* table,FXint n,FXuint value){
 
 // Search for name and return value
 static FXuint findbyname(const ENTRY* table,FXint n,const FXString& name){
-  for(int i=0; i<n; i++){ if(comparecase(table[i].name,name)==0) return table[i].value; }
+  for(int i=0; i<n; i++){ if(FXString::comparecase(table[i].name,name)==0) return table[i].value; }
   return name.toUInt();
   }
 

@@ -344,10 +344,10 @@ protected:
   virtual void setItemFromControl(FXint r,FXint c,FXWindow* control);
 protected:
   enum {
-    MOUSE_NONE,
-    MOUSE_SCROLL,
-    MOUSE_DRAG,
-    MOUSE_SELECT
+    MOUSE_NONE,                 // Nop
+    MOUSE_SCROLL,               // Scrolling
+    MOUSE_DRAG,                 // Dragging
+    MOUSE_SELECT                // Selecting
     };
 private:
   FXTable(const FXTable&);
@@ -444,7 +444,6 @@ public:
   long onUpdAcceptInput(FXObject*,FXSelector,void*);
   long onCmdCancelInput(FXObject*,FXSelector,void*);
 public:
-
   enum {
     ID_HORZ_GRID=FXScrollArea::ID_LAST,
     ID_VERT_GRID,
@@ -481,7 +480,6 @@ public:
     ID_DELETE_SEL,
     ID_LAST
     };
-
 public:
 
   /**

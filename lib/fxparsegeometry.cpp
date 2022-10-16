@@ -49,46 +49,66 @@ namespace FX {
 //      8       height was assigned
 FXint fxparsegeometry(const FXchar *string,FXint& x,FXint& y,FXint& w,FXint& h){
   FXint result=0;
-  FXint tw=0;
-  FXint th=0;
-  FXint tx=0;
-  FXint ty=0;
-  FXint mul;
 
   // Got string?
   if(string && *string!='\0'){
+    FXint tw=0;
+    FXint th=0;
+    FXint tx=0;
+    FXint ty=0;
+    FXint mul;
+
+    // Parse white space
+    while(*string==' ' || *string=='\t'){
+      string++;
+      }
 
     // Skip leading '=', if any
     if(*string=='=') string++;
 
     // Start with width
     if(*string!='+' && *string!='-' && *string!='x' && *string!='X'){
-      while('0'<=*string && *string<='9') tw=tw*10+(*string++-'0');
-      result|=4;
+      while('0'<=*string && *string<='9'){
+        tw=tw*10+(*string++-'0');
+        result|=4;                      // At least one digit found
+        }
       }
 
     // Then height
     if(*string=='x' || *string=='X'){
       string++;
-      while('0'<=*string && *string<='9') th=th*10+(*string++-'0');
-      result|=8;
+      while('0'<=*string && *string<='9'){
+        th=th*10+(*string++-'0');
+        result|=8;                      // At least one digit found
+        }
       }
 
     // Then x
     if(*string=='+' || *string== '-'){
       if(*string++ == '-') mul=-1; else mul=1;
-      while('0'<=*string && *string<='9') tx=tx*10+(*string++-'0');
-      tx*=mul;
-      result|=1;
-      if(*string=='+' || *string == '-'){
-        if(*string++ == '-') mul=-1; else mul=1;
-        while('0'<=*string && *string<='9') ty=ty*10+(*string++-'0');
-        ty*=mul;
-        result|=2;
+      while('0'<=*string && *string<='9'){
+        tx=tx*10+(*string++-'0');
+        result|=1;                      // At least one digit found
         }
+      tx*=mul;
       }
 
-    // Parsed whole string
+    // Then y
+    if(*string=='+' || *string == '-'){
+      if(*string++ == '-') mul=-1; else mul=1;
+      while('0'<=*string && *string<='9'){
+        ty=ty*10+(*string++-'0');
+        result|=2;                      // At least one digit found
+        }
+      ty*=mul;
+      }
+
+    // Parse white space
+    while(*string==' ' || *string=='\t'){
+      string++;
+      }
+
+    // Got the whole string
     if(*string=='\0'){
 
       // Return what was found

@@ -72,9 +72,9 @@ const FXbool FXJPGImage::supported=false;
 
 
 // Initialize
-FXJPGImage::FXJPGImage(FXApp* a,const void *pix,FXuint opts,FXint w,FXint h,FXint q):FXImage(a,nullptr,opts,w,h),quality(q){
+FXJPGImage::FXJPGImage(FXApp* a,const FXuchar *pix,FXuint opts,FXint w,FXint h,FXint q):FXImage(a,nullptr,opts,w,h),quality(q){
   if(pix){
-    FXMemoryStream ms(FXStreamLoad,(FXuchar*)pix);
+    FXMemoryStream ms(FXStreamLoad,const_cast<FXuchar*>(pix));
     loadPixels(ms);
     }
   }

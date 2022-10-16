@@ -59,6 +59,11 @@ using namespace FX;
 
 namespace FX {
 
+// Special single-precision versions
+const FXfloat pi=3.1415926535897932384626433833f;
+const FXfloat dtor=0.0174532925199432957692369077f;
+const FXfloat rtod=57.295779513082320876798154814f;
+
 // Map
 FXDEFMAP(FXColorWheel) FXColorWheelMap[]={
   FXMAPFUNC(SEL_PAINT,0,FXColorWheel::onPaint),
@@ -165,7 +170,7 @@ void FXColorWheel::layout(){
 // Compute x,y location from hue and saturation
 FXbool FXColorWheel::hstoxy(FXint& x,FXint& y,FXfloat h,FXfloat s) const {
   FXfloat r=dial->getWidth()*0.5f;
-  FXfloat a=(h-180.0f)*DTOR;
+  FXfloat a=(h-180.0f)*dtor;
   x=(FXint)(s*r*Math::cos(a)+r+0.5f);
   y=(FXint)(s*r*Math::sin(a)+r+0.5f);
   return true;
@@ -181,7 +186,7 @@ FXbool FXColorWheel::xytohs(FXfloat& h,FXfloat& s,FXint x,FXint y) const {
   h=0.0f;
   s=0.0f;
   if(0.0f<v){
-    h=Math::atan2(ry,rx)*RTOD+180.0f;
+    h=Math::atan2(ry,rx)*rtod+180.0f;
     if(v<r){
       s=v/r;
       return true;

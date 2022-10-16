@@ -176,11 +176,14 @@ namespace FXSystem {
   /// Return the home directory for the current user
   extern FXAPI FXString getHomeDirectory();
 
-  /// Return the home directory for a given user
-  extern FXAPI FXString getUserDirectory(const FXString& user);
-
   /// Return temporary directory
   extern FXAPI FXString getTempDirectory();
+
+  /// Return system directory
+  extern FXAPI FXString getSystemDirectory();
+
+  /// Return the home directory for a given user
+  extern FXAPI FXString getUserDirectory(const FXString& user);
 
 
   /// Return host name

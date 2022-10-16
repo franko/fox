@@ -35,7 +35,7 @@ namespace FX {
 /*******************************************************************************/
 
 // Construct display
-FXDisplay::FXDisplay(){
+FXDisplay::FXDisplay():display(nullptr){
   }
 
 

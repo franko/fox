@@ -67,9 +67,9 @@ FXIMPLEMENT(FXGIFCursor,FXCursor,nullptr,0)
 
 
 // Constructor
-FXGIFCursor::FXGIFCursor(FXApp* a,const void *pix,FXint hx,FXint hy):FXCursor(a,nullptr,0,0,0,0){
+FXGIFCursor::FXGIFCursor(FXApp* a,const FXuchar *pix,FXint hx,FXint hy):FXCursor(a,nullptr,0,0,0,0){
   if(pix){
-    FXMemoryStream ms(FXStreamLoad,(FXuchar*)pix);
+    FXMemoryStream ms(FXStreamLoad,const_cast<FXuchar*>(pix));
     fxloadGIF(ms,data,width,height,true);
     hotx=FXCLAMP(0,hx,width-1);
     hoty=FXCLAMP(0,hy,height-1);

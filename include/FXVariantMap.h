@@ -113,13 +113,13 @@ public:
   const FXVariant& operator[](const FXString& ky) const { return at(ky); }
 
   /// Remove entry from the table
-  void remove(const FXchar* ky);
+  FXbool remove(const FXchar* ky);
 
   /// Remove entry from the table
-  void remove(const FXString& ky){ remove(ky.text()); }
+  FXbool remove(const FXString& ky){ return remove(ky.text()); }
 
   /// Erase entry at pos in the table
-  void erase(FXival pos);
+  FXbool erase(FXival pos);
 
   /// Return true if slot at pos is empty.
   FXbool empty(FXival pos) const { return table[pos].key.empty(); }
@@ -135,7 +135,7 @@ public:
   const FXVariant& data(FXival pos) const { return table[pos].data; }
 
   /// Clear the table
-  void clear();
+  FXbool clear();
 
   /// Destructor
  ~FXVariantMap();

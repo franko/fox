@@ -49,7 +49,7 @@ public:
 public:
 
   /// Construct image from memory stream formatted in Microsoft BMP format
-  FXBMPImage(FXApp* a,const void *pix=nullptr,FXuint opts=0,FXint w=1,FXint h=1);
+  FXBMPImage(FXApp* a,const FXuchar *pix=nullptr,FXuint opts=0,FXint w=1,FXint h=1);
 
   /// Save pixels into stream in Microsoft bitmap format
   virtual FXbool savePixels(FXStream& store) const;

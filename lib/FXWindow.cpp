@@ -455,7 +455,7 @@ FXWindow::WindowClass FXWindow::getWindowClass() const {
 
 // Return a pointer to the shell window
 FXWindow* FXWindow::getShell() const {
-  FXWindow *win=(FXWindow*)this;
+  FXWindow *win=const_cast<FXWindow*>(this);
   FXWindow *p;
   while((p=win->parent)!=nullptr && p->parent) win=p;
   return win;
@@ -464,7 +464,7 @@ FXWindow* FXWindow::getShell() const {
 
 // Return a pointer to the root window
 FXWindow* FXWindow::getRoot() const {
-  FXWindow *win=(FXWindow*)this;
+  FXWindow *win=const_cast<FXWindow*>(this);
   while(win->parent) win=win->parent;
   return win;
   }
@@ -1120,7 +1120,7 @@ void FXWindow::setDefault(FXuchar flag){
 
 // Find default window
 FXWindow* FXWindow::findDefault() const {
-  FXWindow *win=(FXWindow*)this;
+  FXWindow *win=const_cast<FXWindow*>(this);
   while(1){
     if(win->isDefault()) return win;
     if(win->getFirst()){ win=win->getFirst(); continue; }
@@ -1156,7 +1156,7 @@ void FXWindow::setInitial(FXbool flag){
 
 // Find initial window
 FXWindow* FXWindow::findInitial() const {
-  FXWindow *win=(FXWindow*)this;
+  FXWindow *win=const_cast<FXWindow*>(this);
   while(1){
     if(win->isInitial()) return win;
     if(win->getFirst()){ win=win->getFirst(); continue; }

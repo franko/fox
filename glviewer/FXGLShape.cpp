@@ -209,10 +209,10 @@ FXbool FXGLShape::drag(FXGLViewer* viewer,FXint fx,FXint fy,FXint tx,FXint ty){
   return true;
   }
 
+#ifdef HAVE_GL_H
 
 // Draw
 void FXGLShape::draw(FXGLViewer* viewer){
-#ifdef HAVE_GL_H
 
   // Save attributes and matrix
 //  glPushAttrib(GL_ENABLE_BIT|GL_CURRENT_BIT|GL_LIGHTING_BIT|GL_POINT_BIT|GL_LINE_BIT|GL_POLYGON_BIT);
@@ -356,8 +356,15 @@ void FXGLShape::draw(FXGLViewer* viewer){
   // Restore attributes and matrix
   glPopMatrix();
   glPopAttrib();
-#endif
   }
+
+#else
+
+// Draw
+void FXGLShape::draw(FXGLViewer*){
+  }
+
+#endif
 
 
 // Draw for hit

@@ -81,7 +81,7 @@ public:
   * large bitmaps to instruct render() to use shared memory to communicate
   * with the server.
   */
-  FXBitmap(FXApp* a,const void *pix=nullptr,FXuint opts=0,FXint w=1,FXint h=1);
+  FXBitmap(FXApp* a,const FXuchar *pix=nullptr,FXuint opts=0,FXint w=1,FXint h=1);
 
   /// Change options
   void setOptions(FXuint opts);

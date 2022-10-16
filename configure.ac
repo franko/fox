@@ -1,7 +1,7 @@
 # Version of the code
 m4_define([fox_major], [1])
 m4_define([fox_minor], [7])
-m4_define([fox_level], [79])
+m4_define([fox_level], [80])
 m4_define([fox_version],[fox_major.fox_minor.fox_level])
 
 # Init
@@ -112,7 +112,7 @@ AC_CHECK_LIB(dl, dlopen)
 AC_CHECK_LIB(dld, shl_load)
 
 # Check thread functions
-AC_CHECK_FUNCS(localtime_r gmtime_r getpwuid_r getgrgid_r getpwnam_r pthread_setaffinity_np pthread_getname_np pthread_setname_np sched_getcpu epoll_create1 timerfd_create)
+AC_CHECK_FUNCS(localtime_r gmtime_r getpwuid_r getgrgid_r getpwnam_r pthread_setaffinity_np pthread_getname_np pthread_setname_np sched_getcpu epoll_create1 timerfd_create uname)
 
 # Check for common functions
 AC_CHECK_FUNCS(pipe2 statvfs getrlimit)
@@ -122,8 +122,7 @@ AC_CHECK_FUNCS(inotify_init1)
 
 # Add copious amounts of debugging with gcc
 if test "${GXX}" = "yes" ; then
-  CXXFLAGS="${CXXFLAGS} -Wall -Wextra -Woverloaded-virtual -Wshadow"
-#  CXXFLAGS="${CXXFLAGS} -Wall -Wformat -Woverloaded-virtual -Wshadow -Wstrict-overflow -Wcast-qual -Wcast-align -Wdouble-promotion -fvisibility=hidden"
+  CXXFLAGS="${CXXFLAGS} -Wall -Wextra -Woverloaded-virtual -Wshadow -Wstrict-overflow -Wstrict-aliasing -Wcast-qual -Wcast-align -Wdouble-promotion -Wimplicit-fallthrough=0"
 #  LDFLAGS="-rdynamic ${LDFLAGS}"
 fi
 
@@ -143,7 +142,7 @@ AC_MSG_RESULT([$enable_release])
 if test "x$enable_release" = "xyes" ; then
   CXXFLAGS="${CXXFLAGS} -O2 -DNDEBUG"
   if test "${GXX}" = "yes" ; then
-    CXXFLAGS="${CXXFLAGS} -ffast-math -fstrict-aliasing -finline-functions -fomit-frame-pointer"
+    CXXFLAGS="${CXXFLAGS} -ffast-math -fstrict-overflow -fstrict-aliasing -finline-functions -fomit-frame-pointer -fcf-protection=none -fno-stack-protector"
     LDFLAGS="-s ${LDFLAGS}"
   fi
 fi
@@ -186,6 +185,7 @@ AC_CHECK_HEADERS([sys/statvfs.h])
 AC_CHECK_HEADERS([sys/inotify.h])
 AC_CHECK_HEADERS([sys/resource.h])
 AC_CHECK_HEADERS([sys/sysctl.h])
+AC_CHECK_HEADERS([sys/utsname.h])
 
 # Check for intrinsics
 AC_CHECK_HEADERS([immintrin.h])

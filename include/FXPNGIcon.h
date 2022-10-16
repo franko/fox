@@ -42,7 +42,7 @@ public:
 public:
 
   /// Construct an icon from memory stream formatted in PNG format
-  FXPNGIcon(FXApp *a,const void *pix=nullptr,FXColor clr=FXRGB(192,192,192),FXuint opts=0,FXint w=1,FXint h=1);
+  FXPNGIcon(FXApp *a,const FXuchar *pix=nullptr,FXColor clr=FXRGB(192,192,192),FXuint opts=0,FXint w=1,FXint h=1);
 
   /// True if format is supported
   static const FXbool supported;

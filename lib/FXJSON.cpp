@@ -21,16 +21,14 @@
 #include "xincs.h"
 #include "fxver.h"
 #include "fxdefs.h"
+#include "fxchar.h"
 #include "fxmath.h"
 #include "fxascii.h"
 #include "fxunicode.h"
 #include "FXElement.h"
 #include "FXArray.h"
 #include "FXString.h"
-#include "FXIO.h"
-#include "FXIODevice.h"
-#include "FXStat.h"
-#include "FXFile.h"
+#include "FXParseBuffer.h"
 #include "FXException.h"
 #include "FXVariant.h"
 #include "FXVariantArray.h"
@@ -208,16 +206,10 @@
     as those character sequences are not actually equal to those few UTF8 sequences
     we care about!
 
-  - FIXME would be nice if we had a JSON5 mode for output; keys saved as unquoted
-    strings, if and only if no escape is needed.
+  - When saving, ver=5 forces JSON5 output mode.  In this mode, keys are written w/o
+    quotes if possible, and strings may be written either with single quotes (') or
+    double quotes (").
 */
-
-// Get wide character from utf8
-#define WC1(p) ((FXuchar)(p)[0])
-#define WC2(p) (((FXuchar)(p)[0]<<6)^((FXuchar)(p)[1])^0x3080)
-#define WC3(p) (((FXuchar)(p)[0]<<12)^((FXuchar)(p)[1]<<6)^((FXuchar)(p)[2])^0x0E2080)
-#define WC4(p) (((FXuchar)(p)[0]<<18)^((FXuchar)(p)[1]<<12)^((FXuchar)(p)[2]<<6)^((FXuchar)(p)[3])^0x3C82080)
-
 
 using namespace FX;
 
@@ -276,13 +268,13 @@ static const union{ FXulong u; FXdouble f; } nan={FXULONG(0x7fffffffffffffff)};
 
 
 // Construct JSON serializer
-FXJSON::FXJSON():begptr(nullptr),endptr(nullptr),wptr(nullptr),rptr(nullptr),sptr(nullptr),offset(0),token(TK_EOF),column(0),indent(0),line(1),dir(Stop),wrap(80),flow(Compact),prec(15),fmt(2),esc(0),dent(2){
+FXJSON::FXJSON():offset(0),token(TK_EOF),column(0),indent(0),line(1),wrap(80),quote('"'),flow(Compact),prec(16),fmt(2),esc(0),dent(2),ver(4){
   FXTRACE((100,"FXJSON::FXJSON\n"));
   }
 
 
 // Construct and open for loading
-FXJSON::FXJSON(FXchar* buffer,FXuval sz,Direction d):begptr(nullptr),endptr(nullptr),wptr(nullptr),rptr(nullptr),sptr(nullptr),offset(0),token(TK_EOF),column(0),indent(0),line(1),dir(Stop),wrap(80),flow(Compact),prec(16),fmt(2),esc(0),dent(2){
+FXJSON::FXJSON(FXchar* buffer,FXuval sz,Direction d):FXParseBuffer(buffer,sz,d),offset(0),token(TK_EOF),column(0),indent(0),line(1),wrap(80),quote('"'),flow(Compact),prec(16),fmt(2),esc(0),dent(2),ver(4){
   FXTRACE((100,"FXJSON::FXJSON(%p,%lu,%s)\n",buffer,sz,(d==Save)?"Save":(d==Load)?"Load":"Stop"));
   open(buffer,sz,d);
   }
@@ -291,91 +283,16 @@ FXJSON::FXJSON(FXchar* buffer,FXuval sz,Direction d):begptr(nullptr),endptr(null
 // Open JSON stream for given direction and set its buffer
 FXbool FXJSON::open(FXchar* buffer,FXuval sz,Direction d){
   FXTRACE((101,"FXJSON::open(%p,%lu,%s)\n",buffer,sz,(d==Save)?"Save":(d==Load)?"Load":"Stop"));
-  FXASSERT(dir==Stop);
-  if((dir==Stop) && (d!=Stop) && (0<sz) && buffer){
-    begptr=buffer;
-    endptr=buffer+sz;
-    wptr=(d==Load)?endptr:begptr;
-    rptr=begptr;
-    sptr=begptr;
+  if(FXParseBuffer::open(buffer,sz,d)){
     value=FXString::null;
     token=TK_ERROR;
     offset=0;
     column=0;
     line=1;
     indent=0;
-    dir=d;
     return true;
     }
   return false;
-  }
-
-/*******************************************************************************/
-
-// Read at least count bytes into buffer; return bytes available, or -1 for error
-FXival FXJSON::fill(FXival){
-  FXASSERT(dir==Load);
-  return wptr-sptr;
-  }
-
-
-// Write at least count bytes from buffer; return space available, or -1 for error
-FXival FXJSON::flush(FXival){
-  FXASSERT(dir==Save);
-  return endptr-wptr;
-  }
-
-
-// Ensure we have a requisite number of bytes in the buffer, calling fill()
-// to load additional data into the buffer if needed.
-// Near the end of the file, there may be fewer than n bytes in the buffer
-// even after fill() is called.
-FXbool FXJSON::need(FXival count){
-  FXASSERT(dir==Load);
-  if(sptr+count>wptr){
-    if(wptr==endptr){
-      if(fill(count)<0) return false;
-      }
-    return sptr<wptr;
-    }
-  return true;
-  }
-
-
-// Emit characters to buffer
-FXbool FXJSON::emit(FXchar ch,FXival count){
-  FXival num;
-  FXASSERT(dir==Save);
-  while(0<count){
-    if(wptr>=endptr){
-      if(flush(count)<=0) return false;
-      }
-    FXASSERT(wptr<endptr);
-    num=FXMIN(count,endptr-wptr);
-    fillElms(wptr,ch,num);
-    wptr+=num;
-    count-=num;
-    }
-  return true;
-  }
-
-
-// Emit text to buffer
-FXbool FXJSON::emit(const FXchar* str,FXival count){
-  FXival num;
-  FXASSERT(dir==Save);
-  while(0<count){
-    if(wptr>=endptr){
-      if(flush(count)<=0) return false;
-      }
-    FXASSERT(wptr<endptr);
-    num=FXMIN(count,endptr-wptr);
-    copyElms(wptr,str,num);
-    wptr+=num;
-    str+=num;
-    count-=num;
-    }
-  return true;
   }
 
 /*******************************************************************************/
@@ -447,7 +364,7 @@ FXint FXJSON::next(){
           }
       default:                                          // Normal characters
         if(!comment) return TK_ERROR;
-cmnt:   column++;
+        column++;
         offset++;
         sptr++;
         continue;
@@ -489,8 +406,11 @@ cmnt:   column++;
         return TK_COLON;
       case '"':                                         // String double quotes
       case '\'':                                        // String single quote
-        if(comment) goto cmnt;
-        return string();
+        if(!comment) return string();
+        column++;
+        offset++;
+        sptr++;
+        continue;
       case '+':                                         // Number value
       case '-':
       case '.':
@@ -504,8 +424,11 @@ cmnt:   column++;
       case '7':
       case '8':
       case '9':
-        if(comment) goto cmnt;
-        return number();
+        if(!comment) return number();
+        column++;
+        offset++;
+        sptr++;
+        continue;
       case 'a':                                         // Identifier or reserved word
       case 'b':
       case 'c':
@@ -560,8 +483,11 @@ cmnt:   column++;
       case 'Z':
       case '_':
       case '$':
-        if(comment) goto cmnt;
-        return ident();
+        if(!comment) return ident();
+        column++;
+        offset++;
+        sptr++;
+        continue;
       case 0x00:                                        // Non-special control characters
       case 0x01:
       case 0x02:
@@ -704,7 +630,7 @@ cmnt:   column++;
           continue;
           }
         if(!comment){
-          cc=Unicode::charCategory(WC2(sptr));
+          cc=Unicode::charCategory(wc2(sptr));
           if(cc<CatLetterUpper) return TK_ERROR;
           if(CatNumberLetter<cc) return TK_ERROR;
           return ident();                               // Identifier
@@ -746,7 +672,7 @@ cmnt:   column++;
           continue;
           }
         if(!comment){
-          cc=Unicode::charCategory(WC3(sptr));
+          cc=Unicode::charCategory(wc3(sptr));
           if(cc<CatLetterUpper) return TK_ERROR;
           if(CatNumberLetter<cc) return TK_ERROR;
           return ident();                               // Identifier
@@ -768,7 +694,7 @@ cmnt:   column++;
         if((sptr[2]&192)!=128) return TK_ERROR;
         if((sptr[3]&192)!=128) return TK_ERROR;
         if(!comment){
-          cc=Unicode::charCategory(WC4(sptr));
+          cc=Unicode::charCategory(wc4(sptr));
           if(cc<CatLetterUpper) return TK_ERROR;
           if(CatNumberLetter<cc) return TK_ERROR;
           return ident();                               // Identifier
@@ -995,7 +921,7 @@ chk:    if(sptr+MAXTOKEN>wptr && wptr==endptr){         // Big token
       case 0xDF:
         if(sptr+1>=wptr) return TK_EOF;                 // Premature EOF
         if((sptr[1]&192)!=128) return TK_ERROR;         // Non-follower
-        cc=Unicode::charCategory(WC2(sptr));
+        cc=Unicode::charCategory(wc2(sptr));
         if(cc<CatMarkNonSpacing) goto end;
         if(CatPunctConnector<cc) goto end;
         if(CatMarkSpacingCombining<cc && cc<CatLetterUpper) goto end;
@@ -1023,7 +949,7 @@ chk:    if(sptr+MAXTOKEN>wptr && wptr==endptr){         // Big token
         if(sptr+2>=wptr) return TK_EOF;                 // Premature EOF
         if((sptr[1]&192)!=128) return TK_ERROR;         // Non-follower
         if((sptr[2]&192)!=128) return TK_ERROR;         // Non-follower
-        cc=Unicode::charCategory(WC3(sptr));
+        cc=Unicode::charCategory(wc3(sptr));
         if(cc<CatMarkNonSpacing) goto end;
         if(CatPunctConnector<cc) goto end;
         if(CatMarkSpacingCombining<cc && cc<CatLetterUpper) goto end;
@@ -1044,7 +970,7 @@ chk:    if(sptr+MAXTOKEN>wptr && wptr==endptr){         // Big token
         if((sptr[1]&192)!=128) return TK_ERROR;         // Non-follower
         if((sptr[2]&192)!=128) return TK_ERROR;
         if((sptr[3]&192)!=128) return TK_ERROR;
-        cc=Unicode::charCategory(WC4(sptr));
+        cc=Unicode::charCategory(wc4(sptr));
         if(cc<CatMarkNonSpacing) goto end;
         if(CatPunctConnector<cc) goto end;
         if(CatMarkSpacingCombining<cc && cc<CatLetterUpper) goto end;
@@ -1071,7 +997,7 @@ end:    value.append(rptr,sptr-rptr);
 
 // String
 FXint FXJSON::string(){
-  FXuchar quote=rptr[0];
+  FXchar q=rptr[0];
   FXuchar c;
   column++;
   offset++;
@@ -1100,10 +1026,10 @@ FXint FXJSON::string(){
         column++;
         offset++;
         sptr++;
-        if(quote!=c) goto nxt;
+        if(q!=c) goto nxt;
         value.append(rptr,sptr-rptr);
         rptr=sptr;
-        value=FXString::unescape(value,quote,quote);    // Of course
+        value=FXString::unescape(value,q,q);            // Of course
         return TK_STRING;
       case 0x00:                                        // Non-special control characters
       case 0x01:
@@ -1331,7 +1257,7 @@ FXJSON::Error FXJSON::loadMap(FXVariant& var){
   Error err;
 
   // Make it into an array now
-  var.setType(FXVariant::VMap);
+  var.setType(FXVariant::MapType);
 
   // While more keys
   while(token==TK_STRING || token==TK_IDENT){
@@ -1367,7 +1293,7 @@ FXJSON::Error FXJSON::loadArray(FXVariant& var){
   Error err;
 
   // Make it into an array now
-  var.setType(FXVariant::VArray);
+  var.setType(FXVariant::ArrayType);
 
   // While possible item start token
   while(TK_NULL<=token && token<=TK_LBRACE){
@@ -1466,7 +1392,7 @@ FXJSON::Error FXJSON::load(FXVariant& variant){
 
 // Save string after escaping it
 FXJSON::Error FXJSON::saveString(const FXString& str){
-  FXString string=FXString::escape(str,'"','"',esc);
+  FXString string=FXString::escape(str,quote,quote,esc);
   if(!emit(string.text(),string.length())) return ErrSave;
   column+=string.count();
   offset+=string.length();
@@ -1483,11 +1409,23 @@ FXJSON::Error FXJSON::saveIdent(const FXString& str){
   }
 
 
+// Check string has identifier syntax
+static FXbool isIdent(const FXString& str){
+  const FXchar* p=str.text();
+  FXwchar w;
+  if((w=wcnxt(p))!=0 && (Unicode::isLetter(w) || w=='_' || w=='$')){
+    while((w=wcnxt(p))!=0 && (Unicode::isAlphaNumeric(w) || w=='_' || w=='$')){
+      }
+    }
+  return w==0;
+  }
+
+
 // Save map elements from var
 FXJSON::Error FXJSON::saveMap(const FXVariant& var){
   FXival count=var.asMap().used();
 
-  FXASSERT(var.getType()==FXVariant::VMap);
+  FXASSERT(var.getType()==FXVariant::MapType);
 
   // Object start
   if(!emit("{",1)) return ErrSave;
@@ -1518,8 +1456,15 @@ FXJSON::Error FXJSON::saveMap(const FXVariant& var){
       // Skip empty slots
       if(var.asMap().key(i).empty()) continue;
 
-      // Save string
-      if(saveString(var.asMap().key(i))!=ErrOK) return ErrSave;
+      // JSON5 output AND key has identifier syntax
+      if((5<=ver) && isIdent(var.asMap().key(i))){
+        if(saveIdent(var.asMap().key(i))!=ErrOK) return ErrSave;
+        }
+
+      // Original JSON output OR key contains special characters
+      else{
+        if(saveString(var.asMap().key(i))!=ErrOK) return ErrSave;
+        }
 
       // Write separator
       if(flow==Stream){
@@ -1583,7 +1528,7 @@ FXJSON::Error FXJSON::saveMap(const FXVariant& var){
 // Save array elements from var
 FXJSON::Error FXJSON::saveArray(const FXVariant& var){
 
-  FXASSERT(var.getType()==FXVariant::VArray);
+  FXASSERT(var.getType()==FXVariant::ArrayType);
 
   // Array start
   if(!emit("[",1)) return ErrSave;
@@ -1623,7 +1568,7 @@ FXJSON::Error FXJSON::saveArray(const FXVariant& var){
         offset+=1;
 
         // Write space or newline and indent
-        if(flow==Pretty || wrap<column || (flow==Compact && FXVariant::VMap==var.asArray().at(i).getType())){
+        if(flow==Pretty || wrap<column || (flow==Compact && FXVariant::MapType==var.asArray().at(i).getType())){
           if(!emit(ENDLINE,strlen(ENDLINE))) return ErrSave;
           column=0;
           offset+=strlen(ENDLINE);
@@ -1666,12 +1611,12 @@ FXJSON::Error FXJSON::saveArray(const FXVariant& var){
 FXJSON::Error FXJSON::saveVariant(const FXVariant& var){
   FXString string;
   switch(var.getType()){
-  case FXVariant::VNull:
+  case FXVariant::NullType:
     if(!emit("null",4)) return ErrSave;
     column+=4;
     offset+=4;
     break;
-  case FXVariant::VBool:
+  case FXVariant::BoolType:
     if(var.asULong()){
       if(!emit("true",4)) return ErrSave;
       column+=4;
@@ -1683,46 +1628,46 @@ FXJSON::Error FXJSON::saveVariant(const FXVariant& var){
       offset+=5;
       }
     break;
-  case FXVariant::VChar:
+  case FXVariant::CharType:
     string.fromULong(var.asULong());
     if(!emit(string.text(),string.length())) return ErrSave;
     column+=string.length();
     offset+=string.length();
     break;
-  case FXVariant::VInt:
-  case FXVariant::VLong:
+  case FXVariant::IntType:
+  case FXVariant::LongType:
     string.fromLong(var.asLong());
     if(!emit(string.text(),string.length())) return ErrSave;
     column+=string.length();
     offset+=string.length();
     break;
-  case FXVariant::VUInt:
-  case FXVariant::VULong:
+  case FXVariant::UIntType:
+  case FXVariant::ULongType:
     string.fromULong(var.asULong());
     if(!emit(string.text(),string.length())) return ErrSave;
     column+=string.length();
     offset+=string.length();
     break;
-  case FXVariant::VFloat:
-  case FXVariant::VDouble:
+  case FXVariant::FloatType:
+  case FXVariant::DoubleType:
     string.fromDouble(var.asDouble(),prec,fmt);
     if(!emit(string.text(),string.length())) return ErrSave;
     column+=string.length();
     offset+=string.length();
     break;
-  case FXVariant::VPointer:
+  case FXVariant::PointerType:
     string.format("%p",var.asPtr());
     if(!emit(string.text(),string.length())) return ErrSave;
     column+=string.length();
     offset+=string.length();
     break;
-  case FXVariant::VString:
+  case FXVariant::StringType:
     if(saveString(var.asString())!=ErrOK) return ErrSave;
     break;
-  case FXVariant::VArray:
+  case FXVariant::ArrayType:
     if(saveArray(var)!=ErrOK) return ErrSave;
     break;
-  case FXVariant::VMap:
+  case FXVariant::MapType:
     if(saveMap(var)!=ErrOK) return ErrSave;
     break;
     }
@@ -1743,26 +1688,12 @@ FXJSON::Error FXJSON::save(const FXVariant& variant){
 
 /*******************************************************************************/
 
-// Close stream and delete buffers
+// Close json parse buffer
 FXbool FXJSON::close(){
   FXTRACE((101,"FXJSON::close()\n"));
-  if(dir!=Stop){
+  if(FXParseBuffer::close()){
     value=FXString::null;
-    if((dir==Load) || 0<=flush(0)){             // Error during final flush is possible
-      begptr=nullptr;
-      endptr=nullptr;
-      wptr=nullptr;
-      rptr=nullptr;
-      sptr=nullptr;
-      dir=Stop;
-      return true;
-      }
-    begptr=nullptr;
-    endptr=nullptr;
-    wptr=nullptr;
-    rptr=nullptr;
-    sptr=nullptr;
-    dir=Stop;
+    return true;
     }
   return false;
   }

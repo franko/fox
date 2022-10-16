@@ -39,6 +39,9 @@
        3  Contents of the file (at least, the first fragment of the contents),
           matches against regular expression patten from the Language.
 
+       4  Parsing the language and other settings from a "modeline" embedded
+          in the text file.
+
     o  Language sets delimiters in text editor.
 
     o  Language sets syntax rules to be used for colorizing text.
@@ -70,8 +73,8 @@
           potentially huge portion of text in the event that the user is
           editing the text and no text currently matches the closing pattern.
 
-       5  NestedRule.  This rule matches a single regex pattern. The subrules
-          of the NestedRule are applied only to the range matched by their
+       5  SpanRule.  This rule matches a single regex pattern. The subrules
+          of the SpanRule are applied only to the range matched by their
           parent; thus, there is no need for a closing regex.
 
     o The pattern in a SimpleRule must be non-empty, i.e. it must match a non-zero
@@ -80,44 +83,15 @@
 
     o Each rule has its own style index.  This is important for the incremental
       restyling algorithm.  Each rule also has a link to its immediate parent
-      rule, thus.  Thus, during editing, we can identify the ancestor rules
-      so as to minimally recolor the text.  The algorithm backs up in wider and
-      wider ranges about the changed text until a starting pattern of an ancestor
+      rule.  Thus, during editing, we can identify the ancestor rules so as to
+      minimally recolor the text.  The algorithm backs up in wider and wider
+      ranges about the changed text until a starting pattern of an ancestor
       rule is matched again.  In most cases, this search doesn't go very deep,
       and only small chunks of text need recolorizing.
 
     o Rules MAY have the same NAMES even though they are different rules.  That
       merely means these rules will have the same style.  It says nothing about
       what is matched or how the colorizer works.
-
-  - SyntaxParser is a simple recursive descent parser.  The style language has
-    very few lexical elements: comments, spaces, numbers, strings, and identifiers.
-
-    o  Comments.  Comments are lines preceeded by a '#'.  All text after the
-       '#' is skipped until the end of the line.
-
-    o  Spaces.  Spaces are not significant, except inside strings.  Spaces are
-       simply skipped.
-
-    o  Numbers.  Only decimal integer numbers are supported.
-
-    o  Strings.  Strings are any text between double quotes ('"').  There are no
-       escape sequences, except to enter a double quote ('\"').  This is so as
-       to keep regular expressions somewhat legible.  Note that the regular
-       expression engine *does* support escape sequences, so matching special
-       characters is quite simple.
-
-    o  Identifiers.  As with most programming languages, identifiers start with
-       a letter, followed by letters or digits.  Only the following identifiers
-       are recognized as language elements:
-
-         language, rule, filesmatch, contentsmatch, contextlines, contextchars,
-         delimiters, pattern, openpattern, closepattern, stoppattern, end.
-
-       [There may be more in the future].
-
-  - We currently don't use capturing parentheses capabilities; bracketing rules
-    seem sufficient for most languages.  Perhaps this will change.
 */
 
 /*******************************************************************************/
@@ -129,7 +103,7 @@ static inline void fillstyle(FXchar* textstyle,FXchar style,FXint f,FXint t){
 
 
 // Constructor
-Rule::Rule(const FXString& nam,const FXString& sty,FXint par,FXint idx):name(nam),style(sty),parent(par),index(idx){
+Rule::Rule(const FXString& nam,const FXString& sty,FXival par,FXival idx):name(nam),style(sty),parent(par),index(idx){
   }
 
 
@@ -152,8 +126,8 @@ Rule::~Rule(){
 /*******************************************************************************/
 
 // Constructor
-DefaultRule::DefaultRule(const FXString& nam,const FXString& sty,FXint par,FXint idx):Rule(nam,sty,par,idx){
-  FXTRACE((10,"DefaultRule::DefaultRule(\"%s\",\"%s\",%d,%d)\n",nam.text(),sty.text(),parent,index));
+DefaultRule::DefaultRule(const FXString& nam,const FXString& sty,FXival par,FXival idx):Rule(nam,sty,par,idx){
+  FXTRACE((10,"DefaultRule::DefaultRule(\"%s\",\"%s\",%ld,%ld)\n",nam.text(),sty.text(),parent,index));
   }
 
 
@@ -168,7 +142,7 @@ FXbool DefaultRule::stylizeBody(const FXchar* text,FXchar* textstyle,FXint len,F
   FXint begin,end; FXuchar c;
   head=pos;
   while(pos<len){
-    for(FXint node=0; node<rules.no(); node++){
+    for(FXival node=0; node<rules.no(); node++){
       if(rules[node]->stylize(text,textstyle,len,pos,begin,end)){ pos=end; goto nxt; }
       }
     c=text[pos];
@@ -194,8 +168,8 @@ DefaultRule::~DefaultRule(){
 /*******************************************************************************/
 
 // Constructor
-SimpleRule::SimpleRule(const FXString& nam,const FXString& sty,const FXString& rex,FXint par,FXint idx):Rule(nam,sty,par,idx),pattern(rex,FXRex::Newline|FXRex::NotEmpty){
-  FXTRACE((10,"SimpleRule::SimpleRule(\"%s\",\"%s\",\"%s\",%d,%d)\n",nam.text(),sty.text(),rex.text(),parent,index));
+SimpleRule::SimpleRule(const FXString& nam,const FXString& sty,const FXString& rex,FXival par,FXival idx):Rule(nam,sty,par,idx),pattern(rex,FXRex::Newline|FXRex::NotEmpty){
+  FXTRACE((10,"SimpleRule::SimpleRule(\"%s\",\"%s\",\"%s\",%ld,%ld)\n",nam.text(),sty.text(),rex.text(),parent,index));
   }
 
 
@@ -223,8 +197,8 @@ SimpleRule::~SimpleRule(){
 /*******************************************************************************/
 
 // Constructor
-BracketRule::BracketRule(const FXString& nam,const FXString& sty,const FXString& brex,const FXString& erex,FXint par,FXint idx):Rule(nam,sty,par,idx),open(brex,FXRex::Newline),close(erex,FXRex::Newline){
-  FXTRACE((10,"BracketRule::BracketRule(\"%s\",\"%s\",\"%s\",\"%s\",%d,%d)\n",nam.text(),sty.text(),brex.text(),erex.text(),parent,index));
+BracketRule::BracketRule(const FXString& nam,const FXString& sty,const FXString& brex,const FXString& erex,FXival par,FXival idx):Rule(nam,sty,par,idx),open(brex,FXRex::Newline),close(erex,FXRex::Newline){
+  FXTRACE((10,"BracketRule::BracketRule(\"%s\",\"%s\",\"%s\",\"%s\",%ld,%ld)\n",nam.text(),sty.text(),brex.text(),erex.text(),parent,index));
   }
 
 
@@ -245,7 +219,7 @@ FXbool BracketRule::stylizeBody(const FXchar* text,FXchar* textstyle,FXint len,F
   FXint begin,end; FXuchar c;
   head=pos;
   while(pos<len){
-    for(FXint node=0; node<rules.no(); node++){
+    for(FXival node=0; node<rules.no(); node++){
       if(rules[node]->stylize(text,textstyle,len,pos,begin,end)){ pos=end; goto nxt; }
       }
     if(close.amatch(text,len,pos,FXRex::Normal,&begin,&tail,1)){
@@ -275,8 +249,8 @@ BracketRule::~BracketRule(){
 /*******************************************************************************/
 
 // Constructor
-SafeBracketRule::SafeBracketRule(const FXString& nam,const FXString& sty,const FXString& brex,const FXString& erex,const FXString& srex,FXint par,FXint idx):BracketRule(nam,sty,brex,erex,par,idx),stop(srex,FXRex::Newline){
-  FXTRACE((10,"SafeBracketRule::SafeBracketRule(\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",%d,%d)\n",nam.text(),sty.text(),brex.text(),erex.text(),srex.text(),parent,index));
+SafeBracketRule::SafeBracketRule(const FXString& nam,const FXString& sty,const FXString& brex,const FXString& erex,const FXString& srex,FXival par,FXival idx):BracketRule(nam,sty,brex,erex,par,idx),stop(srex,FXRex::Newline){
+  FXTRACE((10,"SafeBracketRule::SafeBracketRule(\"%s\",\"%s\",\"%s\",\"%s\",\"%s\",%ld,%ld)\n",nam.text(),sty.text(),brex.text(),erex.text(),srex.text(),parent,index));
   }
 
 
@@ -301,7 +275,7 @@ FXbool SafeBracketRule::stylizeBody(const FXchar* text,FXchar* textstyle,FXint l
       fillstyle(textstyle,index,begin,tail);
       return true;
       }
-    for(FXint node=0; node<rules.no(); node++){
+    for(FXival node=0; node<rules.no(); node++){
       if(rules[node]->stylize(text,textstyle,len,pos,begin,end)){ pos=end; goto nxt; }
       }
     if(close.amatch(text,len,pos,FXRex::Normal,&begin,&tail,1)){
@@ -331,8 +305,8 @@ SafeBracketRule::~SafeBracketRule(){
 /*******************************************************************************/
 
 // Constructor
-SpanRule::SpanRule(const FXString& nam,const FXString& sty,const FXString& rex,FXint par,FXint idx):Rule(nam,sty,par,idx),pattern(rex,FXRex::Newline|FXRex::NotEmpty){
-  FXTRACE((10,"SpanRule::SpanRule(\"%s\",\"%s\",\"%s\",%d,%d)\n",nam.text(),sty.text(),rex.text(),parent,index));
+SpanRule::SpanRule(const FXString& nam,const FXString& sty,const FXString& rex,FXival par,FXival idx):Rule(nam,sty,par,idx),pattern(rex,FXRex::Newline|FXRex::NotEmpty){
+  FXTRACE((10,"SpanRule::SpanRule(\"%s\",\"%s\",\"%s\",%ld,%ld)\n",nam.text(),sty.text(),rex.text(),parent,index));
   }
 
 
@@ -353,7 +327,7 @@ FXbool SpanRule::stylizeBody(const FXchar* text,FXchar* textstyle,FXint len,FXin
   FXint begin,end; FXuchar c;
   head=pos;
   while(pos<len){
-    for(FXint node=0; node<rules.no(); node++){
+    for(FXival node=0; node<rules.no(); node++){
       if(rules[node]->stylize(text,textstyle,len,pos,begin,end)){ pos=end; goto nxt; }
       }
     c=text[pos];
@@ -389,7 +363,7 @@ Syntax::Syntax(const FXString& lang,const FXString& grp):language(lang),group(gr
 
 // Find rule given name
 FXint Syntax::getNamedRule(const FXString& name) const {
-  for(FXint i=0; i<rules.no(); ++i){
+  for(FXival i=0; i<rules.no(); ++i){
     if(rules[i]->getName()==name) return i;
     }
   return -1;
@@ -410,8 +384,8 @@ FXbool Syntax::matchContents(const FXString& text) const {
 
 
 // Append default rule
-FXint Syntax::appendDefault(const FXString& name,const FXString& style,FXint parent){
-  FXint index=rules.no();
+FXival Syntax::appendDefault(const FXString& name,const FXString& style,FXival parent){
+  FXival index=rules.no();
   FXASSERT(0<=parent && parent<rules.no());
   DefaultRule *rule=new DefaultRule(name,style,parent,index);
   rules.append(rule);
@@ -421,8 +395,8 @@ FXint Syntax::appendDefault(const FXString& name,const FXString& style,FXint par
 
 
 // Append simple rule
-FXint Syntax::appendSimple(const FXString& name,const FXString& style,const FXString& rex,FXint parent){
-  FXint index=rules.no();
+FXival Syntax::appendSimple(const FXString& name,const FXString& style,const FXString& rex,FXival parent){
+  FXival index=rules.no();
   FXASSERT(0<=parent && parent<rules.no());
   SimpleRule *rule=new SimpleRule(name,style,rex,parent,index);
   rules.append(rule);
@@ -432,8 +406,8 @@ FXint Syntax::appendSimple(const FXString& name,const FXString& style,const FXSt
 
 
 // Append span rule
-FXint Syntax::appendSpan(const FXString& name,const FXString& style,const FXString& rex,FXint parent){
-  FXint index=rules.no();
+FXival Syntax::appendSpan(const FXString& name,const FXString& style,const FXString& rex,FXival parent){
+  FXival index=rules.no();
   FXASSERT(0<=parent && parent<rules.no());
   SpanRule *rule=new SpanRule(name,style,rex,parent,index);
   rules.append(rule);
@@ -443,8 +417,8 @@ FXint Syntax::appendSpan(const FXString& name,const FXString& style,const FXStri
 
 
 // Append bracket rule
-FXint Syntax::appendBracket(const FXString& name,const FXString& style,const FXString& brex,const FXString& erex,FXint parent){
-  FXint index=rules.no();
+FXival Syntax::appendBracket(const FXString& name,const FXString& style,const FXString& brex,const FXString& erex,FXival parent){
+  FXival index=rules.no();
   FXASSERT(0<=parent && parent<rules.no());
   BracketRule *rule=new BracketRule(name,style,brex,erex,parent,index);
   rules.append(rule);
@@ -454,8 +428,8 @@ FXint Syntax::appendBracket(const FXString& name,const FXString& style,const FXS
 
 
 // Append safe bracket rule
-FXint Syntax::appendSafeBracket(const FXString& name,const FXString& style,const FXString& brex,const FXString& erex,const FXString& srex,FXint parent){
-  FXint index=rules.no();
+FXival Syntax::appendSafeBracket(const FXString& name,const FXString& style,const FXString& brex,const FXString& erex,const FXString& srex,FXival parent){
+  FXival index=rules.no();
   FXASSERT(0<=parent && parent<rules.no());
   SafeBracketRule *rule=new SafeBracketRule(name,style,brex,erex,srex,parent,index);
   rules.append(rule);
@@ -465,7 +439,7 @@ FXint Syntax::appendSafeBracket(const FXString& name,const FXString& style,const
 
 
 // Return true if p is ancestor of c
-FXbool Syntax::isAncestor(FXint p,FXint c) const {
+FXbool Syntax::isAncestor(FXival p,FXival c) const {
   FXASSERT(0<=p && p<rules.no());
   FXASSERT(0<=c && c<rules.no());
   while(0<c){
@@ -477,13 +451,13 @@ FXbool Syntax::isAncestor(FXint p,FXint c) const {
 
 
 // Return common ancestor of a and b
-FXint Syntax::commonAncestor(FXint a,FXint b) const {
+FXival Syntax::commonAncestor(FXival a,FXival b) const {
   FXASSERT(0<=a && a<rules.no());
   FXASSERT(0<=b && b<rules.no());
   if(0<a && 0<b){
-    FXint p=a;
+    FXival p=a;
     while(0<p){
-      FXint q=b;
+      FXival q=b;
       while(0<q){
         if(q==p) return p;
         q=rules[q]->getParent();
@@ -498,5 +472,5 @@ FXint Syntax::commonAncestor(FXint a,FXint b) const {
 // Clean up
 Syntax::~Syntax(){
   FXTRACE((10,"Syntax::~Syntax()\n"));
-  for(FXint node=0; node<rules.no(); node++){ delete rules[node]; }
+  for(FXival node=0; node<rules.no(); node++){ delete rules[node]; }
   }

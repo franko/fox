@@ -368,6 +368,7 @@ FXPNGImage.cpp \
 FXPPMIcon.cpp \
 FXPPMImage.cpp \
 FXPacker.cpp \
+FXParseBuffer.cpp \
 FXPath.cpp \
 FXPicker.cpp \
 FXPipe.cpp  \
@@ -492,6 +493,7 @@ FXXPMImage.cpp \
 fxascii.cpp \
 fxbase64.cpp \
 fxbase85.cpp \
+fxchar.cpp \
 fxcpuid.cpp \
 fxbmpio.cpp \
 fxcompose.cpp \
@@ -509,6 +511,7 @@ fxkeysym.cpp \
 fxleaps.cpp \
 fxmath.cpp \
 fxntp.cpp \
+fxosver.cpp \
 fxparsegeometry.cpp \
 fxpcxio.cpp \
 fxpngio.cpp \

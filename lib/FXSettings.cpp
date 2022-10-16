@@ -58,7 +58,7 @@
 */
 
 
-#define EMPTY     ((Entry*)(__settings__empty__+3))
+#define EMPTY     (const_cast<Entry*>((const Entry*)(__settings__empty__+3)))
 #define BSHIFT    5
 
 using namespace FX;
@@ -176,6 +176,7 @@ FXSettings& FXSettings::adopt(FXSettings& other){
   if(__likely(table!=other.table)){
     swap(table,other.table);
     other.clear();
+    other.modified=true;
     modified=true;
     }
   return *this;
@@ -798,14 +799,14 @@ FXbool FXSettings::writeColorEntry(const FXString& section,const FXString& name,
 FXbool FXSettings::readBoolEntry(const FXchar* section,const FXchar* name,FXbool def) const {
   const FXString& value=at(section).at(name);
   if(!value.empty()){
-    if(comparecase(value,"true")==0) return true;
-    else if(comparecase(value,"false")==0) return false;
-    else if(comparecase(value,"yes")==0) return true;
-    else if(comparecase(value,"no")==0) return false;
-    else if(comparecase(value,"on")==0) return true;
-    else if(comparecase(value,"off")==0) return false;
-    else if(comparecase(value,"1")==0) return true;
-    else if(comparecase(value,"0")==0) return false;
+    if(FXString::comparecase(value,"true")==0) return true;
+    if(FXString::comparecase(value,"false")==0) return false;
+    if(FXString::comparecase(value,"yes")==0) return true;
+    if(FXString::comparecase(value,"no")==0) return false;
+    if(FXString::comparecase(value,"on")==0) return true;
+    if(FXString::comparecase(value,"off")==0) return false;
+    if(FXString::comparecase(value,"1")==0) return true;
+    if(FXString::comparecase(value,"0")==0) return false;
     }
   return def;
   }

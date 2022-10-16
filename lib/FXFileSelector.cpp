@@ -320,128 +320,86 @@ FXFileSelector::FXFileSelector(FXComposite *p,FXObject* tgt,FXSelector sel,FXuin
   }
 
 
+// Create server-side resources
+void FXFileSelector::create(){
+  FXPacker::create();
+  if(selectmode==SELECTFILE_ANY){
+    filename->setFocus();
+    filename->selectAll();
+    }
+  }
+
+
 // Count number of files in encoded list of filenames
 FXint FXFileSelector::countFilenames(const FXString& string){
-  FXint result=0;
-  FXint p=0;
-  while(p<string.length()){
-    if(string[p]>' '){
-      if(string[p]=='\''){
-        p++;
-        while(p<string.length() && string[p]!='\''){
-          if(string[p]=='\\' && p<string.length()) p++;
-          p++;
-          }
-        if(p>=string.length()) goto x;
+  FXint result=0,p=0;
+  do{
+    while(string[p]){
+      if(string[p]==','){
+        if(string[p+1]!=',') break;
         p++;
         }
-      else{
-        while(p<string.length() && string[p]>' '){
-          p++;
-          }
-        }
-      result++;
-      continue;
+      p++;
       }
-    p++;
+    result++;
     }
-x:return result;
+  while(string[p++]==',');
+  return result;
   }
 
 
-// Decode the n-th filename from string containing multiple, possibly quoted,
-// filenames surrounded by whitespace.
-// Return the empty string if n exceeds the number of filenames present, or if
-// unmatching quotes are encountered.
+// Decode the n-th filename from string containing multiple filenames
+// Return the empty string if n exceeds the number of filenames present
 FXString FXFileSelector::decodeFilename(const FXString& string,FXint n){
   FXString result;
-  FXint p=0;
-  while(p<string.length()){
-    if(' '<string[p]){
-      FXint pp=p;
-      FXint q=0;
-
-      // Parse over enquoted file
-      if(string[p]=='\''){
-        p++;                                            // Skip opening quote
-        while(p<string.length() && string[p]!='\''){
-          if(string[p]=='\\' && p<string.length()) p++;
-          p++;
-          q++;
-          }
-        if(p>=string.length()) goto x;                  // Bail if missing quote!
-        p++;                                            // Skip trailing quote
+  FXint p=0,pp,q;
+  do{
+    pp=p;
+    q=0;
+    while(string[p]){
+      if(string[p]==','){
+        if(string[p+1]!=',') break;
+        p++;
         }
-
-      // Parse over normal file
-      else{
-        while(p<string.length() && string[p]>' '){
-          p++;
-          q++;
-          }
-        }
-
-      // Found n-th filename encoding; decode it
-      if(--n<0){
-        result.length(q);
-        p=pp;
-        q=0;
-
-        // Parse and decode file
-        if(string[p]=='\''){
-          p++;                                          // Skip opening quote
-          while(p<string.length() && string[p]!='\''){
-            if(string[p]=='\\' && p<string.length()) p++;
-            result[q++]=string[p++];
-            }
-          p++;                                          // Skip trailing quote
-          }
-
-        // Parse normal file
-        else{
-          while(p<string.length() && string[p]>' '){
-            result[q++]=string[p++];
-            }
-          }
-
-        // Check for fit
-        FXASSERT(q<=result.length());
-        break;
-        }
-      continue;
+      p++;
+      q++;
       }
-    p++;
+    if(--n<0){
+      result.length(q);
+      p=pp;
+      q=0;
+      while(string[p]){
+        if(string[p]==','){
+          if(string[p+1]!=',') break;
+          p++;
+          }
+        result[q++]=string[p++];
+        }
+      FXASSERT(q<=result.length());
+      break;
+      }
     }
-x:return result;
+  while(string[p++]==',');
+  return result;
   }
 
 
-// Enquote filename if it contains spaces, control characters; also force
-// quoting if "'" or "\" appear, and escape them as "\'" and "\\".
-// Leave normal filenames consisting of uninterrupted sequence of printable
-// characters unchanged.
+// Encode a filename
+// Filenames that contain a ',' will replace it with ',,'.
 FXString FXFileSelector::encodeFilename(const FXString& string){
-  FXint p,q,e;
-  FXuchar c;
   FXString result;
-  p=q=e=0;
-  while(p<string.length()){
-    c=string[p++];
-    if(c=='\\'){ e=2; q+=2; continue; }
-    if(c=='\''){ e=2; q+=2; continue; }
-    if(c<=' '){ e=2; }
+  FXint p=0,q=0;
+  while(string[p]){
+    if(string[p]==',') q++;
+    p++;
     q++;
     }
-  result.length(q+e);
+  result.length(q);
   p=q=0;
-  if(e) result[q++]='\'';
-  while(p<string.length()){
-    c=string[p++];
-    if(c=='\\'){ result[q++]='\\'; result[q++]='\\'; continue; }
-    if(c=='\''){ result[q++]='\\'; result[q++]='\''; continue; }
-    result[q++]=c;
+  while(string[p]){
+    if(string[p]==','){ result[q++]=','; }
+    result[q++]=string[p++];
     }
-  if(e) result[q++]='\'';
   FXASSERT(q<=result.length());
   return result;
   }
@@ -450,21 +408,20 @@ FXString FXFileSelector::encodeFilename(const FXString& string){
 // Change in items which are selected
 long FXFileSelector::onCmdItemSelected(FXObject*,FXSelector,void* ptr){
   FXint index=(FXint)(FXival)ptr;
-  FXint i;
   FXString text;
   if(selectmode==SELECTFILE_MULTIPLE){
-    for(i=0; i<filebox->getNumItems(); i++){
-      if(filebox->isItemSelected(i) && !filebox->isItemDirectory(i)){
-        if(!text.empty()) text+=' ';
+    for(FXint i=0; i<filebox->getNumItems(); i++){
+      if(!filebox->isItemDirectory(i) && filebox->isItemSelected(i)){
+        if(!text.empty()) text+=',';
         text+=encodeFilename(filebox->getItemFilename(i));
         }
       }
     filename->setText(text);
     }
   else if(selectmode==SELECTFILE_MULTIPLE_ALL){
-    for(i=0; i<filebox->getNumItems(); i++){
-      if(filebox->isItemSelected(i) && !filebox->isItemNavigational(i)){
-        if(!text.empty()) text+=' ';
+    for(FXint i=0; i<filebox->getNumItems(); i++){
+      if(!filebox->isItemNavigational(i) && filebox->isItemSelected(i)){
+        if(!text.empty()) text+=',';
         text+=encodeFilename(filebox->getItemFilename(i));
         }
       }
@@ -488,21 +445,20 @@ long FXFileSelector::onCmdItemSelected(FXObject*,FXSelector,void* ptr){
 
 // Change in items which are selected
 long FXFileSelector::onCmdItemDeselected(FXObject*,FXSelector,void*){
-  FXint i;
   FXString text;
   if(selectmode==SELECTFILE_MULTIPLE){
-    for(i=0; i<filebox->getNumItems(); i++){
-      if(filebox->isItemSelected(i) && !filebox->isItemDirectory(i)){
-        if(!text.empty()) text+=' ';
+    for(FXint i=0; i<filebox->getNumItems(); i++){
+      if(!filebox->isItemDirectory(i) && filebox->isItemSelected(i)){
+        if(!text.empty()) text+=',';
         text+=encodeFilename(filebox->getItemFilename(i));
         }
       }
     filename->setText(text);
     }
   else if(selectmode==SELECTFILE_MULTIPLE_ALL){
-    for(i=0; i<filebox->getNumItems(); i++){
-      if(filebox->isItemSelected(i) && !filebox->isItemNavigational(i)){
-        if(!text.empty()) text+=' ';
+    for(FXint i=0; i<filebox->getNumItems(); i++){
+      if(!filebox->isItemNavigational(i) && filebox->isItemSelected(i)){
+        if(!text.empty()) text+=',';
         text+=encodeFilename(filebox->getItemFilename(i));
         }
       }
@@ -517,8 +473,8 @@ long FXFileSelector::onCmdItemDeselected(FXObject*,FXSelector,void*){
 
 // Double-clicked item in file list
 long FXFileSelector::onCmdItemDblClicked(FXObject*,FXSelector,void* ptr){
-  FXSelector sel=accept->getSelector();
   FXObject *tgt=accept->getTarget();
+  FXSelector sel=accept->getSelector();
   FXint index=(FXint)(FXival)ptr;
   if(0<=index){
 
@@ -539,8 +495,8 @@ long FXFileSelector::onCmdItemDblClicked(FXObject*,FXSelector,void* ptr){
 
 // Hit the accept button or enter in text field
 long FXFileSelector::onCmdAccept(FXObject*,FXSelector,void*){
-  FXSelector sel=accept->getSelector();
   FXObject *tgt=accept->getTarget();
+  FXSelector sel=accept->getSelector();
 
   // Get (first) filename or directory
   FXString path=getFilename();
@@ -625,7 +581,7 @@ long FXFileSelector::onCmdAccept(FXObject*,FXSelector,void*){
 // and select the directory we just came from in that directory; this allows
 // a quick jump back into the original directory in case we went up too far.
 long FXFileSelector::onCmdDirectoryUp(FXObject*,FXSelector,void*){
-  if(!FXPath::isTopDirectory(getDirectory()) && allowNavigation()){
+  if(allowNavigation() && !FXPath::isTopDirectory(getDirectory())){
     FXString dir(getDirectory());
     setDirectory(FXPath::upLevel(dir));
     filebox->setCurrentFile(dir);
@@ -864,7 +820,6 @@ long FXFileSelector::onCmdRemove(FXObject*,FXSelector,void*){
   return 1;
   }
 
-// FIXME maybe should sensitize based on text, not items
 
 // Sensitize when files are selected
 long FXFileSelector::onUpdSelected(FXObject* sender,FXSelector,void*){
@@ -1074,19 +1029,24 @@ void FXFileSelector::setFilename(const FXString& path){
   FXString name(FXPath::name(fullname));
   filebox->setCurrentFile(fullname);
   dirbox->setDirectory(filebox->getDirectory());
-  filename->setText(name);
+  if(selectmode==SELECTFILE_MULTIPLE_ALL || selectmode==SELECTFILE_MULTIPLE){
+    filename->setText(encodeFilename(name));
+    }
+  else{
+    filename->setText(name);
+    }
   }
 
 
 // Get complete path + filename
 FXString FXFileSelector::getFilename() const {
-  FXString file=filename->getText();
-  if(!file.empty()){
+  FXString name=filename->getText();
+  if(!name.empty()){
     if(selectmode==SELECTFILE_MULTIPLE_ALL || selectmode==SELECTFILE_MULTIPLE){
-      return FXPath::absolute(getDirectory(),decodeFilename(file));
+      return FXPath::absolute(getDirectory(),decodeFilename(name));
       }
     else{
-      return FXPath::absolute(getDirectory(),file);
+      return FXPath::absolute(getDirectory(),name);
       }
     }
   return FXString::null;
@@ -1095,22 +1055,22 @@ FXString FXFileSelector::getFilename() const {
 
 // Return empty-string terminated list of selected file names, or NULL
 FXString* FXFileSelector::getFilenames() const {
-  FXString file=filename->getText();
+  FXString names=filename->getText();
   FXString *filelist=nullptr;
-  if(!file.empty()){
+  if(!names.empty()){
     if(selectmode==SELECTFILE_MULTIPLE || selectmode==SELECTFILE_MULTIPLE_ALL){
-      FXint n=countFilenames(file);
+      FXint n=countFilenames(names);
       if(n){
         filelist=new FXString [n+1];
         for(FXint i=0; i<n; ++i){
-          filelist[i]=FXPath::absolute(getDirectory(),decodeFilename(file,i));
+          filelist[i]=FXPath::absolute(getDirectory(),decodeFilename(names,i));
           }
         filelist[n]=FXString::null;
         }
       }
     else{
       filelist=new FXString [2];
-      filelist[0]=FXPath::absolute(getDirectory(),file);
+      filelist[0]=FXPath::absolute(getDirectory(),names);
       filelist[1]=FXString::null;
       }
     }
@@ -1319,7 +1279,14 @@ void FXFileSelector::setReadOnly(FXbool flag){
 
 // Get readonly state
 FXbool FXFileSelector::getReadOnly() const {
-  return (FXbool)readonly->getCheck();
+  return readonly->getCheck()==true;
+  }
+
+
+// Allow or disallow navigation
+void FXFileSelector::allowNavigation(FXbool flag){
+  filebox->showParents(flag,true);
+  navigable=flag;
   }
 
 
@@ -1347,10 +1314,12 @@ FXString FXFileSelector::getTimeFormat() const {
   }
 
 
-// Change file associations
+// Change file associations.
+// Share associations between filebox and dirbox widgets.
+// Optionally, share associations between other parts of the application as well.
 void FXFileSelector::setAssociations(FXFileAssociations* assoc,FXbool owned){
   filebox->setAssociations(assoc,owned);
-  dirbox->setAssociations(assoc,false);         // Shared file associations
+  dirbox->setAssociations(assoc,false);
   }
 
 

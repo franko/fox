@@ -25,11 +25,29 @@
 
 /*
   Notes:
-  - Simple recursive descent parser for syntac expression language.
-  - Inside string, '\' escapes only a '"'.  Otherwise it stands for itself;
-    for instance "\"quoted\"" means "quoted" but "line\n" means line\n, not
-    line<NL>.  This is to keep patterns moderately sane and avoid multiple
-    levels of escaping.
+
+  - SyntaxParser is a simple recursive descent parser.  The style language has
+    very few lexical elements: comments, spaces, numbers, strings, and identifiers.
+
+    o  Comments.  Comments are lines preceeded by a '#'.  All text after the
+       '#' is skipped until the end of the line.
+
+    o  Spaces.  Spaces are not significant, except inside strings.  Spaces are
+       simply skipped.
+
+    o  Numbers.  Only decimal integer numbers are supported.
+
+    o  Strings.  Strings are any text between double quotes ('"').  There are no
+       escape sequences, except to enter a double quote ('\"').
+
+       For instance "\"quoted\"" means "quoted" but "line\n" means line\n, not
+       line<NL>.  This is to keep patterns moderately sane and avoid multiple
+       levels of escaping, since the regular expression engine already has its
+       own escape mechanisms.
+
+    o  Keywords.  As with most programming languages, keywords start with
+       a letter, followed by letters or digits.
+
   - Syntax patterns syntax:
 
       Syntax         =     { Language }*
@@ -71,9 +89,6 @@
 
       Number         =     [0-9]+
 
-  - Note that only quotes (") need to be escaped; this is because otherwise, patterns
-    get really complicated as the regular expression engine also needs special characters
-    to be escaped.
 */
 
 /*******************************************************************************/

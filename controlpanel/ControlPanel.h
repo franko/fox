@@ -126,6 +126,11 @@ private:
   FXint              wheelLines;
   FXint              barSize;
   FXfloat            gamma;
+  FXint              subpixel;
+  FXint              hintstyle;
+  FXbool             hinting;
+  FXbool             autohint;
+  FXbool             antialias;
   FXFileBinding      filebinding;       // Current file binding
 private:
   FXDataTarget       target_base;                // Color targets
@@ -152,6 +157,11 @@ private:
   FXDataTarget       target_barsize;            // Scroll bar size
   FXDataTarget       target_maxcolors;          // Maximum colors
   FXDataTarget       target_gamma;              // Display gamma value
+  FXDataTarget       target_subpixel;           // Xft font subpixel mode
+  FXDataTarget       target_hintstyle;          // Xft font hint style
+  FXDataTarget       target_hinting;            // Xft font hinting
+  FXDataTarget       target_autohint;           // Xft autohint
+  FXDataTarget       target_antialias;          // Xft anti-aliasing
   FXDataTarget       target_filebinding_description;
   FXDataTarget       target_filebinding_command;
   FXDataTarget       target_iconpath;

@@ -46,7 +46,7 @@ public:
   * format does not specify a hot spot. The image must be smaller than
   * 32x32 pixels.
   */
-  FXGIFCursor(FXApp* a,const void* pix,FXint hx=0,FXint hy=0);
+  FXGIFCursor(FXApp* a,const FXuchar* pix,FXint hx=0,FXint hy=0);
 
   /// Save pixel data only, in GIF format
   virtual FXbool savePixels(FXStream& store) const;

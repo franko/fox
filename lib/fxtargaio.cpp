@@ -966,10 +966,10 @@ FXbool fxsaveTGA(FXStream& store,const FXColor *data,FXint width,FXint height){
   // Write image
   for(i=height-1; i>=0; i--){
     for(j=0; j<width; j++){
-      store << ((FXuchar*)(&data[i*width+j]))[0];
-      store << ((FXuchar*)(&data[i*width+j]))[1];
-      store << ((FXuchar*)(&data[i*width+j]))[2];
-      store << ((FXuchar*)(&data[i*width+j]))[3];
+      store << ((const FXuchar*)(&data[i*width+j]))[0];
+      store << ((const FXuchar*)(&data[i*width+j]))[1];
+      store << ((const FXuchar*)(&data[i*width+j]))[2];
+      store << ((const FXuchar*)(&data[i*width+j]))[3];
       }
     }
 

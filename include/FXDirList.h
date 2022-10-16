@@ -280,13 +280,16 @@ public:
   virtual FXbool expandTree(FXTreeItem* tree,FXbool notify=false);
 
   /// Change wildcard matching pattern
-  void setPattern(const FXString& ptrn,FXbool notify=false);
+  FXbool selectMatching(const FXString& ptrn="*",FXuint mode=FXPath::PathName|FXPath::NoEscape,FXbool notify=false);
+
+  /// Change wildcard matching pattern
+  void setPattern(const FXString& ptrn="*",FXbool notify=false);
 
   /// Return wildcard pattern
   FXString getPattern() const { return pattern; }
 
   /// Change wildcard matching mode (see FXPath)
-  void setMatchMode(FXuint mode,FXbool notify=false);
+  void setMatchMode(FXuint mode=FXPath::PathName|FXPath::NoEscape,FXbool notify=false);
 
   /// Return wildcard matching mode
   FXuint getMatchMode() const { return matchmode; }

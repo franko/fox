@@ -217,9 +217,9 @@ FXbool FXEventDispatcher::dispatch(FXTime blocking,FXuint flags){
 FXbool FXEventDispatcher::dispatch(FXTime blocking,FXuint flags){
   if(internals){
     FXTime now,due,delay,interval;
-    FXuint sig,nxt,mode,ms;
+    FXuint sig,nxt,ms,mode,ticks;
     FXInputHandle hnd;
-    FXRawEvent event;
+    FXRawEvent event,ev;
 
     // Loop till we got something
     while(1){
@@ -253,8 +253,56 @@ FXbool FXEventDispatcher::dispatch(FXTime blocking,FXuint flags){
       if(flags&DispatchEvents){
         if(XEventsQueued((Display*)display,QueuedAfterFlush)){
           XNextEvent((Display*)display,&event);
-// FIXME compress events
-          if(dispatchEvent(event)) return true;         // Event activity
+#if 0
+#if 0
+          // Event was filtered by input method; get next one
+          if(xim && XFilterEvent(&ev,None)){
+            goto a;
+            }
+          if(xim && getFocusWindow() && XFilterEvent(&ev,(Window)getFocusWindow()->id())){    // FIXME
+            goto a;
+            }
+#endif
+          // Passing in focuswindow to XFilterEvent just didn't work on Gnome3 with either scim or ibus
+          if(xim && getFocusWindow() && XFilterEvent(&ev,None)){      // [Patch from Roland Baudin] FIXME but also need to deal with keyboard grabs
+            return false;
+            }
+#endif
+          // Compress motion events
+          if(event.xany.type==MotionNotify){
+            while(XPending((Display*)display)){
+              XPeekEvent((Display*)display,&ev);
+              if((ev.xany.type!=MotionNotify) || (event.xmotion.window!=ev.xmotion.window) || (event.xmotion.state != ev.xmotion.state)) break;
+              XNextEvent((Display*)display,&event);
+              }
+            }
+
+          // Compress wheel events
+          else if((event.xany.type==ButtonPress) && (event.xbutton.button==Button4 || event.xbutton.button==Button5)){
+            ticks=1;
+            while(XPending((Display*)display)){
+              XPeekEvent((Display*)display,&ev);
+              if((ev.xany.type!=ButtonPress && ev.xany.type!=ButtonRelease) || (event.xany.window!=ev.xany.window) || (event.xbutton.button != ev.xbutton.button)) break;
+              ticks+=(ev.xany.type==ButtonPress);
+              XNextEvent((Display*)display,&event);
+              }
+            event.xbutton.subwindow=(Window)ticks;   // Stick it here for later
+            }
+
+          // Compress configure events
+          else if(event.xany.type==ConfigureNotify){
+            while(XCheckTypedWindowEvent((Display*)display,event.xconfigure.window,ConfigureNotify,&ev)){
+              event.xconfigure.width=ev.xconfigure.width;
+              event.xconfigure.height=ev.xconfigure.height;
+              if(ev.xconfigure.send_event){
+                event.xconfigure.x=ev.xconfigure.x;
+                event.xconfigure.y=ev.xconfigure.y;
+                }
+              }
+            }
+
+          // Event activity
+          if(dispatchEvent(event)) return true;
           continue;
           }
         }
@@ -333,8 +381,8 @@ FXbool FXEventDispatcher::dispatch(FXTime blocking,FXuint flags){
 FXbool FXEventDispatcher::dispatch(FXTime blocking,FXuint flags){
   if(internals){
     FXTime now,due,delay,interval;
-    FXuint sig,nxt,mode;
-    FXRawEvent event;
+    FXuint sig,nxt,mode,ticks;
+    FXRawEvent event,ev;
 #if (_POSIX_C_SOURCE >= 200112L)
     struct timespec delta;
 #else
@@ -373,8 +421,56 @@ FXbool FXEventDispatcher::dispatch(FXTime blocking,FXuint flags){
       if(flags&DispatchEvents){
         if(XEventsQueued((Display*)display,QueuedAfterFlush)){
           XNextEvent((Display*)display,&event);
-// FIXME compress events
-          if(dispatchEvent(event)) return true;         // Event activity
+#if 0
+#if 0
+          // Event was filtered by input method; get next one
+          if(xim && XFilterEvent(&ev,None)){
+            goto a;
+            }
+          if(xim && getFocusWindow() && XFilterEvent(&ev,(Window)getFocusWindow()->id())){    // FIXME
+            goto a;
+            }
+#endif
+          // Passing in focuswindow to XFilterEvent just didn't work on Gnome3 with either scim or ibus
+          if(xim && getFocusWindow() && XFilterEvent(&ev,None)){      // [Patch from Roland Baudin] FIXME but also need to deal with keyboard grabs
+            return false;
+            }
+#endif
+          // Compress motion events
+          if(event.xany.type==MotionNotify){
+            while(XPending((Display*)display)){
+              XPeekEvent((Display*)display,&ev);
+              if((ev.xany.type!=MotionNotify) || (event.xmotion.window!=ev.xmotion.window) || (event.xmotion.state != ev.xmotion.state)) break;
+              XNextEvent((Display*)display,&event);
+              }
+            }
+
+          // Compress wheel events
+          else if((event.xany.type==ButtonPress) && (event.xbutton.button==Button4 || event.xbutton.button==Button5)){
+            ticks=1;
+            while(XPending((Display*)display)){
+              XPeekEvent((Display*)display,&ev);
+              if((ev.xany.type!=ButtonPress && ev.xany.type!=ButtonRelease) || (event.xany.window!=ev.xany.window) || (event.xbutton.button != ev.xbutton.button)) break;
+              ticks+=(ev.xany.type==ButtonPress);
+              XNextEvent((Display*)display,&event);
+              }
+            event.xbutton.subwindow=(Window)ticks;   // Stick it here for later
+            }
+
+          // Compress configure events
+          else if(event.xany.type==ConfigureNotify){
+            while(XCheckTypedWindowEvent((Display*)display,event.xconfigure.window,ConfigureNotify,&ev)){
+              event.xconfigure.width=ev.xconfigure.width;
+              event.xconfigure.height=ev.xconfigure.height;
+              if(ev.xconfigure.send_event){
+                event.xconfigure.x=ev.xconfigure.x;
+                event.xconfigure.y=ev.xconfigure.y;
+                }
+              }
+            }
+
+          // Event activity
+          if(dispatchEvent(event)) return true;
           continue;
           }
         }

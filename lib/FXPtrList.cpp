@@ -40,7 +40,7 @@
 #define ROUNDUP(n)  (((n)+ROUNDVAL-1)&-ROUNDVAL)
 
 // Special empty pointer list value
-#define EMPTY       ((FXptr*)(__ptrlist__empty__+1))
+#define EMPTY       (const_cast<FXptr*>((const FXptr*)(__ptrlist__empty__+1)))
 
 using namespace FX;
 
@@ -401,8 +401,8 @@ FXbool FXPtrList::pop(){
 
 
 // Clear the list
-void FXPtrList::clear(){
-  no(0);
+FXbool FXPtrList::clear(){
+  return no(0);
   }
 
 

@@ -57,7 +57,7 @@
   - Similar to FXVariantMap; reimplemented to support plain void* as payload.
 */
 
-#define EMPTY     ((Entry*)(__dictionary__empty__+3))
+#define EMPTY     (const_cast<Entry*>((const Entry*)(__dictionary__empty__+3)))
 #define BSHIFT    5
 
 using namespace FX;
@@ -134,14 +134,14 @@ FXbool FXDictionary::resize(FXival n){
 
 // Construct empty dictionary
 FXDictionary::FXDictionary():table(EMPTY){
-  FXASSERT(sizeof(FXDictionary)==sizeof(FXptr));
+  FXASSERT(sizeof(FXDictionary)==sizeof(void*));
   FXASSERT(sizeof(Entry)<=sizeof(FXival)*3);
   }
 
 
 // Construct from another dictionary
 FXDictionary::FXDictionary(const FXDictionary& other):table(EMPTY){
-  FXASSERT(sizeof(FXDictionary)==sizeof(FXptr));
+  FXASSERT(sizeof(FXDictionary)==sizeof(void*));
   FXASSERT(sizeof(Entry)<=sizeof(FXival)*3);
   if(1<other.no()){
     if(__unlikely(!no(other.no()))){ throw FXMemoryException("FXDictionary::FXDictionary: out of memory\n"); }
@@ -197,7 +197,7 @@ FXival FXDictionary::find(const FXchar* ky) const {
 
 
 // Return reference to slot assocated with given key
-FXptr& FXDictionary::at(const FXchar* ky){
+void*& FXDictionary::at(const FXchar* ky){
   FXuval p,b,h,x;
   if(__unlikely(!ky || !*ky)){ throw FXRangeException("FXDictionary::at: null or empty key\n"); }
   p=b=h=FXString::hash(ky);
@@ -223,7 +223,7 @@ x:return table[x].data;
 
 
 // Return constant reference to slot assocated with given key
-const FXptr& FXDictionary::at(const FXchar* ky) const {
+void *const& FXDictionary::at(const FXchar* ky) const {
   if(__unlikely(!ky || !*ky)){ throw FXRangeException("FXDictionary::at: null or empty key\n"); }
   if(__likely(!empty())){
     FXuval p,b,x,h;
@@ -240,15 +240,15 @@ const FXptr& FXDictionary::at(const FXchar* ky) const {
 
 
 // Remove association with given key; return old value, if any
-FXptr FXDictionary::remove(const FXchar* ky){
-  FXptr old=nullptr;
+void* FXDictionary::remove(const FXchar* ky){
+  void* old=nullptr;
   if(__unlikely(!ky || !*ky)){ throw FXRangeException("FXDictionary::remove: null or empty key\n"); }
   if(__likely(!empty())){
     FXuval p,b,h,x;
     p=b=h=FXString::hash(ky);
     FXASSERT(h);
     while(table[x=p&(no()-1)].hash!=h || table[x].key!=ky){
-      if(!table[x].hash) return nullptr;
+      if(!table[x].hash) goto x;
       p=(p<<2)+p+b+1;
       b>>=BSHIFT;
       }
@@ -258,15 +258,15 @@ FXptr FXDictionary::remove(const FXchar* ky){
     used(used()-1);
     if(__unlikely(used()<=(no()>>2))) resize(no()>>1);
     }
-  return old;
+x:return old;
   }
 
 
 // Erase data at pos in the table; return old value, if any
-FXptr FXDictionary::erase(FXival pos){
+void* FXDictionary::erase(FXival pos){
   if(__unlikely(pos<0 || no()<=pos)){ throw FXRangeException("FXDictionary::erase: argument out of range\n"); }
   if(!table[pos].key.empty()){
-    FXptr old=table[pos].data;
+    void* old=table[pos].data;
     table[pos].key.clear();                             // Void the slot (not empty!)
     table[pos].data=nullptr;
     used(used()-1);
@@ -278,8 +278,8 @@ FXptr FXDictionary::erase(FXival pos){
 
 
 // Clear entire table
-void FXDictionary::clear(){
-  no(1);
+FXbool FXDictionary::clear(){
+  return no(1);
   }
 
 

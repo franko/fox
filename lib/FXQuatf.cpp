@@ -353,38 +353,47 @@ void FXQuatf::getYawRollPitch(FXfloat& yaw,FXfloat& roll,FXfloat& pitch) const {
 
 
 // Set quaternion from axes
+// "Converting a Rotation Matrix to a Quaternion," Mike Day, Insomniac Games.
 void FXQuatf::setAxes(const FXVec3f& ex,const FXVec3f& ey,const FXVec3f& ez){
-  FXfloat trace=ex.x+ey.y+ez.z;
-  FXfloat scale;
-  if(trace>0.0f){
-    scale=Math::sqrt(1.0f+trace);
-    w=0.5f*scale;
-    scale=0.5f/scale;
-    x=(ey.z-ez.y)*scale;
-    y=(ez.x-ex.z)*scale;
-    z=(ex.y-ey.x)*scale;
-    }
-  else if(ex.x>ey.y && ex.x>ez.z){
-    scale=2.0f*Math::sqrt(1.0f+ex.x-ey.y-ez.z);
-    x=0.25f*scale;
-    y=(ex.y+ey.x)/scale;
-    z=(ex.z+ez.x)/scale;
-    w=(ey.z-ez.y)/scale;
-    }
-  else if(ey.y>ez.z){
-    scale=2.0f*Math::sqrt(1.0f+ey.y-ex.x-ez.z);
-    y=0.25f*scale;
-    x=(ex.y+ey.x)/scale;
-    z=(ey.z+ez.y)/scale;
-    w=(ez.x-ex.z)/scale;
+  FXfloat t;
+  if(ez.z<0.0f){
+    if(ex.x>ey.y){
+      t=1.0f+ex.x-ey.y-ez.z;
+      x=t;
+      y=ex.y+ey.x;
+      z=ez.x+ex.z;
+      w=ey.z-ez.y;
+      }
+    else{
+      t=1.0f-ex.x+ey.y-ez.z;
+      x=ex.y+ey.x;
+      y=t;
+      z=ey.z+ez.y;
+      w=ez.x-ex.z;
+      }
     }
   else{
-    scale=2.0f*Math::sqrt(1.0f+ez.z-ex.x-ey.y);
-    z=0.25f*scale;
-    x=(ex.z+ez.x)/scale;
-    y=(ey.z+ez.y)/scale;
-    w=(ex.y-ey.x)/scale;
+    if(ex.x<-ey.y){
+      t=1.0f-ex.x-ey.y+ez.z;
+      x=ez.x+ex.z;
+      y=ey.z+ez.y;
+      z=t;
+      w=ex.y-ey.x;
+      }
+    else{
+      t=1.0f+ex.x+ey.y+ez.z;
+      x=ey.z-ez.y;
+      y=ez.x-ex.z;
+      z=ex.y-ey.x;
+      w=t;
+      }
     }
+  FXASSERT(t>0.0f);
+  t=0.5f/Math::sqrt(t);
+  x*=t;
+  y*=t;
+  z*=t;
+  w*=t;
   }
 
 
@@ -483,7 +492,7 @@ FXQuatf FXQuatf::pow(FXfloat t) const {
 // Rotation unit-quaternion and vector v . q = (q . v . q*) where q* is
 // the conjugate of q.
 //
-// The Rodriques Formula for rotating a vector V about a unit-axis K is:
+// The Rodriques Formula for rotating a vector V over angle A about a unit-vector K:
 //
 //    V' = K (K . V) + (K x V) sin(A) - K x (K x V) cos(A)
 //

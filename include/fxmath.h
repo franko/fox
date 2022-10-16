@@ -166,7 +166,7 @@
 #endif
 
 // Systems below are missing these functions
-#if defined(__sun__) || defined(__FreeBSD__) || defined(__NetBSD__) || defined(__DragonFly__)
+#if defined(__sun__) || defined(__FreeBSD__) || defined(__NetBSD__) || defined(__DragonFly__) || defined(__APPLE__)
 #define NO_EXP10F
 #define NO_EXP10
 #endif
@@ -597,6 +597,39 @@ static inline FXfloat stepify(FXfloat x,FXfloat s){
 /// Stepify double precision x into multiples of step s (where s>0)
 static inline FXdouble stepify(FXdouble x,FXdouble s){
   return Math::nearbyint(x/s)*s;
+  }
+
+
+/// Single precision zig-zag function, period 1
+static inline FXfloat zigzag(FXfloat x){
+  return Math::fabs(2.0f*(x-Math::nearbyint(x)));
+  }
+
+/// Single precision zig-zag function, period 1
+static inline FXdouble zigzag(FXdouble x){
+  return Math::fabs(2.0*(x-Math::nearbyint(x)));
+  }
+
+
+/// Single precision sawtooth function, period 1
+static inline FXfloat sawtooth(FXfloat x){
+  return x-Math::floor(x);
+  }
+
+/// Single precision sawtooth function, period 1
+static inline FXdouble sawtooth(FXdouble x){
+  return x-Math::floor(x);
+  }
+
+
+/// Single precision revserse sawtooth function, period 1
+static inline FXfloat rsawtooth(FXfloat x){
+  return Math::ceil(x)-x;
+  }
+
+/// Single precision revserse sawtooth function, period 1
+static inline FXdouble rsawtooth(FXdouble x){
+  return Math::ceil(x)-x;
   }
 
 

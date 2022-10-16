@@ -119,12 +119,14 @@ TabBookWindow::TabBookWindow(FXApp *a):FXMainWindow(a,"Tab Book Test",nullptr,nu
   fileframe=new FXHorizontalFrame(tabbook,FRAME_THICK|FRAME_RAISED);
   boxframe=new FXHorizontalFrame(fileframe,FRAME_THICK|FRAME_SUNKEN|LAYOUT_FILL_X|LAYOUT_FILL_Y, 0,0,0,0, 0,0,0,0);
   filelist=new FXFileList(boxframe,nullptr,0,ICONLIST_EXTENDEDSELECT|LAYOUT_FILL_X|LAYOUT_FILL_Y);
+  filelist->setDirectory(FXSystem::getHomeDirectory());
 
   // Third item is a directory list
   tab3=new FXTabItem(tabbook,"T&ree List\tSwitch to third panel",nullptr);
   dirframe=new FXHorizontalFrame(tabbook,FRAME_THICK|FRAME_RAISED);
   boxframe=new FXHorizontalFrame(dirframe,FRAME_THICK|FRAME_SUNKEN|LAYOUT_FILL_X|LAYOUT_FILL_Y, 0,0,0,0, 0,0,0,0);
   dirlist=new FXDirList(boxframe,nullptr,0,DIRLIST_SHOWFILES|TREELIST_SHOWS_LINES|TREELIST_SHOWS_BOXES|LAYOUT_FILL_X|LAYOUT_FILL_Y);
+  dirlist->setDirectory(FXSystem::getHomeDirectory());
 
   // Fourth item is text
   tab4=new FXTabItem(tabbook,"Text\tSwitch to fourth panel",nullptr);

@@ -516,8 +516,8 @@ void FXListBox::clearItems(FXbool notify){
 
 
 // Get item by name
-FXint FXListBox::findItem(const FXString& text,FXint start,FXuint flgs) const {
-  return list->findItem(text,start,flgs);
+FXint FXListBox::findItem(const FXString& string,FXint start,FXuint flgs) const {
+  return list->findItem(string,start,flgs);
   }
 
 

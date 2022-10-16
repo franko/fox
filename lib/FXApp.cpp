@@ -22,6 +22,7 @@
 #include "fxver.h"
 #include "fxdefs.h"
 #include "fxmath.h"
+#include "fxchar.h"
 #include "fxkeys.h"
 #include "fxascii.h"
 #include "FXArray.h"
@@ -1193,7 +1194,7 @@ long SpaceNav::onMotion(FXObject *, FXSelector, void *vp){
     num_inputs = sizeof_buffer/sizeof(RAWINPUT);
     if (bufAlloc < num_inputs) {
 	bufAlloc = num_inputs;
-	FXRESIZE(&inpBuffer, RAWINPUT, bufAlloc);
+        resizeElms(inpBuffer,bufAlloc);
     }
 #endif
     num_inputs = GetRawInputBuffer(inpBuffer, &sizeof_buffer, sizeof(RAWINPUTHEADER));
@@ -1660,7 +1661,7 @@ FXbool FXApp::openDisplay(const FXchar* dpy){
     wmNetWindowType=XInternAtom((Display*)display,"_NET_WM_WINDOW_TYPE",0);
 
     // Register window types
-    XInternAtoms((Display*)display,(char**)windowTypeAtoms,14,0,wmWindowTypes);
+    XInternAtoms((Display*)display,const_cast<char**>(windowTypeAtoms),14,0,wmWindowTypes);
 
     // Session management
     wmWindowRole=XInternAtom((Display*)display,"WM_WINDOW_ROLE",0);
@@ -3481,6 +3482,7 @@ FXbool FXApp::dispatchEvent(FXRawEvent& ev){
         // WM_PROTOCOLS
         if(ev.xclient.message_type==wmProtocols){
           if((FXID)ev.xclient.data.l[0]==wmDeleteWindow){           // WM_DELETE_WINDOW
+            FXTRACE((100,"WM_DELETE_WINDOW\n"));
             event.type=SEL_CLOSE;
             if(!invocation || invocation->modality==MODAL_FOR_NONE || (invocation->window && invocation->window->isOwnerOf(window))){
               if(window->handle(this,FXSEL(SEL_CLOSE,0),&event)) refresh();
@@ -3491,11 +3493,11 @@ FXbool FXApp::dispatchEvent(FXRawEvent& ev){
             }
           else if((FXID)ev.xclient.data.l[0]==wmSaveYourself){      // WM_SAVE_YOURSELF
             FXTRACE((100,"WM_SAVE_YOURSELF\n"));
-/*
-            XSetCommand((Display*)display,ev.xany.window,(char**)appArgv,appArgc);
-            XChangeProperty((Display*)display,ev.xany.window,wmCommand,XA_STRING,8,PropModeReplace,(unsigned char*)"",0);
+            //XSetCommand((Display*)display,ev.xany.window,(char**)appArgv,appArgc);
+            //XChangeProperty((Display*)display,ev.xany.window,wmCommand,XA_STRING,8,PropModeReplace,(unsigned char*)"",0);
             event.type=SEL_SESSION_NOTIFY;
             return !window->handle(this,FXSEL(SEL_SESSION_NOTIFY,0),&event); // Return 1 if OK to terminate
+/*
 
           case WM_ENDSESSION:         // Session will now end for sure
             event.type=SEL_SESSION_CLOSED;
@@ -3504,6 +3506,7 @@ FXbool FXApp::dispatchEvent(FXRawEvent& ev){
 */
             }
           else if((FXID)ev.xclient.data.l[0]==wmQuitApp){           // WM_QUIT_APP
+            FXTRACE((100,"WM_QUIT_APP\n"));
             event.type=SEL_CLOSE;
             if(!invocation || invocation->modality==MODAL_FOR_NONE || (invocation->window && invocation->window->isOwnerOf(window))){
               if(window->handle(this,FXSEL(SEL_CLOSE,0),&event)) refresh();
@@ -4215,7 +4218,7 @@ static void getSystemFont(FXFontDesc& fontdesc){
   HDC hDC=CreateCompatibleDC(nullptr);
   fontdesc.size=-10*MulDiv(ncm.lfMenuFont.lfHeight,72,GetDeviceCaps(hDC,LOGPIXELSY));
   DeleteDC(hDC);
-  fontdesc.weight=ncm.lfMenuFont.lfWeight/10;
+  fontdesc.weight=(FXushort)ncm.lfMenuFont.lfWeight/10;
   fontdesc.slant=ncm.lfMenuFont.lfItalic?FXFont::Italic:FXFont::Straight;
   fontdesc.encoding=FONTENCODING_DEFAULT;
   fontdesc.setwidth=0;
@@ -4290,14 +4293,14 @@ void FXApp::init(int& argc,char** argv,FXbool connect){
 #ifndef WIN32
 
     // Start synchronized mode
-    if(compare(argv[j],"-sync")==0){
+    if(FXString::compare(argv[j],"-sync")==0){
       synchronize=true;
       j++;
       continue;
       }
 
     // Do not use X shared memory extension, even if available
-    if(compare(argv[j],"-noshm")==0){
+    if(FXString::compare(argv[j],"-noshm")==0){
       shmi=false;
       shmp=false;
       j++;
@@ -4305,7 +4308,7 @@ void FXApp::init(int& argc,char** argv,FXbool connect){
       }
 
     // Force use X shared memory extension, if available
-    if(compare(argv[j],"-shm")==0){
+    if(FXString::compare(argv[j],"-shm")==0){
       shmi=true;
       shmp=true;
       j++;
@@ -4313,7 +4316,7 @@ void FXApp::init(int& argc,char** argv,FXbool connect){
       }
 
     // Alternative display
-    if(compare(argv[j],"-display")==0){
+    if(FXString::compare(argv[j],"-display")==0){
       if(++j>=argc){
         fxwarning("%s:init: missing argument for -display.\n",getClassName());
         ::exit(1);
@@ -4323,7 +4326,7 @@ void FXApp::init(int& argc,char** argv,FXbool connect){
       }
 
     // Set input method
-    if(compare(argv[j],"-im")==0){
+    if(FXString::compare(argv[j],"-im")==0){
       if(++j>=argc){
         fxwarning("%s:init: missing argument for -im.\n",getClassName());
         ::exit(1);
@@ -4333,7 +4336,7 @@ void FXApp::init(int& argc,char** argv,FXbool connect){
       }
 
     // Input style
-    if(compare(argv[j],"-is")==0){
+    if(FXString::compare(argv[j],"-is")==0){
       if(++j>=argc){
         fxwarning("%s:init: missing argument for -is.\n",getClassName());
         ::exit(1);
@@ -4345,7 +4348,7 @@ void FXApp::init(int& argc,char** argv,FXbool connect){
 #endif
 
     // Set trace level
-    if(compare(argv[j],"-tracelevel")==0){
+    if(FXString::compare(argv[j],"-tracelevel")==0){
       if(++j>=argc){
         fxwarning("%s:init: missing argument for -tracelevel.\n",getClassName());
         ::exit(1);
@@ -4355,7 +4358,7 @@ void FXApp::init(int& argc,char** argv,FXbool connect){
       }
 
     // Set trace level
-    if(compare(argv[j],"-tracetopics")==0){
+    if(FXString::compare(argv[j],"-tracetopics")==0){
       if(++j>=argc){
         fxwarning("%s:init: missing argument for -tracetopics.\n",getClassName());
         ::exit(1);
@@ -4365,7 +4368,7 @@ void FXApp::init(int& argc,char** argv,FXbool connect){
       }
 
     // Set per-user configuration directory
-    if(compare(argv[j],"-config")==0){
+    if(FXString::compare(argv[j],"-config")==0){
       if(++j>=argc){
         fxwarning("%s:init: missing argument for -config.\n",getClassName());
         ::exit(1);
@@ -4374,8 +4377,15 @@ void FXApp::init(int& argc,char** argv,FXbool connect){
       continue;
       }
 
+    // Set ascii based registery (Windows)
+    if(FXString::compare(argv[j],"-ascii")==0){
+      registry.setAsciiMode(true);
+      j++;
+      continue;
+      }
+
     // Set maximum number of colors
-    if(compare(argv[j],"-maxcolors")==0){
+    if(FXString::compare(argv[j],"-maxcolors")==0){
       if(++j>=argc){
         fxwarning("%s:init: missing argument for -maxcolors.\n",getClassName());
         ::exit(1);
@@ -5235,7 +5245,7 @@ Alt key seems to repeat.
       if(clipboardWindow){
         event.type=SEL_CLIPBOARD_REQUEST;
         event.time=GetMessageTime();
-        event.target=wParam;
+        event.target=(FXDragType)wParam;
         clipboardWindow->handle(this,FXSEL(SEL_CLIPBOARD_REQUEST,0),&event);
         FXTRACE((100,"Window %d being requested for CLIPBOARD DATA of type %d\n",hwnd,wParam));
         }

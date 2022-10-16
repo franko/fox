@@ -40,8 +40,8 @@ protected:
   FXString      name;           // Name of rule
   FXString      style;          // Colors for highlighting (default)
   RuleList      rules;          // Subrules
-  FXint         parent;         // Parent rule
-  FXint         index;          // Own style index
+  FXival        parent;         // Parent rule
+  FXival        index;          // Own style index
 protected:
   Rule(){}
 private:
@@ -50,7 +50,7 @@ private:
 public:
 
   // Construct node
-  Rule(const FXString& nam,const FXString& sty,FXint par,FXint idx);
+  Rule(const FXString& nam,const FXString& sty,FXival par,FXival idx);
 
   // Set rule name
   void setName(const FXString& nm){ name=nm; }
@@ -65,16 +65,16 @@ public:
   const FXString& getStyle() const { return style; }
 
   // Get parent index
-  FXint getParent() const { return parent; }
+  FXival getParent() const { return parent; }
 
   // Get style index
-  FXint getIndex() const { return index; }
+  FXival getIndex() const { return index; }
 
   // Get number of child rules
-  FXint getNumRules() const { return rules.no(); }
+  FXival getNumRules() const { return rules.no(); }
 
   // Get child rule
-  Rule* getRule(FXint inx) const { return rules[inx]; }
+  Rule* getRule(FXival inx) const { return rules[inx]; }
 
   // Stylize text
   virtual FXbool stylize(const FXchar* text,FXchar* textstyle,FXint len,FXint pos,FXint& head,FXint& tail) const;
@@ -97,7 +97,7 @@ private:
 public:
 
   // Construct node
-  DefaultRule(const FXString& nam,const FXString& sty,FXint par,FXint idx);
+  DefaultRule(const FXString& nam,const FXString& sty,FXival par,FXival idx);
 
   // Stylize text
   virtual FXbool stylize(const FXchar* text,FXchar *textstyle,FXint len,FXint pos,FXint& head,FXint& tail) const;
@@ -122,7 +122,7 @@ private:
 public:
 
   // Construct node
-  SimpleRule(const FXString& nam,const FXString& sty,const FXString& rex,FXint par,FXint idx);
+  SimpleRule(const FXString& nam,const FXString& sty,const FXString& rex,FXival par,FXival idx);
 
   // Stylize text
   virtual FXbool stylize(const FXchar* text,FXchar *textstyle,FXint len,FXint pos,FXint& head,FXint& tail) const;
@@ -148,7 +148,7 @@ private:
 public:
 
   // Construct node
-  BracketRule(const FXString& nam,const FXString& sty,const FXString& brex,const FXString& erex,FXint par,FXint idx);
+  BracketRule(const FXString& nam,const FXString& sty,const FXString& brex,const FXString& erex,FXival par,FXival idx);
 
   // Stylize text
   virtual FXbool stylize(const FXchar* text,FXchar *textstyle,FXint len,FXint pos,FXint& head,FXint& tail) const;
@@ -173,7 +173,7 @@ private:
 public:
 
   // Construct node
-  SafeBracketRule(const FXString& nam,const FXString& sty,const FXString& brex,const FXString& erex,const FXString& srex,FXint par,FXint idx);
+  SafeBracketRule(const FXString& nam,const FXString& sty,const FXString& brex,const FXString& erex,const FXString& srex,FXival par,FXival idx);
 
   // Stylize text
   virtual FXbool stylize(const FXchar* text,FXchar *textstyle,FXint len,FXint pos,FXint& head,FXint& tail) const;
@@ -198,7 +198,7 @@ private:
 public:
 
   // Construct node
-  SpanRule(const FXString& nam,const FXString& sty,const FXString& rex,FXint par,FXint idx);
+  SpanRule(const FXString& nam,const FXString& sty,const FXString& rex,FXival par,FXival idx);
 
   // Stylize text
   virtual FXbool stylize(const FXchar* text,FXchar *textstyle,FXint len,FXint pos,FXint& head,FXint& tail) const;
@@ -238,16 +238,16 @@ public:
   Syntax(const FXString& lang,const FXString& grp);
 
   // Get number of child rules
-  FXint getNumRules() const { return rules.no(); }
+  FXival getNumRules() const { return rules.no(); }
 
   // Get rule
-  Rule* getRule(FXint rule) const { return rules[rule]; }
+  Rule* getRule(FXival rule) const { return rules[rule]; }
 
   // Return true if p is ancestor of c
-  FXbool isAncestor(FXint p,FXint c) const;
+  FXbool isAncestor(FXival p,FXival c) const;
 
   // Return common ancestor of a and b
-  FXint commonAncestor(FXint a,FXint b) const;
+  FXival commonAncestor(FXival a,FXival b) const;
 
   // Language name
   void setName(const FXString& lang){ language=lang; }
@@ -307,19 +307,19 @@ public:
   FXbool matchContents(const FXString& text) const;
 
   // Append default rule
-  FXint appendDefault(const FXString& name,const FXString& style,FXint parent=0);
+  FXival appendDefault(const FXString& name,const FXString& style,FXival parent=0);
 
   // Append simple rule
-  FXint appendSimple(const FXString& name,const FXString& style,const FXString& rex,FXint parent=0);
+  FXival appendSimple(const FXString& name,const FXString& style,const FXString& rex,FXival parent=0);
 
   // Append span rule
-  FXint appendSpan(const FXString& name,const FXString& style,const FXString& rex,FXint parent=0);
+  FXival appendSpan(const FXString& name,const FXString& style,const FXString& rex,FXival parent=0);
 
   // Append bracket rule
-  FXint appendBracket(const FXString& name,const FXString& style,const FXString& brex,const FXString& erex,FXint parent=0);
+  FXival appendBracket(const FXString& name,const FXString& style,const FXString& brex,const FXString& erex,FXival parent=0);
 
   // Append safe bracket rule
-  FXint appendSafeBracket(const FXString& name,const FXString& style,const FXString& brex,const FXString& erex,const FXString& srex,FXint parent=0);
+  FXival appendSafeBracket(const FXString& name,const FXString& style,const FXString& brex,const FXString& erex,const FXString& srex,FXival parent=0);
 
   // Wipes the rules
   virtual ~Syntax();
