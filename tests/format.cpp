@@ -26,7 +26,7 @@ extern FXint __sscanf(const FXchar* string,const FXchar* format,...);
 }
 
 const FXchar *floatformat[]={
-  "%.15e",
+  "%.15E",
   "%'.5e",
   "%10.5f",
   "%-10.5f",
@@ -82,6 +82,7 @@ const double floatnumbers[]={
   4.136,
   6442452944.1234,
   1.23456789E+20,
+  1.23456789E-205,
   6.4969530541989433e-17,
   0.99999999,
   0.000009995,
@@ -92,16 +93,33 @@ const double floatnumbers[]={
   1.9382023e-03,
   5e-320,
   0.0,
-  -0.0
+  -0.0,
+  8.6796844466580162e-315
+  };
+
+
+// Double Infinite
+static const union{ FXulong u; FXdouble f; } doubleinf={
+  FXULONG(0x7ff0000000000000)
+  };
+
+// Double NaN
+static const union{ FXulong u; FXdouble f; } doublenan={
+  FXULONG(0x7fffffffffffffff)
+  };
+
+// Double small
+static const union{ FXulong u; FXdouble f; } doublesmall={
+  FXULONG(0x0000000000002788)
   };
 
 
 // Use a trick to get a nan
-const FXulong doublenan[1]={FXULONG(0x7fffffffffffffff)};
-const FXulong doubleinf[1]={FXULONG(0x7ff0000000000000)};
+//const FXulong doublenan[1]={FXULONG(0x7fffffffffffffff)};
+//const FXulong doubleinf[1]={FXULONG(0x7ff0000000000000)};
 
 // Small double
-const FXulong doublesmall[1]={FXULONG(0x0000000000002788)};
+//const FXulong doublesmall[1]={FXULONG(0x0000000000002788)};
 
 const FXchar *intformat[]={
   "%d",
@@ -143,7 +161,7 @@ const FXchar *positionalformat[]={
 
 const FXchar *positionalformat2="%1$*2$.*3$lf";
 
-const FXchar *positionalformat3="%3$d%3$d";
+const FXchar *positionalformat3="%3$d%1$d%2$d";
 
 
 // Uncomment to revert to native version
@@ -165,6 +183,7 @@ void specialcases(const char* fmt){
 int main(int argc,char* argv[]){
   FXchar buffer[1024];
   FXuval x,y;
+  FXdouble trouble;
 
 /*
 */
@@ -273,7 +292,7 @@ int main(int argc,char* argv[]){
 
   // Testing Inf's
   for(x=0; x<ARRAYNUMBER(floatformat); x++){
-    __snprintf(buffer,sizeof(buffer),floatformat[x],*((const FXdouble*)doubleinf));
+    __snprintf(buffer,sizeof(buffer),floatformat[x],doubleinf.f);
     fprintf(stdout,"format=\"%s\" output=\"%s\"\n",floatformat[x],buffer);
     }
 
@@ -281,7 +300,7 @@ int main(int argc,char* argv[]){
 
   // Testing NaN's
   for(x=0; x<ARRAYNUMBER(floatformat); x++){
-    __snprintf(buffer,sizeof(buffer),floatformat[x],*((const FXdouble*)doublenan));
+    __snprintf(buffer,sizeof(buffer),floatformat[x],doublenan.f);
     fprintf(stdout,"format=\"%s\" output=\"%s\"\n",floatformat[x],buffer);
     }
 
@@ -324,18 +343,31 @@ int main(int argc,char* argv[]){
   fprintf(stdout,"\n");
 
   // Small dernormalized float, passed as hex (types may be flagged as wrong)
-  __snprintf(buffer,sizeof(buffer),"%.18le",*((const FXdouble*)doublesmall));
-  fprintf(stdout,"format=\"%s\" output=\"%s\"\n","%.18le",buffer);
-  __snprintf(buffer,sizeof(buffer),"%a",*((const FXdouble*)doublesmall));
-  fprintf(stdout,"format=\"%s\" output=\"%s\"\n","%a",buffer);
+  __snprintf(buffer,sizeof(buffer),"%.18le",doublesmall.f);
+  fprintf(stdout,"small format=\"%s\" output=\"%s\"\n","%.18le",buffer);
+  __snprintf(buffer,sizeof(buffer),"%a",doublesmall.f);
+  fprintf(stdout,"small format=\"%s\" output=\"%s\"\n","%a",buffer);
   fprintf(stdout,"\n");
 
   // Small dernormalized float, passed as floating point hex syntax
 #if defined(__GNUC__)
   __snprintf(buffer,sizeof(buffer),"%.18le",0x0.0000000002788p-1023);
-  fprintf(stdout,"format=\"%s\" output=\"%s\"\n","%.18le",buffer);
+  fprintf(stdout,"hex format=\"%s\" output=\"%s\"\n","%.18le",buffer);
+
   __snprintf(buffer,sizeof(buffer),"%a",0x0.0000000002788p-1023);
-  fprintf(stdout,"format=\"%s\" output=\"%s\"\n","%a",buffer);
+  fprintf(stdout,"hex format=\"%s\" output=\"%s\"\n","%a",buffer);
+
+  fprintf(stdout,"\n");
+
+  // Scan ourselves
+  __sscanf("0x0.0000000002788p-1023","%la",&trouble);
+
+  __snprintf(buffer,sizeof(buffer),"%.18le",trouble);
+  fprintf(stdout,"scanned hex format=\"%s\" output=\"%s\"\n","%.18le",buffer);
+
+  __snprintf(buffer,sizeof(buffer),"%a",trouble);
+  fprintf(stdout,"scanned hex format=\"%s\" output=\"%s\"\n","%a",buffer);
+
   fprintf(stdout,"\n");
 #endif
 

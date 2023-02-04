@@ -18,6 +18,28 @@ News  <A href='news.html' target="_top" align=left><font  size=-2>[Remove Frame]
 <!--- TOPIC TITLE -->
 <p>
 <table width=100% cellpadding=0 cellspacing=2><tr><td width=100% valign=bottom id=HEADLINE><b>
+November 13 - FOX DEVELOPMENT 1.7.81
+<br><img src='art/line.gif' width=100% height=1></b></td></tr></table>
+<p>
+<!--- TOPIC TITLE -->
+<ul>
+<li>Using _InterlockedExchangeAdd64 and other FXAtomic issues (Windows).</li>
+<li>FXApp should never write FOX-wide settings; only per-app settings.  This rule was violated for a few types of settings.</li>
+<li>Horizontal and vertical scrollbar multi-line scrolling can now be individually controlled.</li>
+<li>Added a couple nice color themes in ControlPanal to choose from.</li>
+<li>Adie Syntax class API class leads to somewhat simpler code. Possibly faster.</li>
+<li>Tentative alias_cast() template may be used for shutting up GCC alias warnings.  This means type-punning
+related warnings are now properly suppressed.</li>
+<li>Additional math-functions added to FXExpression mathematical expression evaluator.</li>
+<li>Some internal branch-avoiding optimizations in FXRex, the regular expression matcher.</li>
+<li>Subtle off-by-one bug fix in fxprintf, when very small, denormalized floating point numbers were printed.</li>
+<li>Added orthogonal() API for 3D vector classes: it returns vector orthogonal to given vector.</li>
+<li>More forgiving and simpler implementation of quaternion arc() implementation.</li>
+</ul>
+
+<!--- TOPIC TITLE -->
+<p>
+<table width=100% cellpadding=0 cellspacing=2><tr><td width=100% valign=bottom id=HEADLINE><b>
 October 10 - FOX DEVELOPMENT 1.7.80
 <br><img src='art/line.gif' width=100% height=1></b></td></tr></table>
 <p>

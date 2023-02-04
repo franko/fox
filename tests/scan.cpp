@@ -168,7 +168,8 @@ int main(int,char*[]){
   FXint    res;
   FXint    ia,ib,ic;
   FXdouble da,db,dc;
-  FXchar   buf[1000];
+  FXchar   str[1000];
+  FXchar   buf[2000];
 /*
 
 //  const FXchar* string="0x1.ac53a7df93d691111p+66";
@@ -221,7 +222,7 @@ __snprintf(buf,sizeof(buf),"format=\"%s\" input=%s  res=%d  num=%.18lg = 0x%016l
     for(y=0; y<ARRAYNUMBER(intnumbers3); y++){
       ia=ib=ic=0;
       res=__sscanf(intnumbers3[y],intformat3[x],&ia,&ib,&ic);
-      snprintf(buf,sizeof(buf),"format=\"%s\" input=%-40s res=%d a=%d b=%d c=%d\n",intformat3[x],intnumbers3[y],res,ia,ib,ic);
+      snprintf(buf,sizeof(buf),"format=\"%s\" input=%-40s res=%d a=%d b=%d c=%d",intformat3[x],intnumbers3[y],res,ia,ib,ic);
       fprintf(stdout,"%s\n",buf);
       }
     }
@@ -232,7 +233,7 @@ __snprintf(buf,sizeof(buf),"format=\"%s\" input=%s  res=%d  num=%.18lg = 0x%016l
     for(y=0; y<ARRAYNUMBER(floatnumbers3); y++){
       da=db=dc=0;
       res=__sscanf(floatnumbers3[y],floatformat3[x],&da,&db,&dc);
-      snprintf(buf,sizeof(buf),"format=\"%s\" input=%-40s res=%d a=%.18lg b=%.18lg c=%.18lg\n",floatformat3[x],floatnumbers3[y],res,da,db,dc);
+      snprintf(buf,sizeof(buf),"format=\"%s\" input=%-40s res=%d a=%.18lg b=%.18lg c=%.18lg",floatformat3[x],floatnumbers3[y],res,da,db,dc);
       fprintf(stdout,"%s\n",buf);
       }
     }
@@ -241,9 +242,9 @@ __snprintf(buf,sizeof(buf),"format=\"%s\" input=%s  res=%d  num=%.18lg = 0x%016l
   // Reading strings
   for(x=0; x<ARRAYNUMBER(stringformat); x++){
     for(y=0; y<ARRAYNUMBER(stringinputs); y++){
-      memset(buf,0,sizeof(buf));
-      res=__sscanf(stringinputs[y],stringformat[x],buf);
-      snprintf(buf,sizeof(buf),"format=\"%s\" input=%-40s res=%d str=%s\n",stringformat[x],stringinputs[y],res,buf);
+      memset(str,0,sizeof(str));
+      res=__sscanf(stringinputs[y],stringformat[x],str);
+      snprintf(buf,sizeof(buf),"format=\"%s\" input=%-40s res=%d str=%s",stringformat[x],stringinputs[y],res,str);
       fprintf(stdout,"%s\n",buf);
       }
     }

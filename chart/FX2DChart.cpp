@@ -95,21 +95,22 @@ void FX2DChart::detach(){
 
 // Draw contents of chart
 void FX2DChart::drawSelf(FXDC& dc) const {
-  FXint plotleft,plotright,plottop,plotbottom,capx,capy,capw,caph,caps,ss;
+  FXint plotleft=dc.getClipX()+marginleft;
+  FXint plottop=dc.getClipY()+margintop;
+  FXint plotright=dc.getClipX()+dc.getClipWidth()-marginright-1;
+  FXint plotbottom=dc.getClipY()+dc.getClipHeight()-marginbottom-1;
 
   // Draw chart background
   drawRectangle(dc,backstyle,dc.getClipX(),dc.getClipY(),dc.getClipWidth(),dc.getClipHeight());
 
-  // Account for margins
-  plotleft=dc.getClipX()+marginleft;
-  plottop=dc.getClipY()+margintop;
-  plotright=dc.getClipX()+dc.getClipWidth()-marginright-1;
-  plotbottom=dc.getClipY()+dc.getClipHeight()-marginbottom-1;
-
-  caps=TEXT_ATTACH_CENTER|TEXT_JUSTIFY_CENTER;
-
   // Space left after margins?
   if(plotleft<plotright && plottop<plotbottom){
+    FXint caps=TEXT_ATTACH_CENTER|TEXT_JUSTIFY_CENTER;
+    FXint capx=0;
+    FXint capy=0;
+    FXint capw=0;
+    FXint caph=0;
+    FXint ss;
 
     // Account for caption
     if(options&CAPTION_SHOWN){

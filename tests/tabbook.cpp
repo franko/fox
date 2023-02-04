@@ -234,7 +234,7 @@ long TabBookWindow::onCmdHideShow(FXObject*,FXSelector,void*){
 
 // Active panel switched
 long TabBookWindow::onCmdPanel(FXObject*,FXSelector,void* ptr){
-  FXTRACE((1,"Panel = %d\n",(FXint)(FXival)ptr));
+  fxmessage("Panel = %d\n",(FXint)(FXival)ptr);
   return 1;
   }
 

@@ -63,6 +63,36 @@ FXVec3d normalize(const FXVec3d& v){
   }
 
 
+// Return vector orthogonal to v
+FXVec3d orthogonal(const FXVec3d& v){
+  FXVec3d result(0.0,0.0,0.0);
+  FXdouble x=Math::fabs(v.x);
+  FXdouble y=Math::fabs(v.y);
+  FXdouble z=Math::fabs(v.z);
+  if(x<y){
+    if(x<z){            // Y,Z largest
+      result.y= v.z;    // v x X
+      result.z=-v.y;
+      }
+    else{               // Y, X largest
+      result.x= v.y;    // v x Z
+      result.y=-v.x;
+      }
+    }
+  else{
+    if(y<z){            // X, Z largest
+      result.x=-v.z;    // v x Y
+      result.z= v.x;
+      }
+    else{               // X, Y largest
+      result.x= v.y;    // v x Z
+      result.y=-v.x;
+      }
+    }
+  return result;
+  }
+
+
 // Compute normal from three points a,b,c
 FXVec3d normal(const FXVec3d& a,const FXVec3d& b,const FXVec3d& c){
   return normalize((b-a)^(c-a));

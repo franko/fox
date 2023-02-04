@@ -2199,25 +2199,32 @@ FXint FXString::comparenaturalcase(const FXString& s1,const FXString& s2){
 
 /*******************************************************************************/
 
-// Check if the string should be escaped
+// Strings may have to be escaped in case any of the following is true:
+//
+//   1) There are leading or trailing spaces or tabs;
+//   2) The string contains control characters;
+//   3) The escape character (\) is encountered;
+//   4) The opening and/or closing quote is encountered;
+//   5) A bad unicode character is encountered;
+//   6) Flag says all unicode should be escaped.
+//
 FXbool FXString::shouldEscape(const FXchar* str,FXint num,FXchar lquote,FXchar rquote,FXint flag){
   const FXchar* end=str+num;
   if(str<end){
     FXuchar c;
-    if((c=str[0])<=0x20) return true;
-    if((c=end[-1])<=0x20) return true;
+    if((c=str[0])<=' ') return true;
+    if((c=end[-1])<=' ') return true;
     do{
       c=*str++;
-      if(0x80<=c){
-        if(flag) return true;
-        if(0xF8<=c) return true;
-        continue;
-        }
-      if(c<=0x1F) return true;
-      if(c==0x7F) return true;
+      if(c<' ') return true;
       if(c=='\\') return true;
       if(c==lquote) return true;
       if(c==rquote) return true;
+      if(0x7F<=c){
+        if(0x7F==c) return true;
+        if(0xF8<=c) return true;
+        if(flag) return true;
+        }
       }
     while(str<end);
     }

@@ -27,13 +27,13 @@
 class FXTextCommand : public FXCommand {
   FXDECLARE_ABSTRACT(FXTextCommand)
 protected:
-  FXText *text;     // Text widget
-  FXchar *buffer;   // Character buffer
-  FXint   pos;      // Character position
-  FXint   ndel;     // Deleted characters
-  FXint   nins;     // Inserted characters
+  FXText  *text;        // Text widget
+  FXString buffer;      // Character buffer
+  FXint    pos;         // Character position
+  FXint    ndel;        // Deleted characters
+  FXint    nins;        // Inserted characters
 public:
-  FXTextCommand(FXText* txt,FXint p,FXint nd,FXint ni):text(txt),buffer(nullptr),pos(p),ndel(nd),nins(ni){}
+  FXTextCommand(FXText* txt,FXint p,FXint nd,FXint ni);
   virtual FXuint size() const;
   virtual ~FXTextCommand();
   };

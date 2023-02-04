@@ -266,7 +266,7 @@ TableWindow::~TableWindow(){
 long TableWindow::onCmdTest(FXObject*,FXSelector,void*){
   FXint cr=table->getCurrentRow();
   FXint cc=table->getCurrentColumn();
-  table->setSpanningRange(cr,cc,FXMAX(cr-1,0),FXMIN(cr+1,table->getNumRows()),FXMAX(cc-1,0),FXMIN(cc+1,table->getNumColumns()-1));
+  table->setSpanningRange(cr,cc,Math::imax(cr-1,0),Math::imin(cr+1,table->getNumRows()),Math::imax(cc-1,0),Math::imin(cc+1,table->getNumColumns()-1));
   return 1;
   }
 

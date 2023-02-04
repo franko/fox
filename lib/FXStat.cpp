@@ -529,21 +529,17 @@ FXbool FXStat::mode(const FXString& file,FXuint perm){
 
 // Return true if file exists
 FXbool FXStat::exists(const FXString& file){
-  FXTRACE((100,"FXStat::exists(\"%s\"\n",file.text()));
   if(!file.empty()){
 #ifdef WIN32
 #ifdef UNICODE
     FXnchar unifile[MAXPATHLEN];
     utf2ncs(unifile,file.text(),MAXPATHLEN);
-    FXTRACE((100,"FXStat::exists: %d\n",(::GetFileAttributesW(unifile)!=INVALID_FILE_ATTRIBUTES)));
     return ::GetFileAttributesW(unifile)!=INVALID_FILE_ATTRIBUTES;
 #else
-    FXTRACE((100,"FXStat::exists: %d\n",(::GetFileAttributesA(file.text())!=INVALID_FILE_ATTRIBUTES)));
     return ::GetFileAttributesA(file.text())!=INVALID_FILE_ATTRIBUTES;
 #endif
 #else
     struct stat status;
-    FXTRACE((100,"FXStat::exists: %d\n",(::stat(file.text(),&status)==0)));
     return ::stat(file.text(),&status)==0;
 #endif
     }
@@ -700,11 +696,11 @@ FXTime FXStat::created(const FXString& file){
   return data.created();
   }
 
+#ifdef WIN32
 
 // Change time when file was last created
 FXbool FXStat::created(const FXString& file,FXTime ns){
   if(!file.empty()){
-#ifdef WIN32
 #ifdef UNICODE
     FXnchar unifile[MAXPATHLEN];
     utf2ncs(unifile,file.text(),MAXPATHLEN);
@@ -721,12 +717,18 @@ FXbool FXStat::created(const FXString& file,FXTime ns){
         }
       CloseHandle(hnd);
       }
-#else
-    return false;               // Not available on *NIX
-#endif
     }
   return false;
   }
+
+#else
+
+// Change time when file was last created
+FXbool FXStat::created(const FXString&,FXTime){
+  return false;
+  }
+
+#endif
 
 
 // Return true if file is hidden

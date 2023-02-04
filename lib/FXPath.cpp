@@ -2107,15 +2107,18 @@ FXString FXPath::relativize(const FXString& pathlist,const FXString& file){
 
 #if defined(WIN32)
 
+
 // Check if file has executable extension
 FXbool FXPath::hasExecExtension(const FXString& file){
   if(!file.empty()){
     FXString pathext(FXSystem::getExecExtensions());
-    FXint beg=0,end;
+    FXint beg=0;
+    FXint end=0;
     do{
-      end=beg;
-      while(end<pathext.length() && pathext[end]!=PATHLISTSEP) end++;
-      if(0<=(file.length()-end+beg) && FXString::comparecase(&file[file.length()-end+beg],&pathext[beg],end-beg)==0) return true;
+      for(end=beg; end<pathext.length() && pathext[end]!=PATHLISTSEP; end++){ }
+      if((end-beg)<=file.length()){
+        if(FXString::comparecase(&file[file.length()-(end-beg)],&pathext[beg],(end-beg))==0) return true;
+        }
       beg=end+1;
       }
     while(end<pathext.length());

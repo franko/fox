@@ -194,6 +194,9 @@ extern FXAPI FXVec3f normal(const FXVec3f& a,const FXVec3f& b,const FXVec3f& c,c
 /// Normalize vector
 extern FXAPI FXVec3f normalize(const FXVec3f& v);
 
+/// Return vector orthogonal to v
+extern FXAPI FXVec3f orthogonal(const FXVec3f& v);
+
 /// Rotate vector vec by unit-length axis about angle specified as (ca,sa)
 extern FXAPI FXVec3f rotate(const FXVec3f& vec,const FXVec3f& axis,FXfloat ca,FXfloat sa);
 

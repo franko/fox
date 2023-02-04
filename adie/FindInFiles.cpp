@@ -434,7 +434,7 @@ void FindInFiles::setPatternList(const FXString& patterns){
   filefilter->clearItems();
   filefilter->fillItems(patterns);
   if(!filefilter->getNumItems()) filefilter->appendItem(tr("All Files (*)"));
-  filefilter->setNumVisible(FXMIN(filefilter->getNumItems(),12));
+  filefilter->setNumVisible(Math::imin(filefilter->getNumItems(),12));
   setCurrentPattern(0);
   }
 
