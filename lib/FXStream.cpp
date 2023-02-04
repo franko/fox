@@ -848,7 +848,8 @@ FXStream& FXStream::loadObject(FXObject*& v){
   if(code==FXStreamOK){
     FXchar name[MAXCLASSNAME+1];
     const FXMetaClass *cls;
-    FXuint tag,esc;
+    FXuint tag=0;
+    FXuint esc=0;
     void* ref;
     *this >> tag;
     if(tag==0){                                 // Was a NULL

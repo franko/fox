@@ -124,7 +124,7 @@ protected:
   FXint forwardByContext(FXint pos) const;
   void restyleText();
   void restyleText(FXint pos,FXint del,FXint ins);
-  FXint restyleRange(FXint beg,FXint end,FXint& head,FXint& tail,FXint rule);
+  FXint restyleRange(FXint beg,FXint end,FXint& changed,FXint rule);
   FXHiliteStyle readStyleForRule(const FXString& group,const FXString& name,const FXString& style);
   void writeStyleForRule(const FXString& group,const FXString& name,const FXHiliteStyle& style);
   FXbool matchesSelection(const FXString& string,FXint* beg,FXint* end,FXuint flgs,FXint npar) const;

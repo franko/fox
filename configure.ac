@@ -1,7 +1,7 @@
 # Version of the code
 m4_define([fox_major], [1])
 m4_define([fox_minor], [7])
-m4_define([fox_level], [80])
+m4_define([fox_level], [81])
 m4_define([fox_version],[fox_major.fox_minor.fox_level])
 
 # Init
@@ -122,7 +122,7 @@ AC_CHECK_FUNCS(inotify_init1)
 
 # Add copious amounts of debugging with gcc
 if test "${GXX}" = "yes" ; then
-  CXXFLAGS="${CXXFLAGS} -Wall -Wextra -Woverloaded-virtual -Wshadow -Wstrict-overflow -Wstrict-aliasing -Wcast-qual -Wcast-align -Wdouble-promotion -Wimplicit-fallthrough=0"
+  CXXFLAGS="${CXXFLAGS} -Wall -Wextra -Woverloaded-virtual -Wshadow -Wstrict-overflow -Wstrict-aliasing -Wdouble-promotion -Wno-implicit-fallthrough"
 #  LDFLAGS="-rdynamic ${LDFLAGS}"
 fi
 
@@ -245,6 +245,12 @@ AC_CHECK_HEADERS(bzlib.h,CXXFLAGS="${CXXFLAGS} -DHAVE_BZ2LIB_H=1")
 AC_CHECK_LIB(bz2,BZ2_bzCompress,LIBS="${LIBS} ${LIBBZ2:=-lbz2}")
 fi
 
+# Check for cups library
+AC_ARG_ENABLE(cups,[  --disable-cups        compile without CUPS support])
+if test "x$enable_cups" != "xno"; then
+AC_CHECK_HEADERS(cups/cups.h,CXXFLAGS="${CXXFLAGS} -DHAVE_CUPS_H=1")
+AC_CHECK_LIB(cups,cupsGetDests,LIBS="${LIBS} ${LIBCUPS:=-lcups}")
+fi
 
 dnl Check for XShm support
 AC_ARG_WITH(xshm,[  --with-xshm             compile with XShm support])

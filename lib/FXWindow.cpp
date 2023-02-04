@@ -2846,21 +2846,21 @@ FXbool FXWindow::getDNDData(FXDNDOrigin origin,FXDragType targettype,FXuchar*& p
 
 // Get dropped string; called in response to DND enter or DND drop
 FXbool FXWindow::getDNDData(FXDNDOrigin origin,FXDragType targettype,FXString& string) const {
-  FXchar *ptr; FXuint size;
+  FXuchar *ptr; FXuint size;
   string=FXString::null;
-  if(getDNDData(origin,targettype,reinterpret_cast<FXuchar*&>(ptr),size)){
+  if(getDNDData(origin,targettype,ptr,size)){
     if(targettype==utf16Type){                                  // UTF16
       FXUTF16LECodec unicode;
-      string.length(unicode.mb2utflen(ptr,size));
-      unicode.mb2utf(string.text(),string.length(),ptr,size);
+      string.length(unicode.mb2utflen((FXchar*)ptr,size));
+      unicode.mb2utf(string.text(),string.length(),(FXchar*)ptr,size);
       }
     else if(targettype==textType || targettype==stringType){    // ASCII
       FX88591Codec ascii;
-      string.length(ascii.mb2utflen(ptr,size));
-      ascii.mb2utf(string.text(),string.length(),ptr,size);
+      string.length(ascii.mb2utflen((FXchar*)ptr,size));
+      ascii.mb2utf(string.text(),string.length(),(FXchar*)ptr,size);
       }
     else{                                                       // AS-IS
-      string.assign(ptr,size);
+      string.assign((FXchar*)ptr,size);
       }
     freeElms(ptr);
     return true;
@@ -2889,36 +2889,32 @@ FXbool FXWindow::setDNDData(FXDNDOrigin origin,FXDragType targettype,FXuchar* pt
 
 // Set drop data; data array will be deleted by the system automatically!
 FXbool FXWindow::setDNDData(FXDNDOrigin origin,FXDragType targettype,const FXString& string) const {
-  FXchar* ptr; FXuint size;
+  FXuchar* ptr; FXuint size;
   if(targettype==utf16Type){                                    // UTF16
     FXUTF16LECodec unicode;
     size=unicode.utf2mblen(string.text(),string.length());
     if(callocElms(ptr,size+2)){
-      unicode.utf2mb(ptr,size,string.text(),string.length());
-      return setDNDData(origin,targettype,reinterpret_cast<FXuchar*>(ptr),size);
-//      return setDNDData(origin,targettype,reinterpret_cast<FXuchar*>(ptr),size+2);
+      unicode.utf2mb((FXchar*)ptr,size,string.text(),string.length());
+      return setDNDData(origin,targettype,ptr,size);
       }
     }
   else if(targettype==textType || targettype==stringType){      // ASCII
     FX88591Codec ascii;
     size=ascii.utf2mblen(string.text(),string.length());
     if(callocElms(ptr,size+2)){
-      ascii.utf2mb(ptr,size,string.text(),string.length());
-      return setDNDData(origin,targettype,reinterpret_cast<FXuchar*>(ptr),size);
-//      return setDNDData(origin,targettype,reinterpret_cast<FXuchar*>(ptr),size+1);
+      ascii.utf2mb((FXchar*)ptr,size,string.text(),string.length());
+      return setDNDData(origin,targettype,ptr,size);
       }
     }
   else{                                                         // AS-IS
     size=string.length();
     if(callocElms(ptr,size+2)){
       memcpy(ptr,string.text(),string.length());
-      return setDNDData(origin,targettype,reinterpret_cast<FXuchar*>(ptr),size);
-//      return setDNDData(origin,targettype,reinterpret_cast<FXuchar*>(ptr),size);
+      return setDNDData(origin,targettype,ptr,size);
       }
     }
   return false;
   }
-
 
 // Inquire about types being dragged or available on the clipboard or selection
 FXbool FXWindow::inquireDNDTypes(FXDNDOrigin origin,FXDragType*& types,FXuint& numtypes) const {

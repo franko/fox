@@ -5683,156 +5683,131 @@ void FXApp::load(FXStream& store){
 // Change typing speed
 void FXApp::setTypingSpeed(FXTime speed){
   typingSpeed=speed;
-  registry.writeLongEntry("SETTINGS","typingspeed",typingSpeed);
   }
 
 // Change double-click speed
 void FXApp::setClickSpeed(FXTime speed){
   clickSpeed=speed;
-  registry.writeLongEntry("SETTINGS","clickspeed",clickSpeed);
   }
 
 // Change scroll speed
 void FXApp::setScrollSpeed(FXTime speed){
   scrollSpeed=speed;
-  registry.writeLongEntry("SETTINGS","scrollspeed",scrollSpeed);
   }
 
 // Change scroll delay
 void FXApp::setScrollDelay(FXTime delay){
   scrollDelay=delay;
-  registry.writeLongEntry("SETTINGS","scrolldelay",scrollDelay);
   }
 
 // Change cursor blink speed
 void FXApp::setBlinkSpeed(FXTime speed){
   blinkSpeed=speed;
-  registry.writeLongEntry("SETTINGS","blinkspeed",blinkSpeed);
   }
 
 // Change animation speed
 void FXApp::setAnimSpeed(FXTime speed){
   animSpeed=speed;
-  registry.writeLongEntry("SETTINGS","animspeed",animSpeed);
   }
 
 // Change menu popup delay
 void FXApp::setMenuPause(FXTime pause){
   menuPause=pause;
-  registry.writeLongEntry("SETTINGS","menupause",menuPause);
   }
 
 // Change tooltip popup pause
 void FXApp::setToolTipPause(FXTime pause){
   toolTipPause=pause;
-  registry.writeLongEntry("SETTINGS","tippause",toolTipPause);
   }
 
 // Change tooltip visibility time
 void FXApp::setToolTipTime(FXTime time){
   toolTipTime=time;
-  registry.writeLongEntry("SETTINGS","tiptime",toolTipTime);
   }
 
 
 // Change autohide delay time
 void FXApp::setAutoHideDelay(FXTime time){
   autoHideDelay=time;
-  registry.writeLongEntry("SETTINGS","autohide",autoHideDelay);
   }
 
 
 // Change drag delta
 void FXApp::setDragDelta(FXint delta){
   dragDelta=delta;
-  registry.writeIntEntry("SETTINGS","dragdelta",dragDelta);
   }
 
 // Change mouse wheel lines
 void FXApp::setWheelLines(FXint lines){
   wheelLines=lines;
-  registry.writeIntEntry("SETTINGS","wheellines",wheelLines);
   }
 
 // Change scroll bar size
 void FXApp::setScrollBarSize(FXint size){
   scrollBarSize=size;
-  registry.writeIntEntry("SETTINGS","scrollbarsize",scrollBarSize);
   }
 
 
 // Change border color
 void FXApp::setBorderColor(FXColor color){
   borderColor=color;
-  registry.writeColorEntry("SETTINGS","bordercolor",borderColor);
   }
 
 // Change base color
 void FXApp::setBaseColor(FXColor color){
   baseColor=color;
-  registry.writeColorEntry("SETTINGS","basecolor",baseColor);
   }
 
 // Change highlight color
 void FXApp::setHiliteColor(FXColor color){
   hiliteColor=color;
-  registry.writeColorEntry("SETTINGS","hilitecolor",hiliteColor);
   }
 
 // Change shadow color
 void FXApp::setShadowColor(FXColor color){
   shadowColor=color;
-  registry.writeColorEntry("SETTINGS","shadowcolor",shadowColor);
   }
 
 // Change background color
 void FXApp::setBackColor(FXColor color){
   backColor=color;
-  registry.writeColorEntry("SETTINGS","backcolor",backColor);
   }
 
 // Change foreground color
 void FXApp::setForeColor(FXColor color){
   foreColor=color;
-  registry.writeColorEntry("SETTINGS","forecolor",foreColor);
   }
 
 // Change selected foreground color
 void FXApp::setSelforeColor(FXColor color){
   selforeColor=color;
-  registry.writeColorEntry("SETTINGS","selforecolor",selforeColor);
   }
 
 // Change selected background color
 void FXApp::setSelbackColor(FXColor color){
   selbackColor=color;
-  registry.writeColorEntry("SETTINGS","selbackcolor",selbackColor);
   }
 
 // Change tip foreground color
 void FXApp::setTipforeColor(FXColor color){
   tipforeColor=color;
-  registry.writeColorEntry("SETTINGS","tipforecolor",tipforeColor);
   }
 
 // Change tip background color
 void FXApp::setTipbackColor(FXColor color){
   tipbackColor=color;
-  registry.writeColorEntry("SETTINGS","tipbackcolor",tipbackColor);
   }
 
 
 // Change selected menu text color
 void FXApp::setSelMenuTextColor(FXColor color){
   selMenuTextColor=color;
-  registry.writeColorEntry("SETTINGS","selmenutextcolor",selMenuTextColor);
   }
 
 
 // Change selected menu back color
 void FXApp::setSelMenuBackColor(FXColor color){
   selMenuBackColor=color;
-  registry.writeColorEntry("SETTINGS","selmenubackcolor",selMenuBackColor);
   }
 
 

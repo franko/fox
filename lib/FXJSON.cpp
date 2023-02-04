@@ -49,118 +49,136 @@
 
   - JSON5 syntax is very simple:
 
-      value     : object | array | string | number | boolean | empty
-                ;
+         value       : object | array | string | number | boolean | empty
+                     ;
 
-      object    : '{' '}'
-                | '{' members [ ',' ] '}'
-                ;
+         object      : '{' '}'
+                     | '{' members [ ',' ] '}'
+                     ;
 
-      members   : pair
-                | pair ',' members
-                ;
+         members     : pair
+                     | pair ',' members
+                     ;
 
-      pair      : name ':' value
-                ;
+         pair        : name ':' value
+                     ;
 
-      name      : string
-                | ident
-                ;
+         name        : string
+                     | ident
+                     ;
 
-      array     : '[' ']'
-                | '[' elements [ ',' ] ']'
-                ;
+         array       : '[' ']'
+                     | '[' elements [ ',' ] ']'
+                     ;
 
-      elements  : value
-                | value ',' elements
-                ;
+         elements    : value
+                     | value ',' elements
+                     ;
 
-      string    : '"' dq-chars '"'
-                | '\'' sq-chars '\''
-                ;
+         string      : '"' dq-chars '"'
+                     | '\'' sq-chars '\''
+                     ;
 
-      dq-chars  : dq-char [ dq-chars ]
-                ;
+         dq-chars    : dq-char
+                     | dq-char dq-chars
+                     | empty
+                     ;
 
-      sq-chars  : sq-char [ sq-chars ]
-                ;
+         sq-chars    : sq-char
+                     : char sq-chars
+                     | empty
+                     ;
 
-      dq-char   : any-character-except-double-quotes
-                | '\\"' | '\\\\' | '\\/' | '\\b' | '\\f' | '\\n' | '\\r' | '\\t'
-                | '\\x' hxdigit hxdigit
-                | '\\u' hxdigit hxdigit hxdigit hxdigit
-                | '\\' newline
-                ;
+         dq-char     : any-character-except-double-quotes
+                     | '\\"' | '\\\\' | '\\/' | '\\b' | '\\f' | '\\n' | '\\r' | '\\t'
+                     | '\\x' hxdigit hxdigit
+                     | '\\u' hxdigit hxdigit hxdigit hxdigit
+                     | '\\' octaldigits
+                     | '\\' newline
+                     ;
 
-      sq-char   : any-character-except-single-quotes
-                | '\\\'' | '\\\\' | '\\/' | '\\b' | '\\f' | '\\n' | '\\r' | '\\t'
-                | '\\x' hxdigit hxdigit
-                | '\\u' hxdigit hxdigit hxdigit hxdigit
-                | '\\' newline
-                ;
+         sq-char     : any-character-except-single-quotes
+                     | '\\\'' | '\\\\' | '\\/' | '\\b' | '\\f' | '\\n' | '\\r' | '\\t'
+                     | '\\x' hxdigit hxdigit
+                     | '\\u' hxdigit hxdigit hxdigit hxdigit
+                     | '\\' octaldigits
+                     | '\\' newline
+                     ;
 
-      newline   : '\n'
-                | '\r\n'
-                | '\r'
-                ;
+         newline     : '\n'
+                     | '\r\n'
+                     | '\r'
+                     ;
 
-      empty     : 'null'
-                ;
+         empty       : 'null'
+                     ;
 
-      boolean   : 'true'
-                | 'false'
-                ;
+         boolean     : 'true'
+                     | 'false'
+                     ;
 
-      ident     : alpha
-                | alpha alphanums
-                ;
+         ident       : alpha
+                     | alpha alphanums
+                     ;
 
-      alpha     : 'a'...'z' | 'A'...'Z' | '_' | '$'
-                | unicode-categories in { Lu, Ll, Lt, Lm, Lo, Nl }
-                ;
+         alpha       : 'a'...'z' | 'A'...'Z' | '_' | '$'
+                      | unicode-categories in { Lu, Ll, Lt, Lm, Lo, Nl }
+                     ;
 
-      alphanums : alphanum
-                | alphanum alphanums
-                ;
+         alphanums   : alphanum
+                     | alphanum alphanums
+                     ;
 
-      alphanum  : 'a'...'z' | 'A'...'Z' | '0'...'9'  | '_' | '$'
-                | unicode-categories in { Lu, Ll, Lt, Lm, Lo, Nl, Mn, Mc, Nd, Pc }
-                ;
+         alphanum    : 'a'...'z' | 'A'...'Z' | '0'...'9'  | '_' | '$'
+                     | unicode-categories in { Lu, Ll, Lt, Lm, Lo, Nl, Mn, Mc, Nd, Pc }
+                     ;
 
-      number    : [ '+' | '-' ] literal
-                ;
+         number      : [ '+' | '-' ] literal
+                     ;
 
-      literal   : decimal
-                | hex
-                | ('n' | 'N') ('a' | 'A') ('n' | 'N')
-                | ('i' | 'I') ('n' | 'N') ('f' | 'F')
-                | ('i' | 'I') ('n' | 'N') ('f' | 'F') ('i' | 'I') ('n' | 'N') ('i' | 'I') ('t' | 'T') ('y' | 'Y')
-                ;
+         literal     : decimal
+                     | hex
+                     | ('n' | 'N') ('a' | 'A') ('n' | 'N')
+                     | ('i' | 'I') ('n' | 'N') ('f' | 'F')
+                     | ('i' | 'I') ('n' | 'N') ('f' | 'F') ('i' | 'I') ('n' | 'N') ('i' | 'I') ('t' | 'T') ('y' | 'Y')
+                     ;
 
-      decimal   : digits
-                | digits '.' [ digits ] [ exponent ]
-                | '.' digits [ exponent ]
-                ;
+         decimal     : digits
+                     | fraction
+                     | fraction exponent
+                     ;
 
-      exponent  : ('e' | 'E') [ '+' | '-' ] digits
-                ;
+         fraction    : digits '.'
+                     | '.' digits
+                     | digits '.' digits
+                     ;
 
-      digits    : digit
-                | digit digits
-                ;
+         exponent    : ('e' | 'E') [ '+' | '-' ] digits
+                     ;
 
-      hex       : '0' ('x' | 'X') hexdigits
-                ;
+         hex         : '0' ('x' | 'X') hexdigits
+                     ;
 
-      hexdigits : hexdigit
-                | hexdigit hexdigits
-                ;
+         digits      : digit
+                     | digit digits
+                     ;
 
-      digit     : '0'...'9'
-                ;
+         octaldigits : octaldigit
+                     | octaldigit octaldigits
+                     ;
 
-      hexdigit  : '0'...'9' | 'a'...'f' | 'A'...'F'
-                ;
+         hexdigits   : hexdigit
+                     | hexdigit hexdigits
+                     ;
+
+         digit       : '0'...'9'
+                     ;
+
+         octaldigit  : '0'...'7'
+                     ;
+
+         hexdigit    : '0'...'9' | 'a'...'f' | 'A'...'F'
+                     ;
 
   - Our version accepts 'Inf' in lieu of 'Infinity' for infinite float values; also, it
     relaxes capitalization; this is for compatibility with various C-libraries

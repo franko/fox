@@ -24,6 +24,7 @@ static void printusage(){
   fxmessage("Usage: rex [options] pat [string]\n");
   fxmessage("  options:\n");
   fxmessage("  -?, -h, --help                      Print help.\n");
+  fxmessage("  -tracetopics <topics>               Enable trace topics.\n");
   fxmessage("  -c, --capture                       Capturing parentheses.\n");
   fxmessage("  -i, --ignore-case                   Case-insensitive.\n");
   fxmessage("  -n, --not-empty                     Match should be non-empty.\n");
@@ -47,8 +48,6 @@ int main(int argc,char** argv){
   FXint arg=1;
   FXRex rex;
   FXRex::Error err;
-
-  setTraceLevel(100);
 
   // Parse options
   while(arg<argc && argv[arg][0]=='-'){

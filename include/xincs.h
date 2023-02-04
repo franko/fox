@@ -86,6 +86,7 @@
 #ifndef __CYGWIN__
 #include <winsock2.h>
 #endif
+#include "winnt.h"
 #include <commctrl.h>           // For _TrackMouseEvent
 #include <shellapi.h>
 #include <imm.h>                // IME

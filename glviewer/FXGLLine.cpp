@@ -48,9 +48,9 @@ FXGLLine::FXGLLine(FXfloat fx,FXfloat fy,FXfloat fz,FXfloat tx,FXfloat ty,FXfloa
 
 // Get bounding box
 void FXGLLine::bounds(FXRangef& box){
-  FXMINMAX(box.lower.x,box.upper.x,fm.pos.x,to.pos.x);
-  FXMINMAX(box.lower.y,box.upper.y,fm.pos.y,to.pos.y);
-  FXMINMAX(box.lower.z,box.upper.z,fm.pos.z,to.pos.z);
+  box.lower.x=Math::fmin(fm.pos.x,to.pos.x); box.upper.x=Math::fmax(fm.pos.x,to.pos.x);
+  box.lower.y=Math::fmin(fm.pos.y,to.pos.y); box.upper.y=Math::fmax(fm.pos.y,to.pos.y);
+  box.lower.z=Math::fmin(fm.pos.z,to.pos.z); box.upper.z=Math::fmax(fm.pos.z,to.pos.z);
   }
 
 

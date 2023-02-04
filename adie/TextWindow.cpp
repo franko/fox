@@ -1296,7 +1296,7 @@ void TextWindow::readRegistry(){
   FXColor dirback,dirfore,dirselback,dirselfore,dirlines;
   FXbool hiddenfiles,showactive,showmatch,hidetree;
   FXbool hideclock,hidestatus,hideundo,hidetoolbar;
-  FXint ww,hh,xx,yy,modebits,treewidth,loggerheight;
+  FXint ww,hh,xx,yy,modebits,treewidth,loggerheight,wheellines;
   FXString fontspec;
 
   // Text colors
@@ -1320,6 +1320,9 @@ void TextWindow::readRegistry(){
 
   // Delimiters
   delimiters=getApp()->reg().readStringEntry("SETTINGS","delimiters","~.,/\\`'!@#$%^&*()-=+{}|[]\":;<>?");
+
+  // Read mouse wheel lines
+  wheellines=getApp()->reg().readIntEntry("SETTINGS","wheellines",10);
 
   // Font
   fontspec=getApp()->reg().readStringEntry("SETTINGS","textfont","");
@@ -1440,6 +1443,12 @@ void TextWindow::readRegistry(){
   // Change delimiters
   editor->setDelimiters(delimiters.text());
 
+  // Set vertical wheel lines
+  editor->verticalScrollBar()->setWheelLines(wheellines);
+
+  // Set horizontal wheel lines
+  editor->horizontalScrollBar()->setWheelLines(40);
+
   // Hide tree if asked for
   if(hidetree) treebox->hide();
 
@@ -1510,6 +1519,9 @@ void TextWindow::writeRegistry(){
 
   // Delimiters
   getApp()->reg().writeStringEntry("SETTINGS","delimiters",delimiters.text());
+
+  // Wheel lines
+  getApp()->reg().writeIntEntry("SETTINGS","wheellines",editor->verticalScrollBar()->getWheelLines());
 
   // Write new window size back to registry
   getApp()->reg().writeIntEntry("SETTINGS","x",getX());
@@ -2644,16 +2656,16 @@ long TextWindow::onUpdNumRows(FXObject* sender,FXSelector,void*){
 
 // Set scroll wheel lines (Mathew Robertson <mathew@optushome.com.au>)
 long TextWindow::onCmdWheelAdjust(FXObject* sender,FXSelector,void*){
-  FXuint value;
+  FXint value;
   sender->handle(this,FXSEL(SEL_COMMAND,ID_GETINTVALUE),(void*)&value);
-  getApp()->setWheelLines(value);
+  editor->verticalScrollBar()->setWheelLines(value);
   return 1;
   }
 
 
 // Update scroll wheel lines
 long TextWindow::onUpdWheelAdjust(FXObject* sender,FXSelector,void*){
-  FXuint value=getApp()->getWheelLines();
+  FXint value=editor->verticalScrollBar()->getWheelLines();
   sender->handle(this,FXSEL(SEL_COMMAND,ID_SETINTVALUE),(void*)&value);
   return 1;
   }
@@ -4646,15 +4658,13 @@ void TextWindow::writeStyleForRule(const FXString& group,const FXString& name,co
 
 // Restyle entire text
 void TextWindow::restyleText(){
+  FXint len=editor->getLength();
   if(colorize && syntax){
-    FXint length=editor->getLength();
-    FXchar *text;
-    if(allocElms(text,length+length)){
-      FXint head,tail;
-      editor->extractText(text,0,length);
-      syntax->getRule(0)->stylize(text,text+length,length,0,head,tail);
-      editor->changeStyle(0,text+length,length);
-      freeElms(text);
+    FXString text;
+    if(text.length(len+len)){
+      editor->extractText(&text[0],0,len);
+      syntax->getRule(0)->stylize(&text[0],&text[len],0,len);
+      editor->changeStyle(0,&text[len],len);
       }
     }
   }
@@ -4672,7 +4682,7 @@ FXint TextWindow::backwardByContext(FXint pos) const {
   if(0<nlines){
     r2=editor->prevLine(pos,nlines);
     }
-  return FXMAX(0,FXMIN(r1,r2));
+  return Math::imax(0,Math::imin(r1,r2));
   }
 
 
@@ -4688,7 +4698,7 @@ FXint TextWindow::forwardByContext(FXint pos) const {
   if(0<nlines){
     r2=editor->nextLine(pos,nlines);
     }
-  return FXMIN(editor->getLength(),FXMAX(r1,r2));
+  return Math::imin(editor->getLength(),Math::imax(r1,r2));
   }
 
 
@@ -4729,19 +4739,19 @@ FXint TextWindow::findRestylePoint(FXint pos,FXint& style) const {
     // Style change?
     if(runstyle!=s){
 
-      // At beginning of child-pattern, return parent style
+      // Begin of child-pattern, return parent style
       if(syntax->isAncestor(s,runstyle)){
         style=s;
         return probepos;
         }
 
-      // Before end of child-pattern, return running style
+      // End of child-pattern, return running style
       if(syntax->isAncestor(runstyle,s)){
         style=runstyle;
         return probepos;
         }
 
-      // Set common ancestor style
+      // Return common ancestor style
       style=syntax->commonAncestor(runstyle,s);
       return probepos;
       }
@@ -4761,28 +4771,20 @@ FXint TextWindow::findRestylePoint(FXint pos,FXint& style) const {
 
 // Restyle range; returns affected style end, i.e. one beyond
 // the last position where the style changed from the original style
-FXint TextWindow::restyleRange(FXint beg,FXint end,FXint& head,FXint& tail,FXint rule){
-  FXint length=end-beg;
-  FXint delta=0;
-  FXchar *text;
-  head=0;
-  tail=0;
-  FXASSERT(0<=rule && rule<syntax->getNumRules());
+FXint TextWindow::restyleRange(FXint beg,FXint end,FXint& changed,FXint rule){
+  FXint len=end-beg,pos=0,chg=0;
+  FXString text;
   FXASSERT(0<=beg && beg<=end && end<=editor->getLength());
-  if(allocElms(text,length+length+length)){
-    FXchar *oldstyle=text+length;
-    FXchar *newstyle=oldstyle+length;
-    editor->extractText(text,beg,length);
-    editor->extractStyle(oldstyle,beg,length);
-    syntax->getRule(rule)->stylizeBody(text,newstyle,length,0,head,tail);
-    editor->changeStyle(beg,newstyle,tail);
-    for(delta=tail; 0<delta && oldstyle[delta-1]==newstyle[delta-1]; --delta){ }
-    freeElms(text);
+  if(text.length(len+len+len)){
+    FXASSERT(0<=rule && rule<syntax->getNumRules());
+    editor->extractText(&text[0],beg,len);
+    editor->extractStyle(&text[len],beg,len);
+    pos=chg=syntax->getRule(rule)->stylizeBody(&text[0],&text[len+len],0,len);
+    while(0<chg && text[len+chg-1]==text[len+len+chg-1]){ --chg; }
+    editor->changeStyle(beg,&text[len+len],chg);
     }
-  head+=beg;
-  tail+=beg;
-  delta+=beg;
-  return delta;
+  changed=beg+chg;
+  return beg+pos;
   }
 
 
@@ -4790,7 +4792,7 @@ FXint TextWindow::restyleRange(FXint beg,FXint end,FXint& head,FXint& tail,FXint
 void TextWindow::restyleText(FXint pos,FXint del,FXint ins){
   FXTRACE((100,"restyleText(pos=%d,del=%d,ins=%d)\n",pos,del,ins));
   if(colorize && syntax){
-    FXint head,tail,changed,affected,beg,end,len,rule,restylejump;
+    FXint tail,changed,affected,beg,end,len,rule,restylejump;
 
     // Length of text
     len=editor->getLength();
@@ -4813,15 +4815,16 @@ void TextWindow::restyleText(FXint pos,FXint del,FXint ins){
     restylejump=RESTYLEJUMP;
     while(1){
 
-      // Restyle [beg,end> using rule, return matched range in [head,tail>
-      affected=restyleRange(beg,end,head,tail,rule);
+      // Restyle [beg,end> using rule, return the end of matched range
+      // and the range of affected characters where style was changed
+      tail=restyleRange(beg,end,affected,rule);
 
-      FXTRACE((110,"affected=%d beg=%d end=%d head=%d tail=%d, rule=%d (%s) \n",affected,beg,end,head,tail,rule,syntax->getRule(rule)->getName().text()));
+      FXTRACE((110,"affected=%d beg=%d end=%d tail=%d, rule=%d (%s)\n",affected,beg,end,tail,rule,syntax->getRule(rule)->getName().text()));
 
-      // Not all colored yet, continue coloring with parent rule from
+      // Not all colored yet, continue coloring with parent rule from tail
       if(tail<end){
         beg=tail;
-        end=forwardByContext(FXMAX(affected,changed));
+        end=forwardByContext(Math::imax(affected,changed));
         if(rule==0){ fxwarning("Top level patterns did not color everything.\n"); return; }
         rule=syntax->getRule(rule)->getParent();
         continue;

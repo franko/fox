@@ -77,10 +77,10 @@ public:
   Rule* getRule(FXival inx) const { return rules[inx]; }
 
   // Stylize text
-  virtual FXbool stylize(const FXchar* text,FXchar* textstyle,FXint len,FXint pos,FXint& head,FXint& tail) const;
+  virtual FXint stylize(const FXchar* text,FXchar* textstyle,FXint pos,FXint len) const;
 
   // Stylize body, i.e. after begin pattern has been seen
-  virtual FXbool stylizeBody(const FXchar* text,FXchar* textstyle,FXint len,FXint pos,FXint& head,FXint& tail) const;
+  virtual FXint stylizeBody(const FXchar* text,FXchar* textstyle,FXint pos,FXint len) const;
 
   // Destructor
   virtual ~Rule();
@@ -100,10 +100,10 @@ public:
   DefaultRule(const FXString& nam,const FXString& sty,FXival par,FXival idx);
 
   // Stylize text
-  virtual FXbool stylize(const FXchar* text,FXchar *textstyle,FXint len,FXint pos,FXint& head,FXint& tail) const;
+  virtual FXint stylize(const FXchar* text,FXchar *textstyle,FXint pos,FXint len) const;
 
   // Stylize body, i.e. after begin pattern has been seen
-  virtual FXbool stylizeBody(const FXchar* text,FXchar* textstyle,FXint len,FXint pos,FXint& head,FXint& tail) const;
+  virtual FXint stylizeBody(const FXchar* text,FXchar* textstyle,FXint pos,FXint len) const;
 
   // Destructor
   virtual ~DefaultRule();
@@ -125,10 +125,10 @@ public:
   SimpleRule(const FXString& nam,const FXString& sty,const FXString& rex,FXival par,FXival idx);
 
   // Stylize text
-  virtual FXbool stylize(const FXchar* text,FXchar *textstyle,FXint len,FXint pos,FXint& head,FXint& tail) const;
+  virtual FXint stylize(const FXchar* text,FXchar *textstyle,FXint pos,FXint len) const;
 
   // Stylize body, i.e. after begin pattern has been seen
-  virtual FXbool stylizeBody(const FXchar* text,FXchar* textstyle,FXint len,FXint pos,FXint& head,FXint& tail) const;
+  virtual FXint stylizeBody(const FXchar* text,FXchar* textstyle,FXint pos,FXint len) const;
 
   // Destructor
   virtual ~SimpleRule();
@@ -151,10 +151,10 @@ public:
   BracketRule(const FXString& nam,const FXString& sty,const FXString& brex,const FXString& erex,FXival par,FXival idx);
 
   // Stylize text
-  virtual FXbool stylize(const FXchar* text,FXchar *textstyle,FXint len,FXint pos,FXint& head,FXint& tail) const;
+  virtual FXint stylize(const FXchar* text,FXchar *textstyle,FXint pos,FXint len) const;
 
   // Stylize body, i.e. after begin pattern has been seen
-  virtual FXbool stylizeBody(const FXchar* text,FXchar* textstyle,FXint len,FXint pos,FXint& head,FXint& tail) const;
+  virtual FXint stylizeBody(const FXchar* text,FXchar* textstyle,FXint pos,FXint len) const;
 
   // Destructor
   virtual ~BracketRule();
@@ -176,10 +176,10 @@ public:
   SafeBracketRule(const FXString& nam,const FXString& sty,const FXString& brex,const FXString& erex,const FXString& srex,FXival par,FXival idx);
 
   // Stylize text
-  virtual FXbool stylize(const FXchar* text,FXchar *textstyle,FXint len,FXint pos,FXint& head,FXint& tail) const;
+  virtual FXint stylize(const FXchar* text,FXchar *textstyle,FXint pos,FXint len) const;
 
   // Stylize body, i.e. after begin pattern has been seen
-  virtual FXbool stylizeBody(const FXchar* text,FXchar* textstyle,FXint len,FXint pos,FXint& head,FXint& tail) const;
+  virtual FXint stylizeBody(const FXchar* text,FXchar* textstyle,FXint pos,FXint len) const;
 
   // Destructor
   virtual ~SafeBracketRule();
@@ -201,15 +201,41 @@ public:
   SpanRule(const FXString& nam,const FXString& sty,const FXString& rex,FXival par,FXival idx);
 
   // Stylize text
-  virtual FXbool stylize(const FXchar* text,FXchar *textstyle,FXint len,FXint pos,FXint& head,FXint& tail) const;
+  virtual FXint stylize(const FXchar* text,FXchar *textstyle,FXint pos,FXint len) const;
 
   // Stylize body, i.e. after begin pattern has been seen
-  virtual FXbool stylizeBody(const FXchar* text,FXchar* textstyle,FXint len,FXint pos,FXint& head,FXint& tail) const;
+  virtual FXint stylizeBody(const FXchar* text,FXchar* textstyle,FXint pos,FXint len) const;
 
   // Destructor
   virtual ~SpanRule();
   };
 
+
+/*
+// Capturing pattern rule
+class CapturingRule : public Rule {
+protected:
+  FXRex         pattern;        // Pattern to match
+protected:
+  CapturingRule(){ }
+private:
+  CapturingRule(const CapturingRule&);
+  CapturingRule &operator=(const CapturingRule&);
+public:
+
+  // Construct node
+  CapturingRule(const FXString& nam,const FXString& sty,const FXString& rex,FXival par,FXival idx);
+
+  // Stylize text
+  virtual FXint stylize(const FXchar* text,FXchar *textstyle,FXint pos,FXint len) const;
+
+  // Stylize body, i.e. after begin pattern has been seen
+  virtual FXint stylizeBody(const FXchar* text,FXchar* textstyle,FXint pos,FXint len) const;
+
+  // Destructor
+  virtual ~CapturingRule();
+  };
+*/
 
 // Syntax for a language
 class Syntax : public FXObject {

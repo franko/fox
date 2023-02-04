@@ -34,6 +34,13 @@
   - During the execution of an undo or redo, FXUndoList is marked as busy;
     thus, the busy state may be checked to determine if one is in the middle
     of an undo or redo.
+  - Keep undo-text around basically forever; but there are limits: when undo-
+    list gets trimmed, old undo-commands may be deleted.
+    We have two ways to trim the undo-buffer: by total undo information size or
+    by the number of undo records.
+    Either way, if the undo buffer ends up being trimmed, only the older undo
+    records that are in excess of the chosen trim-limits are deleted; keeping
+    the most recent undo records.
 */
 
 
@@ -41,16 +48,19 @@
 
 FXIMPLEMENT_ABSTRACT(FXTextCommand,FXCommand,nullptr,0)
 
+// Command
+FXTextCommand::FXTextCommand(FXText* txt,FXint p,FXint nd,FXint ni):text(txt),pos(p),ndel(nd),nins(ni){
+  }
+
 
 // Return size of record plus any data kept here
 FXuint FXTextCommand::size() const {
-  return sizeof(FXTextCommand)+ndel;
+  return sizeof(FXTextCommand)+buffer.length();
   }
 
 
 // Delete it
 FXTextCommand::~FXTextCommand(){
-  freeElms(buffer);
   }
 
 
@@ -58,8 +68,7 @@ FXIMPLEMENT_ABSTRACT(FXTextInsert,FXTextCommand,nullptr,0)
 
 // Insert command
 FXTextInsert::FXTextInsert(FXText* txt,FXint p,FXint ni,const FXchar* ins):FXTextCommand(txt,p,0,ni){
-  allocElms(buffer,ni);
-  copyElms(buffer,ins,ni);
+  buffer.assign(ins,nins);
   }
 
 
@@ -73,7 +82,7 @@ void FXTextInsert::undo(){
 
 // Redo an insert inserts the same old text again
 void FXTextInsert::redo(){
-  text->insertText(pos,buffer,nins,true);
+  text->insertText(pos,buffer,true);
   text->setCursorPos(pos+nins);
   text->makePositionVisible(pos+nins);
   }
@@ -83,14 +92,13 @@ FXIMPLEMENT_ABSTRACT(FXTextDelete,FXTextCommand,nullptr,0)
 
 // Delete command
 FXTextDelete::FXTextDelete(FXText* txt,FXint p,FXint nd,const FXchar* del):FXTextCommand(txt,p,nd,0){
-  allocElms(buffer,nd);
-  copyElms(buffer,del,nd);
+  buffer.assign(del,ndel);
   }
 
 
 // Undo a delete reinserts the old text
 void FXTextDelete::undo(){
-  text->insertText(pos,buffer,ndel,true);
+  text->insertText(pos,buffer,true);
   text->setCursorPos(pos+ndel);
   text->makePositionVisible(pos+ndel);
   }
@@ -108,15 +116,14 @@ FXIMPLEMENT_ABSTRACT(FXTextReplace,FXTextCommand,nullptr,0)
 
 // Replace command
 FXTextReplace::FXTextReplace(FXText* txt,FXint p,FXint nd,FXint ni,const FXchar* del,const FXchar* ins):FXTextCommand(txt,p,nd,ni){
-  allocElms(buffer,nd+ni);
-  copyElms(buffer,del,nd);
-  copyElms(buffer+nd,ins,ni);
+  buffer.assign(del,ndel);
+  buffer.append(ins,nins);
   }
 
 
 // Undo a replace reinserts the old text
 void FXTextReplace::undo(){
-  text->replaceText(pos,nins,buffer,ndel,true);
+  text->replaceText(pos,nins,&buffer[0],ndel,true);
   text->setCursorPos(pos+ndel);
   text->makePositionVisible(pos+ndel);
   }
@@ -124,7 +131,7 @@ void FXTextReplace::undo(){
 
 // Redo a replace reinserts the new text
 void FXTextReplace::redo(){
-  text->replaceText(pos,ndel,buffer+ndel,nins,true);
+  text->replaceText(pos,ndel,&buffer[ndel],nins,true);
   text->setCursorPos(pos+nins);
   text->makePositionVisible(pos+nins);
   }

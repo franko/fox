@@ -1,4 +1,4 @@
-project('fox', 'cpp', version : '1.7.80', default_options : 'cpp_std=c++11')
+project('fox', 'cpp', version : '1.7.81', default_options : 'cpp_std=c++11')
 
 pkg = import('pkgconfig')
 
