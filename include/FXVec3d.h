@@ -94,7 +94,7 @@ public:
   FXVec3d operator-() const { return FXVec3d(-x,-y,-z); }
 
   /// Length and square of length
-  FXdouble length2() const { return x*x+y*y+z*z; }
+  FXdouble length2() const { return z*z+y*y+x*x; }
   FXdouble length() const { return Math::sqrt(length2()); }
 
   /// Destructor

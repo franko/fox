@@ -3,7 +3,7 @@
 *                              M a t h   T e s t                                *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 2007,2022 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 2007,2023 by Jeroen van der Zijp.   All Rights Reserved.        *
 ********************************************************************************/
 #include "fx.h"
 

@@ -3,7 +3,7 @@
 *                             S h e l l - C o m m a n d                         *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 2014,2022 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 2014,2023 by Jeroen van der Zijp.   All Rights Reserved.        *
 *********************************************************************************
 * This program is free software: you can redistribute it and/or modify          *
 * it under the terms of the GNU General Public License as published by          *
@@ -30,6 +30,14 @@
   Notes:
 
   - The ShellCommand object represents a running process inside Adie.
+
+  - Need to add options to NOT capture output and stderr.
+
+  - Need to add option to capture outputs into logger instead of text buffer.
+
+  - On Windows, the pipe stuff won't work in addInput() because you can't
+    block on anonymous pipes (or can you?).
+
   - FIXME add some code to break up commandline arguments, or alternatively,
     kick program off through shell (in this case, need to escape text to make
     magic characters safe from shell).
@@ -64,61 +72,73 @@ FXbool ShellCommand::start(const FXString& command){
   FXTRACE((1,"ShellCommand::start(%s)\n",command.text()));
   FXbool result=false;
   if(!command.empty() && !process.id()){
-    FXchar** argv;
+    FXchar** argv=nullptr;
 
     // Assemble command
     if(FXPath::parseArgs(argv,command)){
 
-      // Try find the command (argv[0]) in the path
+      // Find the command (argv[0]) in the path
       FXString exec=FXPath::search(FXSystem::getExecPath(),argv[0]);
+
+      // Got full path to executable
       if(!exec.empty()){
 
-        // Pipes at child's end
-        FXPipe ichild;
-        FXPipe ochild;
-        FXPipe echild;
+        // Old directory
+        FXString cwd=FXSystem::getCurrentDirectory();
 
-        // Open pipe for child input (the parent writes, child reads)
-        if(!ipipe.open(ichild,FXIO::WriteOnly|FXIO::Inheritable)) return false;
+        // Switch to new directory
+        if(FXSystem::setCurrentDirectory(directory)){
 
-        // Open pipe for child outout (parent reads, child writes)
-        if(!opipe.open(ochild,FXIO::ReadOnly|FXIO::Inheritable)) return false;
+          // Pipes at child's end
+          FXPipe ichild;
+          FXPipe ochild;
+          FXPipe echild;
 
-        // Open pipe for child errors (parent reads, child writes)
-        if(!epipe.open(echild,FXIO::ReadOnly|FXIO::Inheritable)) return false;
+          // Open pipe for child input (the parent writes, child reads)
+          if(!ipipe.open(ichild,FXIO::WriteOnly|FXIO::Inheritable)) goto x;
 
-        // Set handles to be used by child
-        process.setInputStream(&ichild);
-        process.setOutputStream(&ochild);
-        process.setErrorStream(&echild);
+          // Open pipe for child outout (parent reads, child writes)
+          if(!opipe.open(ochild,FXIO::ReadOnly|FXIO::Inheritable)) goto x;
 
-        // Start it
-        if(process.start(exec.text(),argv)){
+          // Open pipe for child errors (parent reads, child writes)
+          if(!epipe.open(echild,FXIO::ReadOnly|FXIO::Inheritable)) goto x;
 
-          // Close child-side handles
-          ichild.close();
-          ochild.close();
-          echild.close();
+          // Set handles to be used by child
+          process.setInputStream(&ichild);
+          process.setOutputStream(&ochild);
+          process.setErrorStream(&echild);
 
-          // Set non-blocking on our end
-          ipipe.setMode(ipipe.mode()|FXIO::NonBlocking);
-          opipe.setMode(opipe.mode()|FXIO::NonBlocking);
-          epipe.setMode(epipe.mode()|FXIO::NonBlocking);
+          // Start it
+          if(process.start(exec.text(),argv)){
 
-          // Set I/O callbacks
-          if(ipipe.isOpen()){
-            app->addInput(this,ID_INPUT,ipipe.handle(),INPUT_WRITE);
+            // Close child-side handles
+            ichild.close();
+            ochild.close();
+            echild.close();
+
+            // Set non-blocking on our end
+            ipipe.mode(ipipe.mode()|FXIO::NonBlocking);
+            opipe.mode(opipe.mode()|FXIO::NonBlocking);
+            epipe.mode(epipe.mode()|FXIO::NonBlocking);
+
+            // Set I/O callbacks
+            if(ipipe.isOpen()){
+              app->addInput(this,ID_INPUT,ipipe.handle(),INPUT_WRITE);
+              }
+            if(opipe.isOpen()){
+              app->addInput(this,ID_OUTPUT,opipe.handle(),INPUT_READ);
+              }
+            if(epipe.isOpen()){
+              app->addInput(this,ID_ERROR,epipe.handle(),INPUT_READ);
+              }
+            result=true;
             }
-          if(opipe.isOpen()){
-            app->addInput(this,ID_OUTPUT,opipe.handle(),INPUT_READ);
-            }
-          if(epipe.isOpen()){
-            app->addInput(this,ID_ERROR,epipe.handle(),INPUT_READ);
-            }
-          result=true;
+
+          // Switch back to old directory
+          FXSystem::setCurrentDirectory(cwd);
           }
         }
-      freeElms(argv);
+x:    freeElms(argv);
       }
     }
   return result;

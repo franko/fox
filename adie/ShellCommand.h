@@ -3,7 +3,7 @@
 *                             S h e l l - C o m m a n d                         *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 2014,2022 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 2014,2023 by Jeroen van der Zijp.   All Rights Reserved.        *
 *********************************************************************************
 * This program is free software: you can redistribute it and/or modify          *
 * it under the terms of the GNU General Public License as published by          *
@@ -30,12 +30,13 @@ class ShellCommand : public FXObject {
   FXDECLARE(ShellCommand)
 private:
   FXApp      *app;              // Application
-  FXObject   *target;           // Target to notify
   FXProcess   process;          // Child process
-  FXPipe      ipipe;            // Input to child
-  FXPipe      opipe;            // Output from child
-  FXPipe      epipe;            // Errors from child
+  FXString    directory;        // Directory where to start
   FXString    input;            // Input to child process
+  FXPipe      ipipe;            // Pipe input to child
+  FXPipe      opipe;            // Pipe output from child
+  FXPipe      epipe;            // Pipe errors from child
+  FXObject   *target;           // Target to notify
   FXSelector  selin;            // Message sent for input
   FXSelector  selout;           // Message sent for output
   FXSelector  selerr;           // Message sent for errors
@@ -59,6 +60,18 @@ public:
   // Construct shell command
   ShellCommand(FXApp* a,FXObject* tgt=nullptr,FXSelector so=0,FXSelector se=0,FXSelector sd=0);
 
+  // Set directory
+  void setDirectory(const FXString& dir){ directory=dir; }
+
+  // Return directory
+  const FXString& getDirectory() const { return directory; }
+
+  // Set string as command input
+  void setInput(const FXString& str);
+
+  // Return input
+  const FXString& getInput() const { return input; }
+
   // Access target
   void setTarget(FXObject* tgt){ target=tgt; }
   FXObject* getTarget() const { return target; }
@@ -78,12 +91,6 @@ public:
   // Access done message
   void setDoneMessage(FXSelector sel){ seldone=sel; }
   FXSelector getDoneMessage() const { return seldone; }
-
-  // Set string as command input
-  void setInput(const FXString& str);
-
-  // Return input
-  const FXString& getInput() const { return input; }
 
   // Start command
   virtual FXbool start(const FXString& command);

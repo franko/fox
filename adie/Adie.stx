@@ -3,7 +3,7 @@
 #                       A d i e   S y n t a x   F i l e                         #
 #                                                                               #
 #################################################################################
-# Copyright (C) 2004,2022 by Jeroen van der Zijp.   All Rights Reserved.        #
+# Copyright (C) 2004,2023 by Jeroen van der Zijp.   All Rights Reserved.        #
 #################################################################################
 # This program is free software; you can redistribute it and/or modify          #
 # it under the terms of the GNU General Public License as published by          #
@@ -318,7 +318,7 @@ end
 language "C++"
 
   # File patterns for this language mode
-  filesmatch "*.C,*.cpp,*.cc,*.cxx,*.c++,*.cu,*.H,*.hpp,*.hh,*.hxx,*.h++,*.h,*.cuh"
+  filesmatch "*.C,*.cpp,*.cc,*.cxx,*.c++,*.cu,*.H,*.hpp,*.hh,*.hxx,*.h++,*.h,*.cuh,*.ino"
   contentsmatch "[Cc]\+\+"
 
   contextlines 1
@@ -494,9 +494,7 @@ language "C++"
   end
 
   rule "Number"
-    # New number pattern
     pattern "\<(((\.\d++|\d++((\.\d*+)?|(?=[Ee][+-]?\d++)))([eE][+-]?+\d++)?|0[Xx](\.\h++|\h++(\.\h*+)?)[Pp][+-]?\d++)[LlFfQq]?|(0[xX]\h++|0[0-7]*+|[1-9]\d*+)[Uu]?[Ll]{0,2})\>"
-#    pattern "\<((\.\d+([eE][+-]?\d+)?|\d+\.\d*([eE][+-]?\d+)?|\d+[Ee][+-]?\d+|0[Xx]\.\h+[Pp][+-]?\d+|0[Xx]\h+\.\h*[Pp][+-]?\d+|0[Xx]\h+[Pp][+-]?\d+)[LlFfQq]?|(0[xX]\h+|0[0-7]*|[1-9]\d*)[Uu]?[Ll]{0,2})\>"
     style   "blue"
   end
 
@@ -681,7 +679,8 @@ language "C"
   end
 
   rule "Number"
-    pattern "\<((\.\d+([eE][+-]?\d+)?|\d+\.\d*([eE][+-]?\d+)?|\d+[Ee][+-]?\d+|0[Xx]\.\h+[Pp][+-]?\d+|0[Xx]\h+\.\h*[Pp][+-]?\d+|0[Xx]\h+[Pp][+-]?\d+)[LlFfQq]?|(0[xX]\h+|0[0-7]*|[1-9]\d*)[Uu]?[Ll]{0,2})\>"
+    pattern "\<(((\.\d++|\d++((\.\d*+)?|(?=[Ee][+-]?\d++)))([eE][+-]?+\d++)?|0[Xx](\.\h++|\h++(\.\h*+)?)[Pp][+-]?\d++)[LlFfQq]?|(0[xX]\h++|0[0-7]*+|[1-9]\d*+)[Uu]?[Ll]{0,2})\>"
+    #pattern "\<((\.\d+([eE][+-]?\d+)?|\d+\.\d*([eE][+-]?\d+)?|\d+[Ee][+-]?\d+|0[Xx]\.\h+[Pp][+-]?\d+|0[Xx]\h+\.\h*[Pp][+-]?\d+|0[Xx]\h+[Pp][+-]?\d+)[LlFfQq]?|(0[xX]\h+|0[0-7]*|[1-9]\d*)[Uu]?[Ll]{0,2})\>"
     style   "blue"
   end
 

@@ -3,7 +3,7 @@
 *              T h e   P a t h F i n d e r   F i l e   B r o w s e r            *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 1998,2022 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 1998,2023 by Jeroen van der Zijp.   All Rights Reserved.        *
 *********************************************************************************
 * This program is free software: you can redistribute it and/or modify          *
 * it under the terms of the GNU General Public License as published by          *
@@ -109,7 +109,7 @@ protected:
   FXint               visiting;		        // Currently visited directory
   FXint               totalCount;
   FXlong              totalSpace;
-  FXint               selectedCount;
+  FXuint              selectedCount;
   FXlong              selectedSpace;
   FXuint              selectedModeBits[16];
   FXString            statusInfo;

@@ -105,8 +105,9 @@ PROGRAMS = $(bin_PROGRAMS)
 am_adie_OBJECTS = Adie.$(OBJEXT) Commands.$(OBJEXT) \
 	FindInFiles.$(OBJEXT) help.$(OBJEXT) HelpWindow.$(OBJEXT) \
 	icons.$(OBJEXT) main.$(OBJEXT) Modeline.$(OBJEXT) \
-	Preferences.$(OBJEXT) ShellCommand.$(OBJEXT) Syntax.$(OBJEXT) \
-	SyntaxParser.$(OBJEXT) TextWindow.$(OBJEXT)
+	Preferences.$(OBJEXT) ShellCommand.$(OBJEXT) \
+	ShellDialog.$(OBJEXT) Syntax.$(OBJEXT) SyntaxParser.$(OBJEXT) \
+	TextWindow.$(OBJEXT)
 adie_OBJECTS = $(am_adie_OBJECTS)
 adie_LDADD = $(LDADD)
 adie_DEPENDENCIES = $(top_builddir)/lib/libFOX-1.7.la
@@ -380,6 +381,7 @@ $(top_srcdir)/adie/browser.gif \
 $(top_srcdir)/adie/capitalize.gif \
 $(top_srcdir)/adie/close_gif.gif \
 $(top_srcdir)/adie/colors_gif.gif \
+$(top_srcdir)/adie/command_bmp.bmp \
 $(top_srcdir)/adie/config_gif.gif \
 $(top_srcdir)/adie/copy_gif.gif \
 $(top_srcdir)/adie/cut_gif.gif \
@@ -445,6 +447,8 @@ Preferences.h \
 Preferences.cpp \
 ShellCommand.h \
 ShellCommand.cpp \
+ShellDialog.h \
+ShellDialog.cpp \
 Syntax.h \
 Syntax.cpp \
 SyntaxParser.h \
@@ -601,6 +605,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Modeline.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Preferences.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ShellCommand.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/ShellDialog.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/Syntax.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/SyntaxParser.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/TextWindow.Po@am__quote@

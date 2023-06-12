@@ -3,7 +3,7 @@
 *                             String Format I/O Test                            *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 2007,2022 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 2007,2023 by Jeroen van der Zijp.   All Rights Reserved.        *
 ********************************************************************************/
 #include "fx.h"
 //#include <locale.h>
@@ -116,13 +116,6 @@ static const union{ FXulong u; FXdouble f; } doublesmall={
   FXULONG(0x0000000000002788)
   };
 
-
-// Use a trick to get a nan
-//const FXulong doublenan[1]={FXULONG(0x7fffffffffffffff)};
-//const FXulong doubleinf[1]={FXULONG(0x7ff0000000000000)};
-
-// Small double
-//const FXulong doublesmall[1]={FXULONG(0x0000000000002788)};
 
 const FXchar *intformat[]={
   "%d",

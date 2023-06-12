@@ -50,6 +50,9 @@
     <ClInclude Include="..\..\adie\icons.h">
       <Filter>Source Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\adie\ShellDialog.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\adie\Adie.cpp">
@@ -89,6 +92,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\adie\icons.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\adie\ShellDialog.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -280,6 +286,9 @@
       <Filter>Icons</Filter>
     </Image>
     <Image Include="..\..\adie\uppercase.gif">
+      <Filter>Icons</Filter>
+    </Image>
+    <Image Include="..\..\adie\command_bmp.bmp">
       <Filter>Icons</Filter>
     </Image>
   </ItemGroup>

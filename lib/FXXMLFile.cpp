@@ -70,42 +70,23 @@ FXXMLFile::FXXMLFile(const FXString& filename,Direction d,FXuval sz){
   }
 
 
-// Open archive for operation
-FXbool FXXMLFile::open(FXInputHandle h,Direction d,FXuval sz){
-  FXTRACE((101,"FXXMLFile::open(%lx,%s,%lu)\n",(FXuval)h,(d==Save)?"Save":(d==Load)?"Load":"Stop",sz));
-  FXchar *buffer;
-  if(allocElms(buffer,sz)){
-    if(file.open(h,(d==Save)?FXIO::Writing:FXIO::Reading)){
-      if(FXXML::open(buffer,sz,d)){
-        rptr=endptr;
-        sptr=endptr;
-        wptr=endptr;
-        return true;
-        }
-      file.close();
-      }
-    freeElms(buffer);
-    }
-  return false;
-  }
-
-
-// Open archive for operation
+// Open XML file for operation
 FXbool FXXMLFile::open(const FXString& filename,Direction d,FXuval sz){
   FXTRACE((101,"FXXMLFile::open(\"%s\",%s,%lu)\n",filename.text(),(d==Save)?"Save":(d==Load)?"Load":"Stop",sz));
-  FXchar *buffer;
-  FXASSERT(dir==Stop);
-  if(allocElms(buffer,sz)){
-    if(file.open(filename,(d==Save)?FXIO::Writing:FXIO::Reading,FXIO::AllReadWrite)){
-      if(FXXML::open(buffer,sz,d)){
-        rptr=endptr;
-        sptr=endptr;
-        wptr=endptr;
-        return true;
+  if(dir==Stop){
+    FXchar *buffer;
+    if(allocElms(buffer,sz)){
+      if(file.open(filename,(d==Save)?FXIO::Writing:FXIO::Reading,FXIO::AllReadWrite)){
+        if(FXXML::open(buffer,sz,d)){
+          rptr=endptr;
+          sptr=endptr;
+          wptr=endptr;
+          return true;
+          }
+        file.close();
         }
-      file.close();
+      freeElms(buffer);
       }
-    freeElms(buffer);
     }
   return false;
   }
@@ -113,9 +94,8 @@ FXbool FXXMLFile::open(const FXString& filename,Direction d,FXuval sz){
 
 // Read at least count bytes into buffer; return bytes available, or -1 for error
 FXival FXXMLFile::fill(FXival){
-  FXival nbytes;
-  FXASSERT(dir==Load);
-  if(file.isReadable()){
+  if(dir==Load){
+    FXival nbytes;
     moveElms(begptr,rptr,wptr-rptr);
     wptr=begptr+(wptr-rptr);
     sptr=begptr+(sptr-rptr);
@@ -133,9 +113,8 @@ FXival FXXMLFile::fill(FXival){
 
 // Write at least count bytes from buffer; return space available, or -1 for error
 FXival FXXMLFile::flush(FXival){
-  FXival nbytes;
-  FXASSERT(dir==Save);
-  if(file.isWritable()){
+  if(dir==Save){
+    FXival nbytes;
     nbytes=file.writeBlock(rptr,wptr-rptr);
     if(0<=nbytes){
       rptr+=nbytes;

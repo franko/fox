@@ -121,7 +121,7 @@
     buffer is large enough.
 */
 
-#if defined(_WIN32)
+#if defined(WIN32)
 #ifndef va_copy
 #define va_copy(arg,list) ((arg)=(list))
 #endif

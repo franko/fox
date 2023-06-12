@@ -84,20 +84,6 @@ FXQuatf::FXQuatf(const FXVec3f& rot){
   }
 
 
-// Adjust quaternion length
-FXQuatf& FXQuatf::adjust(){
-  FXfloat mag2(x*x+y*y+z*z+w*w);
-  if(__likely(0.0f<mag2)){
-    FXfloat s(1.0f/Math::sqrt(mag2));
-    x*=s;
-    y*=s;
-    z*=s;
-    w*=s;
-    }
-  return *this;
-  }
-
-
 // Set axis and angle
 void FXQuatf::setAxisAngle(const FXVec3f& axis,FXfloat phi){
   FXfloat mag2(axis.length2());
@@ -521,6 +507,34 @@ FXVec3f operator*(const FXVec3f& v,const FXQuatf& q){
 FXVec3f operator*(const FXQuatf& q,const FXVec3f& v){
   FXVec3f s(q.x,q.y,q.z);
   return v+(((v^s)+(v*q.w))^s)*2.0;     // Yes, -a^b is b^a!
+  }
+
+/*******************************************************************************/
+
+// Adjust quaternion length
+FXQuatf& FXQuatf::adjust(){
+  FXfloat s(length());
+  if(__likely(s)){
+    return *this /= s;
+    }
+  return *this;
+  }
+
+
+// Normalize quaternion such that |Q|==1
+FXQuatf normalize(const FXQuatf& q){
+  FXfloat s(q.length());
+  if(__likely(s)){
+    return q/s;
+    }
+  return q;
+  }
+
+
+// Normalize quaternion incrementally; assume |Q| approximately 1 already
+FXQuatf fastnormalize(const FXQuatf& q){
+  FXfloat s((3.0f-q.w*q.w-q.z*q.z-q.y*q.y-q.x*q.x)*0.5f);
+  return q*s;
   }
 
 /*******************************************************************************/

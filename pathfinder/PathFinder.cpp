@@ -3,7 +3,7 @@
 *              T h e   P a t h F i n d e r   F i l e   B r o w s e r            *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 1998,2022 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 1998,2023 by Jeroen van der Zijp.   All Rights Reserved.        *
 *********************************************************************************
 * This program is free software: you can redistribute it and/or modify          *
 * it under the terms of the GNU General Public License as published by          *
@@ -1001,16 +1001,16 @@ long PathFinderMain::onUpdSelectedVisible(FXObject* sender,FXSelector,void*){
 
 // Run program from given command line
 FXbool PathFinderMain::executeCommandline(const FXString& commandline){
-  FXbool result=false;
-  FXchar **argvec=nullptr;
+  FXchar **argv=nullptr;
 
   FXTRACE((10,"PathFinderMain::executeCommandline(%s)\n",commandline.text()));
 
-  // Parse commandline into argvec
-  if(FXPath::parseArgs(argvec,commandline)){
+  // Parse commandline into argv
+  if(FXPath::parseArgs(argv,commandline)){
+    FXbool result=false;
 
     // Find the executable path in the list
-    FXString command=FXPath::search(execpaths,argvec[0]);
+    FXString command=FXPath::search(execpaths,argv[0]);
     if(!command.empty()){
 
       // Old directory
@@ -1021,7 +1021,7 @@ FXbool PathFinderMain::executeCommandline(const FXString& commandline){
         FXProcess process;
 
         // Start the program with arguments
-        result=process.start(command.text(),argvec,nullptr);
+        result=process.start(command.text(),argv,nullptr);
 
         // Failed to start the program
         if(!result){
@@ -1040,18 +1040,17 @@ FXbool PathFinderMain::executeCommandline(const FXString& commandline){
 
     // Could not find executable path
     else{
-      FXMessageBox::error(this,MBOX_OK,tr("Unknown Program"),tr("Unable to find program: '%s'.\n"),argvec[0]);
+      FXMessageBox::error(this,MBOX_OK,tr("Unknown Program"),tr("Unable to find program: '%s'.\n"),argv[0]);
       }
 
     // Done with that
-    freeElms(argvec);
+    freeElms(argv);
+    return result;
     }
 
   // Could not parse commandline
-  else{
-    FXMessageBox::error(this,MBOX_OK,tr("Bad Command or Filename"),tr("Syntax error in commandline: '%s'.\n"),commandline.text());
-    }
-  return result;
+  FXMessageBox::error(this,MBOX_OK,tr("Bad Command or Filename"),tr("Syntax error in commandline: '%s'.\n"),commandline.text());
+  return false;
   }
 
 
@@ -1263,7 +1262,7 @@ long PathFinderMain::onFileSelected(FXObject*,FXSelector,void* ptr){
   selectedModeBits[15]+=FXBIT(mode,15); // SVTX
   selectedSpace+=size;
   selectedCount+=1;
-  FXTRACE((10,"selected  : %3d %7lld [%3d %7lld] %s\n",index,size,selectedCount,selectedSpace,filelist->getItemFilename(index).text()));
+  FXTRACE((10,"selected  : %3d %7lld [%3u %7lld] %s\n",index,size,selectedCount,selectedSpace,filelist->getItemFilename(index).text()));
   return 1;
   }
 

@@ -3,7 +3,7 @@
 *                                 Codecs Tests                                  *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 2005,2022 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 2005,2023 by Jeroen van der Zijp.   All Rights Reserved.        *
 ********************************************************************************/
 #include "fx.h"
 #include <stdio.h>
@@ -367,26 +367,26 @@ int main(int argc,char *argv[]){
   count=0;
   sum=0;
   ptr=head;
-  beg=fxgetticks();
+  beg=FXThread::ticks();
   do{
     sum+=wcnxt(ptr);
     count++;
     }
   while(ptr+4<=tail);
-  end=fxgetticks();
+  end=FXThread::ticks();
   fxmessage("wcinc: count=%'ld sum=%'ld end=%p\n",count,sum,ptr);
   fxmessage("wcinc: %'ld ticks %'ld chars %.2lf ticks/char\n",(long)(end-beg),count,(FXdouble)(end-beg)/count);
 
   fxmessage("**** wcdec: move backward\n");
   count=0;
   sum=0;
-  beg=fxgetticks();
+  beg=FXThread::ticks();
   do{
     sum+=wcprv(ptr);
     count++;
     }
   while(head<ptr);
-  end=fxgetticks();
+  end=FXThread::ticks();
   fxmessage("wcdec: count=%'ld sum=%'ld end=%p\n",count,sum,ptr);
   fxmessage("wcdec: %'ld ticks %'ld chars %.2lf ticks/char\n",(long)(end-beg),count,(FXdouble)(end-beg)/count);
 
@@ -394,26 +394,26 @@ int main(int argc,char *argv[]){
   count=0;
   sum=0;
   ptr=head;
-  beg=fxgetticks();
+  beg=FXThread::ticks();
   do{
     wcnxt(ptr);
     count++;
     }
   while(ptr+4<=tail);
-  end=fxgetticks();
+  end=FXThread::ticks();
   fxmessage("wcnxt: count=%'ld sum=%'ld end=%p\n",count,sum,ptr);
   fxmessage("wcnxt: %'ld ticks %'ld chars %.2lf ticks/char\n",(long)(end-beg),count,(FXdouble)(end-beg)/count);
 
   fxmessage("**** wcprv: move backward\n");
   count=0;
   sum=0;
-  beg=fxgetticks();
+  beg=FXThread::ticks();
   do{
     wcprv(ptr);
     count++;
     }
   while(head<ptr);
-  end=fxgetticks();
+  end=FXThread::ticks();
   fxmessage("wcprv: count=%'ld sum=%'ld end=%p\n",count,sum,ptr);
   fxmessage("wcprv: %'ld ticks %'ld chars %.2lf ticks/char\n",(long)(end-beg),count,(FXdouble)(end-beg)/count);
 
@@ -421,13 +421,13 @@ int main(int argc,char *argv[]){
   count=0;
   sum=0;
   ptr=head;
-  beg=fxgetticks();
+  beg=FXThread::ticks();
   do{
     inc3(ptr);
     count++;
     }
   while(ptr+4<=tail);
-  end=fxgetticks();
+  end=FXThread::ticks();
   fxmessage("inc3: count=%'ld sum=%'ld end=%p\n",count,sum,ptr);
   fxmessage("inc3: %'ld ticks %'ld chars %.2lf ticks/char\n",(long)(end-beg),count,(FXdouble)(end-beg)/count);
 
@@ -435,13 +435,13 @@ int main(int argc,char *argv[]){
   count=0;
   sum=0;
   ptr=head;
-  beg=fxgetticks();
+  beg=FXThread::ticks();
   do{
     inc4(ptr);
     count++;
     }
   while(ptr+4<=tail);
-  end=fxgetticks();
+  end=FXThread::ticks();
   fxmessage("inc4: count=%'ld sum=%'ld end=%p\n",count,sum,ptr);
   fxmessage("inc4: %'ld ticks %'ld chars %.2lf ticks/char\n",(long)(end-beg),count,(FXdouble)(end-beg)/count);
 
@@ -449,13 +449,13 @@ int main(int argc,char *argv[]){
   count=0;
   sum=0;
   ptr=head;
-  beg=fxgetticks();
+  beg=FXThread::ticks();
   do{
     inc5(ptr);
     count++;
     }
   while(ptr+4<=tail);
-  end=fxgetticks();
+  end=FXThread::ticks();
   fxmessage("inc5: count=%'ld sum=%'ld end=%p\n",count,sum,ptr);
   fxmessage("inc5: %'ld ticks %'ld chars %.2lf ticks/char\n",(long)(end-beg),count,(FXdouble)(end-beg)/count);
 
@@ -463,13 +463,13 @@ int main(int argc,char *argv[]){
   count=0;
   sum=0;
   ptr=head;
-  beg=fxgetticks();
+  beg=FXThread::ticks();
   do{
     inc6(ptr);
     count++;
     }
   while(ptr+4<=tail);
-  end=fxgetticks();
+  end=FXThread::ticks();
   fxmessage("inc6: count=%'ld sum=%'ld end=%p\n",count,sum,ptr);
   fxmessage("inc6: %'ld ticks %'ld chars %.2lf ticks/char\n",(long)(end-beg),count,(FXdouble)(end-beg)/count);
 
@@ -477,13 +477,13 @@ int main(int argc,char *argv[]){
   count=0;
   sum=0;
   ptr=head;
-  beg=fxgetticks();
+  beg=FXThread::ticks();
   do{
     inc7(ptr);
     count++;
     }
   while(ptr+4<=tail);
-  end=fxgetticks();
+  end=FXThread::ticks();
   fxmessage("inc7: count=%'ld sum=%'ld end=%p\n",count,sum,ptr);
   fxmessage("inc7: %'ld ticks %'ld chars %.2lf ticks/char\n",(long)(end-beg),count,(FXdouble)(end-beg)/count);
 
@@ -491,13 +491,13 @@ int main(int argc,char *argv[]){
   count=0;
   sum=0;
   ptr=head;
-  beg=fxgetticks();
+  beg=FXThread::ticks();
   do{
     ptr+=lenUTF8((FXuchar)*ptr);
     count++;
     }
   while(ptr+4<=tail);
-  end=fxgetticks();
+  end=FXThread::ticks();
   fxmessage("lenUTF8: count=%'ld sum=%'ld end=%p\n",count,sum,ptr);
   fxmessage("lenUTF8: %'ld ticks %'ld chars %.2lf ticks/char\n",(long)(end-beg),count,(FXdouble)(end-beg)/count);
 

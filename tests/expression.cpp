@@ -3,7 +3,7 @@
 *                           Expression Evaluator Test                           *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 2006,2022 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 2006,2023 by Jeroen van der Zijp.   All Rights Reserved.        *
 ********************************************************************************/
 #include"fx.h"
 

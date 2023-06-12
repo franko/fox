@@ -50,11 +50,6 @@ public:
   FXXMLFile(const FXString& filename,Direction d=Load,FXuval sz=4096);
 
   /**
-  * Open XML file handle for direction d.
-  */
-  FXbool open(FXInputHandle h,Direction d=Load,FXuval sz=4096);
-
-  /**
   * Open XML file for direction d.
   */
   FXbool open(const FXString& filename,Direction d=Load,FXuval sz=4096);

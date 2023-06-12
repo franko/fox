@@ -724,9 +724,6 @@ extern FXAPI FXint fxparsegeometry(const FXchar *string,FXint& x,FXint& y,FXint&
 /// True if executable with given path is a console application
 extern FXAPI FXbool fxisconsole(const FXchar *path);
 
-/// Return clock ticks from cpu tick-counter
-extern FXAPI FXTime fxgetticks();
-
 /// Version number that the library has been compiled with
 extern FXAPI const FXuchar fxversion[3];
 

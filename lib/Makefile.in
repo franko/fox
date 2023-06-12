@@ -176,16 +176,16 @@ am_libFOX_1_7_la_OBJECTS = $(am__objects_1) FX4Splitter.lo \
 	FXHeader.lo FXHorizontalFrame.lo FXICOIcon.lo FXICOImage.lo \
 	FXIFFIcon.lo FXIFFImage.lo FXIcon.lo FXIconCache.lo \
 	FXIconList.lo FXIconSource.lo FXId.lo FXImage.lo \
-	FXImageFrame.lo FXImageView.lo FXInputDialog.lo FXIO.lo \
-	FXIOBuffer.lo FXIODevice.lo FXJP2Icon.lo FXJP2Image.lo \
-	FXJPGIcon.lo FXJPGImage.lo FXJSON.lo FXJSONFile.lo \
-	FXJSONString.lo FXKnob.lo FXLabel.lo FXLFQueue.lo FXList.lo \
-	FXListBox.lo FXLocale.lo FXMDIButton.lo FXMDIChild.lo \
-	FXMDIClient.lo FXMainWindow.lo FXMat2d.lo FXMat2f.lo \
-	FXMat3d.lo FXMat3f.lo FXMat4d.lo FXMat4f.lo FXMatrix.lo \
-	FXMemMap.lo FXMemoryStream.lo FXMenuBar.lo FXMenuButton.lo \
-	FXMenuCaption.lo FXMenuCascade.lo FXMenuCheck.lo \
-	FXMenuRadio.lo FXMenuCommand.lo FXMenuPane.lo \
+	FXImageFrame.lo FXImageView.lo FXInputDialog.lo FXINI.lo \
+	FXINIFile.lo FXIO.lo FXIOBuffer.lo FXIODevice.lo FXJP2Icon.lo \
+	FXJP2Image.lo FXJPGIcon.lo FXJPGImage.lo FXJSON.lo \
+	FXJSONFile.lo FXJSONString.lo FXKnob.lo FXLabel.lo \
+	FXLFQueue.lo FXList.lo FXListBox.lo FXLocale.lo FXMDIButton.lo \
+	FXMDIChild.lo FXMDIClient.lo FXMainWindow.lo FXMappedFile.lo \
+	FXMat2d.lo FXMat2f.lo FXMat3d.lo FXMat3f.lo FXMat4d.lo \
+	FXMat4f.lo FXMatrix.lo FXMemoryStream.lo FXMenuBar.lo \
+	FXMenuButton.lo FXMenuCaption.lo FXMenuCascade.lo \
+	FXMenuCheck.lo FXMenuRadio.lo FXMenuCommand.lo FXMenuPane.lo \
 	FXMenuSeparator.lo FXMenuTitle.lo FXMessageBox.lo \
 	FXMessageChannel.lo FXMetaClass.lo FXMutex.lo FXObject.lo \
 	FXObjectList.lo FXOptionMenu.lo FXPCXIcon.lo FXPCXImage.lo \
@@ -223,14 +223,13 @@ am_libFOX_1_7_la_OBJECTS = $(am__objects_1) FX4Splitter.lo \
 	FXXMLString.lo FXXBMIcon.lo FXXBMImage.lo FXXPMIcon.lo \
 	FXXPMImage.lo fxascii.lo fxbase64.lo fxbase85.lo fxchar.lo \
 	fxcpuid.lo fxbmpio.lo fxcompose.lo fxddsio.lo fxezquantize.lo \
-	fxexeio.lo fxfsquantize.lo fxgetticks.lo fxgifio.lo fxiffio.lo \
-	fxjpegio.lo fxjp2io.lo fxkeyboard.lo fxkeysym.lo fxleaps.lo \
-	fxmath.lo fxntp.lo fxosver.lo fxparsegeometry.lo fxpcxio.lo \
-	fxpngio.lo fxppmio.lo fxprintf.lo fxpriv.lo fxpsio.lo \
-	fxrasio.lo fxrgbio.lo fxscanf.lo fxstrtoll.lo fxstrtoull.lo \
-	fxstrtod.lo fxtabbify.lo fxtargaio.lo fxtifio.lo fxunicode.lo \
-	fxutils.lo fxwebpio.lo fxwuquantize.lo fxxbmio.lo fxxpmio.lo \
-	icons.lo
+	fxexeio.lo fxfsquantize.lo fxgifio.lo fxiffio.lo fxjpegio.lo \
+	fxjp2io.lo fxkeyboard.lo fxkeysym.lo fxleaps.lo fxmath.lo \
+	fxntp.lo fxosver.lo fxparsegeometry.lo fxpcxio.lo fxpngio.lo \
+	fxppmio.lo fxprintf.lo fxpriv.lo fxpsio.lo fxrasio.lo \
+	fxrgbio.lo fxscanf.lo fxstrtoll.lo fxstrtoull.lo fxstrtod.lo \
+	fxtabbify.lo fxtargaio.lo fxtifio.lo fxunicode.lo fxutils.lo \
+	fxwebpio.lo fxwuquantize.lo fxxbmio.lo fxxpmio.lo icons.lo
 libFOX_1_7_la_OBJECTS = $(am_libFOX_1_7_la_OBJECTS)
 AM_V_lt = $(am__v_lt_@AM_V@)
 am__v_lt_ = $(am__v_lt_@AM_DEFAULT_V@)
@@ -762,6 +761,8 @@ FXImage.cpp \
 FXImageFrame.cpp \
 FXImageView.cpp \
 FXInputDialog.cpp \
+FXINI.cpp \
+FXINIFile.cpp \
 FXIO.cpp \
 FXIOBuffer.cpp \
 FXIODevice.cpp \
@@ -782,6 +783,7 @@ FXMDIButton.cpp \
 FXMDIChild.cpp \
 FXMDIClient.cpp \
 FXMainWindow.cpp \
+FXMappedFile.cpp \
 FXMat2d.cpp \
 FXMat2f.cpp \
 FXMat3d.cpp \
@@ -789,7 +791,6 @@ FXMat3f.cpp \
 FXMat4d.cpp \
 FXMat4f.cpp \
 FXMatrix.cpp \
-FXMemMap.cpp \
 FXMemoryStream.cpp \
 FXMenuBar.cpp \
 FXMenuButton.cpp \
@@ -948,7 +949,6 @@ fxddsio.cpp \
 fxezquantize.cpp \
 fxexeio.cpp \
 fxfsquantize.cpp \
-fxgetticks.cpp \
 fxgifio.cpp \
 fxiffio.cpp \
 fxjpegio.cpp \
@@ -1222,6 +1222,8 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/FXICOImage.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/FXIFFIcon.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/FXIFFImage.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/FXINI.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/FXINIFile.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/FXIO.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/FXIOBuffer.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/FXIODevice.Plo@am__quote@
@@ -1252,6 +1254,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/FXMDIChild.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/FXMDIClient.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/FXMainWindow.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/FXMappedFile.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/FXMat2d.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/FXMat2f.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/FXMat3d.Plo@am__quote@
@@ -1259,7 +1262,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/FXMat4d.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/FXMat4f.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/FXMatrix.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/FXMemMap.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/FXMemoryStream.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/FXMenuBar.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/FXMenuButton.Plo@am__quote@
@@ -1421,7 +1423,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/fxexeio.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/fxezquantize.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/fxfsquantize.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/fxgetticks.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/fxgifio.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/fxiffio.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/fxjp2io.Plo@am__quote@

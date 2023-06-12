@@ -3,7 +3,7 @@
 *                          M e m o r y   M a p   T e s t                        *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 2004,2022 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 2004,2023 by Jeroen van der Zijp.   All Rights Reserved.        *
 ********************************************************************************/
 #include "fx.h"
 #include <stdio.h>
@@ -13,7 +13,7 @@
 /*
   Notes:
 
-  - Test FXMemMap capabilities.
+  - Test FXMappedFile capabilities.
 
 */
 
@@ -44,7 +44,7 @@ int main(int argc,char** argv){
   char* base;
 
   // What to test
-  FXMemMap map;
+  FXMappedFile map;
 
   // Show how to use
   if(argc<4){
@@ -53,10 +53,12 @@ int main(int argc,char** argv){
     }
 
   // Get action
-  if(strcmp(argv[1],"read")==0)
+  if(strcmp(argv[1],"read")==0){
     action=TEST_READ;
-  else if(strcmp(argv[1],"write")==0)
+    }
+  else if(strcmp(argv[1],"write")==0){
     action=TEST_WRITE;
+    }
   else{
     printusage();
     exit(0);
@@ -78,13 +80,13 @@ int main(int argc,char** argv){
   if(action==TEST_READ){
 
     // Wait for return
-    fprintf(stderr,"Press return to map:");
-    getchar();
+    fprintf(stderr,"Press return to map:\n");
+    //getchar();
 
     // Map
-    base=(char*)map.openMap(filename,offset,length,FXIO::Reading,FXIO::AllReadWrite);
+    base=(char*)map.open(filename,FXIO::Reading,FXIO::AllReadWrite,length,offset);
     if(base==nullptr){
-      fprintf(stderr,"openMap returned NULL\n");
+      fprintf(stderr,"map.open returned NULL\n");
       exit(1);
       }
 
@@ -96,14 +98,14 @@ int main(int argc,char** argv){
       }
 
     // Wait for return
-    fprintf(stderr,"Press return to unmap:");
+    fprintf(stderr,"Press return to unmap:\n");
     getchar();
 
     // Unmap
-    map.unmap();
+    map.close();
 
     // Wait for return
-    fprintf(stderr,"Press return to quit:");
+    fprintf(stderr,"Press return to quit:\n");
     getchar();
     }
 
@@ -111,17 +113,19 @@ int main(int argc,char** argv){
   else if(action==TEST_WRITE){
 
     // Wait for return
-    fprintf(stderr,"Press return to map:");
-    getchar();
+    fprintf(stderr,"Press return to map:\n");
+   // getchar();
 
     // Map
-    base=(char*)map.openMap(filename,offset,length,FXIO::Writing,FXIO::AllReadWrite);
+    base=(char*)map.open(filename,FXIO::Writing,FXIO::AllReadWrite,length,offset);
     if(base==nullptr){
       fprintf(stderr,"openMap returned NULL\n");
       exit(1);
       }
 
+
     fprintf(stderr,"actual length = %ld\n",map.length());
+    fxmessage("base: %p\n", base);
 
     // Write it
     for(index=0; index<map.length(); index++){
@@ -129,18 +133,17 @@ int main(int argc,char** argv){
       }
 
     // Wait for return
-    fprintf(stderr,"Press return to unmap:");
+    fprintf(stderr,"Press return to unmap:\n");
     getchar();
 
     // Unmap
-    map.unmap();
+    map.close();
 
     // Wait for return
-    fprintf(stderr,"Press return to quit:");
+    fprintf(stderr,"Press return to quit:\n");
     getchar();
     }
 
   return 1;
   }
-
 

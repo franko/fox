@@ -249,6 +249,12 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Expression", "Expression\Ex
 		{5B61E9EE-311B-4D21-8802-84A241618BC1} = {5B61E9EE-311B-4D21-8802-84A241618BC1}
 	EndProjectSection
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MappedFile", "mappedfile\mappedfile.vcxproj", "{2A4D43A5-3F9B-4C31-B8A7-9D485A7A8312}"
+	ProjectSection(ProjectDependencies) = postProject
+		{57A223D7-FD28-44A9-BB36-EAEC4399E3FE} = {57A223D7-FD28-44A9-BB36-EAEC4399E3FE}
+		{5B61E9EE-311B-4D21-8802-84A241618BC1} = {5B61E9EE-311B-4D21-8802-84A241618BC1}
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -593,6 +599,14 @@ Global
 		{26EF5933-C3EF-40D2-9978-3B550E75ACBB}.Release|x64.Build.0 = Release|x64
 		{26EF5933-C3EF-40D2-9978-3B550E75ACBB}.Release|x86.ActiveCfg = Release|Win32
 		{26EF5933-C3EF-40D2-9978-3B550E75ACBB}.Release|x86.Build.0 = Release|Win32
+		{2A4D43A5-3F9B-4C31-B8A7-9D485A7A8312}.Debug|x64.ActiveCfg = Debug|x64
+		{2A4D43A5-3F9B-4C31-B8A7-9D485A7A8312}.Debug|x64.Build.0 = Debug|x64
+		{2A4D43A5-3F9B-4C31-B8A7-9D485A7A8312}.Debug|x86.ActiveCfg = Debug|Win32
+		{2A4D43A5-3F9B-4C31-B8A7-9D485A7A8312}.Debug|x86.Build.0 = Debug|Win32
+		{2A4D43A5-3F9B-4C31-B8A7-9D485A7A8312}.Release|x64.ActiveCfg = Release|x64
+		{2A4D43A5-3F9B-4C31-B8A7-9D485A7A8312}.Release|x64.Build.0 = Release|x64
+		{2A4D43A5-3F9B-4C31-B8A7-9D485A7A8312}.Release|x86.ActiveCfg = Release|Win32
+		{2A4D43A5-3F9B-4C31-B8A7-9D485A7A8312}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

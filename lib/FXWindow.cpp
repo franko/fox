@@ -1772,19 +1772,23 @@ FXbool FXWindow::doesSaveUnder() const {
 
 // Add hot key to closest ancestor's accelerator table
 void FXWindow::addHotKey(FXHotKey code){
-  FXAccelTable *accel=nullptr;
-  FXWindow *win=this;
-  while(win && (accel=win->getAccelTable())==nullptr) win=win->parent;
-  if(accel) accel->addAccel(code,this,FXSEL(SEL_KEYPRESS,ID_HOTKEY),FXSEL(SEL_KEYRELEASE,ID_HOTKEY));
+  if(code){
+    FXAccelTable *accel=nullptr;
+    FXWindow *win=this;
+    while(win && (accel=win->getAccelTable())==nullptr) win=win->parent;
+    if(accel) accel->addAccel(code,this,FXSEL(SEL_KEYPRESS,ID_HOTKEY),FXSEL(SEL_KEYRELEASE,ID_HOTKEY));
+    }
   }
 
 
 // Remove hot key from closest ancestor's accelerator table
 void FXWindow::remHotKey(FXHotKey code){
-  FXAccelTable *accel=nullptr;
-  FXWindow *win=this;
-  while(win && (accel=win->getAccelTable())==nullptr) win=win->parent;
-  if(accel) accel->removeAccel(code);
+  if(code){
+    FXAccelTable *accel=nullptr;
+    FXWindow *win=this;
+    while(win && (accel=win->getAccelTable())==nullptr) win=win->parent;
+    if(accel) accel->removeAccel(code);
+    }
   }
 
 

@@ -924,10 +924,9 @@ void FXGLViewer::setScale(FXVec3f s){
 
 
 // Change orientation to new quaternion
-void FXGLViewer::setOrientation(FXQuatf rot){
+void FXGLViewer::setOrientation(const FXQuatf& rot){
   if(rot!=rotation){
-    rotation=rot;
-    rotation.adjust();
+    rotation=normalize(rot);
     updateTransform();
     update();
     }

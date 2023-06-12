@@ -3,7 +3,7 @@
 *                   S y n t a x   H i g h l i g h t   E n g i n e               *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 2002,2022 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 2002,2023 by Jeroen van der Zijp.   All Rights Reserved.        *
 *********************************************************************************
 * This program is free software: you can redistribute it and/or modify          *
 * it under the terms of the GNU General Public License as published by          *

@@ -3,7 +3,7 @@
 *                               X M L   T e s t                                 *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 2016,2022 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 2016,2023 by Jeroen van der Zijp.   All Rights Reserved.        *
 ********************************************************************************/
 #include "fx.h"
 

@@ -43,6 +43,8 @@ Layout/Layout.vcxproj.filters \
 Layout/Layout.vcxproj \
 MDITest/MDITest.vcxproj.filters \
 MDITest/MDITest.vcxproj \
+MappedFile/mappedfile.vcxproj.filters \
+MappedFile/mappedfile.vcxproj \
 PathFinder/PathFinder.vcxproj \
 PathFinder/PathFinder.vcxproj.filters \
 Process/Process.vcxproj.filters \

@@ -261,7 +261,6 @@ void ImageWindow::create(){
 // Handle the clear message
 long ImageWindow::onCanvasRepaint(FXObject*,FXSelector,void* ptr){
   FXEvent *event=(FXEvent*)ptr;
-  FXuint pat;
 
   // We caused a redraw, so redo it all
   if(event->synthetic){
@@ -286,7 +285,7 @@ long ImageWindow::onCanvasRepaint(FXObject*,FXSelector,void* ptr){
     dc.setFillStyle(FILL_OPAQUESTIPPLED);
     dc.setForeground(FXRGB(0,0,0));
     dc.setBackground(FXRGB(255,255,255));
-    for(pat=STIPPLE_0; pat<=STIPPLE_16; pat+=1){
+    for(FXuint pat=STIPPLE_0; pat<=STIPPLE_16; pat+=1){
       dc.setStipple((FXStipplePattern)pat);
       dc.fillRectangle(10+(512*pat)/17,490,31,50);
       }
