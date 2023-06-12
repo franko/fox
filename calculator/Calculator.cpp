@@ -3,7 +3,7 @@
 *                  F O X   D e s k t o p   C a l c u l a t o r                  *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 2001,2022 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 2001,2023 by Jeroen van der Zijp.   All Rights Reserved.        *
 *********************************************************************************
 * This program is free software: you can redistribute it and/or modify          *
 * it under the terms of the GNU General Public License as published by          *
@@ -154,15 +154,9 @@ FXDEFMAP(Calculator) CalculatorMap[]={
 FXIMPLEMENT(Calculator,FXMainWindow,CalculatorMap,ARRAYNUMBER(CalculatorMap))
 
 
-// Use a trick to get a nan
-#if FOX_BIGENDIAN
-static const FXuint   nanny[2]={0x7fffffff,0xffffffff};
-#else
-static const FXuint   nanny[2]={0xffffffff,0x7fffffff};
-#endif
-
-// Double precision nan
-static const FXdouble& dblnan=*((const FXdouble*)(const void*)nanny);
+// Double precision inf and nan
+static const union{ FXulong u; FXdouble f; } dblinf={FXULONG(0x7ff0000000000000)};
+static const union{ FXulong u; FXdouble f; } dblnan={FXULONG(0x7fffffffffffffff)};
 
 
 // Operator priorities
@@ -924,7 +918,7 @@ static FXdouble factorial(FXdouble n){
       }
     return result;
     }
-  return dblnan;
+  return dblnan.f;
   }
 
 
@@ -947,7 +941,7 @@ static FXdouble permutations(FXdouble n,FXdouble r){
       }
     return result;
     }
-  return dblnan;
+  return dblnan.f;
   }
 
 
@@ -972,7 +966,7 @@ static FXdouble combinations(FXdouble n,FXdouble r){
       }
     return res1/res2;
     }
-  return dblnan;
+  return dblnan.f;
   }
 
 

@@ -503,7 +503,8 @@
         [a82d]       Method #2
 
     Either method has an <N> count number, this is needed so we know how much space
-    to skip in the program.
+    to skip in the program. For unicode, [XYZ] may be better implemented as combination
+    of (X|Y|Z), to avoid some complexities.
   - Careful about reversing unicode, don't reverse bytes but characters.
   - Possibly implement parser base class, with actions in derived class; easier to
     keep up additions to syntax this way and keep reversal code in sync with regular

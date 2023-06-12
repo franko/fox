@@ -165,6 +165,8 @@ FXICOIcon.h \
 FXICOImage.h \
 FXIFFImage.h \
 FXIFFIcon.h \
+FXINI.h \
+FXINIFile.h \
 FXIO.h \
 FXIOBuffer.h \
 FXIODevice.h \
@@ -194,6 +196,7 @@ FXMDIButton.h \
 FXMDIChild.h \
 FXMDIClient.h \
 FXMainWindow.h \
+FXMappedFile.h \
 FXMat2d.h \
 FXMat2f.h \
 FXMat3d.h \
@@ -202,7 +205,6 @@ FXMat3f.h \
 FXMat4f.h \
 FXMatrix.h \
 FXMemoryStream.h \
-FXMemMap.h \
 FXMenuBar.h \
 FXMenuButton.h \
 FXMenuCaption.h \
@@ -214,6 +216,7 @@ FXMenuPane.h \
 FXMenuSeparator.h \
 FXMenuTitle.h \
 FXMessageBox.h \
+FXMessageChannel.h \
 FXMetaClass.h \
 FXMutex.h \
 FXObject.h \
@@ -241,7 +244,6 @@ FXPtrList.h \
 FXPtrQueue.h \
 FXQuatd.h \
 FXQuatf.h \
-FXMessageChannel.h \
 FXRASIcon.h \
 FXRASImage.h \
 FXRGBIcon.h \

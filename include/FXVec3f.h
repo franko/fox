@@ -95,7 +95,7 @@ public:
   FXVec3f operator-() const { return FXVec3f(-x,-y,-z); }
 
   /// Length and square of length
-  FXfloat length2() const { return x*x+y*y+z*z; }
+  FXfloat length2() const { return z*z+y*y+x*x; }
   FXfloat length() const { return Math::sqrt(length2()); }
 
   /// Destructor

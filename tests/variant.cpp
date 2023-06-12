@@ -1,11 +1,20 @@
+/********************************************************************************
+*                                                                               *
+*                   V a r i a n t   a n d   J S O N   T e s t s                 *
+*                                                                               *
+*********************************************************************************
+* Copyright (C) 2013,2023 by Jeroen van der Zijp.   All Rights Reserved.        *
+********************************************************************************/
 #include "fx.h"
 
 
 // Print options
 void printusage(const char* prog){
   fxmessage("%s options:\n",prog);
-  fxmessage("  --load <file>            Load json file.\n");
-  fxmessage("  --save <file>            Save json file.\n");
+  fxmessage("  --load-json <file>       Load json file.\n");
+  fxmessage("  --save-json <file>       Save json file.\n");
+  fxmessage("  --load-ini <file>        Load ini file.\n");
+  fxmessage("  --save-ini <file>        Save ini file.\n");
   fxmessage("  --tracelevel <level>     Set trace level.\n");
   fxmessage("  --precision <prec>       Set numeric precision for floating point.\n");
   fxmessage("  --format <format>        Set exponent format for floating point (0=Never,1=Always,2=As-Needed).\n");
@@ -22,8 +31,10 @@ void printusage(const char* prog){
 
 // Test JSON I/O
 int main(int argc,char *argv[]){
-  const FXchar* savefile="test.json";
-  const FXchar* loadfile=nullptr;
+  FXString savefile="test.json";
+  FXString loadfile;
+  FXbool loadjson=true;
+  FXbool savejson=true;
   FXint precision;
   FXint format;
   FXint flow;
@@ -36,6 +47,7 @@ int main(int argc,char *argv[]){
 
   // JSON I/O
   FXJSONFile json;
+  FXINIFile  ini;
 
   // Variant to save
   FXVariant var;
@@ -65,17 +77,33 @@ int main(int argc,char *argv[]){
       printusage(argv[0]);
       exit(0);
       }
-    else if(strcmp(argv[arg],"--load")==0){
-      if(++arg>=argc){ fxmessage("Missing load filename argument.\n"); exit(1); }
+    else if(strcmp(argv[arg],"--load-json")==0){
+      if(++arg>=argc){ fxmessage("Missing filename argument.\n"); exit(1); }
       loadfile=argv[arg];
+      loadjson=true;
       }
-    else if(strcmp(argv[arg],"--save")==0){
-      if(++arg>=argc){ fxmessage("Missing save filename argument.\n"); exit(1); }
+    else if(strcmp(argv[arg],"--save-json")==0){
+      if(++arg>=argc){ fxmessage("Missing filename argument.\n"); exit(1); }
       savefile=argv[arg];
+      savejson=true;
+      }
+    else if(strcmp(argv[arg],"--load-ini")==0){
+      if(++arg>=argc){ fxmessage("Missing filename argument.\n"); return 1; }
+      loadfile=argv[arg];
+      loadjson=false;
+      }
+    else if(strcmp(argv[arg],"--save-ini")==0){
+      if(++arg>=argc){ fxmessage("Missing filename argument.\n"); return 1; }
+      savefile=argv[arg];
+      savejson=false;
       }
     else if(strcmp(argv[arg],"--tracelevel")==0){
       if(++arg>=argc){ fxmessage("Missing tracelevel number argument.\n"); exit(1); }
       setTraceLevel(strtoul(argv[arg],nullptr,0));
+      }
+    else if(strcmp(argv[arg],"--tracetopics")==0){
+      if(++arg>=argc){ fxmessage("Missing tracelevel number argument.\n"); exit(1); }
+      setTraceTopics(argv[arg],true);
       }
     else if(strcmp(argv[arg],"--precision")==0){
       if(++arg>=argc){ fxmessage("Missing precision number argument.\n"); exit(1); }
@@ -119,7 +147,7 @@ int main(int argc,char *argv[]){
     }
 
   // If not loading, make up some data
-  if(!loadfile){
+  if(loadfile.empty()){
 
     // Simple values
     var["real"]=PI;
@@ -128,6 +156,8 @@ int main(int argc,char *argv[]){
     var["string"]="variant";
     var["char"]='X';
     var["null"]=FXVariant::null;
+    var["inf"]=33.0;
+    var["nan"]=22.0;
     var["array"][5]=10.0;
     var["array"][3][2]=10.0;
     var["array"][3][1]='x';
@@ -149,56 +179,102 @@ int main(int argc,char *argv[]){
     }
 
   // Load some data
-  if(loadfile){
+  if(!loadfile.empty()){
 
-    // Load test
-    if(!json.open(loadfile,FXJSON::Load)){
-      fxwarning("Error: unable to open: \"%s\" for reading.\n",loadfile);
-      return 0;
+    // Load as json
+    if(loadjson){
+      if(json.open(loadfile,FXJSON::Load)){
+        fxmessage("Start load from: %s\n",loadfile.text());
+        FXJSON::Error loaderr=json.load(var);
+        fxmessage("Loaded %lld bytes, %d lines\n",json.getOffset(),json.getLine());
+        if(loaderr!=FXJSON::ErrOK){
+          fxmessage("Error: %s:%d:%d: %s\n",loadfile.text(),json.getLine(),json.getColumn(),FXJSON::getError(loaderr));
+          }
+        else{
+          fxmessage("OK\n");
+          }
+        json.close();
+        }
+      else{
+        fxwarning("Error: unable to open: \"%s\" for reading.\n",loadfile.text());
+        }
       }
-    fxmessage("Start load from: %s\n",loadfile);
-    FXJSON::Error loaderr=json.load(var);
-    fxmessage("Loaded %lld bytes, %d lines\n",json.getOffset(),json.getLine());
-    if(loaderr!=FXJSON::ErrOK){
-      fxmessage("Error: %s:%d:%d: %s\n",loadfile,json.getLine(),json.getColumn(),FXJSON::getError(loaderr));
-      }
+
+    // Load as ini
     else{
-      fxmessage("OK\n");
+      if(ini.open(loadfile,FXINI::Load)){
+        fxmessage("Start load from: %s\n",loadfile.text());
+        FXINI::Error loaderr=ini.load(var);
+        fxmessage("Loaded %lld bytes\n",ini.getOffset());
+        if(loaderr!=FXINI::ErrOK){
+          fxwarning("Error: %s:%d:%d: %s\n",loadfile.text(),ini.getLine(),ini.getColumn(),FXINIFile::getError(loaderr));
+          }
+        else{
+          fxwarning("OK\n");
+          }
+        ini.close();
+        }
+      else{
+        fxwarning("Error: unable to open: \"%s\" for reading.\n",loadfile.text());
+        }
       }
-    json.close();
     }
 
   // Save some data
-  if(savefile){
+  if(!savefile.empty()){
 
-    // Set precision and format
-    json.setNumericPrecision(precision);
-    json.setNumericFormat(format);
-    json.setIndentation(dent);
-    json.setOutputFlow(flow);
-    json.setLineWrap(wrap);
-    json.setEscapeMode(esc);
-    json.setQuote(quote);
-    json.setVersion(ver);
+    // Save as json
+    if(savejson){
 
-    // Report float precision used to save
-    fxmessage("Precision: %d format: %d flow: %d dent: %d wrap: %d\n",precision,format,flow,dent,wrap);
+      // Set precision and format
+      json.setNumericPrecision(precision);
+      json.setNumericFormat(format);
+      json.setIndentation(dent);
+      json.setOutputFlow(flow);
+      json.setLineWrap(wrap);
+      json.setEscapeMode(esc);
+      json.setQuote(quote);
+      json.setVersion(ver);
 
-    // Save test
-    if(!json.open(savefile,FXJSON::Save)){
-      fxwarning("Error: unable to open: \"%s\" for writing.\n",savefile);
-      return 0;
+      // Report float precision used to save
+      fxmessage("Precision: %d format: %d flow: %d dent: %d wrap: %d\n",precision,format,flow,dent,wrap);
+
+      // Save test
+      if(json.open(savefile,FXJSON::Save)){
+        fxmessage("Start save to: %s\n",savefile.text());
+        FXJSON::Error saveerr=json.save(var);
+        fxmessage("Stored %lld bytes, %d lines\n",json.getOffset(),json.getLine());
+        if(saveerr!=FXJSON::ErrOK){
+          fxmessage("Error: %s:%d:%d: %s\n",savefile.text(),json.getLine(),json.getColumn(),FXJSON::getError(saveerr));
+          }
+        else{
+          fxmessage("OK\n");
+          }
+        json.close();
+        }
+      else{
+        fxwarning("Error: unable to open: \"%s\" for writing.\n",savefile.text());
+        }
       }
-    fxmessage("Start save to: %s\n",savefile);
-    FXJSON::Error saveerr=json.save(var);
-    fxmessage("Stored %lld bytes, %d lines\n",json.getOffset(),json.getLine());
-    if(saveerr!=FXJSON::ErrOK){
-      fxmessage("Error: %s:%d:%d: %s\n",savefile,json.getLine(),json.getColumn(),FXJSON::getError(saveerr));
-      }
+
+    // Save as ini
     else{
-      fxmessage("OK\n");
+      if(ini.open(savefile,FXINI::Save)){
+        fxmessage("Start save to: %s\n",savefile.text());
+        FXINI::Error saveerr=ini.save(var);
+        fxmessage("Stored %lld bytes, %d lines\n",ini.getOffset(),ini.getLine());
+        if(saveerr!=FXINI::ErrOK){
+          fxmessage("Error: %s:%d:%d: %s\n",savefile.text(),ini.getLine(),ini.getColumn(),FXINIFile::getError(saveerr));
+          }
+        else{
+          fxmessage("OK\n");
+          }
+        json.close();
+        }
+      else{
+        fxwarning("Error: unable to open: \"%s\" for writing.\n",savefile.text());
+        }
       }
-    json.close();
     }
 
   return 0;

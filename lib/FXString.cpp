@@ -1893,7 +1893,7 @@ FXString FXString::vvalue(const FXchar* fmt,va_list args){
 
 /*******************************************************************************/
 
-// Compute hash value of string
+// Compute FNV1a hash value of string
 FXuint FXString::hash(const FXchar* s,FXint n){
   FXuint result=0x811C9DC5;
   FXuchar c;
@@ -1928,13 +1928,16 @@ FXuint FXString::hash() const {
 
 // Compare string and string
 FXint FXString::compare(const FXchar* s1,const FXchar* s2){
-  FXint c1,c2;
-  do{
-    c1=*s1++;
-    c2=*s2++;
+  if(s1!=s2){
+    FXint c1,c2;
+    do{
+      c1=*s1++;
+      c2=*s2++;
+      }
+    while((c1==c2) && c1);
+    return c1-c2;
     }
-  while((c1==c2) && c1);
-  return c1-c2;
+  return 0;
   }
 
 
@@ -1959,7 +1962,7 @@ FXint FXString::compare(const FXString& s1,const FXString& s2){
 
 // Compare string and string, up to n
 FXint FXString::compare(const FXchar* s1,const FXchar* s2,FXint n){
-  if(0<n){
+  if(s1!=s2 && n>0){
     FXint c1,c2;
     do{
       c1=*s1++;
@@ -1993,13 +1996,16 @@ FXint FXString::compare(const FXString& s1,const FXString& s2,FXint n){
 
 // Compare string and string case insensitive
 FXint FXString::comparecase(const FXchar* s1,const FXchar* s2){
-  FXint c1,c2;
-  do{
-    c1=Ascii::toLower(*s1++);
-    c2=Ascii::toLower(*s2++);
+  if(s1!=s2){
+    FXint c1,c2;
+    do{
+      c1=Ascii::toLower(*s1++);
+      c2=Ascii::toLower(*s2++);
+      }
+    while((c1==c2) && c1);
+    return c1-c2;
     }
-  while((c1==c2) && c1);
-  return c1-c2;
+  return 0;
   }
 
 
@@ -2024,7 +2030,7 @@ FXint FXString::comparecase(const FXString& s1,const FXString& s2){
 
 // Compare string and string case insensitive, up to n
 FXint FXString::comparecase(const FXchar* s1,const FXchar* s2,FXint n){
-  if(0<n){
+  if(s1!=s2 && n>0){
     FXint c1,c2;
     do{
       c1=Ascii::toLower(*s1++);
@@ -2059,50 +2065,51 @@ FXint FXString::comparecase(const FXString& s1,const FXString& s2,FXint n){
 
 // Compare with natural interpretation of decimal numbers
 FXint FXString::comparenatural(const FXchar* s1,const FXchar* s2){
-  const FXchar *ns1,*ne1,*ns2,*ne2;
-  FXint diff=0,c1=0,c2=0,d;
-  while((c1=(FXuchar)*s1)!='\0' && (c2=(FXuchar)*s2)!='\0'){
+  FXint diff=0;
+  if(s1!=s2){
+    const FXchar *ns1,*ne1,*ns2,*ne2;
+    FXint c1=0,c2=0,d;
+    while((c1=(FXuchar)*s1)!='\0' && (c2=(FXuchar)*s2)!='\0'){
 
-    // Both are numbers: special treatment
-    if(c1<='9' && c2<='9' && '0'<=c1 && '0'<=c2){
+      // Both are numbers: special treatment
+      if(c1<='9' && c2<='9' && '0'<=c1 && '0'<=c2){
 
-      // Parse over leading zeroes
-      for(ns1=s1; *ns1=='0'; ++ns1){ }
-      for(ns2=s2; *ns2=='0'; ++ns2){ }
+        // Parse over leading zeroes
+        for(ns1=s1; *ns1=='0'; ++ns1){ }
+        for(ns2=s2; *ns2=='0'; ++ns2){ }
 
-      // Use number of leading zeroes as tie-breaker
-      if(diff==0){ diff=(ns1-s1)-(ns2-s2); }
+        // Use number of leading zeroes as tie-breaker
+        if(diff==0){ diff=(ns1-s1)-(ns2-s2); }
 
-      // Parse over numbers
-      for(ne1=ns1; '0'<=*ne1 && *ne1<='9'; ++ne1){ }
-      for(ne2=ns2; '0'<=*ne2 && *ne2<='9'; ++ne2){ }
+        // Parse over numbers
+        for(ne1=ns1; '0'<=*ne1 && *ne1<='9'; ++ne1){ }
+        for(ne2=ns2; '0'<=*ne2 && *ne2<='9'; ++ne2){ }
 
-      // Check length difference of the numbers
-      if((d=(ne1-ns1)-(ne2-ns2))!=0){ return d; }
+        // Check length difference of the numbers
+        if((d=(ne1-ns1)-(ne2-ns2))!=0){ return d; }
 
-      // Compare the numbers
-      while(ns1<ne1){
-        if((d=*ns1++ - *ns2++)!=0){ return d; }
+        // Compare the numbers
+        while(ns1<ne1){
+          if((d=*ns1++ - *ns2++)!=0){ return d; }
+          }
+
+        // Continue with the rest
+        s1=ne1;
+        s2=ne2;
+        continue;
         }
 
-      // Continue with the rest
-      s1=ne1;
-      s2=ne2;
-      continue;
+      // Characters differ
+      if(c1!=c2){ return c1-c2; }
+
+      // Advance
+      s1++;
+      s2++;
       }
 
     // Characters differ
     if(c1!=c2){ return c1-c2; }
-
-    // Advance
-    s1++;
-    s2++;
     }
-
-  // Characters differ
-  if(c1!=c2){ return c1-c2; }
-
-  // Use tie-breaker
   return diff;
   }
 
@@ -2128,54 +2135,55 @@ FXint FXString::comparenatural(const FXString& s1,const FXString& s2){
 
 // Compare case insensitive with natural interpretation of decimal numbers
 FXint FXString::comparenaturalcase(const FXchar* s1,const FXchar* s2){
-  const FXchar *ns1,*ne1,*ns2,*ne2;
-  FXint diff=0,c1=0,c2=0,d;
-  while((c1=(FXuchar)*s1)!='\0' && (c2=(FXuchar)*s2)!='\0'){
+  FXint diff=0;
+  if(s1!=s2){
+    const FXchar *ns1,*ne1,*ns2,*ne2;
+    FXint c1=0,c2=0,d;
+    while((c1=(FXuchar)*s1)!='\0' && (c2=(FXuchar)*s2)!='\0'){
 
-    // Both are numbers: special treatment
-    if(c1<='9' && c2<='9' && '0'<=c1 && '0'<=c2){
+      // Both are numbers: special treatment
+      if(c1<='9' && c2<='9' && '0'<=c1 && '0'<=c2){
 
-      // Parse over leading zeroes
-      for(ns1=s1; *ns1=='0'; ++ns1){ }
-      for(ns2=s2; *ns2=='0'; ++ns2){ }
+        // Parse over leading zeroes
+        for(ns1=s1; *ns1=='0'; ++ns1){ }
+        for(ns2=s2; *ns2=='0'; ++ns2){ }
 
-      // Use number of leading zeroes as tie-breaker
-      if(diff==0){ diff=(ns1-s1)-(ns2-s2); }
+        // Use number of leading zeroes as tie-breaker
+        if(diff==0){ diff=(ns1-s1)-(ns2-s2); }
 
-      // Parse over numbers
-      for(ne1=ns1; '0'<=*ne1 && *ne1<='9'; ++ne1){ }
-      for(ne2=ns2; '0'<=*ne2 && *ne2<='9'; ++ne2){ }
+        // Parse over numbers
+        for(ne1=ns1; '0'<=*ne1 && *ne1<='9'; ++ne1){ }
+        for(ne2=ns2; '0'<=*ne2 && *ne2<='9'; ++ne2){ }
 
-      // Check length difference of the numbers
-      if((d=(ne1-ns1)-(ne2-ns2))!=0){ return d; }
+        // Check length difference of the numbers
+        if((d=(ne1-ns1)-(ne2-ns2))!=0){ return d; }
 
-      // Compare the numbers
-      while(ns1<ne1){
-        if((d=*ns1++ - *ns2++)!=0){ return d; }
+        // Compare the numbers
+        while(ns1<ne1){
+          if((d=*ns1++ - *ns2++)!=0){ return d; }
+          }
+
+        // Continue with the rest
+        s1=ne1;
+        s2=ne2;
+        continue;
         }
 
-      // Continue with the rest
-      s1=ne1;
-      s2=ne2;
-      continue;
-      }
+      // Get lower-case
+      c1=Ascii::toLower(c1);
+      c2=Ascii::toLower(c2);
 
-    // Get lower-case
-    c1=Ascii::toLower(c1);
-    c2=Ascii::toLower(c2);
+      // Characters differ
+      if(c1!=c2){ return c1-c2; }
+
+      // Advance
+      s1++;
+      s2++;
+      }
 
     // Characters differ
     if(c1!=c2){ return c1-c2; }
-
-    // Advance
-    s1++;
-    s2++;
     }
-
-  // Characters differ
-  if(c1!=c2){ return c1-c2; }
-
-  // Use tie-breaker
   return diff;
   }
 

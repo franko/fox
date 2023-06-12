@@ -25,6 +25,7 @@ $(top_srcdir)/adie/browser.gif \
 $(top_srcdir)/adie/capitalize.gif \
 $(top_srcdir)/adie/close_gif.gif \
 $(top_srcdir)/adie/colors_gif.gif \
+$(top_srcdir)/adie/command_bmp.bmp \
 $(top_srcdir)/adie/config_gif.gif \
 $(top_srcdir)/adie/copy_gif.gif \
 $(top_srcdir)/adie/cut_gif.gif \
@@ -91,6 +92,8 @@ Preferences.h \
 Preferences.cpp \
 ShellCommand.h \
 ShellCommand.cpp \
+ShellDialog.h \
+ShellDialog.cpp \
 Syntax.h \
 Syntax.cpp \
 SyntaxParser.h \

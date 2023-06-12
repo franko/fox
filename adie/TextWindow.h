@@ -3,7 +3,7 @@
 *                     T h e   A d i e   T e x t   E d i t o r                   *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 1998,2022 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 1998,2023 by Jeroen van der Zijp.   All Rights Reserved.        *
 *********************************************************************************
 * This program is free software: you can redistribute it and/or modify          *
 * it under the terms of the GNU General Public License as published by          *
@@ -252,7 +252,6 @@ public:
   long onUpdOverstrike(FXObject*,FXSelector,void*);
   long onUpdReadOnly(FXObject*,FXSelector,void*);
   long onUpdTabMode(FXObject*,FXSelector,void*);
-  long onUpdNumRows(FXObject*,FXSelector,void*);
   long onClock(FXObject*,FXSelector,void*);
   long onCmdPreferences(FXObject*,FXSelector,void*);
   long onCmdDelimiters(FXObject*,FXSelector,void*);
@@ -297,9 +296,13 @@ public:
   long onCmdFindInFiles(FXObject*,FXSelector,void*);
   long onQueryTextTip(FXObject*,FXSelector,void*);
 
+  long onLoggerRightMouse(FXObject*,FXSelector,void*);
+
   // Shell commands
   long onCmdShellDialog(FXObject*,FXSelector,void*);
   long onUpdShellDialog(FXObject*,FXSelector,void*);
+  long onCmdShellCommand(FXObject*,FXSelector,void*);
+  long onUpdShellCommand(FXObject*,FXSelector,void*);
   long onCmdShellFilter(FXObject*,FXSelector,void*);
   long onUpdShellFilter(FXObject*,FXSelector,void*);
   long onCmdShellCancel(FXObject*,FXSelector,void*);
@@ -422,7 +425,6 @@ public:
     ID_BRACEMATCH,
     ID_BRACEMATCHTIME,
     ID_BRACEMATCHSTAY,
-    ID_NUM_ROWS,
     ID_REPLACE_FILE,
     ID_EXTRACT_FILE,
     ID_WHEELADJUST,
@@ -520,6 +522,7 @@ public:
     ID_TABSELECT_8,
     ID_SHELL_DIALOG,
     ID_SHELL_FILTER,
+    ID_SHELL_COMMAND,
     ID_SHELL_CANCEL,
     ID_SHELL_OUTPUT,
     ID_SHELL_ERROR,

@@ -3,7 +3,7 @@
 *                     T h e   A d i e   T e x t   E d i t o r                   *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 1998,2022 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 1998,2023 by Jeroen van der Zijp.   All Rights Reserved.        *
 *********************************************************************************
 * This program is free software: you can redistribute it and/or modify          *
 * it under the terms of the GNU General Public License as published by          *
@@ -129,10 +129,10 @@ Adie::Adie(const FXString& name):FXApp(name){
 Syntax* Adie::getSyntaxByName(const FXString& lang){
   FXTRACE((11,"Adie::getSyntaxByName(%s)\n",lang.text()));
   if(!lang.empty()){
-    for(FXint syn=0; syn<syntaxes.no(); syn++){
-      if(syntaxes[syn]->getName()==lang){
-        FXTRACE((11,"syntaxes[%d]: language: %s matched name: %s!\n",syn,syntaxes[syn]->getName().text(),lang.text()));
-        return syntaxes[syn];
+    for(FXint syn=0; syn<numSyntaxes(); syn++){
+      if(getSyntax(syn)->getName()==lang){
+        FXTRACE((11,"syntaxes[%d]: language: %s matched name: %s!\n",syn,getSyntax(syn)->getName().text(),lang.text()));
+        return getSyntax(syn);
         }
       }
     }
@@ -156,10 +156,10 @@ Syntax* Adie::getSyntaxByRegistry(const FXString& file){
 Syntax* Adie::getSyntaxByPattern(const FXString& file){
   FXTRACE((11,"Adie::getSyntaxByPattern(%s)\n",file.text()));
   if(!file.empty()){
-    for(FXint syn=0; syn<syntaxes.no(); syn++){
-      if(syntaxes[syn]->matchFilename(file)){
-        FXTRACE((11,"syntaxes[%d]: language: %s matched file: %s!\n",syn,syntaxes[syn]->getName().text(),file.text()));
-        return syntaxes[syn];
+    for(FXint syn=0; syn<numSyntaxes(); syn++){
+      if(getSyntax(syn)->matchFilename(file)){
+        FXTRACE((11,"syntaxes[%d]: language: %s matched file: %s!\n",syn,getSyntax(syn)->getName().text(),file.text()));
+        return getSyntax(syn);
         }
       }
     }
@@ -171,10 +171,10 @@ Syntax* Adie::getSyntaxByPattern(const FXString& file){
 Syntax* Adie::getSyntaxByContents(const FXString& contents){
   FXTRACE((11,"Adie::getSyntaxByContents(%s)\n",contents.text()));
   if(!contents.empty()){
-    for(FXint syn=0; syn<syntaxes.no(); syn++){
-      if(syntaxes[syn]->matchContents(contents)){
-        FXTRACE((11,"syntaxes[%d]: language: %s matched contents: %s!\n",syn,syntaxes[syn]->getName().text(),contents.text()));
-        return syntaxes[syn];
+    for(FXint syn=0; syn<numSyntaxes(); syn++){
+      if(getSyntax(syn)->matchContents(contents)){
+        FXTRACE((11,"syntaxes[%d]: language: %s matched contents: %s!\n",syn,getSyntax(syn)->getName().text(),contents.text()));
+        return getSyntax(syn);
         }
       }
     }
@@ -197,9 +197,9 @@ FXString Adie::unique(const FXString& path) const {
 
 // Find an as yet untitled, unedited window
 TextWindow *Adie::findUnused() const {
-  for(FXint w=0; w<windowlist.no(); w++){
-    if(!windowlist[w]->isFilenameSet() && !windowlist[w]->isModified()){
-      return windowlist[w];
+  for(FXint w=0; w<numWindows(); w++){
+    if(!getWindow(w)->isFilenameSet() && !getWindow(w)->isModified()){
+      return getWindow(w);
       }
     }
   return nullptr;
@@ -208,9 +208,9 @@ TextWindow *Adie::findUnused() const {
 
 // Find window, if any, currently editing the given file
 TextWindow* Adie::findWindow(const FXString& file) const {
-  for(FXint w=0; w<windowlist.no(); w++){
-    if(windowlist[w]->getFilename()==file){
-      return windowlist[w];
+  for(FXint w=0; w<numWindows(); w++){
+    if(getWindow(w)->getFilename()==file){
+      return getWindow(w);
       }
     }
   return nullptr;
@@ -286,7 +286,7 @@ long Adie::onUpdSyntaxPaths(FXObject* sender,FXSelector,void*){
 
 // Close all windows
 long Adie::onCmdCloseAll(FXObject*,FXSelector,void*){
-  while(0<windowlist.no() && windowlist[0]->close(true)){}
+  while(0<numWindows() && getWindow(0)->close(true)){}
   return 1;
   }
 
@@ -555,8 +555,8 @@ FXint Adie::start(int argc,char** argv){
 // Clean up the mess
 Adie::~Adie(){
   FXTRACE((10,"Adie::~Adie()\n"));
-  for(int i=0; i<syntaxes.no(); i++) delete syntaxes[i];
-  FXASSERT(windowlist.no()==0);
+  for(int i=0; i<numSyntaxes(); i++) delete getSyntax(i);
+  FXASSERT(numWindows()==0);
   delete associations;
   delete bigicon;
   delete smallicon;

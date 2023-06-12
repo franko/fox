@@ -315,6 +315,8 @@ FXImage.cpp \
 FXImageFrame.cpp \
 FXImageView.cpp \
 FXInputDialog.cpp \
+FXINI.cpp \
+FXINIFile.cpp \
 FXIO.cpp \
 FXIOBuffer.cpp \
 FXIODevice.cpp \
@@ -335,6 +337,7 @@ FXMDIButton.cpp \
 FXMDIChild.cpp \
 FXMDIClient.cpp \
 FXMainWindow.cpp \
+FXMappedFile.cpp \
 FXMat2d.cpp \
 FXMat2f.cpp \
 FXMat3d.cpp \
@@ -342,7 +345,6 @@ FXMat3f.cpp \
 FXMat4d.cpp \
 FXMat4f.cpp \
 FXMatrix.cpp \
-FXMemMap.cpp \
 FXMemoryStream.cpp \
 FXMenuBar.cpp \
 FXMenuButton.cpp \
@@ -501,7 +503,6 @@ fxddsio.cpp \
 fxezquantize.cpp \
 fxexeio.cpp \
 fxfsquantize.cpp \
-fxgetticks.cpp \
 fxgifio.cpp \
 fxiffio.cpp \
 fxjpegio.cpp \

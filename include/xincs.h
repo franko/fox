@@ -82,7 +82,7 @@
 // Common headers
 #include <windows.h>            // Core Windows stuff
 #include <winspool.h>           // Printer stuff
-#include <io.h>                 // For _access()
+#include <winternl.h>
 #ifndef __CYGWIN__
 #include <winsock2.h>
 #endif
@@ -107,7 +107,7 @@
 #ifdef HAVE_GL_H
 #include <GL/gl.h>
 #endif
-//#ifdef _WIN32
+//#ifdef WIN32
 //#include <GL/glext.h>
 //#endif
 #ifndef GLAPIENTRY

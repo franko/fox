@@ -3,7 +3,7 @@
 *                     T h e   A d i e   T e x t   E d i t o r                   *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 1998,2022 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 1998,2023 by Jeroen van der Zijp.   All Rights Reserved.        *
 *********************************************************************************
 * This program is free software: you can redistribute it and/or modify          *
 * it under the terms of the GNU General Public License as published by          *
@@ -32,6 +32,7 @@
 #include "Adie.h"
 #include "FindInFiles.h"
 #include "ShellCommand.h"
+#include "ShellDialog.h"
 #include "icons.h"
 
 
@@ -127,6 +128,7 @@ FXDEFMAP(TextWindow) TextWindowMap[]={
   FXMAPFUNC(SEL_DND_MOTION,TextWindow::ID_TEXT,TextWindow::onTextDNDMotion),
   FXMAPFUNC(SEL_QUERY_TIP,TextWindow::ID_TEXT,TextWindow::onQueryTextTip),
   FXMAPFUNC(SEL_RIGHTBUTTONRELEASE,TextWindow::ID_TEXT,TextWindow::onTextRightMouse),
+  FXMAPFUNC(SEL_RIGHTBUTTONRELEASE,TextWindow::ID_LOGGER,TextWindow::onLoggerRightMouse),
 
   FXMAPFUNC(SEL_COMMAND,TextWindow::ID_ABOUT,TextWindow::onCmdAbout),
   FXMAPFUNC(SEL_COMMAND,TextWindow::ID_HELP,TextWindow::onCmdHelp),
@@ -213,7 +215,6 @@ FXDEFMAP(TextWindow) TextWindowMap[]={
   FXMAPFUNC(SEL_UPDATE,TextWindow::ID_OVERSTRIKE,TextWindow::onUpdOverstrike),
   FXMAPFUNC(SEL_UPDATE,TextWindow::ID_READONLY,TextWindow::onUpdReadOnly),
   FXMAPFUNC(SEL_UPDATE,TextWindow::ID_TABMODE,TextWindow::onUpdTabMode),
-  FXMAPFUNC(SEL_UPDATE,TextWindow::ID_NUM_ROWS,TextWindow::onUpdNumRows),
   FXMAPFUNC(SEL_COMMAND,TextWindow::ID_PREFERENCES,TextWindow::onCmdPreferences),
   FXMAPFUNC(SEL_COMMAND,TextWindow::ID_TABCOLUMNS,TextWindow::onCmdTabColumns),
   FXMAPFUNC(SEL_UPDATE,TextWindow::ID_TABCOLUMNS,TextWindow::onUpdTabColumns),
@@ -269,6 +270,8 @@ FXDEFMAP(TextWindow) TextWindowMap[]={
 
   FXMAPFUNC(SEL_COMMAND,TextWindow::ID_SHELL_DIALOG,TextWindow::onCmdShellDialog),
   FXMAPFUNC(SEL_UPDATE,TextWindow::ID_SHELL_DIALOG,TextWindow::onUpdShellDialog),
+  FXMAPFUNC(SEL_COMMAND,TextWindow::ID_SHELL_COMMAND,TextWindow::onCmdShellCommand),
+  FXMAPFUNC(SEL_UPDATE,TextWindow::ID_SHELL_COMMAND,TextWindow::onUpdShellCommand),
   FXMAPFUNC(SEL_COMMAND,TextWindow::ID_SHELL_FILTER,TextWindow::onCmdShellFilter),
   FXMAPFUNC(SEL_UPDATE,TextWindow::ID_SHELL_FILTER,TextWindow::onUpdShellFilter),
   FXMAPFUNC(SEL_COMMAND,TextWindow::ID_SHELL_CANCEL,TextWindow::onCmdShellCancel),
@@ -369,7 +372,7 @@ FXIMPLEMENT(TextWindow,FXMainWindow,TextWindowMap,ARRAYNUMBER(TextWindowMap))
 TextWindow::TextWindow(Adie* a):FXMainWindow(a,"Adie",nullptr,nullptr,DECOR_ALL,0,0,850,600,0,0),mrufiles(a){
 
   // Add to list of windows
-  getApp()->windowlist.append(this);
+  getApp()->appendWindow(this);
 
   // Default font
   font=nullptr;
@@ -412,7 +415,7 @@ TextWindow::TextWindow(Adie* a):FXMainWindow(a,"Adie",nullptr,nullptr,DECOR_ALL,
   // Make tree
   FXHorizontalFrame* treeframe=new FXHorizontalFrame(treebox,FRAME_SUNKEN|FRAME_THICK|LAYOUT_FILL_X|LAYOUT_FILL_Y,0,0,0,0, 0,0,0,0);
   dirlist=new FXDirList(treeframe,this,ID_OPEN_TREE,DIRLIST_SHOWFILES|DIRLIST_NO_OWN_ASSOC|TREELIST_BROWSESELECT|TREELIST_SHOWS_LINES|TREELIST_SHOWS_BOXES|LAYOUT_FILL_X|LAYOUT_FILL_Y);
-  dirlist->setAssociations(getApp()->associations,false);
+  dirlist->setAssociations(getApp()->getFileAssociations(),false);
   dirlist->setDraggableFiles(false);
   FXHorizontalFrame* filterframe=new FXHorizontalFrame(treebox,LAYOUT_FILL_X,0,0,0,0, 4,0,0,4);
   new FXLabel(filterframe,tr("Filter:"),nullptr,LAYOUT_CENTER_Y);
@@ -621,8 +624,8 @@ void TextWindow::createMenubar(){
   // Syntax menu; it scrolls if we get too many
   syntaxmenu=new FXScrollPane(this,25);
   new FXMenuRadio(syntaxmenu,tr("Plain\t\tNo syntax for this file."),this,ID_SYNTAX_FIRST);
-  for(int syn=0; syn<getApp()->syntaxes.no() && syn<100; syn++){
-    new FXMenuRadio(syntaxmenu,getApp()->syntaxes[syn]->getName(),this,ID_SYNTAX_FIRST+1+syn);
+  for(int syn=0; syn<getApp()->numSyntaxes() && syn<100; syn++){
+    new FXMenuRadio(syntaxmenu,getApp()->getSyntax(syn)->getName(),this,ID_SYNTAX_FIRST+1+syn);
     }
 
   // Tabs menu
@@ -643,6 +646,7 @@ void TextWindow::createMenubar(){
 
   // Options menu
   new FXMenuCommand(shellmenu,tr("Execute &Command...\t\tExecute a shell command."),nullptr,this,ID_SHELL_DIALOG);
+  new FXMenuCommand(shellmenu,tr("Command &Line...\t\tExecute current line as shell command."),nullptr,this,ID_SHELL_COMMAND);
   new FXMenuCommand(shellmenu,tr("&Filter Selection...\t\tFilter selection through shell command."),nullptr,this,ID_SHELL_FILTER);
   new FXMenuCommand(shellmenu,tr("C&ancel Command\t\tCancel shell command."),nullptr,this,ID_SHELL_CANCEL);
 
@@ -841,10 +845,10 @@ void TextWindow::createStatusbar(){
   tabmode->setSelector(ID_TABMODE);
   tabmode->setTipText(tr("Tab mode"));
 
-  // Show size of text in status bar
+  // Show tab columns
   FXTextField* numchars=new FXTextField(statusbar,2,this,ID_TABCOLUMNS,FRAME_SUNKEN|JUSTIFY_RIGHT|LAYOUT_RIGHT|LAYOUT_CENTER_Y,0,0,0,0,2,2,1,1);
   numchars->setBackColor(statusbar->getBackColor());
-  numchars->setTipText(tr("Tab setting"));
+  numchars->setTipText(tr("Tab columns"));
 
   // Caption before tab columns
   new FXLabel(statusbar,tr("  Tab:"),nullptr,LAYOUT_RIGHT|LAYOUT_CENTER_Y);
@@ -857,6 +861,12 @@ void TextWindow::createStatusbar(){
   // Caption before number
   new FXLabel(statusbar,tr("  Col:"),nullptr,LAYOUT_RIGHT|LAYOUT_CENTER_Y);
 
+/*
+  // Show number of lines in status bar
+  FXTextField* rowtot=new FXTextField(statusbar,6,editor,FXText::ID_TEXT_SIZE,FRAME_SUNKEN|JUSTIFY_RIGHT|LAYOUT_RIGHT|LAYOUT_CENTER_Y,0,0,0,0,2,2,1,1);
+  rowtot->setBackColor(statusbar->getBackColor());
+  rowtot->setTipText(tr("Total lines"));
+*/
   // Show line number in status bar
   FXTextField* rowno=new FXTextField(statusbar,6,editor,FXText::ID_CURSOR_ROW,FRAME_SUNKEN|JUSTIFY_RIGHT|LAYOUT_RIGHT|LAYOUT_CENTER_Y,0,0,0,0,2,2,1,1);
   rowno->setBackColor(statusbar->getBackColor());
@@ -899,7 +909,7 @@ void TextWindow::detach(){
 
 // Clean up the mess
 TextWindow::~TextWindow(){
-  getApp()->windowlist.remove(this);
+  getApp()->removeWindow(this);
   getApp()->removeTimeout(this,ID_CLOCKTIME);
   delete shellCommand;
   delete font;
@@ -1447,7 +1457,7 @@ void TextWindow::readRegistry(){
   editor->verticalScrollBar()->setWheelLines(wheellines);
 
   // Set horizontal wheel lines
-  editor->horizontalScrollBar()->setWheelLines(40);
+  editor->horizontalScrollBar()->setWheelLines(10);
 
   // Hide tree if asked for
   if(hidetree) treebox->hide();
@@ -1728,7 +1738,7 @@ long TextWindow::onCmdOpen(FXObject*,FXSelector,void*){
   FXFileDialog opendialog(this,tr("Open Document"));
   FXString file=getFilename();
   opendialog.setSelectMode(SELECTFILE_EXISTING);
-  opendialog.setAssociations(getApp()->associations,false);
+  opendialog.setAssociations(getApp()->getFileAssociations(),false);
   opendialog.setPatternList(getPatternList());
   opendialog.setCurrentPattern(getCurrentPattern());
   opendialog.setFilename(file);
@@ -1962,7 +1972,7 @@ long TextWindow::onCmdSwitch(FXObject*,FXSelector,void*){
     FXFileDialog opendialog(this,tr("Switch Document"));
     FXString file=getFilename();
     opendialog.setSelectMode(SELECTFILE_EXISTING);
-    opendialog.setAssociations(getApp()->associations,false);
+    opendialog.setAssociations(getApp()->getFileAssociations(),false);
     opendialog.setPatternList(getPatternList());
     opendialog.setCurrentPattern(getCurrentPattern());
     opendialog.setFilename(file);
@@ -2029,7 +2039,7 @@ long TextWindow::onCmdReplaceFile(FXObject*,FXSelector,void*){
   FXint ec=editor->getSelEndColumn();
   FXString file;
   opendialog.setSelectMode(SELECTFILE_EXISTING);
-  opendialog.setAssociations(getApp()->associations,false);
+  opendialog.setAssociations(getApp()->getFileAssociations(),false);
   opendialog.setPatternList(getPatternList());
   opendialog.setCurrentPattern(getCurrentPattern());
   opendialog.setDirectory(FXPath::directory(getFilename()));
@@ -2053,7 +2063,7 @@ long TextWindow::onCmdExtractFile(FXObject*,FXSelector,void*){
   FXint ec=editor->getSelEndColumn();
   FXString file=FXPath::stripExtension(getFilename())+".extract";
   savedialog.setSelectMode(SELECTFILE_ANY);
-  savedialog.setAssociations(getApp()->associations,false);
+  savedialog.setAssociations(getApp()->getFileAssociations(),false);
   savedialog.setPatternList(getPatternList());
   savedialog.setCurrentPattern(getCurrentPattern());
   savedialog.setDirectory(FXPath::directory(getFilename()));
@@ -2082,7 +2092,7 @@ FXbool TextWindow::saveChanges(){
       if(!isFilenameSet()){
         FXFileDialog savedialog(this,tr("Save Document"));
         savedialog.setSelectMode(SELECTFILE_ANY);
-        savedialog.setAssociations(getApp()->associations,false);
+        savedialog.setAssociations(getApp()->getFileAssociations(),false);
         savedialog.setPatternList(getPatternList());
         savedialog.setCurrentPattern(getCurrentPattern());
         savedialog.setFilename(file);
@@ -2128,7 +2138,7 @@ long TextWindow::onCmdSaveAs(FXObject*,FXSelector,void*){
   FXFileDialog savedialog(this,tr("Save As"));
   FXString file=getFilename();
   savedialog.setSelectMode(SELECTFILE_ANY);
-  savedialog.setAssociations(getApp()->associations,false);
+  savedialog.setAssociations(getApp()->getFileAssociations(),false);
   savedialog.setPatternList(getPatternList());
   savedialog.setCurrentPattern(getCurrentPattern());
   savedialog.setFilename(file);
@@ -2153,7 +2163,7 @@ long TextWindow::onCmdSaveTo(FXObject*,FXSelector,void*){
   FXFileDialog savedialog(this,tr("Save To"));
   FXString file=getFilename();
   savedialog.setSelectMode(SELECTFILE_ANY);
-  savedialog.setAssociations(getApp()->associations,false);
+  savedialog.setAssociations(getApp()->getFileAssociations(),false);
   savedialog.setPatternList(getPatternList());
   savedialog.setCurrentPattern(getCurrentPattern());
   savedialog.setFilename(file);
@@ -2199,9 +2209,9 @@ FXbool TextWindow::close(FXbool notify){
 // User clicks on one of the window menus
 long TextWindow::onCmdWindow(FXObject*,FXSelector sel,void*){
   FXint which=FXSELID(sel)-ID_WINDOW_1;
-  if(which<getApp()->windowlist.no()){
-    getApp()->windowlist[which]->raise();
-    getApp()->windowlist[which]->setFocus();
+  if(which<getApp()->numWindows()){
+    getApp()->getWindow(which)->raise();
+    getApp()->getWindow(which)->setFocus();
     }
   return 1;
   }
@@ -2210,8 +2220,8 @@ long TextWindow::onCmdWindow(FXObject*,FXSelector sel,void*){
 // Update handler for window menus
 long TextWindow::onUpdWindow(FXObject *sender,FXSelector sel,void*){
   FXint which=FXSELID(sel)-ID_WINDOW_1;
-  if(which<getApp()->windowlist.no()){
-    TextWindow *window=getApp()->windowlist[which];
+  if(which<getApp()->numWindows()){
+    TextWindow *window=getApp()->getWindow(which);
     FXString string;
     string.format("%d %s",which+1,window->getTitle().text());
     sender->handle(this,FXSEL(SEL_COMMAND,FXWindow::ID_SETSTRINGVALUE),(void*)&string);
@@ -2646,14 +2656,6 @@ long TextWindow::onUpdTabMode(FXObject* sender,FXSelector,void*){
   }
 
 
-// Update box for size display
-long TextWindow::onUpdNumRows(FXObject* sender,FXSelector,void*){
-  FXuint size=editor->getNumRows();
-  sender->handle(this,FXSEL(SEL_COMMAND,ID_SETINTVALUE),(void*)&size);
-  return 1;
-  }
-
-
 // Set scroll wheel lines (Mathew Robertson <mathew@optushome.com.au>)
 long TextWindow::onCmdWheelAdjust(FXObject* sender,FXSelector,void*){
   FXint value;
@@ -2982,16 +2984,31 @@ long TextWindow::onUpdURLCoding(FXObject* sender,FXSelector,void*){
 // Start shell command
 FXbool TextWindow::startCommand(const FXString& command,const FXString& input){
   if(!shellCommand){
+
+    // New shell command instance
     shellCommand=new ShellCommand(getApp(),this,FXSEL(SEL_COMMAND,ID_SHELL_OUTPUT),FXSEL(SEL_COMMAND,ID_SHELL_ERROR),FXSEL(SEL_COMMAND,ID_SHELL_DONE));
+
+    // Start program in same directory as current file
+    shellCommand->setDirectory(FXPath::directory(getFilename()));
+
+    // Pass input buffer
     shellCommand->setInput(input);
+
+    // Launch it
     if(!shellCommand->start(command)){
       FXMessageBox::error(this,MBOX_OK,tr("Command Error"),tr("Unable to execute command: %s"),command.text());
       delete shellCommand;
       shellCommand=nullptr;
       return false;
       }
-    undolist.begin(new FXCommandGroup);
+
+    // Display wait cursor
     getApp()->beginWaitCursor();
+
+    // All input will be undoable
+    undolist.begin(new FXCommandGroup);
+
+    // Clear logger area
     logger->clearText();
     return true;
     }
@@ -3002,13 +3019,23 @@ FXbool TextWindow::startCommand(const FXString& command,const FXString& input){
 // Stop shell command
 FXbool TextWindow::stopCommand(){
   if(shellCommand){
+
+    // Close undo command
     undolist.end();
-    getApp()->endWaitCursor();
+
+    // Hide logger
     if(!showlogger){
       loggerframe->hide();
       loggerframe->recalc();
       }
+
+    // Kill the command
     shellCommand->cancel();
+
+    // Display normal cursor
+    getApp()->endWaitCursor();
+
+    // Clean up the mess
     delete shellCommand;
     shellCommand=nullptr;
     return true;
@@ -3020,8 +3047,14 @@ FXbool TextWindow::stopCommand(){
 // Done with command
 FXbool TextWindow::doneCommand(){
   if(shellCommand){
+
+    // Close undo command
     undolist.end();
+
+    // Display normal cursor
     getApp()->endWaitCursor();
+
+    // Clean up the mess
     delete shellCommand;
     shellCommand=nullptr;
     return true;
@@ -3033,8 +3066,8 @@ FXbool TextWindow::doneCommand(){
 // Shell command dialog
 long TextWindow::onCmdShellDialog(FXObject*,FXSelector,void*){
   if(!shellCommand){
-    FXInputDialog dialog(this,tr("Execute Command"),tr("&Execute shell command:"),nullptr,INPUTDIALOG_STRING,0,0,400,0);
-    if(dialog.execute()){
+    ShellDialog dialog(this,tr("Execute Command"),tr("&Execute shell command:"));
+    if(dialog.execute(PLACEMENT_OWNER)){
 
       // Get command
       FXString command=dialog.getText();
@@ -3057,20 +3090,53 @@ long TextWindow::onUpdShellDialog(FXObject* sender,FXSelector,void*){
   }
 
 
+// Execute current line as command line
+long TextWindow::onCmdShellCommand(FXObject*,FXSelector,void*){
+  if(!shellCommand){
+    FXint currentpos=editor->getCursorPos();
+    FXint startpos=editor->lineStart(currentpos);
+    FXint endpos=editor->lineEnd(currentpos);
+    if(startpos<endpos){
+
+      // Get command from text buffer
+      FXString command=editor->extractText(startpos,endpos-startpos);
+
+      // Add newline
+      editor->insertText(endpos,"\n",1,true);
+
+      // Output goes to insertion point
+      replaceStart=replaceEnd=endpos+1;
+
+      // Start
+      startCommand(command);
+      }
+    }
+  return 1;
+  }
+
+
+// Update command line
+long TextWindow::onUpdShellCommand(FXObject* sender,FXSelector,void*){
+  sender->handle(this,!shellCommand?FXSEL(SEL_COMMAND,ID_ENABLE):FXSEL(SEL_COMMAND,ID_DISABLE),nullptr);
+  return 1;
+  }
+
+
 // Filter selection through shell command
 long TextWindow::onCmdShellFilter(FXObject*,FXSelector,void*){
   if(!shellCommand){
-    FXInputDialog dialog(this,tr("Filter Selection"),tr("&Filter selection with shell command:"),nullptr,INPUTDIALOG_STRING,0,0,400,0);
-    if(dialog.execute()){
+    ShellDialog dialog(this,tr("Filter Selection"),tr("&Filter selection with shell command:"));
+    if(dialog.execute(PLACEMENT_OWNER)){
+
+      // Get selection range
+      replaceStart=editor->getSelStartPos();
+      replaceEnd=editor->getSelEndPos();
 
       // Get command
       FXString command=dialog.getText();
-      FXString selection;
 
-      // Get selection
-      replaceStart=editor->getSelStartPos();
-      replaceEnd=editor->getSelEndPos();
-      editor->extractText(selection,replaceStart,replaceEnd-replaceStart);
+      // Grab selected text to feed into command
+      FXString selection=editor->extractText(replaceStart,replaceEnd-replaceStart);
 
       // Start
       startCommand(command,selection);
@@ -3707,7 +3773,6 @@ void TextWindow::addSearchHistory(const FXString& pat,FXuint opt,FXbool rep){
 void TextWindow::loadSearchHistory(){
   for(FXint i=0; i<20; ++i){
     isearchString[i]=getApp()->reg().readStringEntry(sectionKey,skey[i],FXString::null);
-    if(isearchString[i].empty()) break;
     isearchOption[i]=getApp()->reg().readUIntEntry(sectionKey,mkey[i],SEARCH_EXACT|SEARCH_FORWARD|SEARCH_WRAP);
     }
   isearchIndex=-1;
@@ -3717,14 +3782,8 @@ void TextWindow::loadSearchHistory(){
 // Save incremental search history
 void TextWindow::saveSearchHistory(){
   for(FXint i=0; i<20; ++i){
-    if(!isearchString[i].empty()){
-      getApp()->reg().writeStringEntry(sectionKey,skey[i],isearchString[i].text());
-      getApp()->reg().writeUIntEntry(sectionKey,mkey[i],isearchOption[i]);
-      }
-    else{
-      getApp()->reg().deleteEntry(sectionKey,skey[i]);
-      getApp()->reg().deleteEntry(sectionKey,mkey[i]);
-      }
+    getApp()->reg().writeStringEntry(sectionKey,skey[i],isearchString[i].text());
+    getApp()->reg().writeUIntEntry(sectionKey,mkey[i],isearchOption[i]);
     }
   }
 
@@ -3912,7 +3971,7 @@ long TextWindow::onTextDeleted(FXObject*,FXSelector,void* ptr){
   }
 
 
-// Released right button
+// Released right button in text
 long TextWindow::onTextRightMouse(FXObject*,FXSelector,void* ptr){
   FXEvent* event=(FXEvent*)ptr;
   if(!event->moved){
@@ -3943,6 +4002,25 @@ long TextWindow::onTextRightMouse(FXObject*,FXSelector,void* ptr){
     new FXMenuCheck(&popupmenu,FXString::null,this,ID_MARK_9);
     new FXMenuCommand(&popupmenu,tr("Delete bookmark\t\tDelete bookmark at cursor."),getApp()->bookdelicon,this,ID_DEL_MARK);
     new FXMenuCommand(&popupmenu,tr("Clear all bookmarks\t\tClear all bookmarks."),getApp()->bookdelicon,this,ID_CLEAR_MARKS);
+    popupmenu.forceRefresh();
+    popupmenu.create();
+    popupmenu.popup(nullptr,event->root_x,event->root_y);
+    getApp()->runModalWhileShown(&popupmenu);
+    }
+  return 1;
+  }
+
+
+// Released right button in logger
+long TextWindow::onLoggerRightMouse(FXObject*,FXSelector,void* ptr){
+  FXEvent* event=(FXEvent*)ptr;
+  if(!event->moved){
+    FXMenuPane popupmenu(this,POPUP_SHRINKWRAP);
+    new FXMenuCommand(&popupmenu,tr("Cut"),getApp()->cuticon,logger,FXText::ID_CUT_SEL);
+    new FXMenuCommand(&popupmenu,tr("Copy"),getApp()->copyicon,logger,FXText::ID_COPY_SEL);
+    new FXMenuCommand(&popupmenu,tr("Paste"),getApp()->pasteicon,logger,FXText::ID_PASTE_SEL);
+    new FXMenuCommand(&popupmenu,tr("Select All"),nullptr,logger,FXText::ID_SELECT_ALL);
+    new FXMenuSeparator(&popupmenu);
     popupmenu.forceRefresh();
     popupmenu.create();
     popupmenu.popup(nullptr,event->root_x,event->root_y);
@@ -4365,8 +4443,8 @@ long TextWindow::onCmdSyntaxSwitch(FXObject*,FXSelector sel,void*){
   FXint syn=FXSELID(sel)-ID_SYNTAX_FIRST;
   FXString file=FXPath::name(getFilename());
   if(0<syn){
-    getApp()->reg().writeStringEntry("SYNTAX",file,getApp()->syntaxes[syn-1]->getName().text());
-    setSyntax(getApp()->syntaxes[syn-1]);
+    getApp()->reg().writeStringEntry("SYNTAX",file,getApp()->getSyntax(syn-1)->getName().text());
+    setSyntax(getApp()->getSyntax(syn-1));
     }
   else{
     getApp()->reg().deleteEntry("SYNTAX",file);
@@ -4379,8 +4457,8 @@ long TextWindow::onCmdSyntaxSwitch(FXObject*,FXSelector sel,void*){
 // Switch syntax
 long TextWindow::onUpdSyntaxSwitch(FXObject* sender,FXSelector sel,void*){
   FXint syn=FXSELID(sel)-ID_SYNTAX_FIRST;
-  FXASSERT(0<=syn && syn<=getApp()->syntaxes.no());
-  Syntax *sntx=syn?getApp()->syntaxes[syn-1]:nullptr;
+  FXASSERT(0<=syn && syn<=getApp()->numSyntaxes());
+  Syntax *sntx=syn?getApp()->getSyntax(syn-1):nullptr;
   sender->handle(this,(sntx==syntax)?FXSEL(SEL_COMMAND,ID_CHECK):FXSEL(SEL_COMMAND,ID_UNCHECK),nullptr);
   return 1;
   }

@@ -369,7 +369,7 @@ static FXString expandEnvironmentVariables(const FXString& file,FXint level){
   FXString result;
   if(0<=--level){
     FXint b=0,e=0,p,q;
-#if defined(_WIN32)
+#if defined(WIN32)
     while(file[e]){
       if(file[e]=='%'){         // %VAR%
         p=++e;
@@ -432,7 +432,7 @@ static FXString expandEnvironmentVariables(const FXString& file,FXint level){
 // On Windows, only environment variables of the form %HOME% are expanded.
 FXString FXPath::expand(const FXString& file,FXint level){
   if(!file.empty()){
-#if defined(_WIN32)
+#if defined(WIN32)
     return expandEnvironmentVariables(file,level);
 #else
     FXint e=0;

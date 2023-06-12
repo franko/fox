@@ -363,6 +363,7 @@ $(OutputPath)reswrap.exe -nc -h -n FX -o icons.h arrownext.gif arrowprev.gif big
     <ClInclude Include="..\..\include\FXListBox.h" />
     <ClInclude Include="..\..\include\FXLocale.h" />
     <ClInclude Include="..\..\include\FXMainWindow.h" />
+    <ClInclude Include="..\..\include\FXMappedFile.h" />
     <ClInclude Include="..\..\include\FXMat2d.h" />
     <ClInclude Include="..\..\include\FXMat2f.h" />
     <ClInclude Include="..\..\include\FXMat3d.h" />
@@ -374,7 +375,6 @@ $(OutputPath)reswrap.exe -nc -h -n FX -o icons.h arrownext.gif arrowprev.gif big
     <ClInclude Include="..\..\include\FXMDIButton.h" />
     <ClInclude Include="..\..\include\FXMDIChild.h" />
     <ClInclude Include="..\..\include\FXMDIClient.h" />
-    <ClInclude Include="..\..\include\FXMemMap.h" />
     <ClInclude Include="..\..\include\FXMemoryStream.h" />
     <ClInclude Include="..\..\include\FXMenuBar.h" />
     <ClInclude Include="..\..\include\FXMenuButton.h" />
@@ -675,7 +675,6 @@ $(OutputPath)reswrap.exe -nc -h -n FX -o icons.h arrownext.gif arrowprev.gif big
     <ClCompile Include="..\..\lib\FXFrame.cpp" />
     <ClCompile Include="..\..\lib\fxfsquantize.cpp" />
     <ClCompile Include="..\..\lib\FXGauge.cpp" />
-    <ClCompile Include="..\..\lib\fxgetticks.cpp" />
     <ClCompile Include="..\..\lib\FXGIFCursor.cpp" />
     <ClCompile Include="..\..\lib\FXGIFIcon.cpp" />
     <ClCompile Include="..\..\lib\FXGIFImage.cpp" />
@@ -729,6 +728,7 @@ $(OutputPath)reswrap.exe -nc -h -n FX -o icons.h arrownext.gif arrowprev.gif big
     <ClCompile Include="..\..\lib\FXListBox.cpp" />
     <ClCompile Include="..\..\lib\FXLocale.cpp" />
     <ClCompile Include="..\..\lib\FXMainWindow.cpp" />
+    <ClCompile Include="..\..\lib\FXMappedFile.cpp" />
     <ClCompile Include="..\..\lib\FXMat2d.cpp" />
     <ClCompile Include="..\..\lib\FXMat2f.cpp" />
     <ClCompile Include="..\..\lib\FXMat3d.cpp" />
@@ -740,7 +740,6 @@ $(OutputPath)reswrap.exe -nc -h -n FX -o icons.h arrownext.gif arrowprev.gif big
     <ClCompile Include="..\..\lib\FXMDIButton.cpp" />
     <ClCompile Include="..\..\lib\FXMDIChild.cpp" />
     <ClCompile Include="..\..\lib\FXMDIClient.cpp" />
-    <ClCompile Include="..\..\lib\FXMemMap.cpp" />
     <ClCompile Include="..\..\lib\FXMemoryStream.cpp" />
     <ClCompile Include="..\..\lib\FXMenuBar.cpp" />
     <ClCompile Include="..\..\lib\FXMenuButton.cpp" />

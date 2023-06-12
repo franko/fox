@@ -85,20 +85,6 @@ FXQuatd::FXQuatd(const FXVec3d& rot){
   }
 
 
-// Adjust quaternion length
-FXQuatd& FXQuatd::adjust(){
-  FXdouble mag2(x*x+y*y+z*z+w*w);
-  if(__likely(0.0<mag2)){
-    FXdouble s(1.0/Math::sqrt(mag2));
-    x*=s;
-    y*=s;
-    z*=s;
-    w*=s;
-    }
-  return *this;
-  }
-
-
 // Set axis and angle
 void FXQuatd::setAxisAngle(const FXVec3d& axis,FXdouble phi){
   FXdouble mag2(axis.length2());
@@ -521,6 +507,34 @@ FXVec3d operator*(const FXVec3d& v,const FXQuatd& q){
 FXVec3d operator*(const FXQuatd& q,const FXVec3d& v){
   FXVec3d s(q.x,q.y,q.z);
   return v+(((v^s)+(v*q.w))^s)*2.0;     // Yes, -a^b is b^a!
+  }
+
+/*******************************************************************************/
+
+// Adjust quaternion length
+FXQuatd& FXQuatd::adjust(){
+  FXdouble s(length());
+  if(__likely(s)){
+    return *this /= s;
+    }
+  return *this;
+  }
+
+
+// Normalize quaternion such that |Q|==1
+FXQuatd normalize(const FXQuatd& q){
+  FXdouble s(q.length());
+  if(__likely(s)){
+    return q/s;
+    }
+  return q;
+  }
+
+
+// Normalize quaternion incrementally; assume |Q| approximately 1 already
+FXQuatd fastnormalize(const FXQuatd& q){
+  FXdouble s((3.0-q.w*q.w-q.z*q.z-q.y*q.y-q.x*q.x)*0.5);
+  return q*s;
   }
 
 /*******************************************************************************/
@@ -952,8 +966,8 @@ void fastSlerpTest(){
     q2.y=2.0*rng.randDouble()-1.0;
     q2.z=2.0*rng.randDouble()-1.0;
     q2.w=2.0*rng.randDouble()-1.0;
-    q1.adjust();
-    q2.adjust();
+    q1=normalize(q1);
+    q2=normalize(q2);
     dot=q1.x*q2.x+q1.y*q2.y+q1.z*q2.z+q1.w*q2.w;
 //  if(0.667457216028384<=dot){
     if(0.0<=dot){

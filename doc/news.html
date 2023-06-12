@@ -18,6 +18,35 @@ News  <A href='news.html' target="_top" align=left><font  size=-2>[Remove Frame]
 <!--- TOPIC TITLE -->
 <p>
 <table width=100% cellpadding=0 cellspacing=2><tr><td width=100% valign=bottom id=HEADLINE><b>
+March 27 - FOX DEVELOPMENT 1.7.82
+<br><img src='art/line.gif' width=100% height=1></b></td></tr></table>
+<p>
+<!--- TOPIC TITLE -->
+<ul>
+<li>New FXINI, FXINIFile classes added to parse (and unparse) configuration (registry) file format into FXVariant datastructure.</li>
+<li>Updated variant test program to load/save configuration (registry) file format.</li>
+<li>Some minor issues parsing infinity and nan fixed in JSON parser.</li>
+<li>Keyword recognition in JSON only when keyword expected.  Now reserved words/keywords allowed in places where identifiers are expected (JSON5).</li>
+<li>Some minor issues parsing infinity and nan fixed in JSON parser.</li>
+<li>Shell-command dialog for Adie text editor now has command scrollback for previously executed commands.</li>
+<li>New feature to executed highlighted line as command in Adie.</li>
+<li>Fast conversion of FXColor (RGBA) pixel value to/from FXVec4f or FXVec4d using AVX2.</li>
+<li>Fixed default parameter in FXString find_last_of(), find_last_not_of().</li>
+<li>Quaternion normalize() will be replacing adjust().  A new fast incremental quaternion
+fastnormalize() API added to re-normalize almost-normalized quaternion.
+This technique is MUCH faster than normalize(), since only multiply-add used, no sqrt() or division.</li>
+<li>FXJSON parser speedups.</li>
+<li>FXFile, FXIODevice, FXIO updates.</li>
+<li>FXMappedFile class for memory mapped files added.</li>
+<li>New API FXThread::ticks() returns CPU tick counter; this replaces old fxgetticks().</li>
+<li>Some internal improvements w.r.t. FILETIME on Windows in different places.</li>
+<li>FXStat::stat() API added for getting permissions from open file by handle.</li>
+</ul>
+
+
+<!--- TOPIC TITLE -->
+<p>
+<table width=100% cellpadding=0 cellspacing=2><tr><td width=100% valign=bottom id=HEADLINE><b>
 November 13 - FOX DEVELOPMENT 1.7.81
 <br><img src='art/line.gif' width=100% height=1></b></td></tr></table>
 <p>
