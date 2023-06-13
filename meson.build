@@ -1,4 +1,4 @@
-project('fox', 'cpp', version : '1.7.81', default_options : 'cpp_std=c++11')
+project('fox', 'cpp', version : '1.7.82', default_options : 'cpp_std=c++11')
 
 pkg = import('pkgconfig')
 
@@ -134,6 +134,13 @@ if get_option('bzlib')
             fox_deps += bzlib
         endif
     endif
+endif
+
+if get_option('cups')
+    libcups_dep = dependency('cups', method : 'config-tool')
+    # if not cc.has_function('cupsGetDests', dependencies: libcups_dep)
+    fox_defines += '-DHAVE_CUPS_H'
+    fox_deps += libcups_dep
 endif
 
 conf = configuration_data()
