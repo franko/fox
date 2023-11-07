@@ -1773,10 +1773,12 @@ FXbool FXWindow::doesSaveUnder() const {
 // Add hot key to closest ancestor's accelerator table
 void FXWindow::addHotKey(FXHotKey code){
   if(code){
-    FXAccelTable *accel=nullptr;
-    FXWindow *win=this;
-    while(win && (accel=win->getAccelTable())==nullptr) win=win->parent;
-    if(accel) accel->addAccel(code,this,FXSEL(SEL_KEYPRESS,ID_HOTKEY),FXSEL(SEL_KEYRELEASE,ID_HOTKEY));
+    for(FXWindow *win=this; win; win=win->parent){
+      if(win->getAccelTable()){
+        win->getAccelTable()->addAccel(code,this,FXSEL(SEL_KEYPRESS,ID_HOTKEY),FXSEL(SEL_KEYRELEASE,ID_HOTKEY));
+        break;
+        }
+      }
     }
   }
 
@@ -1784,10 +1786,12 @@ void FXWindow::addHotKey(FXHotKey code){
 // Remove hot key from closest ancestor's accelerator table
 void FXWindow::remHotKey(FXHotKey code){
   if(code){
-    FXAccelTable *accel=nullptr;
-    FXWindow *win=this;
-    while(win && (accel=win->getAccelTable())==nullptr) win=win->parent;
-    if(accel) accel->removeAccel(code);
+    for(FXWindow *win=this; win; win=win->parent){
+      if(win->getAccelTable()){
+        win->getAccelTable()->removeAccel(code);
+        break;
+        }
+      }
     }
   }
 
@@ -1829,7 +1833,7 @@ void FXWindow::showCursor(FXbool flag){
 // Set cursor
 void FXWindow::setDefaultCursor(FXCursor* cur){
   if(defaultCursor!=cur){
-    if(cur==nullptr){ fxerror("%s::setDefaultCursor: NULL cursor argument.\n",getClassName()); }
+    if(!cur){ fxerror("%s::setDefaultCursor: NULL cursor argument.\n",getClassName()); }
     if(xid){
       if(cur->id()==0){ fxerror("%s::setDefaultCursor: Cursor has not been created yet.\n",getClassName()); }
       if(cursorShown()){
@@ -1848,7 +1852,7 @@ void FXWindow::setDefaultCursor(FXCursor* cur){
 // Set drag cursor
 void FXWindow::setDragCursor(FXCursor* cur){
   if(dragCursor!=cur){
-    if(cur==nullptr){ fxerror("%s::setDragCursor: NULL cursor argument.\n",getClassName()); }
+    if(!cur){ fxerror("%s::setDragCursor: NULL cursor argument.\n",getClassName()); }
     if(xid){
       if(cur->id()==0){ fxerror("%s::setDragCursor: Cursor has not been created yet.\n",getClassName()); }
       if(grabbed()){
@@ -2436,8 +2440,8 @@ void FXWindow::hide(){
 // Reparent window under a new parent
 void FXWindow::reparent(FXWindow* father,FXWindow* other){
   FXbool hadfocus=inFocusChain();
-  if(father==nullptr){ fxerror("%s::reparent: NULL parent specified.\n",getClassName()); }
-  if(parent==nullptr){ fxerror("%s::reparent: cannot reparent root window.\n",getClassName()); }
+  if(!father){ fxerror("%s::reparent: NULL parent specified.\n",getClassName()); }
+  if(!parent){ fxerror("%s::reparent: cannot reparent root window.\n",getClassName()); }
   if(parent==getRoot() || father==getRoot()){ fxerror("%s::reparent: cannot reparent toplevel window.\n",getClassName()); }
   if(other && father!=other->getParent()){ fxerror("%s::reparent: other window has different parent.\n",getClassName()); }
   if(this!=other){
@@ -2593,7 +2597,7 @@ void FXWindow::lower(){
 #if 0
 // Get coordinates from another window (for symmetry)
 void FXWindow::translateCoordinatesFrom(FXint& tox,FXint& toy,const FXWindow* fromwindow,FXint fromx,FXint fromy) const {
-  if(fromwindow==nullptr){ fxerror("%s::translateCoordinatesFrom: from-window is NULL.\n",getClassName()); }
+  if(!fromwindow){ fxerror("%s::translateCoordinatesFrom: from-window is NULL.\n",getClassName()); }
   for(const FXWindow* w=fromwindow; w; w=w->getParent()){
     fromx+=w->getX();
     fromy+=w->getY();
@@ -2609,7 +2613,7 @@ void FXWindow::translateCoordinatesFrom(FXint& tox,FXint& toy,const FXWindow* fr
 
 // Get coordinates to another window (for symmetry)
 void FXWindow::translateCoordinatesTo(FXint& tox,FXint& toy,const FXWindow* towindow,FXint fromx,FXint fromy) const {
-  if(towindow==nullptr){ fxerror("%s::translateCoordinatesTo: to-window is NULL.\n",getClassName()); }
+  if(!towindow){ fxerror("%s::translateCoordinatesTo: to-window is NULL.\n",getClassName()); }
   for(const FXWindow* w=this; w; w=w->getParent()){
     fromx+=w->getX();
     fromy+=w->getY();
@@ -2623,10 +2627,9 @@ void FXWindow::translateCoordinatesTo(FXint& tox,FXint& toy,const FXWindow* towi
   }
 #endif
 
-#if 1
 // Get coordinates from another window (for symmetry)
 void FXWindow::translateCoordinatesFrom(FXint& tox,FXint& toy,const FXWindow* fromwindow,FXint fromx,FXint fromy) const {
-  if(fromwindow==nullptr){ fxerror("%s::translateCoordinatesFrom: from-window is NULL.\n",getClassName()); }
+  if(!fromwindow){ fxerror("%s::translateCoordinatesFrom: from-window is NULL.\n",getClassName()); }
   if(xid && fromwindow->id()){
 #ifdef WIN32
     POINT pt;
@@ -2646,7 +2649,7 @@ void FXWindow::translateCoordinatesFrom(FXint& tox,FXint& toy,const FXWindow* fr
 
 // Get coordinates to another window (for symmetry)
 void FXWindow::translateCoordinatesTo(FXint& tox,FXint& toy,const FXWindow* towindow,FXint fromx,FXint fromy) const {
-  if(towindow==nullptr){ fxerror("%s::translateCoordinatesTo: to-window is NULL.\n",getClassName()); }
+  if(!towindow){ fxerror("%s::translateCoordinatesTo: to-window is NULL.\n",getClassName()); }
   if(xid && towindow->id()){
 #ifdef WIN32
     POINT pt;
@@ -2662,7 +2665,6 @@ void FXWindow::translateCoordinatesTo(FXint& tox,FXint& toy,const FXWindow* towi
 #endif
     }
   }
-#endif
 
 /*******************************************************************************/
 
@@ -3018,7 +3020,7 @@ FXbool FXWindow::isDropTarget() const {
 FXbool FXWindow::beginDrag(const FXDragType *types,FXuint numtypes){
   if(xid==0){ fxerror("%s::beginDrag: window has not yet been created.\n",getClassName()); }
   if(!isDragging()){
-    if(types==nullptr || numtypes<1){ fxerror("%s::beginDrag: should have at least one type to drag.\n",getClassName()); }
+    if(!types || numtypes<1){ fxerror("%s::beginDrag: should have at least one type to drag.\n",getClassName()); }
 #ifdef WIN32
     getApp()->xdndTypes=CreateFileMappingA(INVALID_HANDLE_VALUE,nullptr,PAGE_READWRITE,0,(numtypes+1)*sizeof(FXDragType),"XdndTypeList");
     if(getApp()->xdndTypes){

@@ -35,6 +35,7 @@ typedef FXArray<FXHiliteStyle> FXHiliteArray;
 // Editor main window
 class TextWindow : public FXMainWindow {
   FXDECLARE(TextWindow)
+  friend class Preferences;
 protected:
   FXToolBarShell      *dragshell1;              // Shell for floating menubar
   FXToolBarShell      *dragshell2;              // Shell for floating toolbar
@@ -63,6 +64,7 @@ protected:
   FXDirList           *dirlist;                 // Directory view
   FXComboBox          *filter;                  // Combobox for pattern list
   FXLabel             *clock;                   // Time
+  FXLabel             *language;                // Language
   FXMenuBar           *menubar;                 // Menu bar
   FXToolBar           *toolbar;                 // Tool bar
   FXToolBar           *searchbar;               // Incremental search bar
@@ -81,9 +83,6 @@ protected:
   FXString             searchpaths;             // Search paths for files
   FXHiliteArray        styles;                  // Highlight styles
   ShellCommand        *shellCommand;            // Running shell command, if any
-  FXTextSelection      replace;                 // Text region to be replaced
-  FXint                replaceStart;            // Start of text to be replaced
-  FXint                replaceEnd;              // End of text to be replaced
   FXint                initialwidth;            // Initial width
   FXint                initialheight;           // Initial height
   FXbool               initialsize;             // New window is initialwidth x initialheight
@@ -104,6 +103,7 @@ protected:
   FXint                tabcols;                 // Tab indents this many columns
   FXbool               hardtabs;                // Insert hard tabs
   FXint                barcols;                 // Number of columns for line numbers
+  FXbool               mergeundos;              // Merge undos
   FXbool               showlogger;              // Showing error logger
   FXbool               colorize;                // Syntax coloring on if possible
   FXbool               stripcr;                 // Strip carriage returns
@@ -128,27 +128,6 @@ protected:
     TRIM=4                      // trim trailing space
     };
 
-  // Command Input options
-  enum{
-    FROM_SEL=1,                 // Input from selection
-    FROM_DOC=2,                 // Input from document
-    FROM_ANY=3,                 // Input from document or selection
-    };
-
-  // Command Output options
-  enum{
-    TO_INS=1,                   // Output inserted at cursor
-    TO_REP=2,                   // Output replaces input
-    TO_LOG=3,                   // Output to log window
-    TO_NEW=4                    // Output to new document window
-    };
-
-  // Command Flags
-  enum{
-    SAVE_DOC=1,                 // Save document before
-    LOAD_DOC=2,                 // Load back after
-    };
-
 private:
   TextWindow(){}
   TextWindow(const TextWindow&);
@@ -171,6 +150,10 @@ private:
   void saveSearchHistory();
   void addSearchHistory(const FXString& pat,FXuint opt,FXbool rep);
   void updateBookmarks(FXint pos,FXint nd,FXint ni);
+  FXbool insertSel();
+  FXbool extractSel();
+  FXbool insertFromFile(const FXString& file,FXint sp,FXint ep,FXint sc,FXint ec);
+  FXbool extractToFile(const FXString& file,FXint sp,FXint ep,FXint sc,FXint ec);
   FXbool matchesSelection(const FXString& string,FXint* beg,FXint* end,FXuint flgs,FXint npar) const;
   FXint changedExternally();
   FXbool newDoc();
@@ -185,8 +168,6 @@ private:
   FXbool switchDoc();
   FXbool switchDoc(const FXString& file);
   FXbool openSelDoc();
-  FXbool insertSel();
-  FXbool extractSel();
 private:
   static FXbool loadBuffer(const FXString& file,FXString& buffer,FXuint bits=0);
   static FXbool saveBuffer(const FXString& file,FXString& buffer,FXuint bits=0);
@@ -344,6 +325,8 @@ public:
   long onCmdFindInFiles(FXObject*,FXSelector,void*);
   long onQueryTextTip(FXObject*,FXSelector,void*);
   long onLoggerRightMouse(FXObject*,FXSelector,void*);
+  long onCmdMergeUndos(FXObject*,FXSelector,void*);
+  long onUpdMergeUndos(FXObject*,FXSelector,void*);
 
   // Shell commands
   long onCmdShellDialog(FXObject*,FXSelector,void*);
@@ -354,9 +337,6 @@ public:
   long onUpdShellFilter(FXObject*,FXSelector,void*);
   long onCmdShellCancel(FXObject*,FXSelector,void*);
   long onUpdShellCancel(FXObject*,FXSelector,void*);
-  long onCmdShellOutput(FXObject*,FXSelector,void*);
-  long onCmdShellError(FXObject*,FXSelector,void*);
-  long onCmdShellDone(FXObject*,FXSelector,void*);
   long onCmdShellMenu(FXObject*,FXSelector,void*);
   long onUpdShellMenu(FXObject*,FXSelector,void*);
 
@@ -466,6 +446,7 @@ public:
     ID_OVERSTRIKE,
     ID_READONLY,
     ID_TABMODE,
+    ID_MERGEUNDOS,
     ID_CLOCKTIME,
     ID_PREFERENCES,
     ID_TABCOLUMNS,
@@ -578,9 +559,6 @@ public:
     ID_SHELL_FILTER,
     ID_SHELL_COMMAND,
     ID_SHELL_CANCEL,
-    ID_SHELL_OUTPUT,
-    ID_SHELL_ERROR,
-    ID_SHELL_DONE,
     ID_URL_ENCODE,
     ID_URL_DECODE,
     ID_CUST_CMD0,
@@ -693,12 +671,6 @@ public:
   // Save text to file
   FXbool saveToFile(const FXString& file);
 
-  // Insert file at cursor or replace selection
-  FXbool insertFromFile(const FXString& file);
-
-  // Extract selection to file
-  FXbool extractToFile(const FXString& file);
-
   // Add bookmark at given position pos
   void setBookmark(FXint pos);
 
@@ -726,10 +698,7 @@ public:
   FXbool performISearch(const FXString& text,FXuint opts,FXbool advance=false,FXbool notify=false);
 
   // Start shell command
-  FXbool startCommand(const FXString& command,FXint inp=0,FXint out=0,FXint flgs=0);
-
-  // Start shell command
-  FXbool startCommand(const FXString& command,FXString& input);
+  FXbool startCommand(const FXString& command,FXint sp,FXint ep,FXint sc,FXint ec,FXuint flgs=0);
 
   // Done with command
   FXbool doneCommand();
@@ -754,6 +723,19 @@ public:
 
   // Set status message
   void setStatusMessage(const FXString& msg);
+
+  // Append to text window
+  void textAppend(const FXchar* text,FXint len);
+  void textAppend(const FXchar* text);
+  void textAppend(const FXString& text);
+
+  // Append to log window
+  void logAppend(const FXchar* text,FXint len);
+  void logAppend(const FXchar* text);
+  void logAppend(const FXString& text);
+
+  // Clear log window
+  void logClear();
 
   // Detach window
   virtual void detach();

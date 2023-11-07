@@ -301,6 +301,8 @@ FXFileSelector::FXFileSelector(FXComposite *p,FXObject* tgt,FXSelector sel,FXuin
     table->addAccel(MKUINT(KEY_c,CONTROLMASK),filebox,FXSEL(SEL_COMMAND,FXFileList::ID_COPY_SEL));
     table->addAccel(MKUINT(KEY_x,CONTROLMASK),filebox,FXSEL(SEL_COMMAND,FXFileList::ID_CUT_SEL));
     table->addAccel(MKUINT(KEY_v,CONTROLMASK),filebox,FXSEL(SEL_COMMAND,FXFileList::ID_PASTE_SEL));
+    table->addAccel(MKUINT(KEY_h,ALTMASK),filebox,FXSEL(SEL_COMMAND,FXFileList::ID_TOGGLE_HIDDEN));
+    table->addAccel(MKUINT(KEY_i,ALTMASK),filebox,FXSEL(SEL_COMMAND,FXFileList::ID_TOGGLE_IMAGES));
     }
 
   // Now use up to 15 bookmarked directories
@@ -1435,6 +1437,8 @@ FXFileSelector::~FXFileSelector(){
     table->removeAccel(MKUINT(KEY_c,CONTROLMASK));
     table->removeAccel(MKUINT(KEY_x,CONTROLMASK));
     table->removeAccel(MKUINT(KEY_v,CONTROLMASK));
+    table->removeAccel(MKUINT(KEY_h,ALTMASK));
+    table->removeAccel(MKUINT(KEY_i,ALTMASK));
     }
   delete bookmarkmenu;
   delete updiricon;

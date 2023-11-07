@@ -498,6 +498,7 @@ FXMDIChild.h \
 FXMDIClient.h \
 FXMainWindow.h \
 FXMappedFile.h \
+FXMarkedPtr.h \
 FXMat2d.h \
 FXMat2f.h \
 FXMat3d.h \

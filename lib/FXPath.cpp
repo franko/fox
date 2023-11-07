@@ -1223,6 +1223,7 @@ FXString FXPath::enquote(const FXString& file,FXbool force){
       case '*':                 // Wildcard
       case '?':
         if(!force) q++;
+        /*FALL*/
       default:                  // Normal characters
         q++;
         n=0;
@@ -1272,6 +1273,7 @@ FXString FXPath::enquote(const FXString& file,FXbool force){
         case '*':               // Wildcard
         case '?':
           if(!force) result[q++]='^';
+          /*FALL*/
         default:                // Normal characters
           result[q++]=c;
           n=0;
@@ -1407,6 +1409,7 @@ FXString FXPath::enquote(const FXString& file,FXbool force){
         continue;
       case '~':                 // Username substitution
         if(p==1) force=true;    // Force quotes if at beginning
+        /*FALL*/
       default:                  // Normal character
         q++;
         continue;
@@ -1879,7 +1882,7 @@ n:switch(*p){
       goto n;
     case '\\':          // Escape code
       if(!(flags&FXPath::NoEscape)){ if(*++p=='\0') goto x; }
-      // FALL //
+      /*FALL*/
     default:            // Regular character
       p=wcinc(p);       // Next unicode character
       set++;
@@ -1989,7 +1992,7 @@ static FXbool domatch(const FXchar* string,const FXchar* s,const FXchar* p,FXuin
         break;
       case '\\':        // Escaped character follows
         if(!(flags&FXPath::NoEscape)){ if(*++p=='\0') return false; }
-        // FALL //
+        /*FALL*/
       default:          // Match characters against pattern
         pp=wc(p);
         ss=wc(s);

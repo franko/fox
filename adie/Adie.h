@@ -117,12 +117,14 @@ public:
     ID_CLOSEALL=FXApp::ID_LAST,
     ID_SYNTAXPATHS,
     ID_HARVEST,
+    ID_MAPS,
     ID_LAST
     };
 public:
   long onSigHarvest(FXObject*,FXSelector,void*);
   long onCmdCloseAll(FXObject*,FXSelector,void*);
   long onCmdSyntaxPaths(FXObject*,FXSelector,void*);
+  long onCmdDumpMaps(FXObject*,FXSelector,void*);
   long onUpdSyntaxPaths(FXObject*,FXSelector,void*);
 public:
 

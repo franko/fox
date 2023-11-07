@@ -34,8 +34,8 @@
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v140</PlatformToolset>
-    <WholeProgramOptimization>true</WholeProgramOptimization>
-    <CharacterSet>MultiByte</CharacterSet>
+    <WholeProgramOptimization>false</WholeProgramOptimization>
+    <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
@@ -79,11 +79,34 @@
     <CustomBuildBeforeTargets>BuildGenerateSources</CustomBuildBeforeTargets>
     <ExtensionsToDeleteOnClean>$(SolutionDir)..\lib\icons.h;$(SolutionDir)..\lib\icons.cpp;$(ExtensionsToDeleteOnClean)</ExtensionsToDeleteOnClean>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\</OutDir>
+    <IntDir>$(Platform)\$(Configuration)\</IntDir>
+    <IncludePath>$(SolutionDir)\..\include;$(IncludePath)</IncludePath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <OutDir>$(SolutionDir)$(Platform)\$(Configuration)\</OutDir>
+    <IntDir>$(Platform)\$(Configuration)\</IntDir>
+    <IncludePath>$(SolutionDir)\..\include;$(IncludePath)</IncludePath>
+    <LibraryPath>$(OutDir);$(LibraryPath)</LibraryPath>
+  </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
-      <SDLCheck>true</SDLCheck>
+      <SDLCheck>
+      </SDLCheck>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>UNICODE;WIN32;DEBUG;_CRT_SECURE_NO_WARNINGS;BUILD_WINDOWS;FOXDLL;FOXDLL_EXPORTS;HAVE_GL_H;HAVE_GLU_H;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <OmitFramePointers>
+      </OmitFramePointers>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <StringPooling>true</StringPooling>
+      <MinimalRebuild>false</MinimalRebuild>
+      <BufferSecurityCheck>false</BufferSecurityCheck>
+      <PrecompiledHeaderFile />
+      <PrecompiledHeaderOutputFile />
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -129,6 +152,12 @@ $(OutputPath)reswrap.exe -nc -h -n FX -o icons.h arrownext.gif arrowprev.gif big
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
+      <PrecompiledHeaderFile />
+      <PrecompiledHeaderOutputFile />
+      <InlineFunctionExpansion>AnySuitable</InlineFunctionExpansion>
+      <OmitFramePointers>true</OmitFramePointers>
+      <PreprocessorDefinitions>UNICODE;WIN32;NDEBUG;_CRT_SECURE_NO_WARNINGS;BUILD_WINDOWS;FOXDLL_EXPORTS;HAVE_GL_H;HAVE_GLU_H;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <BufferSecurityCheck>false</BufferSecurityCheck>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
@@ -364,6 +393,7 @@ $(OutputPath)reswrap.exe -nc -h -n FX -o icons.h  arrownext.gif arrowprev.gif bi
     <ClInclude Include="..\..\include\FXLocale.h" />
     <ClInclude Include="..\..\include\FXMainWindow.h" />
     <ClInclude Include="..\..\include\FXMappedFile.h" />
+    <ClInclude Include="..\..\include\FXMarkedPtr.h" />
     <ClInclude Include="..\..\include\FXMat2d.h" />
     <ClInclude Include="..\..\include\FXMat2f.h" />
     <ClInclude Include="..\..\include\FXMat3d.h" />

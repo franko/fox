@@ -592,7 +592,7 @@ void FXTreeListBox::sortRootItems(){
 
 // Set item text
 void FXTreeListBox::setItemText(FXTreeItem* item,const FXString& text){
-  if(item==nullptr){ fxerror("%s::setItemText: item is NULL\n",getClassName()); }
+  if(!item){ fxerror("%s::setItemText: item is NULL\n",getClassName()); }
   if(isItemCurrent(item)) field->setText(text);
   tree->setItemText(item,text);
   recalc();
@@ -601,7 +601,7 @@ void FXTreeListBox::setItemText(FXTreeItem* item,const FXString& text){
 
 // Get item text
 FXString FXTreeListBox::getItemText(const FXTreeItem* item) const {
-  if(item==nullptr){ fxerror("%s::getItemText: item is NULL\n",getClassName()); }
+  if(!item){ fxerror("%s::getItemText: item is NULL\n",getClassName()); }
   return tree->getItemText(item);
   }
 

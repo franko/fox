@@ -26,19 +26,17 @@ namespace FX {
 // Forward declarations
 class FXWindow;
 class FXEventLoop;
-class FXEventDispatcher;
 
 
 /// Recursive event loop
 class FXAPI FXEventLoop {
 private:
-  FXEventDispatcher *dispatcher;        // Event dispatcher
   FXEventLoop      **invocation;        // Pointer to variable holding pointer to current invocation
   FXEventLoop       *upper;             // Invocation above this one
-  FXWindow          *window;            // Modal window (if any)
-  FXuint             modality;          // Modality mode
+  FXWindow          *modalWindow;       // Modal window (if any)
+  FXuint             modalType;         // Modal type
   FXint              code;              // Return code
-  FXbool             done;              // True if breaking out
+  FXbool             exit;              // Exit flag
 public:
   enum{
     ModalForNone   = 0,
@@ -53,32 +51,32 @@ public:
   /// Initialize event loop
   FXEventLoop(FXEventLoop** inv,FXWindow* win=nullptr,FXuint mode=0);
 
-  /// Set dispatcher
-  void setDispatcher(FXEventDispatcher* disp){ dispatcher=disp; }
+  /// Test if in a modal invocation
+  FXbool isModal() const;
 
-  /// Get dispatcher
-  FXEventDispatcher* getDispatcher() const { return dispatcher; }
-
-  /// Test if the window is involved in a modal invocation
+  /// Test if in a modal invocation for window
   FXbool isModal(FXWindow *win) const;
 
-  /// Return window of current modal event loop
-  FXWindow* getModalWindow() const;
+  /// Break out of modal loop
+  FXbool stopModal(FXint value);
 
-  /// Return window of this model event loop
-  FXWindow* getWindow() const { return window; }
+  /// Break out of modal loop for window
+  FXbool stopModal(FXWindow* win,FXint value);
+
+  /// Break out of all event loops
+  FXbool stop(FXint value);
+
+  /// Return window of current modal event loop
+  FXWindow* window() const { return modalWindow; }
 
   /// Return mode of this model event loop
-  FXuint getModality() const { return modality; }
+  FXuint modality() const { return modalType; }
 
-  /// Break out of topmost event loop, closing all nested loops
-  void stop(FXint value);
+  /// Return result-code of this loop
+  FXint result() const { return code; }
 
-  /// Break out of modal loop matching window, and all deeper ones
-  void stopModal(FXWindow* win,FXint value);
-
-  /// Break out of modal loop, and all deeper non-modal ones
-  void stopModal(FXint value);
+  /// Return done flag
+  FXbool done() const { return exit; }
 
   /// Destroy event loop
  ~FXEventLoop();

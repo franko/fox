@@ -27,21 +27,17 @@
 class ShellCommand : public FXObject {
   FXDECLARE(ShellCommand)
 private:
-  FXProcess   process;          // Child process
-  TextWindow *window;           // Window to send messages to
-  FXSelector  selin;            // Message sent for input
-  FXSelector  selout;           // Message sent for output
-  FXSelector  selerr;           // Message sent for errors
-  FXSelector  seldone;          // Message sent when done
-  FXString    directory;        // Directory where to start
-  FXString    input;            // Input to child process
-  FXString    output;           // Output from child process
-  FXival      ninput;           // Number of inputs sent to child
-  FXival      noutput;          // Number of outputs received from child
-  FXPipe      ipipe;            // Pipe input to child
-  FXPipe      opipe;            // Pipe output from child
-  FXPipe      epipe;            // Pipe errors from child
-  FXuint      flags;            // Flags
+  FXProcess       process;      // Child process
+  FXPipe          pipe[3];      // Pipes to communicate with child {in,out,err}
+  FXApp          *app;          // Application
+  TextWindow     *window;       // Window to send messages to
+  FXTextSelection selection;    // Selection in window
+  FXString        directory;    // Directory where to start
+  FXString        input;        // Input to child process
+  FXString        output;       // Output from child process
+  FXival          ninput;       // Number of inputs sent to child
+  FXival          noutput;      // Number of outputs received from child
+  FXuint          flags;        // Flags
 private:
   ShellCommand(){}
   ShellCommand(const ShellCommand&);
@@ -49,21 +45,54 @@ private:
 public:
   long onCmdInput(FXObject*,FXSelector,void*);
   long onCmdOutput(FXObject*,FXSelector,void*);
-  long onCmdError(FXObject*,FXSelector,void*);
+  long onCmdLogger(FXObject*,FXSelector,void*);
 public:
+
+  // Handler ids
   enum {
-    ID_INPUT=1,
-    ID_OUTPUT,
-    ID_ERROR
+    ID_INPUT  = 1,
+    ID_OUTPUT = 2,
+    ID_LOGGER = 3
     };
+
+public:
+
+  // Collect or pass on
   enum {
-    STREAM=0,
-    COLLECT=1
+    STREAM =0,
+    COLLECT=1,
+    };
+
+  // Command Flags
+  enum{
+    SAVE_DOC=2,         // Save document before
+    LOAD_DOC=4,         // Load back after
+    };
+
+  // Command Input options
+  enum{
+    FROM_SEL=8,                   // Input from selection
+    FROM_DOC=16,                  // Input from document
+    FROM_ANY=(FROM_SEL|FROM_DOC), // Input from document or selection
+    };
+
+  // Command Output options
+  enum{
+    TO_INS=16,                  // Output inserted at cursor
+    TO_REP=32,                  // Output replaces input
+    TO_LOG=64,                  // Output to log window
+    TO_NEW=128                  // Output to new document window
     };
 public:
 
   // Construct shell command
-  ShellCommand(TextWindow* win,FXSelector so=0,FXSelector se=0,FXSelector sd=0,FXuint flg=STREAM);
+  ShellCommand(TextWindow* win,const FXString& dir,FXuint flgs=STREAM);
+
+  // Get application
+  FXApp* getApp() const { return app; }
+
+  // Get window
+  TextWindow* getWindow() const { return window; }
 
   // Set directory
   void setDirectory(const FXString& dir){ directory=dir; }
@@ -71,31 +100,23 @@ public:
   // Return directory
   const FXString& getDirectory() const { return directory; }
 
-  // Set command input
-  void setInput(FXString& in);
+  // Return flags
+  FXuint getFlags() const { return flags; }
 
-  // Get command output
-  void getOutput(FXString& out);
+  // Set selection
+  void setSelection(FXint sp=0,FXint ep=-1,FXint sc=0,FXint ec=-1);
 
-  // Access window
-  void setWindow(TextWindow* win){ window=win; }
-  TextWindow* getWindow() const { return window; }
+  // Return selection start position
+  FXint getSelStartPos() const { return selection.startpos; }
 
-  // Access input message
-  void setInputMessage(FXSelector sel){ selin=sel; }
-  FXSelector getInputMessage() const { return selin; }
+  // Return selection end position
+  FXint getSelEndPos() const { return selection.endpos; }
 
-  // Access output message
-  void setOutputMessage(FXSelector sel){ selout=sel; }
-  FXSelector getOutputMessage() const { return selout; }
+  // Return selection start column
+  FXint getSelStartColumn() const { return selection.startcol; }
 
-  // Access error message
-  void setErrorMessage(FXSelector sel){ selerr=sel; }
-  FXSelector getErrorMessage() const { return selerr; }
-
-  // Access done message
-  void setDoneMessage(FXSelector sel){ seldone=sel; }
-  FXSelector getDoneMessage() const { return seldone; }
+  // Return selection end column
+  FXint getSelEndColumn() const { return selection.endcol; }
 
   // Start command
   virtual FXbool start(const FXString& command);

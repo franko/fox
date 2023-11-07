@@ -233,7 +233,7 @@ FXString FXReverseDictionary::remove(const void* ky){
     FXuval p,b,x;
     p=b=HASH(ky);
     while(table[x=p&(no()-1)].key!=ky){
-      if(table[x].key==nullptr) return FXString::null;
+      if(!table[x].key) return FXString::null;
       p=(p<<2)+p+b+1;
       b>>=BSHIFT;
       }

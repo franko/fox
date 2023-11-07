@@ -261,7 +261,7 @@ void* FXHash::remove(const void* ky){
     FXuval p,b,x;
     p=b=HASH(ky);
     while(table[x=p&(no()-1)].key!=ky){
-      if(table[x].key==nullptr) goto x;
+      if(!table[x].key) goto x;
       p=(p<<2)+p+b+1;
       b>>=BSHIFT;
       }

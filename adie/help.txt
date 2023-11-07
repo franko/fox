@@ -62,7 +62,7 @@ Editing Features.
   - Block selection, cut-and paste text blocks, insert or overstrike text blocks.
   - Cut and paste to clipboard support.
   - X11 primary selection support using middle-mouse paste.
-  - Unlimited undo/redo capability.
+  - Unlimited undo/redo capability with alternate history mode.
   - Drag-and-drop support for text move or copy.
   - Highlight matching braces or parentheses.
   - Set bookmarks to remember points of interest in the file.
@@ -244,8 +244,12 @@ Undo and Redo.
 
 The editor supports unlimited (well, the limit is large...) undo and redo capability.  Each time you insert, remove, or replace some text, the editor remembers what you did.
 If you make a mistake, you can undo the last command, and the one before that, and so on. Having invoked undo many times, it is sometimes desirable to invoke the redo command, i.e. to perform the original editing operation again.  Thus, you can move backward or forward in time.
-However if, after undoing several commands, you decide edit the buffer in a different way, then you will no longer be able to redo the undone commands:- you are now taking a different path forward.
-When you first load a file, or just after you save it, Adie remembers that this version of the text was special; while subsequent editing commands can be undone individually, you can always quickly return to this special version of the text by means of the 'Revert' menu command.  Note, unlike 'Reload', no disk-i/o is being performed by 'Revert'.  It simply re-instates the state of the text-buffer that existed when the buffer was considered 'not changed'.
+The "Merge Undos" option consolidates contiguous single-character insertions or deletions into larger undo commands.  When the "Merge Undos" mode is on, an undo or redo will undo inserts or deletes on a word-by-word bases.  It tries to be smart about which character classes are "mergeable," so that for example editing source code, we're not backing over operators and other punctuation that may have special meanings in programming languages (we're still experimenting with this feature so the precise behaviour will be fine-tuned a bit in the future.
+A new addition to the undo system is the "Alternate History" mode.  If, after undoing several commands, you decide edit the buffer in a different way, all commands that you have undone will be deleted, and you will no longer be able to go forward with redo at that point.
+However, when "Alternate History" mode on, Adie will remember "the path not taken" and allow you to undo back to the original text, prior to the change.
+Needless to say, this may vastly expand the amount of memory used by the undo system; however, to prevent things getting out of hand the undo list is periodically trimmed to keep it manageable.
+When you load a file, or save a file after editing it, the undo system will remember the state of the text buffer as "clean" or "marked".  Making further changes, you will be able to quickly go back to this clean state using the "Revert" command.  Unlike reload, no disk I/O is performed when this happens: we're simply exucuting undo or redo commands to go back to the marked state.
+Of course, if a huge amount of text was modified, and the undo list had to be trimmed, you will potentially not be able to reach the marked state anymore if it wanders into the trimmed range.  However, the limits are set pretty large for editing regular source files.
 
 
 Evaluating Numerical Expressions.

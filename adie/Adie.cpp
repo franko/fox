@@ -18,12 +18,9 @@
 * You should have received a copy of the GNU General Public License             *
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.         *
 ********************************************************************************/
+#include "xincs.h"
 #include "fx.h"
 #include "fxkeys.h"
-#include <signal.h>
-#ifndef WIN32
-#include <sys/wait.h>
-#endif
 #include "HelpWindow.h"
 #include "Preferences.h"
 #include "Commands.h"
@@ -50,6 +47,7 @@ FXDEFMAP(Adie) AdieMap[]={
   FXMAPFUNC(SEL_SIGNAL,Adie::ID_CLOSEALL,Adie::onCmdCloseAll),
   FXMAPFUNC(SEL_COMMAND,Adie::ID_CLOSEALL,Adie::onCmdCloseAll),
   FXMAPFUNC(SEL_COMMAND,Adie::ID_SYNTAXPATHS,Adie::onCmdSyntaxPaths),
+  FXMAPFUNC(SEL_COMMAND,Adie::ID_MAPS,Adie::onCmdDumpMaps),
   FXMAPFUNC(SEL_UPDATE,Adie::ID_SYNTAXPATHS,Adie::onUpdSyntaxPaths),
   };
 
@@ -371,6 +369,13 @@ long Adie::onSigHarvest(FXObject*,FXSelector,void*){
 
 
 // Change syntax paths
+long Adie::onCmdDumpMaps(FXObject*,FXSelector,void*){
+  FXMetaClass::dumpMetaClasses();
+  return 1;
+  }
+
+
+// Change syntax paths
 long Adie::onCmdSyntaxPaths(FXObject* sender,FXSelector,void*){
   sender->handle(this,FXSEL(SEL_COMMAND,FXWindow::ID_GETSTRINGVALUE),(void*)&syntaxpaths);
   reg().writeStringEntry("SETTINGS","syntaxpaths",syntaxpaths.text());
@@ -398,14 +403,17 @@ static void printusage(){
   fxmessage("Usage: adie [options] files...\n");
   fxmessage("  options:\n");
   fxmessage("  --help, -h               Print help.\n");
+  fxmessage("  --detach, -d             Detach from terminal.\n");
   fxmessage("  --version                Print version number.\n");
   fxmessage("  --view                   Start in view-only mode.\n");
   fxmessage("  --edit                   Start in edit-mode.\n");
   fxmessage("  --line=NUM               Jump cursor position to line number.\n");
   fxmessage("  --column=NUM             Jump cursor position to column.\n");
-  fxmessage("  --syntax=SYNTAXFILE      Load given syntax file.\n");
   fxmessage("  --lang=LANGUAGE          Force language mode.\n");
   fxmessage("  --size=WxH+X+Y           Force window size and placement.\n");
+  fxmessage("  --syntax=SYNTAXFILE      Syntax file (default: Adie.stx).\n");
+  fxmessage("  --iconpath=PATHLIST      Directories to search for icons.\n");
+  fxmessage("  --syntaxpath=PATHLIST    Directories to search for syntax file.\n");
   }
 
 
@@ -432,13 +440,12 @@ static void printversion(){
 
 // Parse line and column following filename, if any
 static FXString parseFileAndLocation(const FXString& string,FXint& line,FXint& col){
-  FXString result('\0',1024);
-  line=col=0;
-  if(string.scan("%1023[^:]:%d:%d",result.text(),&line,&col)==3){
-    return result;
+  FXchar filename[1024];
+  if(string.scan("%1023[^:]:%d:%d",filename,&line,&col)==3){
+    return FXString(filename);
     }
-  if(string.scan("%1023[^:]:%d",result.text(),&line)==2){
-    return result;
+  if(string.scan("%1023[^:]:%d",filename,&line)==2){
+    return FXString(filename);
     }
   return string;
   }
@@ -472,26 +479,41 @@ FXint Adie::start(int argc,char** argv){
   // Exec path is default for syntax path
   execpath=FXSystem::getExecPath();
 
-  FXTRACE((11,"execpath=%s\n",execpath.text()));
+  // See if override paths are provided in the registry
+  syntaxpaths=reg().readStringEntry("SETTINGS","syntaxpaths",execpath.text());
 
   // Get icon search path
   iconpath=reg().readStringEntry("SETTINGS","iconpath",FXIconCache::defaultIconPath);
 
+  FXTRACE((11,"execpath=%s\n",execpath.text()));
   FXTRACE((11,"iconpath=%s\n",iconpath.text()));
-
-  // Change icon search path
-  associations->setIconPath(iconpath);
-
-  // See if override paths are provided in the registry
-  syntaxpaths=reg().readStringEntry("SETTINGS","syntaxpaths",execpath.text());
-
   FXTRACE((11,"syntaxpaths=%s\n",syntaxpaths.text()));
 
-  // Look for syntax file in the syntax paths
-  syntaxfile=FXPath::search(syntaxpaths,"Adie.stx");
-
-  // Global options
+  // A few boilerplate options before starting
   while(arg<argc){
+    if(FXString::compare(argv[arg],"--syntax=",9)==0){
+      syntaxfile=argv[arg]+9;
+      arg++;
+      continue;
+      }
+    if(FXString::compare(argv[arg],"--iconpath=",11)==0){
+      iconpath=argv[arg]+11;
+      arg++;
+      continue;
+      }
+    if(FXString::compare(argv[arg],"--syntaxpath=",13)==0){
+      syntaxpaths=argv[arg]+13;
+      arg++;
+      continue;
+      }
+#if defined(HAVE_DAEMON)
+    if(FXString::compare(argv[arg],"--detach")==0 || FXString::compare(argv[arg],"-d")==0){
+      FXint junk=daemon(1,0);
+      (void)junk;
+      arg++;
+      continue;
+      }
+#endif
     if(FXString::compare(argv[arg],"-h")==0){
       printusage();
       return 0;
@@ -504,12 +526,15 @@ FXint Adie::start(int argc,char** argv){
       printversion();
       return 0;
       }
-    if(FXString::compare(argv[arg],"--syntax=",9)==0){
-      syntaxfile=argv[arg]+9;
-      arg++;
-      continue;
-      }
     break;
+    }
+
+  // Change icon search path
+  associations->setIconPath(iconpath);
+
+  // Look for syntax file in the syntax paths, if not specified
+  if(syntaxfile.empty()){
+    syntaxfile=FXPath::search(syntaxpaths,"Adie.stx");
     }
 
   FXTRACE((11,"syntaxfile=%s\n",syntaxfile.text()));
@@ -521,45 +546,45 @@ FXint Adie::start(int argc,char** argv){
       }
     }
 
-  // Load filenames
+  // Open files
   while(arg<argc){
 
-    // File viewing only
+    // Open for viewing
     if(FXString::compare(argv[arg],"--view")==0){
       edit=false;
       arg++;
       continue;
       }
 
-    // File viewing and editing
+    // Open for editing
     if(FXString::compare(argv[arg],"--edit")==0){
       edit=true;
       arg++;
       continue;
       }
 
-    // Get language
+    // Specify language
     if(FXString::compare(argv[arg],"--lang=",7)==0){
       syntax=getSyntaxByName(argv[arg]+7);
       arg++;
       continue;
       }
 
-    // Window size
+    // Specify window geometry
     if(FXString::compare(argv[arg],"--size=",7)==0){
       geom=fxparsegeometry(argv[arg]+7,winx,winy,winw,winh);
       arg++;
       continue;
       }
 
-    // Get line number
+    // Jump to line after opening
     if(FXString::compare(argv[arg],"--line=",7)==0){
       sscanf(argv[arg]+7,"%d",&line);
       arg++;
       continue;
       }
 
-    // Get column number
+    // Jump to column after opening
     if(FXString::compare(argv[arg],"--column=",9)==0){
       sscanf(argv[arg]+9,"%d",&col);
       arg++;

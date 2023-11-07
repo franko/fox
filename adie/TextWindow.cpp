@@ -203,6 +203,8 @@ FXDEFMAP(TextWindow) TextWindowMap[]={
   FXMAPFUNC(SEL_UPDATE,TextWindow::ID_AUTOINDENT,TextWindow::onUpdAutoIndent),
   FXMAPFUNC(SEL_COMMAND,TextWindow::ID_INSERTTABS,TextWindow::onCmdInsertTabs),
   FXMAPFUNC(SEL_UPDATE,TextWindow::ID_INSERTTABS,TextWindow::onUpdInsertTabs),
+  FXMAPFUNC(SEL_COMMAND,TextWindow::ID_MERGEUNDOS,TextWindow::onCmdMergeUndos),
+  FXMAPFUNC(SEL_UPDATE,TextWindow::ID_MERGEUNDOS,TextWindow::onUpdMergeUndos),
   FXMAPFUNC(SEL_COMMAND,TextWindow::ID_BRACEMATCH,TextWindow::onCmdBraceMatch),
   FXMAPFUNC(SEL_UPDATE,TextWindow::ID_BRACEMATCH,TextWindow::onUpdBraceMatch),
   FXMAPFUNC(SEL_COMMAND,TextWindow::ID_BRACEMATCHTIME,TextWindow::onCmdBraceMatchTime),
@@ -254,9 +256,6 @@ FXDEFMAP(TextWindow) TextWindowMap[]={
   FXMAPFUNC(SEL_UPDATE,TextWindow::ID_SHELL_FILTER,TextWindow::onUpdShellFilter),
   FXMAPFUNC(SEL_COMMAND,TextWindow::ID_SHELL_CANCEL,TextWindow::onCmdShellCancel),
   FXMAPFUNC(SEL_UPDATE,TextWindow::ID_SHELL_CANCEL,TextWindow::onUpdShellCancel),
-  FXMAPFUNC(SEL_COMMAND,TextWindow::ID_SHELL_OUTPUT,TextWindow::onCmdShellOutput),
-  FXMAPFUNC(SEL_COMMAND,TextWindow::ID_SHELL_ERROR,TextWindow::onCmdShellError),
-  FXMAPFUNC(SEL_COMMAND,TextWindow::ID_SHELL_DONE,TextWindow::onCmdShellDone),
   FXMAPFUNCS(SEL_UPDATE,TextWindow::ID_CUST_CMD0,TextWindow::ID_CUST_CMDF,TextWindow::onUpdShellMenu),
   FXMAPFUNCS(SEL_COMMAND,TextWindow::ID_CUST_CMD0,TextWindow::ID_CUST_CMDF,TextWindow::onCmdShellMenu),
 
@@ -457,8 +456,6 @@ TextWindow::TextWindow(Adie* a):FXMainWindow(a,"Adie",nullptr,nullptr,DECOR_ALL,
   setPatternList("All Files (*)");
   setCurrentPattern(0);
   shellCommand=nullptr;
-  replaceStart=0;
-  replaceEnd=0;
   initialwidth=640;
   initialheight=480;
   isearchReplace=false;
@@ -467,6 +464,7 @@ TextWindow::TextWindow(Adie* a):FXMainWindow(a,"Adie",nullptr,nullptr,DECOR_ALL,
   searchflags=SEARCH_FORWARD;
   searching=false;
   showsearchbar=false;
+  mergeundos=true;
   showlogger=false;
   initialsize=true;
   colorize=false;
@@ -576,7 +574,7 @@ void TextWindow::createMenubar(){
   new FXMenuSeparator(gotomenu);
   new FXMenuCommand(gotomenu,tr("Goto matching (..)\tCtl-M\tGoto matching brace or parenthesis."),nullptr,editor,FXText::ID_GOTO_MATCHING);
   new FXMenuSeparator(gotomenu);
-  new FXMenuCommand(gotomenu,tr("&Insert point\t\tGo back to position of last edit."),getApp()->pointicon,this,ID_INSERTPOINT);
+  new FXMenuCommand(gotomenu,tr("&Insert point\tAlt-I\tGo back to position of last edit."),getApp()->pointicon,this,ID_INSERTPOINT);
   new FXMenuCommand(gotomenu,tr("&Set bookmark\tAlt-B\tSet bookmark at cursor location."),getApp()->bookseticon,this,ID_SET_MARK);
   new FXMenuCommand(gotomenu,tr("&Next bookmark\tAlt-N\tMove cursor to next bookmark."),getApp()->booknexticon,this,ID_NEXT_MARK);
   new FXMenuCommand(gotomenu,tr("&Previous bookmark\tAlt-P\tMove cursor to previous bookmark."),getApp()->bookprevicon,this,ID_PREV_MARK);
@@ -617,14 +615,14 @@ void TextWindow::createMenubar(){
 
   // Tabs menu
   tabsmenu=new FXMenuPane(this);
-  new FXMenuRadio(tabsmenu,"1",this,ID_TABSELECT_1);
-  new FXMenuRadio(tabsmenu,"2",this,ID_TABSELECT_2);
-  new FXMenuRadio(tabsmenu,"3",this,ID_TABSELECT_3);
-  new FXMenuRadio(tabsmenu,"4",this,ID_TABSELECT_4);
-  new FXMenuRadio(tabsmenu,"5",this,ID_TABSELECT_5);
-  new FXMenuRadio(tabsmenu,"6",this,ID_TABSELECT_6);
-  new FXMenuRadio(tabsmenu,"7",this,ID_TABSELECT_7);
-  new FXMenuRadio(tabsmenu,"8",this,ID_TABSELECT_8);
+  new FXMenuRadio(tabsmenu,"1\t\tSet tab to one column.",this,ID_TABSELECT_1);
+  new FXMenuRadio(tabsmenu,"2\t\tSet tab to two columns.",this,ID_TABSELECT_2);
+  new FXMenuRadio(tabsmenu,"3\t\tSet tab to three columns.",this,ID_TABSELECT_3);
+  new FXMenuRadio(tabsmenu,"4\t\tSet tab to four columns.",this,ID_TABSELECT_4);
+  new FXMenuRadio(tabsmenu,"5\t\tSet tab to five columns.",this,ID_TABSELECT_5);
+  new FXMenuRadio(tabsmenu,"6\t\tSet tab to six columns.",this,ID_TABSELECT_6);
+  new FXMenuRadio(tabsmenu,"7\t\tSet tab to seven columns.",this,ID_TABSELECT_7);
+  new FXMenuRadio(tabsmenu,"8\t\tSet tab to eight columns.",this,ID_TABSELECT_8);
 
   // Shell Menu
   shellmenu=new FXMenuPane(this);
@@ -666,7 +664,7 @@ void TextWindow::createMenubar(){
   new FXMenuCheck(optionmenu,tr("Use initial size\t\tToggle initial window size mode."),this,ID_USE_INITIAL_SIZE);
   new FXMenuCommand(optionmenu,tr("Set initial size\t\tSet current window size as the initial window size."),nullptr,this,ID_SET_INITIAL_SIZE);
   new FXMenuCommand(optionmenu,tr("&Restyle\t\tToggle syntax coloring."),nullptr,this,ID_RESTYLE);
-  new FXMenuCascade(optionmenu,tr("Tab stops"),nullptr,tabsmenu);
+  new FXMenuCascade(optionmenu,tr("Tab stops\t\tSelect tab columns."),nullptr,tabsmenu);
   new FXMenuCascade(optionmenu,tr("Syntax patterns\t\tSelect syntax for this file."),nullptr,syntaxmenu);
   new FXMenuSeparator(optionmenu);
   new FXMenuCommand(optionmenu,tr("Save Settings\t\tSave settings now."),nullptr,this,ID_SAVE_SETTINGS);
@@ -682,6 +680,7 @@ void TextWindow::createMenubar(){
   new FXMenuCheck(viewmenu,tr("&Searchbar\t\tDisplay search bar."),searchbar,FXWindow::ID_TOGGLESHOWN);
   new FXMenuCheck(viewmenu,tr("Status &line\t\tDisplay status line."),statusbar,FXWindow::ID_TOGGLESHOWN);
   new FXMenuCheck(viewmenu,tr("Undo Counters\t\tShow undo/redo counters on status line."),undoredoblock,FXWindow::ID_TOGGLESHOWN);
+  new FXMenuCheck(viewmenu,tr("Language\t\tShow language on status line."),language,FXWindow::ID_TOGGLESHOWN);
   new FXMenuCheck(viewmenu,tr("Clock\t\tShow clock on status line."),clock,FXWindow::ID_TOGGLESHOWN);
 
   // Window menu
@@ -689,21 +688,21 @@ void TextWindow::createMenubar(){
   new FXMenuTitle(menubar,tr("&Window"),nullptr,windowmenu);
 
   // Window menu
-  new FXMenuRadio(windowmenu,"&1",this,ID_WINDOW_1);
-  new FXMenuRadio(windowmenu,"&2",this,ID_WINDOW_2);
-  new FXMenuRadio(windowmenu,"&3",this,ID_WINDOW_3);
-  new FXMenuRadio(windowmenu,"&4",this,ID_WINDOW_4);
-  new FXMenuRadio(windowmenu,"&5",this,ID_WINDOW_5);
-  new FXMenuRadio(windowmenu,"&6",this,ID_WINDOW_6);
-  new FXMenuRadio(windowmenu,"&7",this,ID_WINDOW_7);
-  new FXMenuRadio(windowmenu,"&8",this,ID_WINDOW_8);
-  new FXMenuRadio(windowmenu,"&9",this,ID_WINDOW_9);
-  new FXMenuRadio(windowmenu,"1&0",this,ID_WINDOW_10);
-  new FXMenuRadio(windowmenu,"11",this,ID_WINDOW_11);
-  new FXMenuRadio(windowmenu,"12",this,ID_WINDOW_12);
-  new FXMenuRadio(windowmenu,"13",this,ID_WINDOW_13);
-  new FXMenuRadio(windowmenu,"14",this,ID_WINDOW_14);
-  new FXMenuRadio(windowmenu,"15",this,ID_WINDOW_15);
+  new FXMenuRadio(windowmenu,"&1\t\tSwitch to window #1.",this,ID_WINDOW_1);
+  new FXMenuRadio(windowmenu,"&2\t\tSwitch to window #2.",this,ID_WINDOW_2);
+  new FXMenuRadio(windowmenu,"&3\t\tSwitch to window #3.",this,ID_WINDOW_3);
+  new FXMenuRadio(windowmenu,"&4\t\tSwitch to window #4.",this,ID_WINDOW_4);
+  new FXMenuRadio(windowmenu,"&5\t\tSwitch to window #5.",this,ID_WINDOW_5);
+  new FXMenuRadio(windowmenu,"&6\t\tSwitch to window #6.",this,ID_WINDOW_6);
+  new FXMenuRadio(windowmenu,"&7\t\tSwitch to window #7.",this,ID_WINDOW_7);
+  new FXMenuRadio(windowmenu,"&8\t\tSwitch to window #8.",this,ID_WINDOW_8);
+  new FXMenuRadio(windowmenu,"&9\t\tSwitch to window #9.",this,ID_WINDOW_9);
+  new FXMenuRadio(windowmenu,"1&0\t\tSwitch to window #10.",this,ID_WINDOW_10);
+  new FXMenuRadio(windowmenu,"11\t\tSwitch to window #11`.",this,ID_WINDOW_11);
+  new FXMenuRadio(windowmenu,"12\t\tSwitch to window #12.",this,ID_WINDOW_12);
+  new FXMenuRadio(windowmenu,"13\t\tSwitch to window #13.",this,ID_WINDOW_13);
+  new FXMenuRadio(windowmenu,"14\t\tSwitch to window #14.",this,ID_WINDOW_14);
+  new FXMenuRadio(windowmenu,"15\t\tSwitch to window #15.",this,ID_WINDOW_15);
 
   // Help menu
   helpmenu=new FXMenuPane(this);
@@ -711,8 +710,10 @@ void TextWindow::createMenubar(){
 
   // Help Menu entries
   new FXMenuCommand(helpmenu,tr("&Help...\t\tDisplay help information."),getApp()->helpicon,this,ID_HELP,0);
-#if defined(DEBUG)
-  new FXMenuCommand(helpmenu,tr("&Dump Widgets...\t\tDump widget tree."),nullptr,getApp(),FXApp::ID_DUMP);
+#if 1 //defined(DEBUG)
+  new FXMenuCommand(helpmenu,tr("&Dump Widgets...\t\tDump widget tree."),nullptr,getApp(),Adie::ID_DUMP);
+  new FXMenuCommand(helpmenu,tr("&Dump Maps...\t\tDump message maps."),nullptr,getApp(),Adie::ID_MAPS);
+  new FXMenuCommand(helpmenu,tr("&Dump Undo...\t\tDump message maps."),nullptr,&undolist,FXUndoList::ID_DUMP_STATS);
 #endif
   new FXMenuSeparator(helpmenu);
   new FXMenuCommand(helpmenu,tr("&About Adie...\t\tDisplay about panel."),getApp()->smallicon,this,ID_ABOUT,0);
@@ -824,6 +825,9 @@ void TextWindow::createStatusbar(){
 
   // Show clock on status bar
   clock=new FXLabel(statusbar,"88:88:88",nullptr,FRAME_SUNKEN|JUSTIFY_RIGHT|LAYOUT_RIGHT|LAYOUT_CENTER_Y|TEXTFIELD_READONLY,0,0,0,0,2,2,1,1);
+
+  // Language
+  language=new FXLabel(statusbar,"---",nullptr,FRAME_SUNKEN|JUSTIFY_RIGHT|LAYOUT_RIGHT|LAYOUT_CENTER_Y,0,0,0,0,2,2,1,1);
 
   // Undo/redo block
   undoredoblock=new FXHorizontalFrame(statusbar,LAYOUT_RIGHT|LAYOUT_CENTER_Y,0,0,0,0, 0,0,0,0);
@@ -1233,8 +1237,8 @@ FXbool TextWindow::saveToFile(const FXString& file){
 
 /*******************************************************************************/
 
-// Insert from file
-FXbool TextWindow::insertFromFile(const FXString& file){
+// Replace by file
+FXbool TextWindow::insertFromFile(const FXString& file,FXint sp,FXint ep,FXint sc,FXint ec){
   FXbool loaded=false;
   FXString buffer;
   FXuint bits=0;
@@ -1249,8 +1253,18 @@ FXbool TextWindow::insertFromFile(const FXString& file){
   // Try load buffer
   if(TextWindow::loadBuffer(file,buffer,bits)){
 
-    // Replace the selection, or insert at cursor
-    if(!editor->replaceSelection(buffer,true)){
+    // Replace selection
+    if(sp<=ep){
+      if(sc<ec){
+        editor->replaceTextBlock(sp,ep,sc,ec,buffer,true);
+        }
+      else if(sp<ep){
+        editor->replaceText(sp,ep-sp,buffer,true);
+        }
+      }
+
+    // Or insert at cursor
+    else{
       editor->insertText(editor->getCursorPos(),buffer,true);
       }
 
@@ -1265,21 +1279,28 @@ FXbool TextWindow::insertFromFile(const FXString& file){
 
 
 // Extract file
-FXbool TextWindow::extractToFile(const FXString& file){
+FXbool TextWindow::extractToFile(const FXString& file,FXint sp,FXint ep,FXint sc,FXint ec){
   FXbool saved=false;
   FXString buffer;
   FXuint bits=0;
-
-  // Set wait cursor
-  getApp()->beginWaitCursor();
 
   // Load flags
   if(stripsp) bits|=TRIM;
   if(appendcr) bits|=CRLF;
   if(appendnl) bits|=LINE;
 
-  // Grab selection
-  buffer=editor->getSelectedText();
+  // Set wait cursor
+  getApp()->beginWaitCursor();
+
+  // Replace selection
+  if(sp<=ep){
+    if(sc<ec){
+      buffer=editor->extractTextBlock(sp,ep,sc,ec);
+      }
+    else if(sp<ep){
+      buffer=editor->extractText(sp,ep-sp);
+      }
+    }
 
   // Don't bother if no text
   if(buffer.length()){
@@ -1301,8 +1322,8 @@ FXbool TextWindow::extractToFile(const FXString& file){
 void TextWindow::readRegistry(){
   FXColor textback,textfore,textselback,textselfore,textcursor,texthilitefore,texthiliteback,textactiveback,textbar,textnumber;
   FXColor dirback,dirfore,dirselback,dirselfore,dirlines;
-  FXbool hiddenfiles,showactive,showmatch,hidetree;
-  FXbool hideclock,hidestatus,hideundo,hidetoolbar;
+  FXbool hiddenfiles,showactive,showmatch,hidetree,alternatehistory;
+  FXbool hideclock,hidelanguage,hidestatus,hideundo,hidetoolbar;
   FXint ww,hh,xx,yy,modebits,treewidth,loggerheight,wheellines;
   FXTime matchtime;
 
@@ -1374,6 +1395,9 @@ void TextWindow::readRegistry(){
   // Showing the clock?
   hideclock=getApp()->reg().readBoolEntry("SETTINGS","hideclock",false);
 
+  // Showing language setting?
+  hidelanguage=getApp()->reg().readBoolEntry("SETTINGS","hidelanguage",true);
+
   // Showing the status line?
   hidestatus=getApp()->reg().readBoolEntry("SETTINGS","hidestatus",false);
 
@@ -1416,6 +1440,8 @@ void TextWindow::readRegistry(){
   barcols=getApp()->reg().readIntEntry("SETTINGS","barcols",0);
 
   // Various flags
+  mergeundos=getApp()->reg().readBoolEntry("SETTINGS","mergeundos",true);
+  alternatehistory=getApp()->reg().readBoolEntry("SETTINGS","alternatehistory",true);
   stripcr=getApp()->reg().readBoolEntry("SETTINGS","stripreturn",true);
   appendcr=getApp()->reg().readBoolEntry("SETTINGS","appendreturn",false);
   stripsp=getApp()->reg().readBoolEntry("SETTINGS","stripspaces",false);
@@ -1469,6 +1495,9 @@ void TextWindow::readRegistry(){
   // Hide clock
   if(hideclock) clock->hide();
 
+  // Hide language
+  if(hidelanguage) language->hide();
+
   // Hide statusline
   if(hidestatus) statusbar->hide();
 
@@ -1499,6 +1528,10 @@ void TextWindow::readRegistry(){
   editor->setTabColumns(tabcols);
   editor->setBarColumns(barcols);
 
+  // Undo alternate history
+  undolist.setAlternateHistory(alternatehistory);
+
+
   // Search history
   loadSearchHistory();
 
@@ -1513,6 +1546,9 @@ void TextWindow::writeRegistry(){
 
   // Font
   FXString fontspec=editor->getFont()->getFont();
+
+  // Alternate history mode
+  FXbool alternatehistory=undolist.getAlternateHistory();
 
   // Font
   getApp()->reg().writeStringEntry("SETTINGS","textfont",fontspec.text());
@@ -1566,6 +1602,9 @@ void TextWindow::writeRegistry(){
   // Was clock shown
   getApp()->reg().writeBoolEntry("SETTINGS","hideclock",!clock->shown());
 
+  // Was language shown
+  getApp()->reg().writeBoolEntry("SETTINGS","hidelanguage",!language->shown());
+
   // Was toolbar shown
   getApp()->reg().writeBoolEntry("SETTINGS","hidetoolbar",!toolbar->shown());
 
@@ -1605,6 +1644,8 @@ void TextWindow::writeRegistry(){
   getApp()->reg().writeIntEntry("SETTINGS","barcols",editor->getBarColumns());
 
   // Strip returns
+  getApp()->reg().writeBoolEntry("SETTINGS","mergeundos",mergeundos);
+  getApp()->reg().writeBoolEntry("SETTINGS","alternatehistory",alternatehistory);
   getApp()->reg().writeBoolEntry("SETTINGS","stripreturn",stripcr);
   getApp()->reg().writeBoolEntry("SETTINGS","appendreturn",appendcr);
   getApp()->reg().writeBoolEntry("SETTINGS","stripspaces",stripsp);
@@ -1616,8 +1657,8 @@ void TextWindow::writeRegistry(){
   getApp()->reg().writeUIntEntry("SETTINGS","searchflags",searchflags);
 
   // File patterns
-  getApp()->reg().writeIntEntry("SETTINGS","filepatternno",getCurrentPattern());
   getApp()->reg().writeStringEntry("SETTINGS","filepatterns",getPatternList().text());
+  getApp()->reg().writeIntEntry("SETTINGS","filepatternno",getCurrentPattern());
 
   // Search path
   getApp()->reg().writeStringEntry("SETTINGS","searchpaths",searchpaths.text());
@@ -1798,39 +1839,33 @@ FXbool TextWindow::checkChanges(){
   }
 
 
-// Check if file on disk changed by another program;
-// If the file is present but has different filetime than the
-// one of the buffer, it may have been changed by another program.
-// Otherwise, if the filetime was unchanged, then the text buffer
-// is baselined from this file.
-// If the file was removed from the disk, and the filetime
-// was not zero, the file in the buffer may be the last surviving
-// copy of the data, and you may therefore want to save it.
+// Check if file on disk changed by another program.
+// If we have a filename, and its not a new file (filetime!=0),
+// check the filetime recorded on disk; if different, then the
+// file may have been changed by another program.  If the file
+// no longer exists on disk, then it may have been removed and
+// we may have the last surviving copy of it in the buffer.
 FXint TextWindow::changedExternally(){
-  if(isFilenameSet()){
+  if(isFilenameSet() && 0<getFiletime()){
     FXStat info;
     if(FXStat::statFile(getFilename(),info)){
-      if(getFiletime()!=info.modified()) return 1;
+      return (getFiletime()!=info.modified());
       }
-    else{
-      if(getFiletime()!=0) return 2;
-      }
+    return 2;
     }
   return 0;
   }
 
 
 // Before switching to another file or closing the window, check to see
-// if the file was edited; also, check to see if the file on disk was
-// removed (or changed).
-// Either of these cases should result in a prompt to save the file.
+// if the file was edited, or if the copy on disk was changed or removed.
+// We then prompt the user to save the data (back) to disk.
 // If we decide to save, and the filename was set, proceed to save to that
 // filename.  Otherwise, prompt the user for the path and filename to save
 // the file to.
-// If the file was unchanged, and the filename was set, then save the book-
-// marks and view, as they could have changed.
-// Don't save the bookmarks if the buffer was changed but we're not saving
-// it:- we don't want the bookmark locations to go out of sync.
+// If we don't save, but still proceed to switch to another file or close
+// the window, try to save the bookmarks and current view on the file, if
+// we know the filename to use.
 FXbool TextWindow::saveChanges(){
   if(isModified() || changedExternally()){
     FXuint answer=FXMessageBox::warning(this,MBOX_YES_NO_CANCEL,tr("File Has Unsaved Changes"),tr("Save file: %s to disk?"),getFilename().text());
@@ -1951,6 +1986,8 @@ FXbool TextWindow::saveDocAs(){
       setBrowserCurrentFile(file);
       writeBookmarks(file);
       writeView(file);
+      determineSyntax();
+      parseModeline();
       return true;
       }
     FXMessageBox::error(this,MBOX_OK,tr("Error Saving File"),tr("Unable to save file as: %s"),file.text());
@@ -2192,19 +2229,24 @@ FXbool TextWindow::openSelDoc(){
   }
 
 
+
 // Insert text from file
 FXbool TextWindow::insertSel(){
   FXFileDialog opendialog(this,tr("Insert Text From File"));
-  FXint patno=getApp()->reg().readIntEntry("File Dialog","pattern",0);
+  FXint sp=editor->getSelStartPos();
+  FXint ep=editor->getSelEndPos();
+  FXint sc=editor->getSelStartColumn();
+  FXint ec=editor->getSelEndColumn();
+  FXint pt=getApp()->reg().readIntEntry("File Dialog","pattern",0);
   opendialog.setSelectMode(SELECTFILE_EXISTING);
   opendialog.setAssociations(getApp()->getFileAssociations(),false);
   opendialog.setPatternList(getPatternList());
-  opendialog.setCurrentPattern(FXCLAMP(0,patno,opendialog.getNumPatterns()-1));
+  opendialog.setCurrentPattern(FXCLAMP(0,pt,opendialog.getNumPatterns()-1));
   opendialog.setDirectory(FXPath::directory(getFilename()));
   if(opendialog.execute()){
     FXString file=opendialog.getFilename();
     getApp()->reg().writeIntEntry("File Dialog","pattern",opendialog.getCurrentPattern());
-    if(!insertFromFile(file)){
+    if(!insertFromFile(file,sp,ep,sc,ec)){
       FXMessageBox::error(this,MBOX_OK,tr("Error Inserting From File"),tr("Unable to insert file: %s."),file.text());
       return false;
       }
@@ -2217,20 +2259,23 @@ FXbool TextWindow::insertSel(){
 // Extract selection to file
 FXbool TextWindow::extractSel(){
   FXFileDialog savedialog(this,tr("Extract Text To File"));
-  FXint patno=getApp()->reg().readIntEntry("File Dialog","pattern",0);
+  FXint sp=editor->getSelStartPos();
+  FXint ep=editor->getSelEndPos();
+  FXint sc=editor->getSelStartColumn();
+  FXint ec=editor->getSelEndColumn();
+  FXint pt=getApp()->reg().readIntEntry("File Dialog","pattern",0);
   savedialog.setSelectMode(SELECTFILE_ANY);
   savedialog.setAssociations(getApp()->getFileAssociations(),false);
   savedialog.setPatternList(getPatternList());
-  savedialog.setCurrentPattern(FXCLAMP(0,patno,savedialog.getNumPatterns()-1));
+  savedialog.setCurrentPattern(FXCLAMP(0,pt,savedialog.getNumPatterns()-1));
   savedialog.setDirectory(FXPath::directory(getFilename()));
-  savedialog.setFilename("extract");
   if(savedialog.execute()){
     FXString file=savedialog.getFilename();
     getApp()->reg().writeIntEntry("File Dialog","pattern",savedialog.getCurrentPattern());
     if(FXStat::exists(file)){
       if(FXMessageBox::warning(this,MBOX_YES_NO,tr("File Already Exists"),tr("Overwrite file: %s?"),file.text())==MBOX_CLICKED_NO) return false;
       }
-    if(!extractToFile(file)){
+    if(!extractToFile(file,sp,ep,sc,ec)){
       FXMessageBox::error(this,MBOX_OK,tr("Error Extracting To File"),tr("Unable to extract text to file: %s."),file.text());
       return false;
       }
@@ -2799,6 +2844,20 @@ long TextWindow::onUpdBraceMatchStay(FXObject* sender,FXSelector,void*){
   }
 
 
+// Merge undo commands
+long TextWindow::onCmdMergeUndos(FXObject*,FXSelector,void*){
+  mergeundos=!mergeundos;
+  return 1;
+  }
+
+
+// Update merge undo commands
+long TextWindow::onUpdMergeUndos(FXObject* sender,FXSelector,void*){
+  sender->handle(this,mergeundos ? FXSEL(SEL_COMMAND,ID_CHECK) : FXSEL(SEL_COMMAND,ID_UNCHECK),nullptr);
+  return 1;
+  }
+
+
 // Change word delimiters
 long TextWindow::onCmdDelimiters(FXObject* sender,FXSelector,void*){
   sender->handle(this,FXSEL(SEL_COMMAND,ID_GETSTRINGVALUE),(void*)&delimiters);
@@ -3234,27 +3293,20 @@ FXString TextWindow::makeCommandline(const FXString& cmd) const {
 
 // FIXME editable flag should be off while running...
 
-// Start shell command
-FXbool TextWindow::startCommand(const FXString& command,FXint inp,FXint out,FXint flgs){
+// Shell command start
+FXbool TextWindow::startCommand(const FXString& command,FXint sp,FXint ep,FXint sc,FXint ec,FXuint flgs){
   if(!shellCommand){
-    FXTextSelection sel;
-    FXString input;
-
-    // No selection
-    sel.startpos=0;
-    sel.endpos=-1;
-    sel.startcol=0;
-    sel.endcol=-1;
+/*
 
     // Whole document is input
-    if(inp==FROM_DOC || inp==FROM_ANY){
+    if((flgs&ShellCommand::FROM_DOC) || (flgs&ShellCommand::FROM_ANY)){
       sel.startpos=0;
       sel.endpos=editor->getLength();
       }
 
     // Selection is input
     if(editor->hasSelection()){
-      if(inp==FROM_SEL || inp==FROM_ANY){
+      if((flgs&ShellCommand::FROM_SEL) || (flgs&ShellCommand::FROM_ANY)){
         sel.startpos=editor->getSelStartPos();
         sel.endpos=editor->getSelEndPos();
         sel.startcol=editor->getSelStartColumn();
@@ -3262,34 +3314,27 @@ FXbool TextWindow::startCommand(const FXString& command,FXint inp,FXint out,FXin
         }
       }
 
-    // Grab input
-    input=editor->getSelectedText();
-
-    // Insert at cursor
-    replace.startpos=editor->getCursorPos();
-    replace.endpos=replace.startpos;
-    replace.startcol=0;
-    replace.endcol=-1;
-
     // FIXME maybe a horizontal, multi-column "cursor" is
     // just as useful as a vertical multi-row "cursor" ?
-/*
     // Output
-    if(out==TO_REP){
+    if(out==ShellCommand::TO_REP){
       replace=sel;
       }
-    else if(out==TO_INS){
+    else if(out==ShellCommand::TO_INS){
       }
 */
+    // Reload from disk
+    if(flgs&ShellCommand::SAVE_DOC){
+      if(isFilenameSet()){
+        if(!saveDoc()) return false;
+        }
+      }
 
     // New shell command instance
-    shellCommand=new ShellCommand(this,FXSEL(SEL_COMMAND,ID_SHELL_OUTPUT),FXSEL(SEL_COMMAND,ID_SHELL_ERROR),FXSEL(SEL_COMMAND,ID_SHELL_DONE));
+    shellCommand=new ShellCommand(this,FXPath::directory(getFilename()),flgs);
 
-    // Start program in same directory as current file
-    shellCommand->setDirectory(FXPath::directory(getFilename()));
-
-    // Pass input buffer
-    shellCommand->setInput(input);
+    // Remember the selection
+    shellCommand->setSelection(sp,ep,sc,ec);
 
     // Launch it
     if(!shellCommand->start(command)){
@@ -3314,43 +3359,7 @@ FXbool TextWindow::startCommand(const FXString& command,FXint inp,FXint out,FXin
   }
 
 
-// Start shell command
-FXbool TextWindow::startCommand(const FXString& command,FXString& input){
-  if(!shellCommand){
-
-    // New shell command instance
-    shellCommand=new ShellCommand(this,FXSEL(SEL_COMMAND,ID_SHELL_OUTPUT),FXSEL(SEL_COMMAND,ID_SHELL_ERROR),FXSEL(SEL_COMMAND,ID_SHELL_DONE));
-
-    // Start program in same directory as current file
-    shellCommand->setDirectory(FXPath::directory(getFilename()));
-
-    // Pass input buffer
-    shellCommand->setInput(input);
-
-    // Launch it
-    if(!shellCommand->start(command)){
-      FXMessageBox::error(this,MBOX_OK,tr("Command Error"),tr("Unable to execute command: %s"),command.text());
-      delete shellCommand;
-      shellCommand=nullptr;
-      return false;
-      }
-
-    // Display wait cursor
-    getApp()->beginWaitCursor();
-
-    // All input will be undoable
-    undolist.begin(new FXCommandGroup);
-
-    // Clear logger area
-    logger->clearText();
-
-    return true;
-    }
-  return false;
-  }
-
-
-// Stop shell command
+// Shell command cancelled
 FXbool TextWindow::stopCommand(){
   if(shellCommand){
 
@@ -3372,15 +3381,25 @@ FXbool TextWindow::stopCommand(){
     // Clean up the mess
     delete shellCommand;
     shellCommand=nullptr;
+
     return true;
     }
   return false;
   }
 
 
-// Done with command
+// Shell command finished
 FXbool TextWindow::doneCommand(){
   if(shellCommand){
+
+    // Get flags from shell command
+    FXuint flgs=shellCommand->getFlags();
+
+    // Get selection from shell command
+    FXint sp=shellCommand->getSelStartPos();
+    FXint ep=shellCommand->getSelEndPos();
+    FXint sc=shellCommand->getSelStartColumn();
+    FXint ec=shellCommand->getSelEndColumn();
 
     // Close undo command
     undolist.end();
@@ -3391,6 +3410,13 @@ FXbool TextWindow::doneCommand(){
     // Clean up the mess
     delete shellCommand;
     shellCommand=nullptr;
+
+    // Reload from disk
+    if(flgs&ShellCommand::LOAD_DOC){
+      if(isFilenameSet()){
+        reloadDoc();
+        }
+      }
     return true;
     }
   return false;
@@ -3400,11 +3426,10 @@ FXbool TextWindow::doneCommand(){
 // Shell command dialog
 long TextWindow::onCmdShellDialog(FXObject*,FXSelector,void*){
   if(!shellCommand){
+
+    // Run dialog
     ShellDialog dialog(this,tr("Execute Command"),tr("&Execute shell command:"));
     if(dialog.execute(PLACEMENT_OWNER)){
-
-      // Output goes to insertion point
-      replaceStart=replaceEnd=editor->getCursorPos();
 
       // Get text
       FXString text=dialog.getText();
@@ -3412,14 +3437,8 @@ long TextWindow::onCmdShellDialog(FXObject*,FXSelector,void*){
       // Replace magic %f etc.
       FXString command=makeCommandline(text);
 
-//fxmessage("Execute: \"%s\" cmdline: \"%s\"\n",text.text(),command.text());
-//return 1;
-
-      // No input
-      FXString input;
-
       // Start it
-      startCommand(command,input);
+      startCommand(command,0,-1,0,-1,ShellCommand::TO_REP|ShellCommand::SAVE_DOC|ShellCommand::LOAD_DOC|ShellCommand::STREAM);
       }
     }
   return 1;
@@ -3433,7 +3452,7 @@ long TextWindow::onUpdShellDialog(FXObject* sender,FXSelector,void*){
   }
 
 
-// Execute current line as command line
+// Execute current line in text buffer as command line
 long TextWindow::onCmdShellCommand(FXObject*,FXSelector,void*){
   if(!shellCommand){
     FXint currentpos=editor->getCursorPos();
@@ -3444,17 +3463,11 @@ long TextWindow::onCmdShellCommand(FXObject*,FXSelector,void*){
       // Get command from text buffer
       FXString command=editor->extractText(startpos,endpos-startpos);
 
-      // No input
-      FXString input;
-
       // Add newline
       editor->insertText(endpos,"\n",1,true);
 
-      // Output goes to insertion point
-      replaceStart=replaceEnd=endpos+1;
-
       // Start
-      startCommand(command,input);
+      startCommand(command,endpos+1,endpos+1,0,-1,ShellCommand::TO_INS|ShellCommand::STREAM);
       }
     }
   return 1;
@@ -3471,25 +3484,24 @@ long TextWindow::onUpdShellCommand(FXObject* sender,FXSelector,void*){
 // Filter selection through shell command
 long TextWindow::onCmdShellFilter(FXObject*,FXSelector,void*){
   if(!shellCommand){
-    ShellDialog dialog(this,tr("Filter Selection"),tr("&Filter selection with shell command:"));
-    if(dialog.execute(PLACEMENT_OWNER)){
+    if(editor->hasSelection()){
 
-      // Get selection range
-      replaceStart=0;
-      replaceEnd=editor->getLength();
-      if(editor->hasSelection()){
-        replaceStart=editor->getSelStartPos();
-        replaceEnd=editor->getSelEndPos();
+      // Grab selection first
+      FXint sp=editor->getSelStartPos();
+      FXint ep=editor->getSelEndPos();
+      FXint sc=editor->getSelStartColumn();
+      FXint ec=editor->getSelEndColumn();
+
+      // Run dialog
+      ShellDialog dialog(this,tr("Filter Selection"),tr("&Filter selection with shell command:"));
+      if(dialog.execute(PLACEMENT_OWNER)){
+
+        // Get command from dialog box
+        FXString command=dialog.getText();
+
+        // Start with selection
+        startCommand(command,sp,ep,sc,ec,ShellCommand::FROM_SEL|ShellCommand::TO_REP|ShellCommand::COLLECT);
         }
-
-      // Get command
-      FXString command=dialog.getText();
-
-      // Grab selected text to feed into command
-      FXString input=editor->extractText(replaceStart,replaceEnd-replaceStart);
-
-      // Start
-      startCommand(command,input);
       }
     }
   return 1;
@@ -3498,7 +3510,7 @@ long TextWindow::onCmdShellFilter(FXObject*,FXSelector,void*){
 
 // Update filter selection
 long TextWindow::onUpdShellFilter(FXObject* sender,FXSelector,void*){
-  sender->handle(this,!shellCommand?FXSEL(SEL_COMMAND,ID_ENABLE):FXSEL(SEL_COMMAND,ID_DISABLE),nullptr);
+  sender->handle(this,!shellCommand && editor->hasSelection() ? FXSEL(SEL_COMMAND,ID_ENABLE) : FXSEL(SEL_COMMAND,ID_DISABLE),nullptr);
   return 1;
   }
 
@@ -3517,47 +3529,6 @@ long TextWindow::onUpdShellCancel(FXObject* sender,FXSelector,void*){
   }
 
 
-// Output from shell
-long TextWindow::onCmdShellOutput(FXObject*,FXSelector,void* ptr){
-  FXTRACE((100,"TextWindow::onCmdShellOutput\n"));
-  const FXchar* string=(const FXchar*)ptr;
-  FXint len=strlen(string);
-  if(replaceStart>editor->getLength()) replaceStart=editor->getLength();
-  if(replaceEnd>editor->getLength()) replaceEnd=editor->getLength();
-  editor->replaceText(replaceStart,replaceEnd-replaceStart,string,len,true);
-  replaceStart=replaceStart+len;
-  replaceEnd=replaceStart;
-  editor->setCursorPos(replaceEnd);
-  editor->makePositionVisible(replaceEnd);
-  return 1;
-  }
-
-
-// Shell command has error
-long TextWindow::onCmdShellError(FXObject*,FXSelector,void* ptr){
-  FXTRACE((100,"TextWindow::onCmdShellError\n"));
-  const FXchar* string=(const FXchar*)ptr;
-  FXint len=strlen(string);
-  showlogger=loggerframe->shown();
-  if(!showlogger){
-    loggerframe->show();
-    loggerframe->recalc();
-    }
-  logger->appendText(string,len,true);
-  logger->setCursorPos(logger->getLength());
-  logger->makePositionVisible(logger->getLength());
-  return 1;
-  }
-
-
-// Shell command is done
-long TextWindow::onCmdShellDone(FXObject*,FXSelector,void*){
-  FXTRACE((100,"TextWindow::onCmdShellDone\n"));
-  doneCommand();
-  return 1;
-  }
-
-
 // Shell command section key
 const FXchar shellSectionKey[]="ShellCommands";
 
@@ -3568,34 +3539,54 @@ const FXchar shellEntryKey[16][5]={
   };
 
 
-// Example
-// [ShellCommands]
-// CMD1="Word Count:Count words in file.:wc -w %f:WAG"
-
 // Shell menu command
+// Parse command line and options from the registry entry.
+// The following options are recognized:
+//
+//   S  Selected text is input to command
+//   D  Whole document is input to command
+//   A  Either selection, or whole document is input to command
+//   I  Output of command is inserted
+//   R  Output of command replaces selection
+//   G  Output of command goes to log window
+//   N  Output of command goes to new window
+//   W  Write document to disk before running command
+//   L  Load back document from disk after running command
+//
+// Example:
+//
+//   [ShellCommands]
+//   CMD1="Word Count:Count words in file.:wc -w %f:WG"
+//
+// Will run 'wc -w' on file %f, after saving document to %f, and log output
+// to log window. The '%f' here is replaced by the filename of the current
+// document.
+//
 long TextWindow::onCmdShellMenu(FXObject*,FXSelector sel,void*){
   FXint which=FXSELID(sel)-ID_CUST_CMD0;
   FXchar cmdline[1000],cmdopts[8];
   if(getApp()->reg().readFormatEntry(shellSectionKey,shellEntryKey[which],"%*100[^:]:%*200[^:]:%1000[^:]:%8[^:]",cmdline,cmdopts)==2){
     FXString command=makeCommandline(cmdline);
-    FXint cmdflg=0;
-    FXint cmdout=0;
-    FXint cmdinp=0;
+    FXint sp=editor->getSelStartPos();
+    FXint ep=editor->getSelEndPos();
+    FXint sc=editor->getSelStartColumn();
+    FXint ec=editor->getSelEndColumn();
+    FXint cmdflgs=0;
     for(FXint f=0; cmdopts[f]; ++f){
       switch(cmdopts[f]){
-        case 'S': cmdinp=FROM_SEL; break;
-        case 'D': cmdinp=FROM_DOC; break;
-        case 'A': cmdinp=FROM_ANY; break;
-        case 'I': cmdout=TO_INS; break;
-        case 'R': cmdout=TO_REP; break;
-        case 'G': cmdout=TO_LOG; break;
-        case 'N': cmdout=TO_NEW; break;
-        case 'W': cmdflg|=SAVE_DOC; break;
-        case 'L': cmdflg|=LOAD_DOC; break;
+        case 'S': cmdflgs|=ShellCommand::FROM_SEL; break;
+        case 'D': cmdflgs|=ShellCommand::FROM_DOC; break;
+        case 'A': cmdflgs|=ShellCommand::FROM_ANY|ShellCommand::FROM_SEL; break;
+        case 'I': cmdflgs|=ShellCommand::TO_INS; break;
+        case 'R': cmdflgs|=ShellCommand::TO_REP; break;
+        case 'G': cmdflgs|=ShellCommand::TO_LOG; break;
+        case 'N': cmdflgs|=ShellCommand::TO_NEW; break;
+        case 'W': cmdflgs|=ShellCommand::SAVE_DOC; break;
+        case 'L': cmdflgs|=ShellCommand::LOAD_DOC; break;
         }
       }
-    fprintf(stderr,"Execute: \"%s\" cmdline: \"%s\" cmdopts: \"%s\" in: %d out: %d flg: %d\n",command.text(),cmdline,cmdopts,cmdinp,cmdout,cmdflg);
-    startCommand(command,cmdinp,cmdout,cmdflg);
+    fprintf(stderr,"Execute: \"%s\" cmdline: \"%s\" cmdopts: \"%s\" flgs: %03x\n",command.text(),cmdline,cmdopts,cmdflgs);
+    startCommand(command,sp,ep,sc,ec,cmdflgs);
     }
   return 1;
   }
@@ -3615,6 +3606,66 @@ long TextWindow::onUpdShellMenu(FXObject* sender,FXSelector sel,void*){
     sender->handle(this,FXSEL(SEL_COMMAND,FXWindow::ID_HIDE),nullptr);
     }
   return 1;
+  }
+
+
+// Append to text window
+void TextWindow::textAppend(const FXchar* text,FXint len){
+  FXint pos=editor->getCursorPos();
+//  if(replaceStart>editor->getLength()) replaceStart=editor->getLength();
+//  if(replaceEnd>editor->getLength()) replaceEnd=editor->getLength();
+//  editor->replaceText(replaceStart,replaceEnd-replaceStart,text,len,true);
+//  replaceStart=replaceStart+len;
+//  replaceEnd=replaceStart;
+//  editor->setCursorPos(replaceEnd);
+//  editor->makePositionVisible(replaceEnd);
+  FXint ins=editor->insertText(pos,text,len,true);
+  editor->setCursorPos(pos+ins,true);
+  editor->makePositionVisible(pos+ins);
+  }
+
+
+// Append to text window
+void TextWindow::textAppend(const FXchar* text){
+  textAppend(text,strlen(text));
+  }
+
+
+// Append to text window
+void TextWindow::textAppend(const FXString& text){
+  textAppend(text.text(),text.length());
+  }
+
+
+// Append to log window
+// FIXME maybe colorize log from stderr....
+void TextWindow::logAppend(const FXchar* text,FXint len){
+  showlogger=loggerframe->shown();
+  if(!showlogger){
+    loggerframe->show();
+    loggerframe->recalc();
+    }
+  logger->appendText(text,len);
+  logger->setCursorPos(logger->getLength());
+  logger->makePositionVisible(logger->getLength());
+  }
+
+
+// Append to log window
+void TextWindow::logAppend(const FXchar* text){
+  logAppend(text,strlen(text));
+  }
+
+
+// Append to log window
+void TextWindow::logAppend(const FXString& text){
+  logAppend(text.text(),text.length());
+  }
+
+
+// Clear log window
+void TextWindow::logClear(){
+  logger->clearText();
   }
 
 /*******************************************************************************/
@@ -4357,8 +4408,9 @@ long TextWindow::onTextInserted(FXObject*,FXSelector,void* ptr){
 
   // Log undo record
   if(!undolist.busy()){
-    undolist.add(new FXTextInsert(editor,change->pos,change->nins,change->ins));
+    undolist.add(new FXTextInsert(editor,change->pos,change->nins,change->ins),false,mergeundos);
     if(undolist.size()>MAXUNDOSIZE) undolist.trimSize(KEEPUNDOSIZE);
+//undolist.trimCount(100);
     }
 
   // Update bookmark locations
@@ -4381,8 +4433,9 @@ long TextWindow::onTextReplaced(FXObject*,FXSelector,void* ptr){
 
   // Log undo record
   if(!undolist.busy()){
-    undolist.add(new FXTextReplace(editor,change->pos,change->ndel,change->nins,change->del,change->ins));
+    undolist.add(new FXTextReplace(editor,change->pos,change->ndel,change->nins,change->del,change->ins),false,mergeundos);
     if(undolist.size()>MAXUNDOSIZE) undolist.trimSize(KEEPUNDOSIZE);
+//undolist.trimCount(100);
     }
 
   // Update bookmark locations
@@ -4406,8 +4459,9 @@ long TextWindow::onTextDeleted(FXObject*,FXSelector,void* ptr){
 
   // Log undo record
   if(!undolist.busy()){
-    undolist.add(new FXTextDelete(editor,change->pos,change->ndel,change->del));
+    undolist.add(new FXTextDelete(editor,change->pos,change->ndel,change->del),false,mergeundos);
     if(undolist.size()>MAXUNDOSIZE) undolist.trimSize(KEEPUNDOSIZE);
+//undolist.trimCount(100);
     }
 
   // Update bookmark locations
@@ -4809,28 +4863,28 @@ void TextWindow::writeView(const FXString& file){
 void TextWindow::parseModeline(){
   if(modeline){
     Modeline modes;
-    FXString lines;
-    FXString language;
+    FXString text;
+    FXString lang;
 
     // Buffer chunk
     FXint len=editor->getLength();
     FXint pos=editor->nextLine(0,30);
 
     // Extract top few lines and check for modeline
-    editor->extractText(lines,0,pos);
-    if(!modes.parseModeline(lines)){
+    text=editor->extractText(0,pos);
+    if(!modes.parseModeline(text)){
       if(pos>=len) return;
       pos=editor->prevLine(len,10);
 
       // Extract bottom few lines and check for modeline
-      editor->extractText(lines,pos,len-pos);
-      if(!modes.parseModeline(lines)) return;
+      text=editor->extractText(pos,len-pos);
+      if(!modes.parseModeline(text)) return;
       }
 
     // See if a new langauge is called for
-    language=modes.getLanguage();
-    if(!language.empty()){
-      Syntax* stx=getApp()->getSyntaxByName(language);
+    lang=modes.getLanguage();
+    if(!lang.empty()){
+      Syntax* stx=getApp()->getSyntaxByName(lang);
       if(stx){
         setSyntax(stx);
         }
@@ -4878,14 +4932,13 @@ void TextWindow::determineSyntax(){
     // Use the syntax whose wildcards match the given filename
     stx=getApp()->getSyntaxByPattern(file);
     if(!stx){
-      FXString lines;
 
       // Grab up to here
       FXint pos=editor->nextLine(0,30);
 
       // Grab some lines of the top of the file and see if it contains
       // anything one of the syntaxes would match against
-      editor->extractText(lines,0,pos);
+      FXString lines=editor->extractText(0,pos);
 
       // Use the syntax matching some regex patterns inside the file
       stx=getApp()->getSyntaxByContents(lines);
@@ -5102,6 +5155,9 @@ void TextWindow::setSyntax(Syntax* syn){
   // Set editor attributes to syntax mode
   if(syntax){
 
+    // Show extension
+    language->setText(syntax->getName());
+
     // Get original parameters
     FXuint modebits=editor->getTextStyle();
     FXint  tabwidth=editor->getTabColumns();
@@ -5119,7 +5175,7 @@ void TextWindow::setSyntax(Syntax* syn){
     editor->setHiliteStyles(styles.data());
     editor->setStyled(colorize);
 
-    // Other syntax-determined stuff
+    // Delimiters
     editor->setDelimiters(syntax->getDelimiters().text());
 
     // Modes from the syntax
@@ -5145,14 +5201,25 @@ void TextWindow::setSyntax(Syntax* syn){
 
   // Reset editor attributes to defaults
   else{
-    FXuint modebits=editor->getTextStyle();
+
+    // Update language setting
+    language->setText("---");
+
+    // Set styles
     editor->setHiliteStyles(nullptr);
     editor->setStyled(false);
+
+    // Delimiters
     editor->setDelimiters(delimiters.text());
+
+    // Mode bits
+    FXuint modebits=editor->getTextStyle();
     if(autoindent) modebits|=TEXT_AUTOINDENT; else modebits&=~TEXT_AUTOINDENT;
     if(wrapping) modebits|=TEXT_WORDWRAP; else modebits&=~TEXT_WORDWRAP;
     if(fixedwrap) modebits|=TEXT_FIXEDWRAP; else modebits&=~TEXT_FIXEDWRAP;
     if(hardtabs) modebits&=~TEXT_NO_TABS; else modebits|=TEXT_NO_TABS;
+
+    // Put back default parameters
     editor->setTextStyle(modebits);
     editor->setTabColumns(tabcols);
     editor->setWrapColumns(wrapcols);

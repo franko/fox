@@ -192,7 +192,11 @@ FXint FXScrollArea::getDefaultHeight(){
 
 // Move content
 void FXScrollArea::moveContents(FXint x,FXint y){
+
+  // Scroll pixels
   scroll(getVisibleX(),getVisibleY(),getVisibleWidth(),getVisibleHeight(),x-pos_x,y-pos_y);
+
+  // Update scroll position
   pos_x=x;
   pos_y=y;
   }
@@ -291,12 +295,16 @@ void FXScrollArea::placeScrollBars(FXint vw,FXint vh){
 
   // Scroll to force position back into range
   if(new_x!=pos_x || new_y!=pos_y){
+
+    // Shift to achieve position
     moveContents(new_x,new_y);
+
+    // Should have reached the scroll position
+    FXASSERT(pos_x==new_x && pos_y==new_y);
     }
 
-  // Read back validated position
-  pos_x=-horizontal->getPosition();
-  pos_y=-vertical->getPosition();
+  // Scroll position is good
+  FXASSERT(pos_x<=0 && pos_y<=0);
 
   // Place horizontal scroll bar
   horizontal->position(0,height-sh_h,width-sv_w,sh_h);

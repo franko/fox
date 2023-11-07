@@ -1091,6 +1091,9 @@
     <ClInclude Include="..\..\include\FXMappedFile.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\include\FXMarkedPtr.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\lib\FX4Splitter.cpp">

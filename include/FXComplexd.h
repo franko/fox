@@ -107,56 +107,59 @@ public:
 
 
 /// Return complex complex conjugate
-inline FXComplexd conj(const FXComplexd& c){ return FXComplexd(c.real(),-c.imag()); }
+static inline FXComplexd conj(const FXComplexd& c){ return FXComplexd(c.real(),-c.imag()); }
 
 /// Return complex number from modulus and argument
-inline FXComplexd polar(FXdouble mod,FXdouble arg){ return FXComplexd(Math::cos(arg)*mod,Math::sin(arg)*mod); }
+static inline FXComplexd polar(FXdouble mod,FXdouble arg){ return FXComplexd(Math::cos(arg)*mod,Math::sin(arg)*mod); }
 
 /// Return norm of complex
-inline FXdouble norm(const FXComplexd& c){ return c.real()*c.real()+c.imag()*c.imag(); }
+static inline FXdouble norm(const FXComplexd& c){ return c.real()*c.real()+c.imag()*c.imag(); }
 
 /// Return modulus or absolute value of complex
-inline FXdouble abs(const FXComplexd& c){ return Math::sqrt(norm(c)); }
+static inline FXdouble abs(const FXComplexd& c){ return Math::sqrt(norm(c)); }
 
 /// Return argument of complex
-inline FXdouble arg(const FXComplexd& c){ return Math::atan2(c.imag(),c.real()); }
+static inline FXdouble arg(const FXComplexd& c){ return Math::atan2(c.imag(),c.real()); }
 
 /// Returns the complex base e exponential of c
-inline FXComplexd exp(const FXComplexd& c){ return polar(Math::exp(c.real()),c.imag()); }
+static inline FXComplexd exp(const FXComplexd& c){ return polar(Math::exp(c.real()),c.imag()); }
 
 /// Returns the complex base e logarithm of c
-inline FXComplexd log(const FXComplexd& c){ return FXComplexd(Math::log(abs(c)),arg(c)); }
+static inline FXComplexd log(const FXComplexd& c){ return FXComplexd(Math::log(abs(c)),arg(c)); }
 
 
 /// Equality between complex and real
-inline FXbool operator==(const FXComplexd& c,FXdouble r){ return c.real()==r && c.imag()==0.0; }
-inline FXbool operator!=(const FXComplexd& c,FXdouble r){ return c.real()!=r || c.imag()!=0.0; }
+static inline FXbool operator==(const FXComplexd& c,FXdouble r){ return c.real()==r && c.imag()==0.0; }
+static inline FXbool operator!=(const FXComplexd& c,FXdouble r){ return c.real()!=r || c.imag()!=0.0; }
 
 /// Equality between real and complex
-inline FXbool operator==(FXdouble r,const FXComplexd& c){ return r==c.real() && c.imag()==0.0; }
-inline FXbool operator!=(FXdouble r,const FXComplexd& c){ return r!=c.real() || c.imag()!=0.0; }
+static inline FXbool operator==(FXdouble r,const FXComplexd& c){ return r==c.real() && c.imag()==0.0; }
+static inline FXbool operator!=(FXdouble r,const FXComplexd& c){ return r!=c.real() || c.imag()!=0.0; }
 
 /// Equality between one complex and another
-inline FXbool operator==(const FXComplexd& a,const FXComplexd& b){ return a.real()==b.real() && a.imag()==b.imag(); }
-inline FXbool operator!=(const FXComplexd& a,const FXComplexd& b){ return a.real()!=b.real() || a.imag()!=b.imag(); }
+static inline FXbool operator==(const FXComplexd& a,const FXComplexd& b){ return a.real()==b.real() && a.imag()==b.imag(); }
+static inline FXbool operator!=(const FXComplexd& a,const FXComplexd& b){ return a.real()!=b.real() || a.imag()!=b.imag(); }
 
 /// Operators between complex and real
-inline FXComplexd operator+(const FXComplexd& a,FXdouble b){ return FXComplexd(a.real()+b,a.imag()); }
-inline FXComplexd operator-(const FXComplexd& a,FXdouble b){ return FXComplexd(a.real()-b,a.imag()); }
-inline FXComplexd operator*(const FXComplexd& a,FXdouble b){ return FXComplexd(a.real()*b,a.imag()*b); }
-inline FXComplexd operator/(const FXComplexd& a,FXdouble b){ return FXComplexd(a.real()/b,a.imag()/b); }
+static inline FXComplexd operator+(const FXComplexd& a,FXdouble b){ return FXComplexd(a.real()+b,a.imag()); }
+static inline FXComplexd operator-(const FXComplexd& a,FXdouble b){ return FXComplexd(a.real()-b,a.imag()); }
+static inline FXComplexd operator*(const FXComplexd& a,FXdouble b){ return FXComplexd(a.real()*b,a.imag()*b); }
+static inline FXComplexd operator/(const FXComplexd& a,FXdouble b){ return FXComplexd(a.real()/b,a.imag()/b); }
 
 /// Operators between real and complex
-inline FXComplexd operator+(FXdouble a,const FXComplexd& b){ return FXComplexd(a+b.real(),b.imag()); }
-inline FXComplexd operator-(FXdouble a,const FXComplexd& b){ return FXComplexd(a-b.real(),-b.imag()); }
-inline FXComplexd operator*(FXdouble a,const FXComplexd& b){ return FXComplexd(a*b.real(),a*b.imag()); }
-inline FXComplexd operator/(FXdouble a,const FXComplexd& b){ FXdouble m=norm(b); return FXComplexd((a*b.real())/m,(-a*b.imag())/m); }
+static inline FXComplexd operator+(FXdouble a,const FXComplexd& b){ return FXComplexd(a+b.real(),b.imag()); }
+static inline FXComplexd operator-(FXdouble a,const FXComplexd& b){ return FXComplexd(a-b.real(),-b.imag()); }
+static inline FXComplexd operator*(FXdouble a,const FXComplexd& b){ return FXComplexd(a*b.real(),a*b.imag()); }
+static inline FXComplexd operator/(FXdouble a,const FXComplexd& b){ FXdouble m=norm(b); return FXComplexd((a*b.real())/m,(-a*b.imag())/m); }
 
 /// Operators between one complex and another
-inline FXComplexd operator+(const FXComplexd& a,const FXComplexd& b){ return FXComplexd(a.real()+b.real(),a.imag()+b.imag()); }
-inline FXComplexd operator-(const FXComplexd& a,const FXComplexd& b){ return FXComplexd(a.real()-b.real(),a.imag()-b.imag()); }
-inline FXComplexd operator*(const FXComplexd& a,const FXComplexd& b){ return FXComplexd(a.real()*b.real()-a.imag()*b.imag(),a.real()*b.imag()+a.imag()*b.real()); }
-inline FXComplexd operator/(const FXComplexd& a,const FXComplexd& b){ FXdouble m=norm(b); return FXComplexd((a.real()*b.real()+a.imag()*b.imag())/m,(a.imag()*b.real()-a.real()*b.imag())/m); }
+static inline FXComplexd operator+(const FXComplexd& a,const FXComplexd& b){ return FXComplexd(a.real()+b.real(),a.imag()+b.imag()); }
+static inline FXComplexd operator-(const FXComplexd& a,const FXComplexd& b){ return FXComplexd(a.real()-b.real(),a.imag()-b.imag()); }
+static inline FXComplexd operator*(const FXComplexd& a,const FXComplexd& b){ return FXComplexd(a.real()*b.real()-a.imag()*b.imag(),a.real()*b.imag()+a.imag()*b.real()); }
+static inline FXComplexd operator/(const FXComplexd& a,const FXComplexd& b){ FXdouble m=norm(b); return FXComplexd((a.real()*b.real()+a.imag()*b.imag())/m,(a.imag()*b.real()-a.real()*b.imag())/m); }
+
+/// Linearly interpolate complex numbers u and v as f goes from 0...1
+static inline FXComplexd lerp(const FXComplexd& u,const FXComplexd& v,FXdouble f){ return (v-u)*f+u; }
 
 /// Complex square root
 extern FXAPI FXComplexd csqrt(const FXComplexd& c);

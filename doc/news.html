@@ -13,6 +13,41 @@ News  <A href='news.html' target="_top" align=left><font  size=-2>[Remove Frame]
 <p>
 <!--- TOPIC TITLE WITH LOGO --->
 
+<!--- TOPIC TITLE -->
+<p>
+<table width=100% cellpadding=0 cellspacing=2><tr><td width=100% valign=bottom id=HEADLINE><b>
+September 10 - FOX DEVELOPMENT 1.7.84
+<br><img src='art/line.gif' width=100% height=1></b></td></tr></table>
+<p>
+<!--- TOPIC TITLE -->
+<ul>
+<li>(Redrop of this version due to file missing from manifest).</li>
+<li>New FXUndoList implementation.  The new FXUndoList now supports an alternate history mode, i.e. it remembers redo-command
+after taking a different path.  The internals of FXCommand have changed a bit, it now sports a reference count; for the most part
+that does not affect any user-code.</li>
+<li>Also in FXUndoList: on 64-bit machines, space-accounting is now performed in <em>long</em> to manage potentially
+large amounts of undo data.
+<li>Adie editor undo sytem now supports merging undo commands, if the text is changed letter-by-letter it will
+consolidate contiguous commands, assuming they are considered mergeable.  Currently we're keying on character classes
+to decide whether to merge or not.  Idea is to not back up over programming-language special characters.</li>
+<li>Inlined some math functions for greater speed.</li>
+<li>Inlined some character-class APIs in fxascii for greater spead.</li>
+<li>FXSystem::system() to kick off command line via operating system shell (Windows).</li>
+<li>Minor annoyance in sideways scrolling fixed in PathFinder.</li>
+<li>Added "Seibenmeilenstiefel" scroll mode holding shift key.</li>
+<li>FXRex now has option to excape regular expression special characters.  Major convenience mode.</li>
+<li>FXRex bug fix: could not always properly add control charactor using \cX syntax.</li>
+<li>FXRex bug fix: signed vs unsigned charactar issues surfaced due to internal representation change.</li>
+<li>Adie status-line indicator for current language mode.</li>
+<li>When loading a new file, Adie checks "emacs" modeline presence first, if modelines are on.</li>
+<li>New APIs added to Math namespace for hashing values (32- and 64-bit), as well as unhashing values.
+Hashing float and double added so as to use these in hash tables as a key.</li>
+<li>FXText now uses new UTF8 navigation techniques, where it makes sense.  This is a performance upgrade.</li>
+<li>Minor bug fixes in FXText widget.</li>
+<li>Experimental -O3 when compiling for release mode; its a major performance bump.</li>
+<li>Inlined branch-free toUpper() and toLower() major boost in case-insensitive comparisons.</li>
+<li>PathFinder and Adie now has command line parameter to force window size and placement.</li>
+</ul>
 
 
 <!--- TOPIC TITLE -->

@@ -50,8 +50,8 @@ enum{BUFFERSIZE=2048};
 /*******************************************************************************/
 
 FXDEFMAP(ShellCommand) ShellCommandMap[]={
-  FXMAPFUNC(SEL_IO_READ,ShellCommand::ID_ERROR,ShellCommand::onCmdError),
   FXMAPFUNC(SEL_IO_READ,ShellCommand::ID_OUTPUT,ShellCommand::onCmdOutput),
+  FXMAPFUNC(SEL_IO_READ,ShellCommand::ID_LOGGER,ShellCommand::onCmdLogger),
   FXMAPFUNC(SEL_IO_WRITE,ShellCommand::ID_INPUT,ShellCommand::onCmdInput),
   };
 
@@ -60,20 +60,21 @@ FXIMPLEMENT(ShellCommand,FXObject,ShellCommandMap,ARRAYNUMBER(ShellCommandMap))
 
 
 // Construct shell command
-ShellCommand::ShellCommand(TextWindow* win,FXSelector so,FXSelector se,FXSelector sd,FXuint flg):window(win),selout(so),selerr(se),seldone(sd),ninput(0),noutput(0),flags(flg){
-  FXTRACE((1,"ShellCommand::ShellCommand\n"));
+ShellCommand::ShellCommand(TextWindow* win,const FXString& dir,FXuint flgs):app(win->getApp()),window(win),directory(dir),ninput(0),noutput(0),flags(flgs){
+  FXTRACE((1,"ShellCommand::ShellCommand(%p,%s,%x)\n",win,dir.text(),flgs));
+  selection.startpos=0;
+  selection.endpos=-1;
+  selection.startcol=0;
+  selection.endcol=-1;
   }
 
 
-// Set command input
-void ShellCommand::setInput(FXString& in){
-  input.adopt(in);
-  }
-
-
-// Get command output
-void ShellCommand::getOutput(FXString& out){
-  out.adopt(output);
+// Set selection
+void ShellCommand::setSelection(FXint sp,FXint ep,FXint sc,FXint ec){
+  selection.startpos=sp;
+  selection.endpos=ep;
+  selection.startcol=sc;
+  selection.endcol=ec;
   }
 
 
@@ -105,13 +106,13 @@ FXbool ShellCommand::start(const FXString& command){
           FXPipe echild;
 
           // Open pipe for child input (the parent writes, child reads)
-          if(!ipipe.open(ichild,FXIO::WriteOnly|FXIO::Inheritable)) goto x;
+          if(!pipe[0].open(ichild,FXIO::WriteOnly|FXIO::Inheritable)) goto x;
 
           // Open pipe for child outout (parent reads, child writes)
-          if(!opipe.open(ochild,FXIO::ReadOnly|FXIO::Inheritable)) goto x;
+          if(!pipe[1].open(ochild,FXIO::ReadOnly|FXIO::Inheritable)) goto x;
 
           // Open pipe for child errors (parent reads, child writes)
-          if(!epipe.open(echild,FXIO::ReadOnly|FXIO::Inheritable)) goto x;
+          if(!pipe[2].open(echild,FXIO::ReadOnly|FXIO::Inheritable)) goto x;
 
           // Set handles to be used by child
           process.setInputStream(&ichild);
@@ -127,19 +128,19 @@ FXbool ShellCommand::start(const FXString& command){
             echild.close();
 
             // Set non-blocking on our end
-            ipipe.mode(ipipe.mode()|FXIO::NonBlocking);
-            opipe.mode(opipe.mode()|FXIO::NonBlocking);
-            epipe.mode(epipe.mode()|FXIO::NonBlocking);
+            pipe[0].mode(pipe[0].mode()|FXIO::NonBlocking);
+            pipe[1].mode(pipe[1].mode()|FXIO::NonBlocking);
+            pipe[2].mode(pipe[2].mode()|FXIO::NonBlocking);
 
             // Set I/O callbacks
-            if(ipipe.isOpen()){
-              window->getApp()->addInput(this,ID_INPUT,ipipe.handle(),INPUT_WRITE);
+            if(pipe[0].isOpen()){
+              getApp()->addInput(this,ID_INPUT,pipe[0].handle(),INPUT_WRITE);
               }
-            if(opipe.isOpen()){
-              window->getApp()->addInput(this,ID_OUTPUT,opipe.handle(),INPUT_READ);
+            if(pipe[1].isOpen()){
+              getApp()->addInput(this,ID_OUTPUT,pipe[1].handle(),INPUT_READ);
               }
-            if(epipe.isOpen()){
-              window->getApp()->addInput(this,ID_ERROR,epipe.handle(),INPUT_READ);
+            if(pipe[2].isOpen()){
+              getApp()->addInput(this,ID_LOGGER,pipe[2].handle(),INPUT_READ);
               }
             result=true;
             }
@@ -151,6 +152,7 @@ FXbool ShellCommand::start(const FXString& command){
 x:    freeElms(argv);
       }
     }
+  FXTRACE((1,"ShellCommand::start: %s\n",result?"OK":"FAILED"));
   return result;
   }
 
@@ -161,17 +163,17 @@ FXbool ShellCommand::stop(){
   if(process.id()){
 
     // Remove I/O callbacks
-    if(ipipe.isOpen()){
-      window->getApp()->removeInput(ipipe.handle(),INPUT_WRITE);
-      ipipe.close();
+    if(pipe[0].isOpen()){
+      getApp()->removeInput(pipe[0].handle(),INPUT_WRITE);
+      pipe[0].close();
       }
-    if(opipe.isOpen()){
-      window->getApp()->removeInput(opipe.handle(),INPUT_READ);
-      opipe.close();
+    if(pipe[1].isOpen()){
+      getApp()->removeInput(pipe[1].handle(),INPUT_READ);
+      pipe[1].close();
       }
-    if(epipe.isOpen()){
-      window->getApp()->removeInput(epipe.handle(),INPUT_READ);
-      epipe.close();
+    if(pipe[2].isOpen()){
+      getApp()->removeInput(pipe[2].handle(),INPUT_READ);
+      pipe[2].close();
       }
 
     // Wait till child is done
@@ -194,21 +196,16 @@ FXbool ShellCommand::cancel(){
 /*******************************************************************************/
 
 // Input to child process
-long ShellCommand::onCmdInput(FXObject*,FXSelector,void*){
-  FXTRACE((1,"ShellCommand::onCmdInput\n"));
-  FXival count;
-  count=ipipe.writeBlock(&input[ninput],input.length()-ninput);
-  if(count<0){
-    if(count!=FXIO::Again){
-      if(seldone){ window->handle(this,seldone,nullptr); }
-      stop();
+long ShellCommand::onCmdInput(FXObject*,FXSelector sel,void*){
+  FXint  index=sel-FXSEL(SEL_IO_WRITE,ID_INPUT);
+  FXival count=pipe[index].writeBlock(&input[ninput],input.length()-ninput);
+  if(count==FXIO::Again) return 1;
+  if(0<=count){
+    ninput+=count;
+    if(count==0){
+      getApp()->removeInput(pipe[index].handle(),INPUT_WRITE);
+      pipe[index].close();
       }
-    return 1;
-    }
-  ninput+=count;
-  if(count==0){
-    window->getApp()->removeInput(ipipe.handle(),INPUT_WRITE);
-    ipipe.close();
     return 1;
     }
   return 1;
@@ -216,48 +213,57 @@ long ShellCommand::onCmdInput(FXObject*,FXSelector,void*){
 
 
 // Output from child process
-long ShellCommand::onCmdOutput(FXObject*,FXSelector,void*){
-  FXTRACE((1,"ShellCommand::onCmdOutput\n"));
+long ShellCommand::onCmdOutput(FXObject*,FXSelector sel,void*){
   FXchar buffer[BUFFERSIZE+1];
-  FXival count;
-  count=opipe.readBlock(buffer,BUFFERSIZE);
-  if(count<0){
-    if(count!=FXIO::Again){
-      stop();
-      if(seldone){ window->handle(this,seldone,nullptr); }
+  FXint  index=sel-FXSEL(SEL_IO_READ,ID_INPUT);
+  FXival count=pipe[index].readBlock(buffer,BUFFERSIZE);
+  FXTRACE((1,"ShellCommand::onCmdOutput: pipe[%d]: bytes: %ld\n",index,count));
+  if(count==FXIO::Again) return 1;
+  if(0<=count){
+    buffer[count]='\0';
+    if(flags&COLLECT){
+      if(0<count){
+        output.append(buffer,count);
+        return 1;
+        }
+      if(flags&TO_LOG){
+        getWindow()->logAppend(output);
+        }
+      else{
+        getWindow()->textAppend(output);
+        }
       }
-    return 1;
+    else{
+      if(0<count){
+        if(flags&TO_LOG){
+          getWindow()->logAppend(buffer,count);
+          }
+        else{
+          getWindow()->textAppend(buffer,count);
+          }
+        return 1;
+        }
+      }
     }
-  buffer[count]='\0';
-  if(flags&COLLECT){
-    output.append(buffer,count);
-    }
-  if(0<count && !(flags&COLLECT)){
-    if(selout){ window->handle(this,selout,buffer); }
-    return 1;
-    }
-  if(seldone){ window->handle(this,seldone,nullptr); }
+  getWindow()->doneCommand();
   return 1;
   }
 
 
-// Errors from child process
-long ShellCommand::onCmdError(FXObject*,FXSelector,void*){
-  FXTRACE((1,"ShellCommand::onCmdError\n"));
+// Logging from child process
+// FIXME could use one color for stdout, and another for stderr.
+long ShellCommand::onCmdLogger(FXObject*,FXSelector sel,void*){
   FXchar buffer[BUFFERSIZE+1];
-  FXival count;
-  count=epipe.readBlock(buffer,BUFFERSIZE);
-  if(count<0){
-    if(count!=FXIO::Again){
-      stop();
-      if(seldone){ window->handle(this,seldone,nullptr); }
+  FXint  index=sel-FXSEL(SEL_IO_READ,ID_INPUT);
+  FXival count=pipe[index].readBlock(buffer,BUFFERSIZE);
+  FXTRACE((1,"ShellCommand::onCmdLogger: pipe[%d]: bytes: %ld\n",index,count));
+  if(count==FXIO::Again) return 1;
+  if(0<=count){
+    buffer[count]='\0';
+    if(0<count){
+      getWindow()->logAppend(buffer,count);
+      return 1;
       }
-    return 1;
-    }
-  buffer[count]='\0';
-  if(0<count){
-    if(selerr){ window->handle(this,selerr,buffer); }
-    return 1;
     }
   return 1;
   }

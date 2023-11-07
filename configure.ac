@@ -1,7 +1,7 @@
 # Version of the code
 m4_define([fox_major], [1])
 m4_define([fox_minor], [7])
-m4_define([fox_level], [83])
+m4_define([fox_level], [84])
 m4_define([fox_version],[fox_major.fox_minor.fox_level])
 
 # Init
@@ -115,7 +115,7 @@ AC_CHECK_LIB(dld, shl_load)
 AC_CHECK_FUNCS(localtime_r gmtime_r getpwuid_r getgrgid_r getpwnam_r pthread_setaffinity_np pthread_getname_np pthread_setname_np sched_getcpu epoll_create1 timerfd_create uname)
 
 # Check for common functions
-AC_CHECK_FUNCS(pipe2 statvfs getrlimit)
+AC_CHECK_FUNCS(pipe2 statvfs getrlimit daemon)
 
 # File/directory watching
 AC_CHECK_FUNCS(inotify_init1)
@@ -123,6 +123,7 @@ AC_CHECK_FUNCS(inotify_init1)
 # Add copious amounts of debugging with gcc
 if test "${GXX}" = "yes" ; then
   CXXFLAGS="${CXXFLAGS} -Wall -Wextra -Woverloaded-virtual -Wshadow -Wstrict-overflow -Wstrict-aliasing -Wdouble-promotion -Wno-implicit-fallthrough"
+#  CXXFLAGS="${CXXFLAGS} -std=c++11"
 #  LDFLAGS="-rdynamic ${LDFLAGS}"
 fi
 
@@ -140,7 +141,7 @@ AC_MSG_CHECKING(for release build)
 AC_ARG_ENABLE(release,[  --enable-release        compile for release])
 AC_MSG_RESULT([$enable_release])
 if test "x$enable_release" = "xyes" ; then
-  CXXFLAGS="${CXXFLAGS} -O2 -DNDEBUG"
+  CXXFLAGS="${CXXFLAGS} -O3 -DNDEBUG"
   if test "${GXX}" = "yes" ; then
     CXXFLAGS="${CXXFLAGS} -ffast-math -fstrict-overflow -fstrict-aliasing -finline-functions -fomit-frame-pointer -fcf-protection=none -fno-stack-protector"
     LDFLAGS="-s ${LDFLAGS}"

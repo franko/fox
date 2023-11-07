@@ -197,6 +197,12 @@ public:
   FXbool operator==(const FXRex& rex) const;
   FXbool operator!=(const FXRex& rex) const;
 
+  /**
+  * Escape special regex-reserved characters in string.
+  * Useful when assembling a regular expression from strings.
+  */
+  static FXString escape(const FXString& str);
+
   /// Saving and loading
   friend FXAPI FXStream& operator<<(FXStream& store,const FXRex& s);
   friend FXAPI FXStream& operator>>(FXStream& store,FXRex& s);

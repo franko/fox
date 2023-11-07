@@ -100,8 +100,7 @@ int main(int argc,char** argv){
       }
     else if(FXString::compare(argv[arg],"-tracetopics")==0){
       if(++arg>=argc){ fxwarning("rex: missing argument for -tracetopics.\n"); return 0; }
-      setTraceTopics(argv[arg++]);
-      continue;
+      setTraceTopics(argv[arg]);
       }
     arg++;
     }

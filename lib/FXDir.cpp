@@ -111,7 +111,7 @@ FXbool FXDir::open(const FXString& path){
       }
 #else
     alias_cast<SPACE>(space)->handle=opendir(path.text());
-    if(alias_cast<SPACE>(space)->handle!=nullptr){
+    if(alias_cast<SPACE>(space)->handle){
       return true;
       }
 #endif

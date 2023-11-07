@@ -352,7 +352,7 @@ int main(int argc,char* argv[]){
   fprintf(stdout,"\n");
 
   // Small dernormalized float, passed as floating point hex syntax
-#if defined(__GNUC__)
+#if defined(__GNUC__) && (__GNUC__ >= 14)
   __snprintf(buffer,sizeof(buffer),"%.18le",0x0.0000000002788p-1023);
   fprintf(stdout,"hex format=\"%s\" output=\"%s\"\n","%.18le",buffer);
 

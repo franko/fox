@@ -399,8 +399,8 @@ FXbool FXProcess::start(const FXchar* exec,const FXchar *const *args,const FXcha
       STARTUPINFO si;
 
       // Zero out process info and startup info
-      memset(&pi,0,sizeof(pi));
-      memset(&si,0,sizeof(si));
+      clearElms(&pi,1);
+      clearElms(&si,1);
 
       // Init startup info
       si.cb=sizeof(si);
@@ -447,8 +447,8 @@ FXbool FXProcess::start(const FXchar* exec,const FXchar *const *args,const FXcha
       STARTUPINFO si;
 
       // Zero out process info and startup info
-      memset(&pi,0,sizeof(pi));
-      memset(&si,0,sizeof(si));
+      clearElms(&pi,1);
+      clearElms(&si,1);
 
       // Init startup info
       si.cb=sizeof(si);

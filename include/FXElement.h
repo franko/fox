@@ -87,13 +87,15 @@ inline void bitcopyElms(EType* dst,const EType* src,FXuval n){
 /// Move some elements from overlapping place to another
 template<typename EType>
 inline void moveElms(EType* dst,const EType* src,FXuval n){
-  if(src>dst){
-    while(n--){ *dst++ = *src++; }
-    }
-  else if(dst>src){
-    dst+=n;
-    src+=n;
-    while(n--){ *--dst = *--src; }
+  if(src!=dst){
+    if(0<(src-dst)){
+      while(n--){ *dst++ = *src++; }
+      }
+    else{
+      dst+=n;
+      src+=n;
+      while(n--){ *--dst = *--src; }
+      }
     }
   }
 
