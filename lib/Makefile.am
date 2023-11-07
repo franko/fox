@@ -84,15 +84,14 @@ $(top_srcdir)/lib/bigfolderopen.gif \
 $(top_srcdir)/lib/bigharddisk.gif \
 $(top_srcdir)/lib/bignetdrive.gif \
 $(top_srcdir)/lib/bignethood.gif \
-$(top_srcdir)/lib/bookset.gif \
-$(top_srcdir)/lib/bookclr.gif \
-$(top_srcdir)/lib/bookadd.bmp \
-$(top_srcdir)/lib/bookdel.bmp \
+$(top_srcdir)/lib/bookmrk_gif.gif \
+$(top_srcdir)/lib/bookclr_gif.gif \
+$(top_srcdir)/lib/bookset_gif.gif \
+$(top_srcdir)/lib/bookdel_gif.gif \
 $(top_srcdir)/lib/clearentry.gif \
 $(top_srcdir)/lib/cmymode.gif \
 $(top_srcdir)/lib/dialmode.gif \
-$(top_srcdir)/lib/dirupicon.gif \
-$(top_srcdir)/lib/deleteicon.gif \
+$(top_srcdir)/lib/dirup_gif.gif \
 $(top_srcdir)/lib/docktop.gif \
 $(top_srcdir)/lib/dockbottom.gif \
 $(top_srcdir)/lib/dockleft.gif \
@@ -114,6 +113,7 @@ $(top_srcdir)/lib/fileshown.gif \
 $(top_srcdir)/lib/foldernew.gif \
 $(top_srcdir)/lib/gotohome.gif \
 $(top_srcdir)/lib/gotowork.gif \
+$(top_srcdir)/lib/hammer_gif.gif \
 $(top_srcdir)/lib/hsvmode.gif \
 $(top_srcdir)/lib/infoicon.gif \
 $(top_srcdir)/lib/landscape.gif \
@@ -141,6 +141,7 @@ $(top_srcdir)/lib/showbigicons.gif \
 $(top_srcdir)/lib/showdetails.gif \
 $(top_srcdir)/lib/showsmallicons.gif \
 $(top_srcdir)/lib/sorting.bmp \
+$(top_srcdir)/lib/redo_gif.gif \
 $(top_srcdir)/lib/undo_gif.gif \
 $(top_srcdir)/lib/warningicon.gif \
 $(top_srcdir)/lib/winclose.gif \

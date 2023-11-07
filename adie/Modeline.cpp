@@ -23,6 +23,7 @@
 
 /*
   Notes:
+
   - Parse commonly used editor modeline from vim, emacs, or adie editor
     syntax embedded in comments.
   - Vim modelines there are two forms of modelines.  The first form:
@@ -61,6 +62,10 @@
   - Emacs modeline; Emacs modelines looks like this:
 
         "-*- key1: value1; key2: value2; -*-"
+
+    or just:
+
+        "-*- lang -*-"
 
     See:
 
@@ -147,24 +152,55 @@ FXbool Modeline::parseVimModeline(const FXchar* s){
 FXbool Modeline::parseEmacsModeline(const FXchar* s){
   FXString key;
   FXString val;
-  while(*s!='\0'){
-    while(*s==';' || *s=='\t' || *s==' ') s++;
-    if(*s=='\0' || (*s=='-' && *(s+1)=='*' && *(s+2)=='-')) break;
+  while(*s!='\0' && !(*s=='-' && *(s+1)=='*' && *(s+2)=='-')){
+
+    // Skip white space
+    while(*s=='\t' || *s==' ') s++;
+
+    // Parse string
     key=FXString::null;
     val=FXString::null;
-    while(*s!='\0' && *s!=':' && *s!=';' && *s!='\t' && *s!=' '){
-      key+=*s++;
-      }
-    while(*s=='\t' || *s==' ') s++;
-    if(*s=='\0') break;
-    if(*s!=':') continue;
-    s++;
-    while(*s=='\t' || *s==' ') s++;
-    if(*s=='\0') break;
-    while(*s!='\0' && *s!=';' &&  *s!='\t' && *s!=' '){
+    while(*s!='\0' && *s!=':' && *s!='\t' && *s!=' '){
       val+=*s++;
       }
-    if(FXString::comparecase(key,"Mode")==0){
+
+    // Skip white space
+    while(*s=='\t' || *s==' ') s++;
+
+    // This was a key
+    if(*s==':'){
+      s++;
+
+      // Skip white space
+      while(*s=='\t' || *s==' ') s++;
+
+      // Keep the key
+      key=val;
+
+      // Parse string
+      val=FXString::null;
+      while(*s!='\0' && *s!=';' && *s!='\t' && *s!=' '){
+        val+=*s++;
+        }
+
+      // Skip white space
+      while(*s=='\t' || *s==' ') s++;
+
+      // End of that
+      if(*s==';') s++;
+
+      // Skip white space
+      while(*s=='\t' || *s==' ') s++;
+      }
+
+    // Got nothing
+    if(val.empty()) break;
+
+    // Get key/value
+    if(key.empty()){
+      setLanguage(val);
+      }
+    else if(FXString::comparecase(key,"mode")==0){
       setLanguage(val);
       }
     else if(key=="tab-width"){
@@ -231,14 +267,14 @@ FXbool Modeline::parseModeline(const FXchar* s){
   while(*s!='\0'){
     if(old==' ' || old=='\t'){
 
-      // Adie modeline
-      if(*s=='a' && *(s+1)=='d' && *(s+2)=='i' && *(s+3)=='e' && *(s+4)==':'){
-        return parseAdieModeline(s+5);
-        }
-
       // Emacs modeline
       if(*s=='-' && *(s+1)=='*' && *(s+2)=='-'){
         return parseEmacsModeline(s+3);
+        }
+
+      // Adie modeline
+      if(*s=='a' && *(s+1)=='d' && *(s+2)=='i' && *(s+3)=='e' && *(s+4)==':'){
+        return parseAdieModeline(s+5);
         }
 
       // Ex modeline

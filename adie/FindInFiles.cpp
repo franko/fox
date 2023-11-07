@@ -113,6 +113,7 @@ static const FXchar mkey[20][3]={
 
 // Traverse files under path and search for pattern in each
 FXuint SearchVisitor::traverse(const FXString& path,const FXString& pattern,const FXString& wild,FXint mode,FXuint opts,FXint depth){
+  FXTRACE((1,"SearchVisitor::traverse(path=%s,pattern=%s,wild=%s,mode=%b,opts=%b,depth=%d)\n",path.text(),pattern.text(),wild.text(),mode,opts,depth));
 
   // Compile the pattern
   if(rex.parse(pattern,mode)==FXRex::ErrOK){
@@ -146,7 +147,7 @@ FXuint SearchVisitor::visit(const FXString& path){
 // Search file contents for pattern
 FXint SearchVisitor::searchFile(const FXString& path) const {
   FXString text;
-  FXTRACE((1,"searchFile(%s)\n",path.text()));
+  FXTRACE((1,"searchFile(path=%s)\n",path.text()));
   if(loadFile(path,text)){
     FXString relpath=FXPath::relative(dlg->getDirectory(),path);
     FXString hit;
@@ -154,7 +155,7 @@ FXint SearchVisitor::searchFile(const FXString& path) const {
     FXint lineno=1;
     FXint column=0;
     FXint pos=0;
-    FXTRACE((1,"loadFile(%s) -> %d bytes\n",relpath.text(),text.length()));
+    FXTRACE((1,"loadFile(path=%s) -> %d bytes\n",relpath.text(),text.length()));
     dlg->setSearchingText(relpath);
     while(pos<text.length()){
       if(rex.amatch(text,pos,FXRex::Normal,beg,end,10)){
@@ -231,18 +232,20 @@ FindInFiles::FindInFiles(Adie *a):FXDialogBox(a,"Find In Files",DECOR_TITLE|DECO
   // Options block
   FXHorizontalFrame* frame=new FXHorizontalFrame(this,LAYOUT_SIDE_BOTTOM|LAYOUT_FILL_X|PACK_UNIFORM_WIDTH|PACK_UNIFORM_HEIGHT,0,0,0,0,0,0,0,0);
   new FXCheckButton(frame,tr("E&xpression\tRegular Expression"),this,ID_REGEX,ICON_BEFORE_TEXT|LAYOUT_CENTER_X);
-  new FXCheckButton(frame,tr("I&gnore Case\tCase insensitive"),this,ID_ICASE,ICON_BEFORE_TEXT|LAYOUT_CENTER_X);
+  new FXCheckButton(frame,tr("W&ords\tWhole Words"),this,ID_WORDS,ICON_BEFORE_TEXT|LAYOUT_CENTER_X);
+  new FXCheckButton(frame,tr("&Ignore Case\tCase insensitive"),this,ID_ICASE,ICON_BEFORE_TEXT|LAYOUT_CENTER_X);
   new FXCheckButton(frame,tr("&Recursive\tSearch subdirectories"),this,ID_RECURSIVE,ICON_BEFORE_TEXT|LAYOUT_CENTER_X);
   new FXCheckButton(frame,tr("&Hidden Files\tSearch hidden files"),this,ID_HIDDEN,ICON_BEFORE_TEXT|LAYOUT_CENTER_X);
-  new FXCheckButton(frame,tr("First &Hit\tRecord only first matches for each file"),this,ID_FIRST_HIT,ICON_BEFORE_TEXT|LAYOUT_CENTER_X);
+  new FXCheckButton(frame,tr("First Hi&t\tRecord only first matches for each file"),this,ID_FIRST_HIT,ICON_BEFORE_TEXT|LAYOUT_CENTER_X);
 
   // Entry block
   FXMatrix *matrix=new FXMatrix(this,3,MATRIX_BY_COLUMNS|LAYOUT_SIDE_BOTTOM|LAYOUT_FILL_X,0,0,0,0,0,0,0,0);
 
   // Text field with history
-  new FXLabel(matrix,tr("S&earch for:"),nullptr,JUSTIFY_RIGHT|LAYOUT_FILL_X|LAYOUT_CENTER_Y);
+  new FXLabel(matrix,tr("Search &for:"),nullptr,JUSTIFY_RIGHT|LAYOUT_FILL_X|LAYOUT_CENTER_Y);
   FXHorizontalFrame* searchbox=new FXHorizontalFrame(matrix,FRAME_SUNKEN|FRAME_THICK|LAYOUT_FILL_X|LAYOUT_CENTER_Y|LAYOUT_FILL_COLUMN,0,0,0,0, 0,0,0,0, 0,0);
   findstring=new FXTextField(searchbox,26,this,ID_SEARCH_TEXT,TEXTFIELD_ENTER_ONLY|LAYOUT_FILL_X|LAYOUT_FILL_Y);
+  findstring->setTipText(tr("Search Pattern"));
   FXVerticalFrame* searcharrows=new FXVerticalFrame(searchbox,LAYOUT_RIGHT|LAYOUT_FILL_Y|PACK_UNIFORM_HEIGHT,0,0,0,0, 0,0,0,0, 0,0);
   FXArrowButton* ar1=new FXArrowButton(searcharrows,this,ID_HIST_UP,FRAME_RAISED|FRAME_THICK|ARROW_UP|ARROW_REPEAT|LAYOUT_FILL_Y|LAYOUT_FIX_WIDTH, 0,0,16,0, 1,1,1,1);
   FXArrowButton* ar2=new FXArrowButton(searcharrows,this,ID_HIST_DN,FRAME_RAISED|FRAME_THICK|ARROW_DOWN|ARROW_REPEAT|LAYOUT_FILL_Y|LAYOUT_FIX_WIDTH, 0,0,16,0, 1,1,1,1);
@@ -251,13 +254,15 @@ FindInFiles::FindInFiles(Adie *a):FXDialogBox(a,"Find In Files",DECOR_TITLE|DECO
   new FXFrame(matrix,0);
 
   // Folder to search
-  new FXLabel(matrix,tr("In &Folder:"),nullptr,JUSTIFY_RIGHT|LAYOUT_FILL_X|LAYOUT_CENTER_Y);
+  new FXLabel(matrix,tr("In Fo&lder:"),nullptr,JUSTIFY_RIGHT|LAYOUT_FILL_X|LAYOUT_CENTER_Y);
   filefolder=new FXTextField(matrix,40,this,ID_FOLDER_TEXT,JUSTIFY_LEFT|FRAME_SUNKEN|FRAME_THICK|LAYOUT_CENTER_Y|LAYOUT_FILL_COLUMN|LAYOUT_FILL_X);
-  new FXButton(matrix,"...",nullptr,this,ID_FOLDER,LAYOUT_CENTER_Y|FRAME_RAISED|FRAME_THICK|LAYOUT_FIX_WIDTH,0,0,20,0);
+  filefolder->setTipText(tr("Folder To Search"));
+  new FXButton(matrix,"...\tSelect Folder\tSelect folder to search.",nullptr,this,ID_FOLDER,LAYOUT_CENTER_Y|FRAME_RAISED|FRAME_THICK|LAYOUT_FIX_WIDTH,0,0,20,0);
 
   // Filter for files
-  new FXLabel(matrix,tr("F&ilter:"),nullptr,JUSTIFY_RIGHT|LAYOUT_FILL_X|LAYOUT_CENTER_Y);
+  new FXLabel(matrix,tr("Filt&er:"),nullptr,JUSTIFY_RIGHT|LAYOUT_FILL_X|LAYOUT_CENTER_Y);
   filefilter=new FXComboBox(matrix,10,this,ID_FILTER_TEXT,COMBOBOX_STATIC|LAYOUT_FILL_X|LAYOUT_CENTER_Y|FRAME_SUNKEN|FRAME_THICK|LAYOUT_FILL_COLUMN);
+  filefilter->setTipText(tr("Files matching wildcard"));
   filefilter->setNumVisible(4);
   new FXFrame(matrix,0);
 
@@ -571,6 +576,7 @@ long FindInFiles::onCmdSearch(FXObject*,FXSelector,void*){
   FXint rexmode=FXRex::Capture;
   FXint limit=1000;
   if(getSearchMode()&SearchCaseFold) rexmode|=FXRex::IgnoreCase;                // Case insensitivity
+  if(getSearchMode()&SearchWords) rexmode|=FXRex::Words;                         // Whole Words
   if(!(getSearchMode()&SearchRegex)) rexmode|=FXRex::Verbatim;                  // Verbatim match
   if(getSearchMode()&SeachHidden) opts|=FXDir::HiddenFiles|FXDir::HiddenDirs;   // Visit hidden files and directories
   if(!(getSearchMode()&SearchRecurse)) limit=2;                                 // Don't recurse
@@ -597,6 +603,7 @@ long FindInFiles::onUpdFlags(FXObject* sender,FXSelector sel,void*){
   switch(FXSELID(sel)){
     case ID_ICASE: value=(searchmode&SearchCaseFold); break;
     case ID_REGEX: value=(searchmode&SearchRegex); break;
+    case ID_WORDS: value=(searchmode&SearchWords); break;
     case ID_RECURSIVE: value=(searchmode&SearchRecurse); break;
     case ID_HIDDEN: value=(searchmode&SeachHidden); break;
     }
@@ -610,6 +617,7 @@ long FindInFiles::onCmdFlags(FXObject*,FXSelector sel,void*){
   switch(FXSELID(sel)){
     case ID_ICASE: searchmode^=SearchCaseFold; break;
     case ID_REGEX: searchmode^=SearchRegex; break;
+    case ID_WORDS: searchmode^=SearchWords; break;
     case ID_RECURSIVE: searchmode^=SearchRecurse; break;
     case ID_HIDDEN: searchmode^=SeachHidden; break;
     }
@@ -729,8 +737,8 @@ long FindInFiles::onCmdFileDblClicked(FXObject*,FXSelector,void* ptr){
   FXint which=(FXint)(FXival)ptr;
   if(0<=which){
     FXchar name[1024];
-    FXint lineno=0;
-    FXint column=0;
+    FXint  lineno=0;
+    FXint  column=0;
     if(locations->getItem(which)->getText().scan("%1023[^:]:%d:%d",name,&lineno,&column)==3){
       FXString filename=FXPath::absolute(getDirectory(),name);
       TextWindow* window=getApp()->openFileWindow(filename);

@@ -387,7 +387,7 @@ FXbool FXReactor::dispatchHandle(FXInputHandle,FXuint,FXuint){
 
 #if defined(WIN32) //////////////////////////////////////////////////////////////
 
-// Dispatch driver
+// Dispatch driver (using WaitForMultipleObjectsEx())
 FXbool FXReactor::dispatch(FXTime blocking,FXuint flags){
   if(internals){
     FXTime now,due,delay,interval;
@@ -434,7 +434,7 @@ FXbool FXReactor::dispatch(FXTime blocking,FXuint flags){
         continue;
         }
 
-      // Select active handles; don't block
+      // Select active handles (0<numhandles); don't block
       current=WaitForMultipleObjectsEx(numhandles,internals->handles,false,0,true);
 
       // No handles were active
@@ -458,7 +458,7 @@ FXbool FXReactor::dispatch(FXTime blocking,FXuint flags){
           ms=(FXuint)(interval/milliseconds);
           }
 
-        // Select active handles, wait for timeout or maximum block time
+        // Select active handles (0<numhandles); wait for timeout or maximum block time
         current=WaitForMultipleObjectsEx(numhandles,internals->handles,false,ms,true);
 
         // Return if there was no timeout within maximum block time
@@ -486,7 +486,7 @@ FXbool FXReactor::dispatch(FXTime blocking,FXuint flags){
 
 #elif defined(HAVE_EPOLL_CREATE1) ///////////////////////////////////////////////
 
-// Dispatch driver
+// Dispatch driver (using epoll_pwait())
 FXbool FXReactor::dispatch(FXTime blocking,FXuint flags){
   if(internals){
     FXTime now,due,delay,interval;
@@ -533,6 +533,9 @@ FXbool FXReactor::dispatch(FXTime blocking,FXuint flags){
         if(dispatchHandle(hnd,mode,flags)) return true; // IO activity
         continue;
         }
+
+      // All handles have been handled...
+      FXASSERT(numraised==0);
 
       // Select active handles and check signals; don't block
       numwatched=epoll_pwait(internals->handle,internals->events,ARRAYNUMBER(internals->events),0,nullptr);
@@ -586,7 +589,7 @@ FXbool FXReactor::dispatch(FXTime blocking,FXuint flags){
 
 #else ///////////////////////////////////////////////////////////////////////////
 
-// Dispatch driver
+// Dispatch driver (using pselect() or select())
 FXbool FXReactor::dispatch(FXTime blocking,FXuint flags){
   if(internals){
     FXTime now,due,delay,interval;
@@ -652,6 +655,9 @@ FXbool FXReactor::dispatch(FXTime blocking,FXuint flags){
         if(dispatchHandle(current,mode,flags)) return true;     // IO activity
         continue;
         }
+
+      // All handles have been handled...
+      FXASSERT(numraised==0);
 
       // Prepare handles to check
       internals->watched[0]=internals->handles[0];

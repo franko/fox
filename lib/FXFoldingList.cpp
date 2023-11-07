@@ -743,7 +743,7 @@ FXint FXFoldingList::getNumHeaders() const {
 
 // Set item text
 void FXFoldingList::setItemText(FXFoldingItem* item,const FXString& text){
-  if(item==nullptr){ fxerror("%s::setItemText: item is NULL.\n",getClassName()); }
+  if(!item){ fxerror("%s::setItemText: item is NULL.\n",getClassName()); }
   if(item->getText()!=text){
     item->setText(text);
     recalc();
@@ -753,14 +753,14 @@ void FXFoldingList::setItemText(FXFoldingItem* item,const FXString& text){
 
 // Get item text
 FXString FXFoldingList::getItemText(const FXFoldingItem* item) const {
-  if(item==nullptr){ fxerror("%s::getItemText: item is NULL.\n",getClassName()); }
+  if(!item){ fxerror("%s::getItemText: item is NULL.\n",getClassName()); }
   return item->getText();
   }
 
 
 // Set item open icon
 void FXFoldingList::setItemOpenIcon(FXFoldingItem* item,FXIcon* icon,FXbool owned){
-  if(item==nullptr){ fxerror("%s::setItemOpenIcon: item is NULL.\n",getClassName()); }
+  if(!item){ fxerror("%s::setItemOpenIcon: item is NULL.\n",getClassName()); }
   if(item->getOpenIcon()!=icon) recalc();
   item->setOpenIcon(icon,owned);
   }
@@ -768,14 +768,14 @@ void FXFoldingList::setItemOpenIcon(FXFoldingItem* item,FXIcon* icon,FXbool owne
 
 // Get item open icon
 FXIcon* FXFoldingList::getItemOpenIcon(const FXFoldingItem* item) const {
-  if(item==nullptr){ fxerror("%s::getItemOpenIcon: item is NULL.\n",getClassName()); }
+  if(!item){ fxerror("%s::getItemOpenIcon: item is NULL.\n",getClassName()); }
   return item->getOpenIcon();
   }
 
 
 // Set item closed icon
 void FXFoldingList::setItemClosedIcon(FXFoldingItem* item,FXIcon* icon,FXbool owned){
-  if(item==nullptr){ fxerror("%s::setItemClosedIcon: item is NULL.\n",getClassName()); }
+  if(!item){ fxerror("%s::setItemClosedIcon: item is NULL.\n",getClassName()); }
   if(item->getClosedIcon()!=icon) recalc();
   item->setClosedIcon(icon,owned);
   }
@@ -783,21 +783,21 @@ void FXFoldingList::setItemClosedIcon(FXFoldingItem* item,FXIcon* icon,FXbool ow
 
 // Get item closed icon
 FXIcon* FXFoldingList::getItemClosedIcon(const FXFoldingItem* item) const {
-  if(item==nullptr){ fxerror("%s::getItemClosedIcon: item is NULL.\n",getClassName()); }
+  if(!item){ fxerror("%s::getItemClosedIcon: item is NULL.\n",getClassName()); }
   return item->getClosedIcon();
   }
 
 
 // Set item data
 void FXFoldingList::setItemData(FXFoldingItem* item,void* ptr) const {
-  if(item==nullptr){ fxerror("%s::setItemData: item is NULL.\n",getClassName()); }
+  if(!item){ fxerror("%s::setItemData: item is NULL.\n",getClassName()); }
   item->setData(ptr);
   }
 
 
 // Get item data
 void* FXFoldingList::getItemData(const FXFoldingItem* item) const {
-  if(item==nullptr){ fxerror("%s::getItemData: item is NULL.\n",getClassName()); }
+  if(!item){ fxerror("%s::getItemData: item is NULL.\n",getClassName()); }
   return item->getData();
   }
 
@@ -826,7 +826,7 @@ FXbool FXFoldingList::isItemExpanded(const FXFoldingItem* item) const {
 // Is item a leaf item
 FXbool FXFoldingList::isItemLeaf(const FXFoldingItem* item) const {
   if(!item){ fxerror("%s::isItemLeaf: item is NULL.\n",getClassName()); }
-  return item->first==nullptr;
+  return !item->first;
   }
 
 
@@ -1168,7 +1168,7 @@ FXbool FXFoldingList::killSelection(FXbool notify){
 
 // Open item
 FXbool FXFoldingList::openItem(FXFoldingItem* item,FXbool notify){
-  if(item==nullptr){ fxerror("%s::openItem: item is NULL.\n",getClassName()); }
+  if(!item){ fxerror("%s::openItem: item is NULL.\n",getClassName()); }
   if(!item->isOpened()){
     item->setOpened(true);
     updateItem(item);
@@ -1181,7 +1181,7 @@ FXbool FXFoldingList::openItem(FXFoldingItem* item,FXbool notify){
 
 // Close item
 FXbool FXFoldingList::closeItem(FXFoldingItem* item,FXbool notify){
-  if(item==nullptr){ fxerror("%s::closeItem: item is NULL.\n",getClassName()); }
+  if(!item){ fxerror("%s::closeItem: item is NULL.\n",getClassName()); }
   if(item->isOpened()){
     item->setOpened(false);
     updateItem(item);
@@ -1194,7 +1194,7 @@ FXbool FXFoldingList::closeItem(FXFoldingItem* item,FXbool notify){
 
 // Collapse all subtrees under item
 FXbool FXFoldingList::collapseTree(FXFoldingItem* tree,FXbool notify){
-  if(tree==nullptr){ fxerror("%s::collapseTree: tree is NULL.\n",getClassName()); }
+  if(!tree){ fxerror("%s::collapseTree: tree is NULL.\n",getClassName()); }
   if(tree->isExpanded()){
     tree->setExpanded(false);
     if(!(options&FOLDINGLIST_AUTOSELECT)){     // In autoselect, already shown as expanded!
@@ -1214,7 +1214,7 @@ FXbool FXFoldingList::collapseTree(FXFoldingItem* tree,FXbool notify){
 
 // Expand subtree under item
 FXbool FXFoldingList::expandTree(FXFoldingItem* tree,FXbool notify){
-  if(tree==nullptr){ fxerror("%s::expandTree: tree is NULL.\n",getClassName()); }
+  if(!tree){ fxerror("%s::expandTree: tree is NULL.\n",getClassName()); }
   if(!tree->isExpanded()){
     tree->setExpanded(true);
     if(!(options&FOLDINGLIST_AUTOSELECT)){     // In autoselect, already shown as expanded!
@@ -1413,7 +1413,7 @@ long FXFoldingList::onKeyPress(FXObject*,FXSelector,void* ptr){
   flags&=~FLAG_TIP;
   if(!isEnabled()) return 0;
   if(target && target->tryHandle(this,FXSEL(SEL_KEYPRESS,message),ptr)) return 1;
-  if(item==nullptr) item=firstitem;
+  if(!item) item=firstitem;
   switch(event->code){
     case KEY_Control_L:
     case KEY_Control_R:
@@ -1773,7 +1773,7 @@ long FXFoldingList::onLeftBtnPress(FXObject*,FXSelector,void* ptr){
     item=getItemAt(event->win_x,event->win_y);
 
     // No item
-    if(item==nullptr){
+    if(!item){
       if((options&SELECT_MASK)==FOLDINGLIST_EXTENDEDSELECT){
         if(!(event->state&(SHIFTMASK|CONTROLMASK))){
           killSelection(true);
@@ -2043,7 +2043,7 @@ FXint FXFoldingList::descendingCase(const FXFoldingItem* a,const FXFoldingItem* 
 void FXFoldingList::sort(FXFoldingItem*& f1,FXFoldingItem*& t1,FXFoldingItem*& f2,FXFoldingItem*& t2,int n){
   FXFoldingItem *ff1,*tt1,*ff2,*tt2,*q;
   FXint m;
-  if(f2==nullptr){
+  if(!f2){
     f1=nullptr;
     t1=nullptr;
     return;
@@ -2067,8 +2067,8 @@ void FXFoldingList::sort(FXFoldingItem*& f1,FXFoldingItem*& t1,FXFoldingItem*& f
     t1=f1;
     t1->next=nullptr;
     while(ff1 || ff2){
-      if(ff1==nullptr){ t1->next=ff2; ff2->prev=t1; t1=tt2; break; }
-      if(ff2==nullptr){ t1->next=ff1; ff1->prev=t1; t1=tt1; break; }
+      if(!ff1){ t1->next=ff2; ff2->prev=t1; t1=tt2; break; }
+      if(!ff2){ t1->next=ff1; ff1->prev=t1; t1=tt1; break; }
       if(sortfunc(ff1,ff2)>0){
         t1->next=ff2;
         ff2->prev=t1;
@@ -2651,7 +2651,7 @@ FXFoldingItem* FXFoldingList::findItem(const FXString& string,FXFoldingItem* sta
     len=(flgs&SEARCH_PREFIX)?string.length():2147483647;
     if(flgs&SEARCH_BACKWARD){
       item=start;
-      while(item!=nullptr){
+      while(item){
         if((*comparefunc)(item->getText().text(),string.text(),len)==0) return item;
         item=item->getAbove();
         }
@@ -2664,7 +2664,7 @@ FXFoldingItem* FXFoldingList::findItem(const FXString& string,FXFoldingItem* sta
       }
     else{
       item=start;
-      while(item!=nullptr){
+      while(item){
         if((*comparefunc)(item->getText().text(),string.text(),len)==0) return item;
         item=item->getBelow();
         }
@@ -2686,7 +2686,7 @@ FXFoldingItem* FXFoldingList::findItemByData(FXptr ptr,FXFoldingItem* start,FXui
   if(firstitem){
     if(flgs&SEARCH_BACKWARD){
       item=start;
-      while(item!=nullptr){
+      while(item){
         if(item->getData()==ptr) return item;
         item=item->getAbove();
         }
@@ -2699,7 +2699,7 @@ FXFoldingItem* FXFoldingList::findItemByData(FXptr ptr,FXFoldingItem* start,FXui
       }
     else{
       item=start;
-      while(item!=nullptr){
+      while(item){
         if(item->getData()==ptr) return item;
         item=item->getBelow();
         }

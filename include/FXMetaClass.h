@@ -26,21 +26,6 @@ namespace FX {
 
 class FXObject;
 
-
-/// Minimum and maximum message type
-enum {
-  MINTYPE = 0,
-  MAXTYPE = 65535
-  };
-
-
-/// Minimum and maximum message id
-enum {
-  MINKEY = 0,
-  MAXKEY = 65535
-  };
-
-
 /// Association key
 typedef FXuint FXSelector;
 
@@ -60,6 +45,9 @@ private:
   static FXuint              metaClassCount;    // Number items
 private:
   static void resize(FXuint slots);
+public:
+  static void dumpMessageMap(const FXMetaClass* m);
+  static void dumpMetaClasses();
 private:
   FXMetaClass(const FXMetaClass&);
   FXMetaClass &operator=(const FXMetaClass&);
@@ -67,9 +55,6 @@ public:
 
   /// Create one metaclass for each class
   FXMetaClass(const FXchar* name,FXObject *(fac)(),const FXMetaClass* base,const void* ass,FXuint nass,FXuint assz);
-
-  /// Make instance of some object
-  FXObject* makeInstance() const;
 
   /// Search message map
   const void* search(FXSelector key) const;
@@ -85,12 +70,20 @@ public:
 
   /// Find metaclass object
   static const FXMetaClass* getMetaClassFromName(const FXchar* name);
+  static const FXMetaClass* getMetaClassFromName(const FXString& name);
+
+  /// Make instance of class name, a subclass of a given base class
+  static FXObject* makeInstanceOfName(const FXchar* name);
+  static FXObject* makeInstanceOfName(const FXString& name);
+
+  /// Make instance of some object
+  FXObject* makeInstance() const;
 
   /// Make NULL object
   static FXObject* nullObject();
 
   /// Destroy metaclass
- ~FXMetaClass();
+  virtual ~FXMetaClass();
   };
 
 }

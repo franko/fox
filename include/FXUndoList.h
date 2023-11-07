@@ -28,49 +28,69 @@
 namespace FX {
 
 
+// Declarations
 class FXUndoList;
-class FXCommandGroup;
 
 
 /**
 * Base class for undoable commands.  Each undo records all the
 * information necessary to undo as well as redo a given operation.
-* Since commands are derived from FXObject, subclassed commands can
-* both send and receive messages (like ID_GETINTVALUE, for example).
+* Since commands are derived from FXObject, subclassed commands
+* may be able to implement their behaviour by sending messages
+* (like ID_SETINTVALUE, etc) as well as simple API calls to
+* objects to be modified.
+* Small, incremental unto commands may sometimes be consolidated
+* into larger ones, by merging consecutive commands.  A merge
+* is effected by calling the mergeWith() API after first establishing
+* that merging is possible with canMerge().
+* When commands are merged, the incoming (new) command is deleted and
+* not added to the undo list.  In some cases, the incoming command may
+* completely cancel the existing commands, causing both to be deleted.
+* In that case the prior command will be removed from the undo list.
+* To allow UndoList to manage memory, your subclassed Command should
+* re-implement size() and return the amount of memory used by your
+* undo command.  This way, bookkeeping periodically pare down undo
+* commands to keep memory usage in check.
 */
 class FXAPI FXCommand : public FXObject {
   FXDECLARE_ABSTRACT(FXCommand)
-  friend class FXUndoList;
-  friend class FXCommandGroup;
 private:
-  FXCommand *next;
+  FXival refs;
 private:
-  FXCommand(const FXCommand&);
+  FXCommand(const FXCommand& org);
   FXCommand &operator=(const FXCommand&);
 protected:
-  FXCommand():next(nullptr){}
+  FXCommand():refs(0){}
 public:
 
+  // Return reference count
+  FXival nrefs() const { return refs; }
+
+  // Increment reference count
+  void ref(){ ++refs; }
+
+  // Decrement reference count
+  void unref(){ if(--refs<=0) delete this; }
+
   /**
-  * Undo this command; this should save the
-  * information for a subsequent redo.
+  * Undo this command.
   */
   virtual void undo() = 0;
 
   /**
-  * Redo this command; this should save the
-  * information for a subsequent undo.
+  * Redo this command.
   */
   virtual void redo() = 0;
 
   /**
   * Return the size of the information in the undo record.
-  * The undo list may be trimmed to limit memory usage to
-  * a certain limit.  The value returned should include
-  * the size of the command record itself as well as any
-  * data linked from it.
+  * The undo list may be periodically trimmed to limit memory
+  * usage to a certain limit.
+  * For proper accounting, value returned should include the
+  * size of the command record itself as well as any data linked
+  * from it.
   */
-  virtual FXuint size() const;
+  virtual FXuval size() const;
 
   /**
   * Name of the undo command to be shown on a button;
@@ -85,38 +105,57 @@ public:
   virtual FXString redoName() const;
 
   /**
-  * Return true if this command can be merged with previous undo
-  * commands.  This is useful to combine e.g. multiple consecutive
-  * single-character text changes into a single block change.
+  * Return true if this command could possibly be merged with a
+  * previous undo command. This is useful to combine e.g. multiple
+  * consecutive single-character text changes into a single block change.
   * The default implementation returns false.
   */
   virtual FXbool canMerge() const;
 
   /**
   * Called by the undo system to try and merge the new incoming command
-  * with this command; should return true if merging was possible.
-  * The default implementation returns false.
+  * with this command.  When overriding this API, return:
+  *
+  *   0  if command could not be merged to this one,
+  *   1  if command could be merged with this one,
+  *   2  if command completely cancels effect of this one.
+  *
+  * The default implementation returns 0.
   */
-  virtual FXbool mergeWith(FXCommand* command);
-
-  /// Delete undo command
-  virtual ~FXCommand(){}
+  virtual FXuint mergeWith(FXCommand* command);
   };
 
 
+// A marked pointer to a command
+typedef FXMarkedPtr<FXCommand> FXCommandPtr;
+
+// An array of marked command pointers
+typedef FXArray<FXCommandPtr> FXCommandArray;
+
 
 /**
-* Group of undoable commands.  A group may comprise multiple
-* individual actions which together undo (or redo) a larger
-* operation.  Even larger operations may be built by nesting
-* multiple undo groups.
+* Group of undoable commands.
+* Complicated manipulations may sometimes be more effectively
+* implemented as a combination of multiple sub-commands.
+* The CommandGroup implements this concept by invoking each
+* the sub-commands undo() and redo() in the proper order.
+* For example, a network editing program may decompose a
+* "Delete Node" operation into a number of connection changes
+* followed by a unconnected node removal operation.
+* Note that some sub-commands may themselves be also CommandGroup
+* items.
+* You start a new CommandGroup by creating an instance of CommandGroup
+* cg and calling undolist.begin(ch), and end it by calling undolist.end().
+* In between, additional CommandGroup items may be created as well,
+* keeping in mind that the inner CommandGroup must be closed with
+* undolist.end() before adding to the outer CommandGroup.
+* They are strictly nested.
 */
 class FXAPI FXCommandGroup : public FXCommand {
   FXDECLARE(FXCommandGroup)
   friend class FXUndoList;
 private:
-  FXCommand      *undolist;
-  FXCommand      *redolist;
+  FXCommandArray  command;
   FXCommandGroup *group;
 private:
   FXCommandGroup(const FXCommandGroup&);
@@ -124,10 +163,10 @@ private:
 public:
 
   /// Construct initially empty undo command group
-  FXCommandGroup():undolist(nullptr),redolist(nullptr),group(nullptr){}
+  FXCommandGroup():group(nullptr){ }
 
   /// Return true if empty
-  FXbool empty(){ return !undolist; }
+  FXbool empty(){ return command.no()==0; }
 
   /// Undo whole command group
   virtual void undo();
@@ -136,25 +175,48 @@ public:
   virtual void redo();
 
   /// Return the size of the command group
-  virtual FXuint size() const;
+  virtual FXuval size() const;
+
+  /// Clear list
+  virtual void clear();
 
   /// Delete undo command and sub-commands
   virtual ~FXCommandGroup();
   };
 
 
-
 /**
-* The Undo List class manages a list of undoable commands.
+* The UndoList class manages a list of undoable commands.
+*
+* When performing an undo, the document is regressed from its
+* current state to an earlier state.  Likewise, performing a
+* redo, a document is advanced from an earlier state to a later
+* state.
+*
+* A document state may be marked, i.e. a special designated
+* state may be identified.  Typically, a freshly loaded document
+* is marked as "clean".  Also, any time a document is saved back
+* to disk, the latest state could be marked as "clean".
+*
+* You can go back to the marked state by invoking revert().
+* The revert() API will call a sequence of undo's or redo's, depending
+* on whether one need to go to older or newer state of the document.
+*
+* UndoList can directly receive SEL_UPDATE and SEL_COMMAND
+* messages from widgets.  For example, sending ID_UNDO command
+* will invoke the undo() API and cause an undo operation.
+*
 */
 class FXAPI FXUndoList : public FXCommandGroup {
   FXDECLARE(FXUndoList)
 private:
-  FXint      undocount;     // Number of undo records
-  FXint      redocount;     // Number of redo records
-  FXint      marker;        // Marker value
-  FXuint     space;         // Space taken up by all the undo records
-  FXbool     working;       // Currently busy with undo or redo
+  FXuval         space;         // Total memory in the undo commands
+  FXint          undocount;     // Number of undo records
+  FXint          redocount;     // Number of redo records
+  FXint          marker;        // Marker value
+  FXbool         markset;       // Mark is set
+  FXbool         alternate;     // Keep alternate history
+  FXbool         working;       // Currently busy with undo or redo
 private:
   FXUndoList(const FXUndoList&);
   FXUndoList &operator=(const FXUndoList&);
@@ -171,6 +233,9 @@ public:
   long onCmdRedoAll(FXObject*,FXSelector,void*);
   long onUpdUndoCount(FXObject*,FXSelector,void*);
   long onUpdRedoCount(FXObject*,FXSelector,void*);
+  long onCmdAltHistory(FXObject*,FXSelector,void*);
+  long onUpdAltHistory(FXObject*,FXSelector,void*);
+  long onCmdDumpStats(FXObject*,FXSelector,void*);
 public:
   enum{
     ID_CLEAR=FXWindow::ID_LAST,
@@ -181,6 +246,8 @@ public:
     ID_REDO_ALL,
     ID_UNDO_COUNT,
     ID_REDO_COUNT,
+    ID_ALT_HISTORY,
+    ID_DUMP_STATS,
     ID_LAST
     };
 public:
@@ -191,21 +258,33 @@ public:
   FXUndoList();
 
   /**
-  * Cut the redo list.
-  * This is automatically invoked when a new undo command is added.
+  * Return true if currently inside undo or redo operation; this
+  * is useful to avoid generating another undo command while inside
+  * an undo operation.
   */
-  void cut();
+  FXbool busy() const { return working; }
+
+  /**
+  * If alternate history mode is in effect, remember the alternate
+  * history, moving all the redo-commands into the undolist followed by
+  * their corresponding undo-commands, in reverse order.
+  * The sequence has a net zero effect on the document, as each undo is
+  * paired up with a corresponding redo.
+  * If alternate history is not in effect, simply delete the redo-
+  * commands.
+  * This is automatically invoked when a new undo command is added,
+  * and not typically called by the user directly.
+  */
+  FXbool cut();
 
   /**
   * Add new command, executing it if desired. The new command will be merged
   * with the previous command if merge is true and we're not at a marked position
   * and the commands are mergeable.  Otherwise the new command will be appended
   * after the last undo command in the currently active undo group.
-  * If the new command is successfully merged, it will be deleted.  Furthermore,
-  * all redo commands will be deleted since it is no longer possible to redo
-  * from this point.
+  * If the new command is successfully merged, it will be deleted.
   */
-  void add(FXCommand* command,FXbool doit=false,FXbool merge=true);
+  FXbool add(FXCommand* cmd,FXbool doit=false,FXbool merge=true);
 
   /**
   * Begin undo command sub-group. This begins a new group of commands that
@@ -213,7 +292,7 @@ public:
   * matching end() after recording the sub-commands.  The new sub-group
   * will be appended to its parent group's undo list when end() is called.
   */
-  void begin(FXCommandGroup *command);
+  FXbool begin(FXCommandGroup *command);
 
   /**
   * End undo command sub-group.  If the sub-group is still empty, it will
@@ -221,14 +300,14 @@ public:
   * into parent group.
   * A matching begin() must have been called previously.
   */
-  void end();
+  FXbool end();
 
   /**
   * Abort the current command sub-group being compiled.  All commands
   * already added to the sub-groups undo list will be discarded.
   * Intermediate command groups will be left intact.
   */
-  void abort();
+  FXbool abort();
 
   /**
   * Undo last command. This will move the command to the redo list.
@@ -240,33 +319,40 @@ public:
   */
   virtual void redo();
 
-  /// Undo all commands
+  /**
+  * Undo all commands.
+  */
   void undoAll();
 
-  /// Redo all commands
+  /**
+  * Redo all commands.
+  */
   void redoAll();
 
-  /// Revert to marked
+  /**
+  * Revert to marked.
+  */
   void revert();
 
-  /// Can we undo more commands
+  /**
+  * Can we undo more commands.
+  */
   FXbool canUndo() const;
 
-  /// Can we redo more commands
+  /**
+  * Can we redo more commands.
+  */
   FXbool canRedo() const;
 
-  /// Can revert to marked
+  /**
+  * Can revert to marked.
+  */
   FXbool canRevert() const;
 
   /**
-  * Return true if currently inside undo or redo operation; this
-  * is useful to avoid generating another undo command while inside
-  * an undo operation.
+  * Current top undo command.
   */
-  FXbool busy() const { return working; }
-
-  /// Current top level undo command
-  FXCommand* current() const { return undolist; }
+  FXCommand* current() const;
 
   /**
   * Return name of the first undo command available; if no
@@ -280,45 +366,53 @@ public:
   */
   virtual FXString redoName() const;
 
+  /// Size of undo information
+  virtual FXuval size() const;
+
+  /// Clear list
+  virtual void clear();
+
   /// Number of undo records
   FXint undoCount() const { return undocount; }
 
   /// Number of redo records
   FXint redoCount() const { return redocount; }
 
-  /// Size of undo information
-  virtual FXuint size() const;
-
   /**
-  * Clear list, and unmark all states.
-  * All undo and redo information will be destroyed.
-  */
-  void clear();
-
-  /**
-  * Trim undo list down to at most nc commands.
+  * Trim undo list down, starting from the oldest commands, until
+  * no more than nc commands are left in the undo list.
   * Call this periodically to prevent the undo-list from growing
   * beyond a certain number of records.
   */
   void trimCount(FXint nc);
 
   /**
-  * Trim undo list down to at most size sz.
+  * Trim undo list down, starting from the oldest commands, until
+  * total memory used drops below size sz.
   * Call this periodically to prevent the undo-list from growing
-  * beyond a certain amount of memory.
+  * beyond a certain maximum amount of memory.
   */
-  void trimSize(FXuint sz);
+  void trimSize(FXuval sz);
+
+  /**
+  * Trim undo list down, starting from the oldest commands,
+  * until reaching the marked ("clean" state) point.
+  * If no mark was set this does nothing.
+  */
+  void trimMark();
 
   /**
   * Mark the current state of the undo list, which is initially unmarked.
   * There can be only one active mark at any time.  Call mark() at any
-  * time when you know the document to be "clean"; for example when you
+  * time when you know your document to be "clean"; for example when you
   * save the document to disk.
+  * If you don't need to undo past this marked point, consider calling
+  * trimMark() to delete all undo commands for states prior to the mark.
   */
   void mark();
 
   /**
-  * Unmark all states in the undo list.
+  * Unmark the marked state.
   */
   void unmark();
 
@@ -327,8 +421,27 @@ public:
   * to the previously marked state.
   */
   FXbool marked() const;
-  };
 
+  /**
+  * Enable or disable alternate history mode.
+  * In alternate history mode, adding a new command after performing a
+  * number of undo's will remember the alternate history, and allow a
+  * sequence of undo's and redo's to navigate back through this alternate
+  * history.
+  */
+  void setAlternateHistory(FXbool flag){ alternate=flag; }
+
+  /**
+  * Returns true if alternate history mode is in effect.
+  */
+  FXbool getAlternateHistory() const { return alternate; }
+
+  /// Dump statistics
+  void dumpStats();
+
+  /// Destroy
+  virtual ~FXUndoList();
+  };
 
 }
 

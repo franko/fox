@@ -28,50 +28,71 @@ class FXTextCommand : public FXCommand {
   FXDECLARE_ABSTRACT(FXTextCommand)
 protected:
   FXText  *text;        // Text widget
-  FXString buffer;      // Character buffer
   FXint    pos;         // Character position
-  FXint    ndel;        // Deleted characters
-  FXint    nins;        // Inserted characters
+  FXbool   merge;       // Allow merge
+protected:
+  FXTextCommand(FXText* txt,FXint p,FXbool mg);
 public:
-  FXTextCommand(FXText* txt,FXint p,FXint nd,FXint ni);
-  virtual FXuint size() const;
-  virtual ~FXTextCommand();
+  virtual FXuval size() const;
+  virtual FXbool canMerge() const;
   };
 
 
 // Insert command
 class FXTextInsert : public FXTextCommand {
   FXDECLARE_ABSTRACT(FXTextInsert)
+  friend class FXTextDelete;
+  friend class FXTextReplace;
+protected:
+  FXString inserted;
 public:
   FXTextInsert(FXText* txt,FXint p,FXint ni,const FXchar* ins);
-  virtual FXString undoName() const { return "Undo insert"; }
-  virtual FXString redoName() const { return "Redo insert"; }
+  virtual FXuval size() const;
+  virtual FXString undoName() const;
+  virtual FXString redoName() const;
+  virtual FXuint mergeWith(FXCommand* command);
   virtual void undo();
   virtual void redo();
+  virtual ~FXTextInsert();
   };
 
 
 // Delete command
 class FXTextDelete : public FXTextCommand {
   FXDECLARE_ABSTRACT(FXTextDelete)
+  friend class FXTextInsert;
+  friend class FXTextReplace;
+protected:
+  FXString deleted;
 public:
   FXTextDelete(FXText* txt,FXint p,FXint nd,const FXchar* del);
-  virtual FXString undoName() const { return "Undo delete"; }
-  virtual FXString redoName() const { return "Redo delete"; }
+  virtual FXuval size() const;
+  virtual FXString undoName() const;
+  virtual FXString redoName() const;
+  virtual FXuint mergeWith(FXCommand* command);
   virtual void undo();
   virtual void redo();
+  virtual ~FXTextDelete();
   };
 
 
 // Replace command
 class FXTextReplace : public FXTextCommand {
   FXDECLARE_ABSTRACT(FXTextReplace)
+  friend class FXTextInsert;
+  friend class FXTextDelete;
+protected:
+  FXString deleted;
+  FXString inserted;
 public:
   FXTextReplace(FXText* txt,FXint p,FXint nd,FXint ni,const FXchar* del,const FXchar* ins);
-  virtual FXString undoName() const { return "Undo replace"; }
-  virtual FXString redoName() const { return "Redo replace"; }
+  virtual FXuval size() const;
+  virtual FXString undoName() const;
+  virtual FXString redoName() const;
+  virtual FXuint mergeWith(FXCommand* command);
   virtual void undo();
   virtual void redo();
+  virtual ~FXTextReplace();
   };
 
 #endif

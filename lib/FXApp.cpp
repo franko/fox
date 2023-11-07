@@ -475,26 +475,26 @@ FXIMPLEMENT(FXApp,FXObject,FXAppMap,ARRAYNUMBER(FXAppMap))
 FXApp::FXApp(const FXString& name,const FXString& vendor):registry(name,vendor){
 
   // Initialize private platform independent data
-  display=nullptr;                           // Display connection
-  activeWindow=nullptr;                      // Active toplevel window
-  cursorWindow=nullptr;                      // Window under the cursor
-  mouseGrabWindow=nullptr;                   // Window which grabbed mouse
-  keyboardGrabWindow=nullptr;                // Window which grabbed keyboard
-  keyWindow=nullptr;                         // Window in which keyboard key was pressed
-  selectionWindow=nullptr;                   // Window which has the selection
-  clipboardWindow=nullptr;                   // Window which has the clipboard
-  dropWindow=nullptr;                        // Drag source window
-  dragWindow=nullptr;                        // Drop target window
-  refresher=nullptr;                         // GUI refresher pointer
-  refresherstop=nullptr;                     // GUI refresher end pointer
-  popupWindow=nullptr;                       // No popup windows
-  timers=nullptr;                            // No timers present
-  chores=nullptr;                            // No chores present
-  repaints=nullptr;                          // No outstanding repaints
-  timerrecs=nullptr;                         // No timer records
-  chorerecs=nullptr;                         // No chore records
-  repaintrecs=nullptr;                       // No repaint records
-  invocation=nullptr;                        // Modal loop invocation
+  display=nullptr;                        // Display connection
+  activeWindow=nullptr;                   // Active toplevel window
+  cursorWindow=nullptr;                   // Window under the cursor
+  mouseGrabWindow=nullptr;                // Window which grabbed mouse
+  keyboardGrabWindow=nullptr;             // Window which grabbed keyboard
+  keyWindow=nullptr;                      // Window in which keyboard key was pressed
+  selectionWindow=nullptr;                // Window which has the selection
+  clipboardWindow=nullptr;                // Window which has the clipboard
+  dropWindow=nullptr;                     // Drag source window
+  dragWindow=nullptr;                     // Drop target window
+  refresher=nullptr;                      // GUI refresher pointer
+  refresherstop=nullptr;                  // GUI refresher end pointer
+  popupWindow=nullptr;                    // No popup windows
+  timers=nullptr;                         // No timers present
+  chores=nullptr;                         // No chores present
+  repaints=nullptr;                       // No outstanding repaints
+  timerrecs=nullptr;                      // No timer records
+  chorerecs=nullptr;                      // No chore records
+  repaintrecs=nullptr;                    // No repaint records
+  invocation=nullptr;                     // Modal loop invocation
   callocElms(signals,MAXSIGNALS);         // Signals array
   signalreceived=0;                       // Latest received signal
   callocElms(inputs,8);                   // Input file descriptors
@@ -504,10 +504,10 @@ FXApp::FXApp(const FXString& name,const FXString& vendor):registry(name,vendor){
   inputmethod="";                         // Input method name
   inputstyle="overthespot";               // Input method style
   maxcolors=MAXCOLORS;                    // Maximum number of colors to allocate
-  ddeData=nullptr;                           // Data exchange array
+  ddeData=nullptr;                        // Data exchange array
   ddeSize=0;                              // Data exchange array size
   appArgc=0;                              // Number of program arguments
-  appArgv=nullptr;                           // Program arguments
+  appArgv=nullptr;                        // Program arguments
   waitCount=0;                            // Cursor wait count
   windowCount=0;                          // Number of windows
   initialized=false;                      // Not yet initialized
@@ -587,13 +587,13 @@ FXApp::FXApp(const FXString& name,const FXString& vendor):registry(name,vendor){
   ddeTargets=0;                           // Data exchange to get list of types
   ddeAtom=0;                              // Data exchange atom
   ddeDelete=0;                            // Data exchange delete request
-  ddeTypeList=nullptr;                       // Data types list available
+  ddeTypeList=nullptr;                    // Data types list available
   ddeNumTypes=0;                          // Number of data types
   ddeAction=DRAG_REJECT;                  // Drag and drop action requested
   ansAction=DRAG_REJECT;                  // Drag and drop action suggested
 
   // SELECTION
-  xselTypeList=nullptr;                      // List of primary selection types
+  xselTypeList=nullptr;                   // List of primary selection types
   xselNumTypes=0;                         // How many types in list
 
   // XDND
@@ -651,22 +651,22 @@ FXApp::FXApp(const FXString& name,const FXString& vendor):registry(name,vendor){
   ddeTargets=0;                           // Data exchange to get list of types
   ddeAtom=0;                              // Data exchange atom
   ddeDelete=0;                            // Data exchange delete request
-  ddeTypeList=nullptr;                       // Data types list available
+  ddeTypeList=nullptr;                    // Data types list available
   ddeNumTypes=0;                          // Number of data types
   ddeAction=DRAG_REJECT;                  // Drag and drop action requested
   ansAction=DRAG_REJECT;                  // Drag and drop action suggested
 
   // CLIPBOARD
   xcbSelection=0;                         // Clipboard selection atom
-  xcbTypeList=nullptr;                       // List of clipboard types
+  xcbTypeList=nullptr;                    // List of clipboard types
   xcbNumTypes=0;                          // How many types clipped
 
   // SELECTION
-  xselTypeList=nullptr;                      // List of primary selection types
+  xselTypeList=nullptr;                   // List of primary selection types
   xselNumTypes=0;                         // How many types in list
 
   // XDND
-  xdndTypeList=nullptr;                      // List of XDND types
+  xdndTypeList=nullptr;                   // List of XDND types
   xdndNumTypes=0;                         // How many types in list
   xdndProxy=0;                            // XDND proxy atom
   xdndAware=0;                            // XDND awareness atom
@@ -702,7 +702,7 @@ FXApp::FXApp(const FXString& name,const FXString& vendor):registry(name,vendor){
   xfxFixesSelection=0;                    // Xfixes event
   xInputOpcode=0;                         // XInput2 Opcode
   xsbDevice=0;                            // Space ball device
-  xim=nullptr;                               // Input method stuff
+  xim=nullptr;                            // Input method stuff
 
   // Miscellaneous stuff
   shmi=true;
@@ -906,6 +906,9 @@ void FXApp::beginWaitCursor(){
         while(!child->getNext()&&child->getParent()){child=child->getParent();}
         child=child->getNext();
         }
+      if(mouseGrabWindow){
+        XChangeActivePointerGrab((Display*)display,(ButtonPressMask|ButtonReleaseMask|PointerMotionMask|EnterWindowMask|LeaveWindowMask),waitCursor->id(),CurrentTime);
+        }
       XFlush((Display*)display);
 #endif
       }
@@ -936,6 +939,9 @@ void FXApp::endWaitCursor(){
         while(!child->getNext()&&child->getParent()){child=child->getParent();}
         child=child->getNext();
         }
+      if(mouseGrabWindow){
+        XChangeActivePointerGrab((Display*)display,(ButtonPressMask|ButtonReleaseMask|PointerMotionMask|EnterWindowMask|LeaveWindowMask),mouseGrabWindow->getDragCursor()->id(),CurrentTime);
+        }
       XFlush((Display*)display);
 #endif
       }
@@ -946,7 +952,7 @@ void FXApp::endWaitCursor(){
 // Change to a new wait cursor
 void FXApp::setWaitCursor(FXCursor *cur){
   if(initialized){
-    if(cur==nullptr){ fxerror("%s::setWaitCursor: NULL wait cursor.\n",getClassName()); }
+    if(!cur){ fxerror("%s::setWaitCursor: NULL wait cursor.\n",getClassName()); }
     if(waitCursor!=cur){
       waitCursor=cur;
       if(waitCount){
@@ -1437,9 +1443,9 @@ FXbool FXApp::openDisplay(const FXchar* dpy){
     wndclass.cbWndExtra=sizeof(FXWindow*);
     wndclass.hInstance=(HINSTANCE)display;
     wndclass.hIcon=LoadIcon((HINSTANCE)display,IDI_APPLICATION);
-    if(wndclass.hIcon==nullptr) wndclass.hIcon=LoadIcon(nullptr,IDI_APPLICATION);
+    if(!wndclass.hIcon) wndclass.hIcon=LoadIcon(nullptr,IDI_APPLICATION);
     wndclass.hIconSm=(HICON)LoadImage((HINSTANCE)display,IDI_APPLICATION,IMAGE_ICON,16,16,LR_DEFAULTCOLOR);
-    if(wndclass.hIconSm==nullptr) wndclass.hIconSm=wndclass.hIcon;
+    if(!wndclass.hIconSm) wndclass.hIconSm=wndclass.hIcon;
     wndclass.hCursor=nullptr;
     wndclass.hbrBackground=nullptr;
     wndclass.lpszMenuName=nullptr;
@@ -2357,7 +2363,7 @@ void FXApp::scrollRepaints(FXID win,FXint dx,FXint dy){
 
 // Get an event
 FXbool FXApp::getNextEvent(FXRawEvent& ev,FXTime blocking){
-  XEvent e;
+  FXRawEvent e;
 
   // Assume non-event
 a:ev.xany.type=0;
@@ -3823,7 +3829,7 @@ FXbool FXApp::getNextEvent(FXRawEvent& msg,FXTime blocking){
   // Poll to see if any waitable objects are signalled
   allinputs=maxhandle+1;
   signaled=MsgWaitForMultipleObjects(allinputs,handles->hnd,false,0,QS_ALLINPUT);
-// signaled=MsgWaitForMultipleObjectsEx(allinputs,handles,0,QS_ALLINPUT, MWMO_ALERTABLE);
+// signaled=MsgWaitForMultipleObjectsEx(allinputs,handles,0,QS_ALLINPUT,MWMO_ALERTABLE|MWMO_INPUTAVAILABLE);
 
   // No objects were signalled, so perform background tasks now
   if(signaled==WAIT_TIMEOUT){
@@ -3884,7 +3890,7 @@ FXbool FXApp::getNextEvent(FXRawEvent& msg,FXTime blocking){
 
       // Now we will block...
       signaled=MsgWaitForMultipleObjects(allinputs,handles->hnd,false,delta,QS_ALLINPUT);
-      //signaled=MsgWaitForMultipleObjectsEx(allinputs,handles,delta,QS_ALLINPUT,MWMO_ALERTABLE);
+      //signaled=MsgWaitForMultipleObjectsEx(allinputs,handles,delta,QS_ALLINPUT,MWMO_ALERTABLE|MWMO_INPUTAVAILABLE);
 
       // Enter critical section
       appMutex.lock();
@@ -3898,7 +3904,7 @@ FXbool FXApp::getNextEvent(FXRawEvent& msg,FXTime blocking){
 
       // Now we will block...
       signaled=MsgWaitForMultipleObjects(allinputs,handles->hnd,false,INFINITE,QS_ALLINPUT);
-      //signaled=MsgWaitForMultipleObjectsEx(allinputs,handles,INFINITE,QS_ALLINPUT,MWMO_ALERTABLE);
+      //signaled=MsgWaitForMultipleObjectsEx(allinputs,handles,INFINITE,QS_ALLINPUT,MWMO_ALERTABLE|MWMO_INPUTAVAILABLE);
 
       // Enter critical section
       appMutex.lock();
@@ -4149,7 +4155,7 @@ void FXApp::stop(FXint value){
   for(inv=invocation; inv; inv=inv->upper){
     inv->done=true;
     inv->code=0;
-    if(inv->upper==nullptr){
+    if(!inv->upper){
       inv->code=value;
       return;
       }
@@ -5424,7 +5430,7 @@ Alt key seems to repeat.
         FXDragType *dragtypes=(FXDragType*)MapViewOfFile(hMap,FILE_MAP_READ,0,0,0);
         if(dragtypes){
           if(allocElms(ddeTypeList,dragtypes[0])){
-            memcpy(ddeTypeList,&dragtypes[1],dragtypes[0]*sizeof(FXDragType));
+            copyElms(ddeTypeList,&dragtypes[1],dragtypes[0]);
             ddeNumTypes=dragtypes[0];
             }
           UnmapViewOfFile(dragtypes);

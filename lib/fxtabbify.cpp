@@ -198,6 +198,46 @@ FXString FXString::entab(const FXString& str,FXint tabcols){
   }
 
 
+// Count number of columns in string
+FXint FXString::columns(const FXchar* str,FXint num,FXint tabcols){
+  FXint result=0,cols=0,p=0;
+  FXuchar c;
+  while(p<num){
+    c=str[p++];
+    if(c=='\n'){                                // End of the line; keep track of the longest
+      result=Math::imax(result,cols);
+      cols=0;
+      continue;
+      }
+    if(c=='\t'){                                // Advance by number of tab columns
+      cols+=tabcols-cols%tabcols;
+      continue;
+      }
+    cols++;
+    if(c<0xC0) continue;
+    p++;
+    if(c<0xE0) continue;
+    p++;
+    if(c<0xF0) continue;
+    p++;
+    }
+  result=Math::imax(result,cols);               // In case of unterminated last line
+  return result;
+  }
+
+
+// Count number of columns in string
+FXint FXString::columns(const FXchar* str,FXint tabcols){
+  return FXString::columns(str,strlen(str),tabcols);
+  }
+
+
+// Count number of columns in string
+FXint FXString::columns(const FXString& str,FXint tabcols){
+  return FXString::columns(str.text(),str.length(),tabcols);
+  }
+
+
 // Retabbify line
 // Assume original starting column of the string is indent, and the output
 // starting column is outdent; this affects accounting of the tab-stops in the

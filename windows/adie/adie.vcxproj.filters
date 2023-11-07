@@ -195,9 +195,6 @@
     <Image Include="..\..\adie\new_gif.gif">
       <Filter>Icons</Filter>
     </Image>
-    <Image Include="..\..\adie\new2_gif.gif">
-      <Filter>Icons</Filter>
-    </Image>
     <Image Include="..\..\adie\nobrowser.gif">
       <Filter>Icons</Filter>
     </Image>
@@ -211,12 +208,6 @@
       <Filter>Icons</Filter>
     </Image>
     <Image Include="..\..\adie\paste_gif.gif">
-      <Filter>Icons</Filter>
-    </Image>
-    <Image Include="..\..\adie\paste2_gif.gif">
-      <Filter>Icons</Filter>
-    </Image>
-    <Image Include="..\..\adie\paste3_gif.gif">
       <Filter>Icons</Filter>
     </Image>
     <Image Include="..\..\adie\pattern_gif.gif">
@@ -241,9 +232,6 @@
       <Filter>Icons</Filter>
     </Image>
     <Image Include="..\..\adie\save_gif.gif">
-      <Filter>Icons</Filter>
-    </Image>
-    <Image Include="..\..\adie\save2_gif.gif">
       <Filter>Icons</Filter>
     </Image>
     <Image Include="..\..\adie\saveall_gif.gif">
@@ -289,6 +277,114 @@
       <Filter>Icons</Filter>
     </Image>
     <Image Include="..\..\adie\command_bmp.bmp">
+      <Filter>Icons</Filter>
+    </Image>
+    <Image Include="..\..\adie\bookclr_gif.gif">
+      <Filter>Icons</Filter>
+    </Image>
+    <Image Include="..\..\adie\bookclr2_gif.gif">
+      <Filter>Icons</Filter>
+    </Image>
+    <Image Include="..\..\adie\bookdel2_gif.gif">
+      <Filter>Icons</Filter>
+    </Image>
+    <Image Include="..\..\adie\bookmrk_gif.gif">
+      <Filter>Icons</Filter>
+    </Image>
+    <Image Include="..\..\adie\bookmrk2_gif.gif">
+      <Filter>Icons</Filter>
+    </Image>
+    <Image Include="..\..\adie\booknxt_gif.gif">
+      <Filter>Icons</Filter>
+    </Image>
+    <Image Include="..\..\adie\booknxt2_gif.gif">
+      <Filter>Icons</Filter>
+    </Image>
+    <Image Include="..\..\adie\bookprv_gif.gif">
+      <Filter>Icons</Filter>
+    </Image>
+    <Image Include="..\..\adie\bookprv2_gif.gif">
+      <Filter>Icons</Filter>
+    </Image>
+    <Image Include="..\..\adie\books_gif.gif">
+      <Filter>Icons</Filter>
+    </Image>
+    <Image Include="..\..\adie\bookset2_gif.gif">
+      <Filter>Icons</Filter>
+    </Image>
+    <Image Include="..\..\adie\export_gif.gif">
+      <Filter>Icons</Filter>
+    </Image>
+    <Image Include="..\..\adie\express_gif.gif">
+      <Filter>Icons</Filter>
+    </Image>
+    <Image Include="..\..\adie\filehidden_gif.gif">
+      <Filter>Icons</Filter>
+    </Image>
+    <Image Include="..\..\adie\fileshown_gif.gif">
+      <Filter>Icons</Filter>
+    </Image>
+    <Image Include="..\..\adie\filter_gif.gif">
+      <Filter>Icons</Filter>
+    </Image>
+    <Image Include="..\..\adie\import_gif.gif">
+      <Filter>Icons</Filter>
+    </Image>
+    <Image Include="..\..\adie\newfile_gif.gif">
+      <Filter>Icons</Filter>
+    </Image>
+    <Image Include="..\..\adie\nowrap_gif.gif">
+      <Filter>Icons</Filter>
+    </Image>
+    <Image Include="..\..\adie\opensel_gif.gif">
+      <Filter>Icons</Filter>
+    </Image>
+    <Image Include="..\..\adie\script_gif.gif">
+      <Filter>Icons</Filter>
+    </Image>
+    <Image Include="..\..\adie\search_case.gif">
+      <Filter>Icons</Filter>
+    </Image>
+    <Image Include="..\..\adie\search_dn.gif">
+      <Filter>Icons</Filter>
+    </Image>
+    <Image Include="..\..\adie\search_rex.gif">
+      <Filter>Icons</Filter>
+    </Image>
+    <Image Include="..\..\adie\search_up.gif">
+      <Filter>Icons</Filter>
+    </Image>
+    <Image Include="..\..\adie\search_word.gif">
+      <Filter>Icons</Filter>
+    </Image>
+    <Image Include="..\..\adie\searchfiles_gif.gif">
+      <Filter>Icons</Filter>
+    </Image>
+    <Image Include="..\..\adie\switch_gif.gif">
+      <Filter>Icons</Filter>
+    </Image>
+    <Image Include="..\..\adie\terminal_gif.gif">
+      <Filter>Icons</Filter>
+    </Image>
+    <Image Include="..\..\adie\wordwrap_gif.gif">
+      <Filter>Icons</Filter>
+    </Image>
+    <Image Include="..\..\adie\docs_gif.gif">
+      <Filter>Icons</Filter>
+    </Image>
+    <Image Include="..\..\adie\point_gif.gif">
+      <Filter>Icons</Filter>
+    </Image>
+    <Image Include="..\..\adie\point2_gif.gif">
+      <Filter>Icons</Filter>
+    </Image>
+    <Image Include="..\..\adie\search_nocase.gif">
+      <Filter>Icons</Filter>
+    </Image>
+    <Image Include="..\..\adie\search_norex.gif">
+      <Filter>Icons</Filter>
+    </Image>
+    <Image Include="..\..\adie\search_noword.gif">
       <Filter>Icons</Filter>
     </Image>
   </ItemGroup>

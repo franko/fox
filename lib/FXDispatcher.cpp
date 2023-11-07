@@ -378,6 +378,7 @@ FXbool FXDispatcher::hasHandle(FXInputHandle hnd) const {
   return false;
   }
 
+// return handle && handle->cb(this,FXSEL(SEL_IO_READ,handle->message),handle->ptr);
 
 // Dispatch when when handle hnd is signaled with mode
 FXbool FXDispatcher::dispatchHandle(FXInputHandle hnd,FXuint mode,FXuint){

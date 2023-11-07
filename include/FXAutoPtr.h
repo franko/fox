@@ -82,7 +82,7 @@ public:
   EType* operator->() const { return ptr; }
 
   /// Array indexing
-  EType& operator[](FXint i) const { return ptr[i]; }
+  EType& operator[](FXival i) const { return ptr[i]; }
 
   /// Release hold on the pointer
   EType* release(){ EType* tmp=ptr; ptr=nullptr; return tmp; }

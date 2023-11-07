@@ -102,7 +102,7 @@ void FXMemoryStream::takeBuffer(FXuchar*& data,FXuval& size){
 
 // Give buffer to stream
 void FXMemoryStream::giveBuffer(FXuchar *data,FXuval size){
-  if(data==nullptr){ fxerror("FXMemoryStream::giveBuffer: NULL buffer argument.\n"); }
+  if(!data){ fxerror("FXMemoryStream::giveBuffer: NULL buffer argument.\n"); }
   if(owns){freeElms(begptr);}
   begptr=data;
   endptr=data+size;

@@ -24,8 +24,10 @@
 #include "fxmath.h"
 #include "FXElement.h"
 #include "FXArray.h"
+#include "FXString.h"
 #include "FXMetaClass.h"
 #include "FXObject.h"
+#include "FXDebugTarget.h"
 
 /*
   Notes:
@@ -55,7 +57,7 @@ namespace FX {
 // Allocate memory
 FXbool fxmalloc(void** ptr,FXuval size){
   *ptr=nullptr;
-  if(size!=0){
+  if(size){
     if((*ptr=malloc(size))==nullptr) return false;
     }
   return true;
@@ -65,7 +67,7 @@ FXbool fxmalloc(void** ptr,FXuval size){
 // Allocate cleaned memory
 FXbool fxcalloc(void** ptr,FXuval size){
   *ptr=nullptr;
-  if(size!=0){
+  if(size){
     if((*ptr=calloc(size,1))==nullptr) return false;
     }
   return true;
@@ -75,7 +77,7 @@ FXbool fxcalloc(void** ptr,FXuval size){
 // Resize memory
 FXbool fxresize(void** ptr,FXuval size){
   void *p=nullptr;
-  if(size!=0){
+  if(size){
     if((p=realloc(*ptr,size))==nullptr) return false;
     }
   else{
@@ -89,7 +91,7 @@ FXbool fxresize(void** ptr,FXuval size){
 // Allocate and initialize memory
 FXbool fxmemdup(void** ptr,const void* src,FXuval size){
   *ptr=nullptr;
-  if(size!=0 && src!=nullptr){
+  if(src && size){
     if((*ptr=malloc(size))==nullptr) return false;
     memcpy(*ptr,src,size);
     }
@@ -100,8 +102,8 @@ FXbool fxmemdup(void** ptr,const void* src,FXuval size){
 // String duplicate
 FXchar *fxstrdup(const FXchar* str){
   FXchar *ptr=nullptr;
-  if(str!=nullptr){
-    FXint size=strlen(str)+1;
+  if(str){
+    FXuval size=strlen(str)+1;
     if((ptr=(FXchar*)malloc(size))!=nullptr){
       memcpy(ptr,str,size);
       }
@@ -122,23 +124,13 @@ void fxfree(void** ptr){
 /*************************  FXMetaClass Implementation  ************************/
 
 // Empty but previously used hash table slot
-#define EMPTY  ((FXMetaClass*)-1L)
+#define EMPTY   ((const FXMetaClass*)-1L)
+
 
 // Hash table of metaclasses initialized at load-time
 const FXMetaClass** FXMetaClass::metaClassTable=nullptr;
 FXuint              FXMetaClass::metaClassSlots=0;
 FXuint              FXMetaClass::metaClassCount=0;
-
-
-// Compute FNV1a hash value of string
-static inline FXuint hashstring(const FXchar* str){
-  FXuint result=0x811C9DC5;
-  FXuchar c;
-  while((c=*str++)!='\0'){
-    result=(result^c)*0x01000193;
-    }
-  return result;
-  }
 
 
 // Resize global hash table
@@ -149,9 +141,9 @@ void FXMetaClass::resize(FXuint slots){
   callocElms(table,slots);
   for(s=0; s<metaClassSlots; ++s){
     if((ptr=metaClassTable[s])!=nullptr && ptr!=EMPTY){
-      p=hashstring(ptr->className);
+      p=FXString::hash(ptr->className);
       x=(p<<1)|1;
-      while(table[p=(p+x)&(slots-1)]!=nullptr){
+      while(table[p=(p+x)&(slots-1)]){
         }
       FXASSERT(p<slots);
       table[p]=ptr;
@@ -166,22 +158,16 @@ void FXMetaClass::resize(FXuint slots){
 // Constructor adds metaclass to the table
 FXMetaClass::FXMetaClass(const FXchar* name,FXObject *(fac)(),const FXMetaClass* base,const void* ass,FXuint nass,FXuint assz):className(name),manufacture(fac),baseClass(base),assoc(ass),nassocs(nass),assocsz(assz){
   FXTRACE((TOPIC_CONSTRUCT,"FXMetaClass::FXMetaClass(%s)\n",className));
-  FXuint p=hashstring(className);
+  FXuint p=FXString::hash(className);
   FXuint x=(p<<1)|1;
   if((++metaClassCount<<1) > metaClassSlots){
     resize(metaClassSlots?metaClassSlots<<1:1);
     }
   FXASSERT(metaClassSlots>=metaClassCount);
-  while(metaClassTable[p=(p+x)&(metaClassSlots-1)]!=nullptr){
+  while(metaClassTable[p=(p+x)&(metaClassSlots-1)]){
     }
   FXASSERT(p<metaClassSlots);
   metaClassTable[p]=this;
-  }
-
-
-// Create an object instance
-FXObject* FXMetaClass::makeInstance() const {
-  return (*manufacture)();
   }
 
 
@@ -210,16 +196,44 @@ FXbool FXMetaClass::isSubClassOf(const FXMetaClass* metaclass) const {
 
 // Find the FXMetaClass belonging to class name
 const FXMetaClass* FXMetaClass::getMetaClassFromName(const FXchar* name){
-  if(metaClassSlots && name){
-    FXuint p=hashstring(name);
+  if(name && name[0] && metaClassSlots){
+    FXuint p=FXString::hash(name);
     FXuint x=(p<<1)|1;
-    while(metaClassTable[p=(p+x)&(metaClassSlots-1)]!=nullptr){
-      if(metaClassTable[p]!=EMPTY && strcmp(metaClassTable[p]->className,name)==0){
+    while(metaClassTable[p=(p+x)&(metaClassSlots-1)]){
+      if(metaClassTable[p]!=EMPTY && FXString::compare(metaClassTable[p]->className,name)==0){
         return metaClassTable[p];
         }
       }
     }
   return nullptr;
+  }
+
+
+// Find the FXMetaClass belonging to class name
+const FXMetaClass* FXMetaClass::getMetaClassFromName(const FXString& name){
+  return getMetaClassFromName(name.text());
+  }
+
+
+// Make instance of class name, a subclass of a given base class
+FXObject* FXMetaClass::makeInstanceOfName(const FXchar* name){
+  const FXMetaClass *metaclass=getMetaClassFromName(name);
+  if(metaclass){
+    return metaclass->makeInstance();
+    }
+  return nullptr;
+  }
+
+
+// Make instance of class name, a subclass of a given base class
+FXObject* FXMetaClass::makeInstanceOfName(const FXString& name){
+  return makeInstanceOfName(name.text());
+  }
+
+
+// Create an object instance
+FXObject* FXMetaClass::makeInstance() const {
+  return (*manufacture)();
   }
 
 
@@ -232,16 +246,44 @@ FXObject* FXMetaClass::nullObject(){
 // Destructor removes metaclass from the table
 FXMetaClass::~FXMetaClass(){
   FXTRACE((TOPIC_CONSTRUCT,"FXMetaClass::~FXMetaClass(%s)\n",className));
-  FXuint p=hashstring(className);
+  FXuint p=FXString::hash(className);
   FXuint x=(p<<1)|1;
   while(metaClassTable[p=(p+x)&(metaClassSlots-1)]!=this){
-    if(metaClassTable[p]==nullptr) return;
+    if(!metaClassTable[p]) return;
     }
   metaClassTable[p]=EMPTY;
   if((--metaClassCount<<1) <= metaClassSlots){
     resize(metaClassSlots>>1);
     }
   FXASSERT(metaClassSlots>=metaClassCount);
+  }
+
+
+void FXMetaClass::dumpMessageMap(const FXMetaClass* m){
+  fxmessage("FXMetaClass:%s:%s\n",m->className,m->baseClass?m->baseClass->className:"");
+  FXuint i=0;
+  do{
+    const FXObject::FXMapEntry* map=(const FXObject::FXMapEntry*)m->assoc;
+    FXuint inc=m->assocsz;
+    FXuint n=m->nassocs;
+    while(n--){
+      fxmessage("%4u:   %30s:%-5u...%30s:%-5u\n",i,FXDebugTarget::messageTypeName[FXSELTYPE(map->keylo)],FXSELID(map->keylo),FXDebugTarget::messageTypeName[FXSELTYPE(map->keyhi)],FXSELID(map->keyhi));
+      map=(const FXObject::FXMapEntry*) (((const FXchar*)map)+inc);
+      i++;
+      }
+    m=m->baseClass;
+    fxmessage("\n");
+    }
+  while(m);
+  fxmessage("\n");
+  }
+
+
+void FXMetaClass::dumpMetaClasses(){
+  for(FXint m=0; m<metaClassCount; ++m){
+    if(metaClassTable[m]==nullptr || metaClassTable[m]==EMPTY) continue;
+    dumpMessageMap(metaClassTable[m]);
+    }
   }
 
 }

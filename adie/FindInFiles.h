@@ -118,8 +118,9 @@ public:
     SearchExact    = 0,         /// Search exact matches
     SearchCaseFold = 1,         /// Search with case folding
     SearchRegex    = 2,         /// Search regular expression
-    SearchRecurse  = 4,         /// Search files recursively
-    SeachHidden    = 8          /// Search hidden files also
+    SearchWords    = 4,         /// Search whole words
+    SearchRecurse  = 8,         /// Search files recursively
+    SeachHidden    = 16         /// Search hidden files also
     };
 public:
   enum{
@@ -132,6 +133,7 @@ public:
     ID_HIST_DN,
     ID_ICASE,
     ID_REGEX,
+    ID_WORDS,
     ID_RECURSIVE,
     ID_HIDDEN,
     ID_FIRST_HIT,

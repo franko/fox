@@ -39,31 +39,34 @@ class FXCallback;
 template<typename RT>
 class FXAPI FXCallback<RT ()> {
 public:
-  typedef RT (*METHOD)(const void*);
+  typedef RT (*Method)(const void*);
 private:
-  METHOD      method;
+  Method      method;
   const void* object;
 private:
 
+  // Initialize with method and object
+  FXCallback(Method m,const void* o):method(m),object(o){ }
+
   // Stub call to method
   template <typename T,RT (T::*mfn)()>
-  static RT method_call(const void* obj){ return (static_cast<T*>(const_cast<void*>(obj))->*mfn)(); }
+  static RT MethodCall(const void* obj){ return (static_cast<T*>(const_cast<void*>(obj))->*mfn)(); }
 
   // Stub call to const method
   template <typename T,RT (T::*mfn)() const>
-  static RT const_method_call(const void* obj){ return (static_cast<const T*>(obj)->*mfn)(); }
+  static RT ConstMethodCall(const void* obj){ return (static_cast<const T*>(obj)->*mfn)(); }
 
   // Stub call to function
   template<RT (*fn)()>
-  static RT function_call(const void*){ return (fn)(); }
+  static RT FunctionCall(const void*){ return (fn)(); }
 
   // Fallback function
-  static RT default_call(const void*){ return RT(); }
+  static RT DefaultCall(const void*){ return RT(); }
 
 public:
 
   // Initialize to default
-  FXCallback():method(&default_call),object(0){ }
+  FXCallback():method(&DefaultCall),object(nullptr){ }
 
   // Copy constructor
   FXCallback(const FXCallback& org):method(org.method),object(org.object){ }
@@ -80,39 +83,36 @@ public:
 
   // Connect to member function of object
   template<typename TYPE,RT (TYPE::* mfn)()>
-  inline void connect(TYPE* obj){ method=&method_call<TYPE,mfn>; object=obj; }
+  inline void connect(TYPE* obj){ method=&MethodCall<TYPE,mfn>; object=obj; }
 
   // Connect to member function of object
   template<typename TYPE,RT (TYPE::* mfn)() const>
-  inline void connect(const TYPE* obj){ method=&const_method_call<TYPE,mfn>; object=obj; }
+  inline void connect(const TYPE* obj){ method=&ConstMethodCall<TYPE,mfn>; object=obj; }
 
   // Connect to plain function
   template<RT (*fn)()>
-  inline void connect(){ method=&function_call<fn>; object=nullptr; }
+  inline void connect(){ method=&FunctionCall<fn>; object=nullptr; }
 
-  // Return trye if connected
-  bool connected() const { return (method!=&default_call); }
+  // Return true if connected
+  bool connected() const { return (method!=&DefaultCall); }
 
   // Disconnect resets to default
-  void disconnect(){ method=&default_call; object=nullptr; }
-
-  // Disconnect conditionally
-  void disconnect(const void* obj){ if(obj==object){ disconnect(); } }
+  void disconnect(){ method=&DefaultCall; object=nullptr; }
 
   // Create default callback
   static inline FXCallback create(){ return FXCallback(); }
 
   // Create callback to member function of object
   template<typename TYPE,RT (TYPE::* mfn)()>
-  static inline FXCallback create(TYPE* obj){ return FXCallback(&method_call<TYPE,mfn>,obj); }
+  static inline FXCallback create(TYPE* obj){ return FXCallback(&MethodCall<TYPE,mfn>,obj); }
 
   // Create callback to member function of constant object
   template<typename TYPE,RT (TYPE::* mfn)() const>
-  static inline FXCallback create(const TYPE* obj){ return FXCallback(&const_method_call<TYPE,mfn>,obj); }
+  static inline FXCallback create(const TYPE* obj){ return FXCallback(&ConstMethodCall<TYPE,mfn>,obj); }
 
   // Create callback to function
   template<RT (*fn)()>
-  static inline FXCallback create(){ return FXCallback(&function_call<fn>,nullptr); }
+  static inline FXCallback create(){ return FXCallback(&FunctionCall<fn>,nullptr); }
   };
 
 /********************************************************************************/
@@ -125,31 +125,34 @@ public:
 template<typename RT,typename PT1>
 class FXAPI FXCallback<RT (PT1)> {
 public:
-  typedef RT (*METHOD)(const void*,PT1);
+  typedef RT (*Method)(const void*,PT1);
 private:
-  METHOD      method;
+  Method      method;
   const void* object;
 private:
 
+  // Initialize with method and object
+  FXCallback(Method m,const void* o):method(m),object(o){ }
+
   // Stub call to method
   template <typename T,RT (T::*mfn)(PT1)>
-  static RT method_call(const void* obj,PT1 p1){ return (static_cast<T*>(const_cast<void*>(obj))->*mfn)(p1); }
+  static RT MethodCall(const void* obj,PT1 p1){ return (static_cast<T*>(const_cast<void*>(obj))->*mfn)(p1); }
 
   // Stub call to const method
   template <typename T,RT (T::*mfn)(PT1) const>
-  static RT const_method_call(const void* obj,PT1 p1){ return (static_cast<const T*>(obj)->*mfn)(p1); }
+  static RT ConstMethodCall(const void* obj,PT1 p1){ return (static_cast<const T*>(obj)->*mfn)(p1); }
 
   // Stub call to function
   template<RT (*fn)(PT1)>
-  static RT function_call(const void*,PT1 p1){ return (fn)(p1); }
+  static RT FunctionCall(const void*,PT1 p1){ return (fn)(p1); }
 
   // Fallback function
-  static RT default_call(const void*,PT1){ return RT(); }
+  static RT DefaultCall(const void*,PT1){ return RT(); }
 
 public:
 
   // Initialize to default
-  FXCallback():method(&default_call),object(0){ }
+  FXCallback():method(&DefaultCall),object(nullptr){ }
 
   // Copy constructor
   FXCallback(const FXCallback& org):method(org.method),object(org.object){ }
@@ -166,39 +169,36 @@ public:
 
   // Connect to member function of object
   template<typename TYPE,RT (TYPE::* mfn)(PT1)>
-  inline void connect(TYPE* obj){ method=&method_call<TYPE,mfn>; object=obj; }
+  inline void connect(TYPE* obj){ method=&MethodCall<TYPE,mfn>; object=obj; }
 
   // Connect to member function of object
   template<typename TYPE,RT (TYPE::* mfn)(PT1) const>
-  inline void connect(const TYPE* obj){ method=&const_method_call<TYPE,mfn>; object=obj; }
+  inline void connect(const TYPE* obj){ method=&ConstMethodCall<TYPE,mfn>; object=obj; }
 
   // Connect to plain function
   template<RT (*fn)(PT1)>
-  inline void connect(){ method=&function_call<fn>; object=nullptr; }
+  inline void connect(){ method=&FunctionCall<fn>; object=nullptr; }
 
-  // Return trye if connected
-  bool connected() const { return (method!=&default_call); }
+  // Return true if connected
+  bool connected() const { return (method!=&DefaultCall); }
 
   // Disconnect resets to default
-  void disconnect(){ method=&default_call; object=nullptr; }
-
-  // Disconnect conditionally
-  void disconnect(const void* obj){ if(obj==object){ disconnect(); } }
+  void disconnect(){ method=&DefaultCall; object=nullptr; }
 
   // Create default callback
   static inline FXCallback create(){ return FXCallback(); }
 
   // Create callback to member function of object
   template<typename TYPE,RT (TYPE::* mfn)(PT1)>
-  static inline FXCallback create(TYPE* obj){ return FXCallback(&method_call<TYPE,mfn>,obj); }
+  static inline FXCallback create(TYPE* obj){ return FXCallback(&MethodCall<TYPE,mfn>,obj); }
 
   // Create callback to member function of constant object
   template<typename TYPE,RT (TYPE::* mfn)(PT1) const>
-  static inline FXCallback create(const TYPE* obj){ return FXCallback(&const_method_call<TYPE,mfn>,obj); }
+  static inline FXCallback create(const TYPE* obj){ return FXCallback(&ConstMethodCall<TYPE,mfn>,obj); }
 
   // Create callback to function
   template<RT (*fn)(PT1)>
-  static inline FXCallback create(){ return FXCallback(&function_call<fn>,nullptr); }
+  static inline FXCallback create(){ return FXCallback(&FunctionCall<fn>,nullptr); }
   };
 
 /********************************************************************************/
@@ -211,31 +211,34 @@ public:
 template<typename RT,typename PT1,typename PT2>
 class FXAPI FXCallback<RT (PT1,PT2)> {
 public:
-  typedef RT (*METHOD)(const void*,PT1,PT2);
+  typedef RT (*Method)(const void*,PT1,PT2);
 private:
-  METHOD      method;
+  Method      method;
   const void* object;
 private:
 
+  // Initialize with method and object
+  FXCallback(Method m,const void* o):method(m),object(o){ }
+
   // Stub call to method
   template <typename T,RT (T::*mfn)(PT1,PT2)>
-  static RT method_call(const void* obj,PT1 p1,PT2 p2){ return (static_cast<T*>(const_cast<void*>(obj))->*mfn)(p1,p2); }
+  static RT MethodCall(const void* obj,PT1 p1,PT2 p2){ return (static_cast<T*>(const_cast<void*>(obj))->*mfn)(p1,p2); }
 
   // Stub call to const method
   template <typename T,RT (T::*mfn)(PT1,PT2) const>
-  static RT const_method_call(const void* obj,PT1 p1,PT2 p2){ return (static_cast<const T*>(obj)->*mfn)(p1,p2); }
+  static RT ConstMethodCall(const void* obj,PT1 p1,PT2 p2){ return (static_cast<const T*>(obj)->*mfn)(p1,p2); }
 
   // Stub call to function
   template<RT (*fn)(PT1,PT2)>
-  static RT function_call(const void*,PT1 p1,PT2 p2){ return (fn)(p1,p2); }
+  static RT FunctionCall(const void*,PT1 p1,PT2 p2){ return (fn)(p1,p2); }
 
   // Fallback function
-  static RT default_call(const void*,PT1,PT2){ return RT(); }
+  static RT DefaultCall(const void*,PT1,PT2){ return RT(); }
 
 public:
 
   // Initialize to default
-  FXCallback():method(&default_call),object(0){ }
+  FXCallback():method(&DefaultCall),object(nullptr){ }
 
   // Copy constructor
   FXCallback(const FXCallback& org):method(org.method),object(org.object){ }
@@ -252,39 +255,36 @@ public:
 
   // Connect to member function of object
   template<typename TYPE,RT (TYPE::* mfn)(PT1,PT2)>
-  inline void connect(TYPE* obj){ method=&method_call<TYPE,mfn>; object=obj; }
+  inline void connect(TYPE* obj){ method=&MethodCall<TYPE,mfn>; object=obj; }
 
   // Connect to member function of object
   template<typename TYPE,RT (TYPE::* mfn)(PT1,PT2) const>
-  inline void connect(const TYPE* obj){ method=&const_method_call<TYPE,mfn>; object=obj; }
+  inline void connect(const TYPE* obj){ method=&ConstMethodCall<TYPE,mfn>; object=obj; }
 
   // Connect to plain function
   template<RT (*fn)(PT1,PT2)>
-  inline void connect(){ method=&function_call<fn>; object=nullptr; }
+  inline void connect(){ method=&FunctionCall<fn>; object=nullptr; }
 
-  // Return trye if connected
-  bool connected() const { return (method!=&default_call); }
+  // Return true if connected
+  bool connected() const { return (method!=&DefaultCall); }
 
   // Disconnect resets to default
-  void disconnect(){ method=&default_call; object=nullptr; }
-
-  // Disconnect conditionally
-  void disconnect(const void* obj){ if(obj==object){ disconnect(); } }
+  void disconnect(){ method=&DefaultCall; object=nullptr; }
 
   // Create default callback
   static inline FXCallback create(){ return FXCallback(); }
 
   // Create callback to member function of object
   template<typename TYPE,RT (TYPE::* mfn)(PT1,PT2)>
-  static inline FXCallback create(TYPE* obj){ return FXCallback(&method_call<TYPE,mfn>,obj); }
+  static inline FXCallback create(TYPE* obj){ return FXCallback(&MethodCall<TYPE,mfn>,obj); }
 
   // Create callback to member function of constant object
   template<typename TYPE,RT (TYPE::* mfn)(PT1,PT2) const>
-  static inline FXCallback create(const TYPE* obj){ return FXCallback(&const_method_call<TYPE,mfn>,obj); }
+  static inline FXCallback create(const TYPE* obj){ return FXCallback(&ConstMethodCall<TYPE,mfn>,obj); }
 
   // Create callback to function
   template<RT (*fn)(PT1,PT2)>
-  static inline FXCallback create(){ return FXCallback(&function_call<fn>,nullptr); }
+  static inline FXCallback create(){ return FXCallback(&FunctionCall<fn>,nullptr); }
   };
 
 /********************************************************************************/
@@ -297,31 +297,34 @@ public:
 template<typename RT,typename PT1,typename PT2,typename PT3>
 class FXAPI FXCallback<RT (PT1,PT2,PT3)> {
 public:
-  typedef RT (*METHOD)(const void*,PT1,PT2,PT3);
+  typedef RT (*Method)(const void*,PT1,PT2,PT3);
 private:
-  METHOD      method;
+  Method      method;
   const void* object;
 private:
 
+  // Initialize with method and object
+  FXCallback(Method m,const void* o):method(m),object(o){ }
+
   // Stub call to method
   template <typename T,RT (T::*mfn)(PT1,PT2,PT3)>
-  static RT method_call(const void* obj,PT1 p1,PT2 p2,PT3 p3){ return (static_cast<T*>(const_cast<void*>(obj))->*mfn)(p1,p2,p3); }
+  static RT MethodCall(const void* obj,PT1 p1,PT2 p2,PT3 p3){ return (static_cast<T*>(const_cast<void*>(obj))->*mfn)(p1,p2,p3); }
 
   // Stub call to const method
   template <typename T,RT (T::*mfn)(PT1,PT2,PT3) const>
-  static RT const_method_call(const void* obj,PT1 p1,PT2 p2,PT3 p3){ return (static_cast<const T*>(obj)->*mfn)(p1,p2,p3); }
+  static RT ConstMethodCall(const void* obj,PT1 p1,PT2 p2,PT3 p3){ return (static_cast<const T*>(obj)->*mfn)(p1,p2,p3); }
 
   // Stub call to function
   template<RT (*fn)(PT1,PT2,PT3)>
-  static RT function_call(const void*,PT1 p1,PT2 p2,PT3 p3){ return (fn)(p1,p2,p3); }
+  static RT FunctionCall(const void*,PT1 p1,PT2 p2,PT3 p3){ return (fn)(p1,p2,p3); }
 
   // Fallback function
-  static RT default_call(const void*,PT1,PT2,PT3){ return RT(); }
+  static RT DefaultCall(const void*,PT1,PT2,PT3){ return RT(); }
 
 public:
 
   // Initialize to default
-  FXCallback():method(&default_call),object(0){ }
+  FXCallback():method(&DefaultCall),object(nullptr){ }
 
   // Copy constructor
   FXCallback(const FXCallback& org):method(org.method),object(org.object){ }
@@ -338,39 +341,36 @@ public:
 
   // Connect to member function of object
   template<typename TYPE,RT (TYPE::* mfn)(PT1,PT2,PT3)>
-  inline void connect(TYPE* obj){ method=&method_call<TYPE,mfn>; object=obj; }
+  inline void connect(TYPE* obj){ method=&MethodCall<TYPE,mfn>; object=obj; }
 
   // Connect to member function of object
   template<typename TYPE,RT (TYPE::* mfn)(PT1,PT2,PT3) const>
-  inline void connect(const TYPE* obj){ method=&const_method_call<TYPE,mfn>; object=obj; }
+  inline void connect(const TYPE* obj){ method=&ConstMethodCall<TYPE,mfn>; object=obj; }
 
   // Connect to plain function
   template<RT (*fn)(PT1,PT2,PT3)>
-  inline void connect(){ method=&function_call<fn>; object=nullptr; }
+  inline void connect(){ method=&FunctionCall<fn>; object=nullptr; }
 
-  // Return trye if connected
-  bool connected() const { return (method!=&default_call); }
+  // Return true if connected
+  bool connected() const { return (method!=&DefaultCall); }
 
   // Disconnect resets to default
-  void disconnect(){ method=&default_call; object=nullptr; }
-
-  // Disconnect conditionally
-  void disconnect(const void* obj){ if(obj==object){ disconnect(); } }
+  void disconnect(){ method=&DefaultCall; object=nullptr; }
 
   // Create default callback
   static inline FXCallback create(){ return FXCallback(); }
 
   // Create callback to member function of object
   template<typename TYPE,RT (TYPE::* mfn)(PT1,PT2,PT3)>
-  static inline FXCallback create(TYPE* obj){ return FXCallback(&method_call<TYPE,mfn>,obj); }
+  static inline FXCallback create(TYPE* obj){ return FXCallback(&MethodCall<TYPE,mfn>,obj); }
 
   // Create callback to member function of constant object
   template<typename TYPE,RT (TYPE::* mfn)(PT1,PT2,PT3) const>
-  static inline FXCallback create(const TYPE* obj){ return FXCallback(&const_method_call<TYPE,mfn>,obj); }
+  static inline FXCallback create(const TYPE* obj){ return FXCallback(&ConstMethodCall<TYPE,mfn>,obj); }
 
   // Create callback to function
   template<RT (*fn)(PT1,PT2,PT3)>
-  static inline FXCallback create(){ return FXCallback(&function_call<fn>,nullptr); }
+  static inline FXCallback create(){ return FXCallback(&FunctionCall<fn>,nullptr); }
   };
 
 /********************************************************************************/
@@ -383,31 +383,34 @@ public:
 template<typename RT,typename PT1,typename PT2,typename PT3,typename PT4>
 class FXAPI FXCallback<RT (PT1,PT2,PT3,PT4)> {
 public:
-  typedef RT (*METHOD)(const void*,PT1,PT2,PT3,PT4);
+  typedef RT (*Method)(const void*,PT1,PT2,PT3,PT4);
 private:
-  METHOD      method;
+  Method      method;
   const void* object;
 private:
 
+  // Initialize with method and object
+  FXCallback(Method m,const void* o):method(m),object(o){ }
+
   // Stub call to method
   template <typename T,RT (T::*mfn)(PT1,PT2,PT3,PT4)>
-  static RT method_call(const void* obj,PT1 p1,PT2 p2,PT3 p3,PT4 p4){ return (static_cast<T*>(const_cast<void*>(obj))->*mfn)(p1,p2,p3,p4); }
+  static RT MethodCall(const void* obj,PT1 p1,PT2 p2,PT3 p3,PT4 p4){ return (static_cast<T*>(const_cast<void*>(obj))->*mfn)(p1,p2,p3,p4); }
 
   // Stub call to const method
   template <typename T,RT (T::*mfn)(PT1,PT2,PT3,PT4) const>
-  static RT const_method_call(const void* obj,PT1 p1,PT2 p2,PT3 p3,PT4 p4){ return (static_cast<const T*>(obj)->*mfn)(p1,p2,p3,p4); }
+  static RT ConstMethodCall(const void* obj,PT1 p1,PT2 p2,PT3 p3,PT4 p4){ return (static_cast<const T*>(obj)->*mfn)(p1,p2,p3,p4); }
 
   // Stub call to function
   template<RT (*fn)(PT1,PT2,PT3,PT4)>
-  static RT function_call(const void*,PT1 p1,PT2 p2,PT3 p3,PT4 p4){ return (fn)(p1,p2,p3,p4); }
+  static RT FunctionCall(const void*,PT1 p1,PT2 p2,PT3 p3,PT4 p4){ return (fn)(p1,p2,p3,p4); }
 
   // Fallback function
-  static RT default_call(const void*,PT1,PT2,PT3,PT4){ return RT(); }
+  static RT DefaultCall(const void*,PT1,PT2,PT3,PT4){ return RT(); }
 
 public:
 
   // Initialize to default
-  FXCallback():method(&default_call),object(0){ }
+  FXCallback():method(&DefaultCall),object(nullptr){ }
 
   // Copy constructor
   FXCallback(const FXCallback& org):method(org.method),object(org.object){ }
@@ -424,39 +427,36 @@ public:
 
   // Connect to member function of object
   template<typename TYPE,RT (TYPE::* mfn)(PT1,PT2,PT3,PT4)>
-  inline void connect(TYPE* obj){ method=&method_call<TYPE,mfn>; object=obj; }
+  inline void connect(TYPE* obj){ method=&MethodCall<TYPE,mfn>; object=obj; }
 
   // Connect to member function of object
   template<typename TYPE,RT (TYPE::* mfn)(PT1,PT2,PT3,PT4) const>
-  inline void connect(const TYPE* obj){ method=&const_method_call<TYPE,mfn>; object=obj; }
+  inline void connect(const TYPE* obj){ method=&ConstMethodCall<TYPE,mfn>; object=obj; }
 
   // Connect to plain function
   template<RT (*fn)(PT1,PT2,PT3,PT4)>
-  inline void connect(){ method=&function_call<fn>; object=nullptr; }
+  inline void connect(){ method=&FunctionCall<fn>; object=nullptr; }
 
-  // Return trye if connected
-  bool connected() const { return (method!=&default_call); }
+  // Return true if connected
+  bool connected() const { return (method!=&DefaultCall); }
 
   // Disconnect resets to default
-  void disconnect(){ method=&default_call; object=nullptr; }
-
-  // Disconnect conditionally
-  void disconnect(const void* obj){ if(obj==object){ disconnect(); } }
+  void disconnect(){ method=&DefaultCall; object=nullptr; }
 
   // Create default callback
   static inline FXCallback create(){ return FXCallback(); }
 
   // Create callback to member function of object
   template<typename TYPE,RT (TYPE::* mfn)(PT1,PT2,PT3,PT4)>
-  static inline FXCallback create(TYPE* obj){ return FXCallback(&method_call<TYPE,mfn>,obj); }
+  static inline FXCallback create(TYPE* obj){ return FXCallback(&MethodCall<TYPE,mfn>,obj); }
 
   // Create callback to member function of constant object
   template<typename TYPE,RT (TYPE::* mfn)(PT1,PT2,PT3,PT4) const>
-  static inline FXCallback create(const TYPE* obj){ return FXCallback(&const_method_call<TYPE,mfn>,obj); }
+  static inline FXCallback create(const TYPE* obj){ return FXCallback(&ConstMethodCall<TYPE,mfn>,obj); }
 
   // Create callback to function
   template<RT (*fn)(PT1,PT2,PT3,PT4)>
-  static inline FXCallback create(){ return FXCallback(&function_call<fn>,nullptr); }
+  static inline FXCallback create(){ return FXCallback(&FunctionCall<fn>,nullptr); }
   };
 
 }

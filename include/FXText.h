@@ -61,11 +61,11 @@ struct FXHiliteStyle {
 * syntax highlighting.
 */
 struct FXTextChange {
-  FXint   pos;          /// Position in buffer
-  FXint   ndel;         /// Number characters deleted at position
-  FXint   nins;         /// Number characters inserted at position
-  FXchar *ins;          /// Text inserted at position
-  FXchar *del;          /// Text deleted at position
+  FXint         pos;          /// Position in buffer
+  FXint         ndel;         /// Number characters deleted at position
+  FXint         nins;         /// Number characters inserted at position
+  const FXchar *del;          /// Text deleted at position
+  const FXchar *ins;          /// Text inserted at position
   };
 
 
@@ -158,11 +158,12 @@ protected:
   FXchar         *buffer;               // Text buffer being edited
   FXchar         *sbuffer;              // Text style buffer
   FXint          *visrows;              // Starts of rows in buffer
-  FXint           length;               // Length of the actual text in the buffer
   FXint           nvisrows;             // Number of visible rows
+  FXint           gapbeg;               // Buffer gap begin
+  FXint           gaplen;               // Buffer gap length
+  FXint           gapend;               // Buffer gap end
+  FXint           length;               // Length of the actual text in the buffer
   FXint           nrows;                // Total number of rows
-  FXint           gapstart;             // Start of the insertion point (the gap)
-  FXint           gapend;               // End of the insertion point+1
   FXint           toppos;               // Start position of first visible row
   FXint           toprow;               // Row number of first visible row
   FXint           keeppos;              // Position to keep on top visible row
@@ -216,6 +217,8 @@ protected:
   FXText();
   void movegap(FXint pos);
   void sizegap(FXint sz);
+  FXwchar nxtChar(FXint& pos) const;
+  FXwchar prvChar(FXint& pos) const;
   FXint charWidth(FXwchar ch,FXint indent) const;
   FXint xoffset(FXint start,FXint pos) const;
   FXint wrap(FXint start) const;
@@ -623,14 +626,14 @@ public:
   /// Get byte at position in text buffer
   FXint getByte(FXint pos) const;
 
-  /// Get wide character at position pos
-  FXwchar getChar(FXint pos) const;
+  /// Get style at position pos
+  FXint getStyle(FXint pos) const;
 
   /// Get length of wide character at position pos
   FXint getCharLen(FXint pos) const;
 
-  /// Get style at position pos
-  FXint getStyle(FXint pos) const;
+  /// Get wide character at position pos
+  FXwchar getChar(FXint pos) const;
 
   /// Retreat to the previous valid utf8 character start
   FXint dec(FXint pos) const;
@@ -817,6 +820,9 @@ public:
 
   /// Extend primary selection from anchor to given row, column
   virtual FXbool extendBlockSelection(FXint row,FXint col,FXbool notify=false);
+
+  /// Select range or block (scol<=ecol) of text
+  virtual FXbool setSelection(FXint spos,FXint epos,FXint scol,FXint ecol,FXbool notify=false);
 
   /// Kill or deselect primary selection
   virtual FXbool killSelection(FXbool notify=false);

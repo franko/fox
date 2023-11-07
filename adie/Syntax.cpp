@@ -394,7 +394,7 @@ FXint Syntax::getNamedRule(const FXString& name) const {
 
 // Match filename against wildcards
 FXbool Syntax::matchFilename(const FXString& name) const {
-  return FXPath::match(name,extensions);
+  return FXPath::match(name,patterns);
   }
 
 

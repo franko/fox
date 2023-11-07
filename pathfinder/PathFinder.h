@@ -27,8 +27,8 @@ class Preferences;
 
 
 // Version
-#define VERSION_MAJOR 2
-#define VERSION_MINOR 1
+#define VERSION_MAJOR 3
+#define VERSION_MINOR 0
 #define VERSION_PATCH 0
 
 
@@ -83,10 +83,10 @@ protected:
   FXIcon             *unmapicon;
   FXIcon             *propicon;
   FXIcon             *deleteicon;
-  FXIcon             *setbookicon;
+  FXIcon             *bookmarkicon;
   FXIcon             *addbookicon;
   FXIcon             *delbookicon;
-  FXIcon             *clrbookicon;
+  FXIcon             *clrbooksicon;
   FXIcon             *sortingicon;
   FXIcon             *execicon;
   FXIcon             *newdiricon;
@@ -101,6 +101,7 @@ protected:
   FXIcon             *warningicon;
   FXIcon             *shownicon;
   FXIcon             *hiddenicon;
+  FXIcon             *searchicon;
   FXString            editor;		        // Editor command
   FXString            execpaths;                // Search in these paths
   FXString            terminal;		        // Terminal command

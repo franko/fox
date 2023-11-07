@@ -43,7 +43,6 @@
 #define INITIALMESSAGESIZE 512
 #endif
 
-
 using namespace FX;
 
 /*******************************************************************************/
@@ -334,7 +333,7 @@ FXbool setTraceTopics(const FXchar* topics,FXbool flag){
 
 // Trace printout routine
 void fxtrace(FXuint level,const FXchar* format,...){
-  if(__unlikely(fxTraceVariable==nullptr)){
+  if(__unlikely(!fxTraceVariable)){
     const FXchar* str;
     fxTraceVariable="";
     if((str=getenv("FOX_TRACE_TOPICS"))!=nullptr){

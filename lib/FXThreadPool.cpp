@@ -188,7 +188,7 @@ FXuint FXThreadPool::start(FXuint count){
       }
 
     // Set context reference if not set yet
-    if(instance()==nullptr) instance(this);
+    if(!instance()) instance(this);
 
     // Start running
     running=1;

@@ -39,21 +39,34 @@
 
   - These may be useful additions:
 
-      HANDLE CreateWaitableTimerEx(LPSECURITY_ATTRIBUTES lpTimerAttributes,LPCWSTR lpTimerName,
+      HANDLE CreateWaitableTimerEx(LPSECURITY_ATTRIBUTES lpTimerAttributes,
+                                   LPCWSTR lpTimerName,
                                    DWORD dwFlags,DWORD dwDesiredAccess);
-      BOOL SetWaitableTimer(HANDLE hTimer,const LARGE_INTEGER *lpDueTime,
-                            LONG lPeriod,PTIMERAPCROUTINE pfnCompletionRoutine,LPVOID lpArgToCompletionRoutine,BOOL fResume);
-      BOOL SetWaitableTimerEx(HANDLE hTimer,const LARGE_INTEGER *lpDueTime,
-                              LONG lPeriod,PTIMERAPCROUTINE pfnCompletionRoutine,LPVOID lpArgToCompletionRoutine,
-                              PREASON_CONTEXT WakeContext,ULONG TolerableDelay);
+      BOOL SetWaitableTimer(HANDLE hTimer,
+                            const LARGE_INTEGER *lpDueTime,
+                            LONG lPeriod,
+                            PTIMERAPCROUTINE pfnCompletionRoutine,
+                            LPVOID lpArgToCompletionRoutine,
+                            BOOL fResume);
+      BOOL SetWaitableTimerEx(HANDLE hTimer,
+                              const LARGE_INTEGER *lpDueTime,
+                              LONG lPeriod,
+                              PTIMERAPCROUTINE pfnCompletionRoutine,
+                              LPVOID lpArgToCompletionRoutine,
+                              PREASON_CONTEXT WakeContext,
+                              ULONG TolerableDelay);
       BOOL CancelWaitableTimer(HANDLE hTimer);
-      DWORD WaitForSingleObject(HANDLE hHandle,DWORD  dwMilliseconds);
+      DWORD WaitForSingleObject(HANDLE hHandle,
+                                DWORD  dwMilliseconds);
 
-      int timerfd_create(int clockid, int flags);
-      int timerfd_settime(int fd,int flags,
+      int timerfd_create(int clockid,
+                         int flags);
+      int timerfd_settime(int fd,
+                          int flags,
                           const struct itimerspec* new_value,
                           struct itimerspec* old_value);
-      int timerfd_gettime(int fd,struct itimerspec* curr_value);
+      int timerfd_gettime(int fd,
+                          struct itimerspec* curr_value);
 
 */
 
@@ -102,7 +115,7 @@ FXbool FXEventDispatcher::init(){
 
 #if defined(WIN32) //////////////////////////////////////////////////////////////
 
-// Dispatch driver
+// Dispatch driver (using MsgWaitForMultipleObjectsEx())
 FXbool FXEventDispatcher::dispatch(FXTime blocking,FXuint flags){
   if(internals){
     FXTime now,due,delay,interval;
@@ -163,7 +176,7 @@ FXbool FXEventDispatcher::dispatch(FXTime blocking,FXuint flags){
 
       // Select active handles or events; don't block
       if(flags&DispatchEvents){
-        current=MsgWaitForMultipleObjectsEx(numhandles,internals->handles,0,QS_ALLINPUT,MWMO_ALERTABLE);
+        current=MsgWaitForMultipleObjectsEx(numhandles,internals->handles,0,QS_ALLINPUT,MWMO_ALERTABLE|MWMO_INPUTAVAILABLE);
         }
       else{
         current=WaitForMultipleObjectsEx(numhandles,internals->handles,false,0,true);
@@ -203,7 +216,7 @@ FXbool FXEventDispatcher::dispatch(FXTime blocking,FXuint flags){
 
         // Select active handles or events; wait for timeout or maximum block time
         if(flags&DispatchEvents){
-          current=MsgWaitForMultipleObjectsEx(numhandles,internals->handles,ms,QS_ALLINPUT,MWMO_ALERTABLE);
+          current=MsgWaitForMultipleObjectsEx(numhandles,internals->handles,ms,QS_ALLINPUT,MWMO_ALERTABLE|MWMO_INPUTAVAILABLE);
           }
         else{
           current=WaitForMultipleObjectsEx(numhandles,internals->handles,false,ms,true);
@@ -234,7 +247,7 @@ FXbool FXEventDispatcher::dispatch(FXTime blocking,FXuint flags){
 
 #elif defined(HAVE_EPOLL_CREATE1) ///////////////////////////////////////////////
 
-// Dispatch driver
+// Dispatch driver (using epoll_pwait())
 FXbool FXEventDispatcher::dispatch(FXTime blocking,FXuint flags){
   if(internals){
     FXTime now,due,delay,interval;
@@ -274,21 +287,7 @@ FXbool FXEventDispatcher::dispatch(FXTime blocking,FXuint flags){
       if(flags&DispatchEvents){
         if(XEventsQueued((Display*)display,QueuedAfterFlush)){
           XNextEvent((Display*)display,&event);
-#if 0
-#if 0
-          // Event was filtered by input method; get next one
-          if(xim && XFilterEvent(&event,None)){
-            continue;
-            }
-          if(xim && getFocusWindow() && XFilterEvent(&event,(Window)getFocusWindow()->id())){    // FIXME
-            continue;
-            }
-#endif
-          // Passing in focuswindow to XFilterEvent just didn't work on Gnome3 with either scim or ibus
-          if(xim && getFocusWindow() && XFilterEvent(&event,None)){      // [Patch from Roland Baudin] FIXME but also need to deal with keyboard grabs
-            return false;
-            }
-#endif
+
           // Compress motion events
           if(event.xany.type==MotionNotify){
             while(XPending((Display*)display)){
@@ -346,6 +345,9 @@ FXbool FXEventDispatcher::dispatch(FXTime blocking,FXuint flags){
         continue;
         }
 
+      // All handles have been handled...
+      FXASSERT(numraised==0);
+
       // Select active handles and check signals; don't block
       numwatched=epoll_pwait(internals->handle,internals->events,ARRAYNUMBER(internals->events),0,nullptr);
 
@@ -398,7 +400,7 @@ FXbool FXEventDispatcher::dispatch(FXTime blocking,FXuint flags){
 
 #else ///////////////////////////////////////////////////////////////////////////
 
-// Dispatch driver
+// Dispatch driver (using pselect() or select())
 FXbool FXEventDispatcher::dispatch(FXTime blocking,FXuint flags){
   if(internals){
     FXTime now,due,delay,interval;
@@ -442,21 +444,7 @@ FXbool FXEventDispatcher::dispatch(FXTime blocking,FXuint flags){
       if(flags&DispatchEvents){
         if(XEventsQueued((Display*)display,QueuedAfterFlush)){
           XNextEvent((Display*)display,&event);
-#if 0
-#if 0
-          // Event was filtered by input method; get next one
-          if(xim && XFilterEvent(&event,None)){
-            continue;
-            }
-          if(xim && getFocusWindow() && XFilterEvent(&event,(Window)getFocusWindow()->id())){    // FIXME
-            continue;
-            }
-#endif
-          // Passing in focuswindow to XFilterEvent just didn't work on Gnome3 with either scim or ibus
-          if(xim && getFocusWindow() && XFilterEvent(&event,None)){      // [Patch from Roland Baudin] FIXME but also need to deal with keyboard grabs
-            return false;
-            }
-#endif
+
           // Compress motion events
           if(event.xany.type==MotionNotify){
             while(XPending((Display*)display)){
@@ -526,6 +514,9 @@ FXbool FXEventDispatcher::dispatch(FXTime blocking,FXuint flags){
         if(dispatchHandle(current,mode,flags)) return true;     // IO activity
         continue;
         }
+
+      // All handles have been handled...
+      FXASSERT(numraised==0);
 
       // Prepare handles to check
       internals->watched[0]=internals->handles[0];

@@ -45,9 +45,6 @@ private:
 public:
   static const FXchar null[];
 public:
-  static const FXchar  value2Digit[36];
-  static const FXschar digit2Value[256];
-public:
 
   /// Construct empty string
   FXString();
@@ -669,7 +666,6 @@ public:
   static FXString detab(const FXchar* str,FXint num,FXint tabcols);
   static FXString detab(const FXString& str,FXint tabcols);
 
-
   /**
   * Compress runs of more than 2 spaces with tabs.
   * UTF8 characters are counted as one column.
@@ -677,6 +673,15 @@ public:
   static FXString entab(const FXchar* str,FXint tabcols);
   static FXString entab(const FXchar* str,FXint num,FXint tabcols);
   static FXString entab(const FXString& str,FXint tabcols);
+
+  /**
+  * Count number of columns in string.
+  * UTF8 characters are counted as one column; tabs are up
+  * to tabcols wide.
+  */
+  static FXint columns(const FXchar* str,FXint tabcols);
+  static FXint columns(const FXchar* str,FXint num,FXint tabcols);
+  static FXint columns(const FXString& str,FXint tabcols);
 
   /**
   * Retabbify lines of text.
