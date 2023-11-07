@@ -30,13 +30,13 @@ extern const unsigned char bignetdrive[];
 
 extern const unsigned char bignethood[];
 
-extern const unsigned char bookset[];
+extern const unsigned char bookmrk_gif[];
 
-extern const unsigned char bookclr[];
+extern const unsigned char bookclr_gif[];
 
-extern const unsigned char bookadd[];
+extern const unsigned char bookset_gif[];
 
-extern const unsigned char bookdel[];
+extern const unsigned char bookdel_gif[];
 
 extern const unsigned char clearentry[];
 
@@ -44,9 +44,7 @@ extern const unsigned char cmymode[];
 
 extern const unsigned char dialmode[];
 
-extern const unsigned char dirupicon[];
-
-extern const unsigned char deleteicon[];
+extern const unsigned char dirup_gif[];
 
 extern const unsigned char docktop[];
 
@@ -89,6 +87,8 @@ extern const unsigned char foldernew[];
 extern const unsigned char gotohome[];
 
 extern const unsigned char gotowork[];
+
+extern const unsigned char hammer_gif[];
 
 extern const unsigned char hsvmode[];
 
@@ -143,6 +143,8 @@ extern const unsigned char showdetails[];
 extern const unsigned char showsmallicons[];
 
 extern const unsigned char sorting[];
+
+extern const unsigned char redo_gif[];
 
 extern const unsigned char undo_gif[];
 

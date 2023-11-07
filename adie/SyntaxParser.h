@@ -30,13 +30,13 @@ private:
   const FXchar *tail;           // End of token+1
   FXuint        token;          // Token type
   FXint         line;           // Line number
-public:
+private:
   FXuint gettok();
   FXbool parseString(FXString& value);
   FXbool parseRule(Syntax *syntax,FXint parent);
   FXbool parseLanguage(SyntaxList& syntaxes);
   FXbool parse(SyntaxList& syntaxes);
-public:
+protected:
   enum {
     TK_ERROR=0U,
     TK_EOF=1U,

@@ -23,6 +23,7 @@
 
 /*
   Notes:
+
   - Parse commonly used editor modeline from vim, emacs, or adie editor
     syntax embedded in comments.
   - Vim modelines there are two forms of modelines.  The first form:
@@ -164,7 +165,7 @@ FXbool Modeline::parseEmacsModeline(const FXchar* s){
     while(*s!='\0' && *s!=';' &&  *s!='\t' && *s!=' '){
       val+=*s++;
       }
-    if(FXString::comparecase(key,"Mode")==0){
+    if(FXString::comparecase(key,"mode")==0){
       setLanguage(val);
       }
     else if(key=="tab-width"){

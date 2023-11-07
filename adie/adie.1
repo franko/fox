@@ -1,4 +1,4 @@
-.TH adie 1 "February 2022" "Adie Editor" "Adie Text Editor Manual"
+.TH adie 1 "May 2023" "Adie Editor" "Adie Text Editor Manual"
 
 .SH NAME
 Adie \- The ADvanced Interactive Editor
@@ -55,6 +55,18 @@ parameter to jump to a particular place in the text.
 Load the syntax rules from the given syntax file rather than searching for the syntax file in the
 usual places (a file called "Adie.stx" in one of the $PATH directories, or the syntax file listed
 in the configuration settings).
+
+.TP
+\fB\--size=\fR\fI[<width>{xX}<height>][{+-}<xoffset>{+-}<yoffset>]\fR
+Specify size of the new window to be opened.
+
+.TP
+\fB\--line=\fR\fI<number>\fR
+Jump to given line number.
+
+.TP
+\fB\--column=\fR\fI<number>\fR
+Jump to given column number.
 
 .TP
 \fB\--lang=\fR\fI<language>\fR
@@ -158,7 +170,7 @@ for the Debian distribution of the FOX Toolkit, and is currently maintained
 by Jeroen van der Zijp (jeroen@fox-toolkit.net).
 
 .SH COPYRIGHT
-Copyright \(co 1997,2022 Jeroen van der Zijp.
+Copyright \(co 1997,2023 Jeroen van der Zijp.
 .br
 This is free software; see the source for copying conditions.  There is
 NO warranty; not even for MERCHANTABILITY or FITNESS FOR  A  PARTICULAR

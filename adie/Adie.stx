@@ -99,51 +99,51 @@ language "Data"
   filesmatch "*.dat,*.plt,*.csv"
   contentsmatch "^\s*+([-+]?+\d++\.?+\d*+([eE][-+]?+\d++)?+[ \t,]*+)++$"
   contextlines 1
-    rule "Table"
-      span "^\s*+([-+]?+\d++\.?+\d*+([eE][-+]?+\d++)?+[ \t,]*+)++$"
-      style "cyan"
-      rule "Data1"  open "[-+\d\.Ee]++" close "$" stop "$" style "yellow"
-      rule "Data2"  open "[-+\d\.Ee]++" close "$" stop "$" style "cyan"
-      rule "Data3"  open "[-+\d\.Ee]++" close "$" stop "$" style "orange"
-      rule "Data4"  open "[-+\d\.Ee]++" close "$" stop "$" style "magenta"
-      rule "Data5"  open "[-+\d\.Ee]++" close "$" stop "$" style "green"
-      rule "Data6"  open "[-+\d\.Ee]++" close "$" stop "$" style "yellow"
-      rule "Data7"  open "[-+\d\.Ee]++" close "$" stop "$" style "cyan"
-      rule "Data8"  open "[-+\d\.Ee]++" close "$" stop "$" style "orange"
-      rule "Data9"  open "[-+\d\.Ee]++" close "$" stop "$" style "magenta"
-      rule "Data10" open "[-+\d\.Ee]++" close "$" stop "$" style "green"
-      rule "Data11" open "[-+\d\.Ee]++" close "$" stop "$" style "yellow"
-      rule "Data12" open "[-+\d\.Ee]++" close "$" stop "$" style "cyan"
-      rule "Data13" open "[-+\d\.Ee]++" close "$" stop "$" style "orange"
-      rule "Data14" open "[-+\d\.Ee]++" close "$" stop "$" style "magenta"
-      rule "Data15" open "[-+\d\.Ee]++" close "$" stop "$" style "green"
-      rule "Data16" open "[-+\d\.Ee]++" close "$" stop "$" style "yellow"
-      rule "Data17" open "[-+\d\.Ee]++" close "$" stop "$" style "cyan"
-      rule "Data18" open "[-+\d\.Ee]++" close "$" stop "$" style "orange"
-      rule "Data19" open "[-+\d\.Ee]++" close "$" stop "$" style "magenta"
-      rule "Data20" open "[-+\d\.Ee]++" close "$" stop "$" style "green"
-      rule "Data21" open "[-+\d\.Ee]++" close "$" stop "$" style "yellow"
-      rule "Data22" open "[-+\d\.Ee]++" close "$" stop "$" style "cyan"
-      rule "Data23" open "[-+\d\.Ee]++" close "$" stop "$" style "orange"
-      rule "Data24" open "[-+\d\.Ee]++" close "$" stop "$" style "magenta"
-      rule "Data25" open "[-+\d\.Ee]++" close "$" stop "$" style "green"
-      rule "Data26" open "[-+\d\.Ee]++" close "$" stop "$" style "yellow"
-      rule "Data27" open "[-+\d\.Ee]++" close "$" stop "$" style "cyan"
-      rule "Data28" open "[-+\d\.Ee]++" close "$" stop "$" style "orange"
-      rule "Data29" open "[-+\d\.Ee]++" close "$" stop "$" style "magenta"
-      rule "Data30" open "[-+\d\.Ee]++" close "$" stop "$" style "green"
-      rule "Data31" open "[-+\d\.Ee]++" close "$" stop "$" style "yellow"
-      rule "Data32" open "[-+\d\.Ee]++" close "$" stop "$" style "cyan"
-      rule "Data33" open "[-+\d\.Ee]++" close "$" stop "$" style "orange"
-      rule "Data34" open "[-+\d\.Ee]++" close "$" stop "$" style "magenta"
-      rule "Data35" open "[-+\d\.Ee]++" close "$" stop "$" style "green"
-      rule "Data36" open "[-+\d\.Ee]++" close "$" stop "$" style "yellow"
-      rule "Data37" open "[-+\d\.Ee]++" close "$" stop "$" style "cyan"
-      rule "Data38" open "[-+\d\.Ee]++" close "$" stop "$" style "orange"
-      rule "Data39" open "[-+\d\.Ee]++" close "$" stop "$" style "magenta"
-      rule "Data30" open "[-+\d\.Ee]++" close "$" stop "$" style "green" end end end end end end end end end end end end end end end end end end end end end end end end end end end end end end end end end end end end end end end end
-      end
+  rule "Table"
+    span "^\s*+([-+]?+\d++\.?+\d*+([eE][-+]?+\d++)?+[ \t,]*+)++$"
+    style "cyan"
+    rule "Data1"  open "[-+\d\.Ee]++" close "$" stop "$" style "yellow"
+    rule "Data2"  open "[-+\d\.Ee]++" close "$" stop "$" style "cyan"
+    rule "Data3"  open "[-+\d\.Ee]++" close "$" stop "$" style "orange"
+    rule "Data4"  open "[-+\d\.Ee]++" close "$" stop "$" style "magenta"
+    rule "Data5"  open "[-+\d\.Ee]++" close "$" stop "$" style "green"
+    rule "Data6"  open "[-+\d\.Ee]++" close "$" stop "$" style "yellow"
+    rule "Data7"  open "[-+\d\.Ee]++" close "$" stop "$" style "cyan"
+    rule "Data8"  open "[-+\d\.Ee]++" close "$" stop "$" style "orange"
+    rule "Data9"  open "[-+\d\.Ee]++" close "$" stop "$" style "magenta"
+    rule "Data10" open "[-+\d\.Ee]++" close "$" stop "$" style "green"
+    rule "Data11" open "[-+\d\.Ee]++" close "$" stop "$" style "yellow"
+    rule "Data12" open "[-+\d\.Ee]++" close "$" stop "$" style "cyan"
+    rule "Data13" open "[-+\d\.Ee]++" close "$" stop "$" style "orange"
+    rule "Data14" open "[-+\d\.Ee]++" close "$" stop "$" style "magenta"
+    rule "Data15" open "[-+\d\.Ee]++" close "$" stop "$" style "green"
+    rule "Data16" open "[-+\d\.Ee]++" close "$" stop "$" style "yellow"
+    rule "Data17" open "[-+\d\.Ee]++" close "$" stop "$" style "cyan"
+    rule "Data18" open "[-+\d\.Ee]++" close "$" stop "$" style "orange"
+    rule "Data19" open "[-+\d\.Ee]++" close "$" stop "$" style "magenta"
+    rule "Data20" open "[-+\d\.Ee]++" close "$" stop "$" style "green"
+    rule "Data21" open "[-+\d\.Ee]++" close "$" stop "$" style "yellow"
+    rule "Data22" open "[-+\d\.Ee]++" close "$" stop "$" style "cyan"
+    rule "Data23" open "[-+\d\.Ee]++" close "$" stop "$" style "orange"
+    rule "Data24" open "[-+\d\.Ee]++" close "$" stop "$" style "magenta"
+    rule "Data25" open "[-+\d\.Ee]++" close "$" stop "$" style "green"
+    rule "Data26" open "[-+\d\.Ee]++" close "$" stop "$" style "yellow"
+    rule "Data27" open "[-+\d\.Ee]++" close "$" stop "$" style "cyan"
+    rule "Data28" open "[-+\d\.Ee]++" close "$" stop "$" style "orange"
+    rule "Data29" open "[-+\d\.Ee]++" close "$" stop "$" style "magenta"
+    rule "Data30" open "[-+\d\.Ee]++" close "$" stop "$" style "green"
+    rule "Data31" open "[-+\d\.Ee]++" close "$" stop "$" style "yellow"
+    rule "Data32" open "[-+\d\.Ee]++" close "$" stop "$" style "cyan"
+    rule "Data33" open "[-+\d\.Ee]++" close "$" stop "$" style "orange"
+    rule "Data34" open "[-+\d\.Ee]++" close "$" stop "$" style "magenta"
+    rule "Data35" open "[-+\d\.Ee]++" close "$" stop "$" style "green"
+    rule "Data36" open "[-+\d\.Ee]++" close "$" stop "$" style "yellow"
+    rule "Data37" open "[-+\d\.Ee]++" close "$" stop "$" style "cyan"
+    rule "Data38" open "[-+\d\.Ee]++" close "$" stop "$" style "orange"
+    rule "Data39" open "[-+\d\.Ee]++" close "$" stop "$" style "magenta"
+    rule "Data30" open "[-+\d\.Ee]++" close "$" stop "$" style "green" end end end end end end end end end end end end end end end end end end end end end end end end end end end end end end end end end end end end end end end end
   end
+end
 
 
 # FOX Registry syntax coloring
@@ -157,7 +157,7 @@ language "Registry"
     style "darkgreen"
   end
   rule "RegistrySection"
-    pattern "^\s*?\[[^]]*?\]\s*?$"
+    pattern "^\s*?\[[^]]*+\]\s*?$"
     style   "orange"
   end
   rule "RegistryEntry"
@@ -195,6 +195,7 @@ language "Registry"
     end
   end
 end
+
 
 # Julia programming language
 language "Julia"
@@ -680,7 +681,6 @@ language "C"
 
   rule "Number"
     pattern "\<(((\.\d++|\d++((\.\d*+)?|(?=[Ee][+-]?\d++)))([eE][+-]?+\d++)?|0[Xx](\.\h++|\h++(\.\h*+)?)[Pp][+-]?\d++)[LlFfQq]?|(0[xX]\h++|0[0-7]*+|[1-9]\d*+)[Uu]?[Ll]{0,2})\>"
-    #pattern "\<((\.\d+([eE][+-]?\d+)?|\d+\.\d*([eE][+-]?\d+)?|\d+[Ee][+-]?\d+|0[Xx]\.\h+[Pp][+-]?\d+|0[Xx]\h+\.\h*[Pp][+-]?\d+|0[Xx]\h+[Pp][+-]?\d+)[LlFfQq]?|(0[xX]\h+|0[0-7]*|[1-9]\d*)[Uu]?[Ll]{0,2})\>"
     style   "blue"
   end
 
@@ -1379,6 +1379,12 @@ language "JavaScript"
       pattern "\\[0'\"\\nrvtbf]"
       style   "fuchsia"
     end
+  end
+
+  # Include
+  rule "Include"
+    pattern "include +(\'[^']++\'|\"[^\"]++\")"
+    style   "red"
   end
 
   # Keywords

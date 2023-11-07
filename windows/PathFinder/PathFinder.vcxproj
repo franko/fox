@@ -109,11 +109,11 @@
     </ClCompile>
     <CustomBuildStep>
       <Command>cd $(SolutionDir)..\pathfinder
-$(OutputPath)reswrap.exe -h -o icons.h addbook.bmp bigicons.bmp closepanel.gif clrbook.gif copy.bmp config_gif.gif copyit.gif cut.bmp delbook.bmp deleteit.bmp desktop.bmp details.bmp dirup.bmp enter.gif execute.bmp file_gif.gif fileshown.gif filehidden.gif foldernew.gif foxbig.gif foxmini.gif goback.bmp goforw.bmp gotodir.bmp home.gif hosts.bmp iconpath.gif linkit.bmp location.gif maphost.bmp miscellaneous_gif.gif moveit.gif paste.bmp pattern_gif.gif properties.bmp quit_gif.gif newfolder.bmp renameit.gif rotateleft.gif rotateright.gif run_bmp.bmp setbook.gif setdir.gif sorting.bmp smallicons.bmp unmaphost.bmp warningicon_gif.gif work.gif
-$(OutputPath)reswrap.exe -i icons.h -o icons.cpp addbook.bmp bigicons.bmp closepanel.gif clrbook.gif copy.bmp config_gif.gif copyit.gif cut.bmp delbook.bmp deleteit.bmp desktop.bmp details.bmp dirup.bmp enter.gif execute.bmp file_gif.gif fileshown.gif filehidden.gif foldernew.gif foxbig.gif foxmini.gif goback.bmp goforw.bmp gotodir.bmp home.gif hosts.bmp iconpath.gif linkit.bmp location.gif maphost.bmp miscellaneous_gif.gif moveit.gif paste.bmp pattern_gif.gif properties.bmp quit_gif.gif newfolder.bmp renameit.gif rotateleft.gif rotateright.gif run_bmp.bmp setbook.gif setdir.gif sorting.bmp smallicons.bmp unmaphost.bmp warningicon_gif.gif work.gif
+$(OutputPath)reswrap.exe -h -o icons.h  bigicons.bmp blocks_gif.gif bookclr_gif.gif bookdel_gif.gif bookmrk_gif.gif booknxt_gif.gif bookprv_gif.gif bookset_gif.gif closepanel.gif config_gif.gif copy_gif.gif cut_gif.gif delete_gif.gif desktop.bmp details.bmp dirup_gif.gif enter.gif file_gif.gif filehidden.gif fileshown.gif foldernew_gif.gif foxbig.gif foxmini.gif goback_gif.gif godown_gif.gif goforw_gif.gif gotodir.bmp goup_gif.gif home_gif.gif hosts.bmp iconpath.gif link_gif.gif location.gif maphost.bmp miscellaneous_gif.gif move_gif.gif newfolder.bmp paste.gif pattern_gif.gif property_gif.gif quit_gif.gif rename_gif.gif rotateleft.gif rotateright.gif run_bmp.bmp search.gif setdir.gif smallicons.bmp sorting.bmp unmaphost.bmp warningicon_gif.gif work.gif work_gif.gif 
+$(OutputPath)reswrap.exe -i icons.h -o icons.cpp bigicons.bmp blocks_gif.gif bookclr_gif.gif bookdel_gif.gif bookmrk_gif.gif booknxt_gif.gif bookprv_gif.gif bookset_gif.gif closepanel.gif config_gif.gif copy_gif.gif cut_gif.gif delete_gif.gif desktop.bmp details.bmp dirup_gif.gif enter.gif file_gif.gif filehidden.gif fileshown.gif foldernew_gif.gif foxbig.gif foxmini.gif goback_gif.gif godown_gif.gif goforw_gif.gif gotodir.bmp goup_gif.gif home_gif.gif hosts.bmp iconpath.gif link_gif.gif location.gif maphost.bmp miscellaneous_gif.gif move_gif.gif newfolder.bmp paste.gif pattern_gif.gif property_gif.gif quit_gif.gif rename_gif.gif rotateleft.gif rotateright.gif run_bmp.bmp search.gif setdir.gif smallicons.bmp sorting.bmp unmaphost.bmp warningicon_gif.gif work.gif work_gif.gif 
 </Command>
       <Message>Reswrapping icons...</Message>
-      <Inputs>addbook.bmp;bigicons.bmp;closepanel.gif;clrbook.gif;copy.bmp;config_gif.gif;copyit.gif;cut.bmp;delbook.bmp;deleteit.bmp;desktop.bmp;details.bmp;dirup.bmp;enter.gif;execute.bmp;file_gif.gif;fileshown.gif;filehidden.gif;foldernew.gif;foxbig.gif;foxmini.gif;goback.bmp;goforw.bmp;gotodir.bmp;home.gif;hosts.bmp;iconpath.gif;linkit.bmp;location.gif;maphost.bmp;miscellaneous_gif.gif;moveit.gif;paste.bmp;pattern_gif.gif;properties.bmp;quit_gif.gif;newfolder.bmp;renameit.gif;rotateleft.gif;rotateright.gif;run_bmp.bmp;setbook.gif;setdir.gif;sorting.bmp;smallicons.bmp;unmaphost.bmp;warningicon_gif.gif;work.gif</Inputs>
+      <Inputs>bigicons.bmp;blocks_gif.gif;bookclr_gif.gif;bookdel_gif.gif;bookmrk_gif.gif;booknxt_gif.gif;bookprv_gif.gif;bookset_gif.gif;closepanel.gif;config_gif.gif;copy_gif.gif;cut_gif.gif;delete_gif.gif;desktop.bmp;details.bmp;dirup_gif.gif;enter.gif;file_gif.gif;filehidden.gif;fileshown.gif;foldernew_gif.gif;foxbig.gif;foxmini.gif;goback_gif.gif;godown_gif.gif;goforw_gif.gif;gotodir.bmp;goup_gif.gif;home_gif.gif;hosts.bmp;iconpath.gif;link_gif.gif;location.gif;maphost.bmp;miscellaneous_gif.gif;move_gif.gif;newfolder.bmp;paste.gif;pattern_gif.gif;property_gif.gif;quit_gif.gif;rename_gif.gif;rotateleft.gif;rotateright.gif;run_bmp.bmp;search.gif;setdir.gif;smallicons.bmp;sorting.bmp;unmaphost.bmp;warningicon_gif.gif;work.gif;work_gif.gif</Inputs>
       <Outputs>icons.h;icons.cpp</Outputs>
     </CustomBuildStep>
     <Link>
@@ -165,11 +165,11 @@ $(OutputPath)reswrap.exe -i icons.h -o icons.cpp addbook.bmp bigicons.bmp closep
       <RandomizedBaseAddress>false</RandomizedBaseAddress>
     </Link>
     <CustomBuildStep>
-      <Inputs>addbook.bmp;bigicons.bmp;closepanel.gif;clrbook.gif;copy.bmp;config_gif.gif;copyit.gif;cut.bmp;delbook.bmp;deleteit.bmp;desktop.bmp;details.bmp;dirup.bmp;enter.gif;execute.bmp;file_gif.gif;fileshown.gif;filehidden.gif;foldernew.gif;foxbig.gif;foxmini.gif;goback.bmp;goforw.bmp;gotodir.bmp;home.gif;hosts.bmp;iconpath.gif;linkit.bmp;location.gif;maphost.bmp;miscellaneous_gif.gif;moveit.gif;paste.bmp;pattern_gif.gif;properties.bmp;quit_gif.gif;newfolder.bmp;renameit.gif;rotateleft.gif;rotateright.gif;run_bmp.bmp;setbook.gif;setdir.gif;sorting.bmp;smallicons.bmp;unmaphost.bmp;warningicon_gif.gif;work.gif</Inputs>
+      <Inputs>bigicons.bmp;blocks_gif.gif;bookclr_gif.gif;bookdel_gif.gif;bookmrk_gif.gif;booknxt_gif.gif;bookprv_gif.gif;bookset_gif.gif;closepanel.gif;config_gif.gif;copy_gif.gif;cut_gif.gif;delete_gif.gif;desktop.bmp;details.bmp;dirup_gif.gif;enter.gif;file_gif.gif;filehidden.gif;fileshown.gif;foldernew_gif.gif;foxbig.gif;foxmini.gif;goback_gif.gif;godown_gif.gif;goforw_gif.gif;gotodir.bmp;goup_gif.gif;home_gif.gif;hosts.bmp;iconpath.gif;link_gif.gif;location.gif;maphost.bmp;miscellaneous_gif.gif;move_gif.gif;newfolder.bmp;paste.gif;pattern_gif.gif;property_gif.gif;quit_gif.gif;rename_gif.gif;rotateleft.gif;rotateright.gif;run_bmp.bmp;search.gif;setdir.gif;smallicons.bmp;sorting.bmp;unmaphost.bmp;warningicon_gif.gif;work.gif;work_gif.gif</Inputs>
       <Message>Reswrapping icons...</Message>
       <Command>cd $(SolutionDir)..\pathfinder
-$(OutputPath)reswrap.exe -h -o icons.h addbook.bmp bigicons.bmp closepanel.gif clrbook.gif copy.bmp config_gif.gif copyit.gif cut.bmp delbook.bmp deleteit.bmp desktop.bmp details.bmp dirup.bmp enter.gif execute.bmp file_gif.gif fileshown.gif filehidden.gif foldernew.gif foxbig.gif foxmini.gif goback.bmp goforw.bmp gotodir.bmp home.gif hosts.bmp iconpath.gif linkit.bmp location.gif maphost.bmp miscellaneous_gif.gif moveit.gif paste.bmp pattern_gif.gif properties.bmp quit_gif.gif newfolder.bmp renameit.gif rotateleft.gif rotateright.gif run_bmp.bmp setbook.gif setdir.gif sorting.bmp smallicons.bmp unmaphost.bmp warningicon_gif.gif work.gif
-$(OutputPath)reswrap.exe -i icons.h -o icons.cpp addbook.bmp bigicons.bmp closepanel.gif clrbook.gif copy.bmp config_gif.gif copyit.gif cut.bmp delbook.bmp deleteit.bmp desktop.bmp details.bmp dirup.bmp enter.gif execute.bmp file_gif.gif fileshown.gif filehidden.gif foldernew.gif foxbig.gif foxmini.gif goback.bmp goforw.bmp gotodir.bmp home.gif hosts.bmp iconpath.gif linkit.bmp location.gif maphost.bmp miscellaneous_gif.gif moveit.gif paste.bmp pattern_gif.gif properties.bmp quit_gif.gif newfolder.bmp renameit.gif rotateleft.gif rotateright.gif run_bmp.bmp setbook.gif setdir.gif sorting.bmp smallicons.bmp unmaphost.bmp warningicon_gif.gif work.gif
+$(OutputPath)reswrap.exe -h -o icons.h  bigicons.bmp blocks_gif.gif bookclr_gif.gif bookdel_gif.gif bookmrk_gif.gif booknxt_gif.gif bookprv_gif.gif bookset_gif.gif closepanel.gif config_gif.gif copy_gif.gif cut_gif.gif delete_gif.gif desktop.bmp details.bmp dirup_gif.gif enter.gif file_gif.gif filehidden.gif fileshown.gif foldernew_gif.gif foxbig.gif foxmini.gif goback_gif.gif godown_gif.gif goforw_gif.gif gotodir.bmp goup_gif.gif home_gif.gif hosts.bmp iconpath.gif link_gif.gif location.gif maphost.bmp miscellaneous_gif.gif move_gif.gif newfolder.bmp paste.gif pattern_gif.gif property_gif.gif quit_gif.gif rename_gif.gif rotateleft.gif rotateright.gif run_bmp.bmp search.gif setdir.gif smallicons.bmp sorting.bmp unmaphost.bmp warningicon_gif.gif work.gif work_gif.gif 
+$(OutputPath)reswrap.exe -i icons.h -o icons.cpp bigicons.bmp blocks_gif.gif bookclr_gif.gif bookdel_gif.gif bookmrk_gif.gif booknxt_gif.gif bookprv_gif.gif bookset_gif.gif closepanel.gif config_gif.gif copy_gif.gif cut_gif.gif delete_gif.gif desktop.bmp details.bmp dirup_gif.gif enter.gif file_gif.gif filehidden.gif fileshown.gif foldernew_gif.gif foxbig.gif foxmini.gif goback_gif.gif godown_gif.gif goforw_gif.gif gotodir.bmp goup_gif.gif home_gif.gif hosts.bmp iconpath.gif link_gif.gif location.gif maphost.bmp miscellaneous_gif.gif move_gif.gif newfolder.bmp paste.gif pattern_gif.gif property_gif.gif quit_gif.gif rename_gif.gif rotateleft.gif rotateright.gif run_bmp.bmp search.gif setdir.gif smallicons.bmp sorting.bmp unmaphost.bmp warningicon_gif.gif work.gif work_gif.gif 
 </Command>
       <Outputs>icons.h;icons.cpp</Outputs>
     </CustomBuildStep>
@@ -189,56 +189,70 @@ $(OutputPath)reswrap.exe -i icons.h -o icons.cpp addbook.bmp bigicons.bmp closep
     <ClInclude Include="..\..\pathfinder\PropertyDialog.h" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="..\..\pathfinder\addbook.bmp" />
     <Image Include="..\..\pathfinder\bigicons.bmp" />
+    <Image Include="..\..\pathfinder\blocks_gif.gif" />
+    <Image Include="..\..\pathfinder\bookclr_gif.gif" />
+    <Image Include="..\..\pathfinder\bookdel_gif.gif" />
+    <Image Include="..\..\pathfinder\bookmrk_gif.gif" />
+    <Image Include="..\..\pathfinder\booknxt_gif.gif" />
+    <Image Include="..\..\pathfinder\bookprv_gif.gif" />
+    <Image Include="..\..\pathfinder\bookset_gif.gif" />
     <Image Include="..\..\pathfinder\closepanel.gif" />
-    <Image Include="..\..\pathfinder\clrbook.gif" />
     <Image Include="..\..\pathfinder\config_gif.gif" />
-    <Image Include="..\..\pathfinder\copy.bmp" />
+    <Image Include="..\..\pathfinder\copy.gif" />
     <Image Include="..\..\pathfinder\copyit.gif" />
-    <Image Include="..\..\pathfinder\cut.bmp" />
-    <Image Include="..\..\pathfinder\delbook.bmp" />
-    <Image Include="..\..\pathfinder\deleteit.bmp" />
+    <Image Include="..\..\pathfinder\copy_gif.gif" />
+    <Image Include="..\..\pathfinder\cut.gif" />
+    <Image Include="..\..\pathfinder\cut_gif.gif" />
+    <Image Include="..\..\pathfinder\delete_gif.gif" />
     <Image Include="..\..\pathfinder\desktop.bmp" />
     <Image Include="..\..\pathfinder\details.bmp" />
-    <Image Include="..\..\pathfinder\dirup.bmp" />
     <Image Include="..\..\pathfinder\dirup2.gif" />
+    <Image Include="..\..\pathfinder\dirup2_gif.gif" />
+    <Image Include="..\..\pathfinder\dirup_gif.gif" />
     <Image Include="..\..\pathfinder\enter.gif" />
     <Image Include="..\..\pathfinder\execute.bmp" />
     <Image Include="..\..\pathfinder\filehidden.gif" />
     <Image Include="..\..\pathfinder\fileshown.gif" />
     <Image Include="..\..\pathfinder\file_gif.gif" />
     <Image Include="..\..\pathfinder\foldernew.gif" />
+    <Image Include="..\..\pathfinder\foldernew_gif.gif" />
     <Image Include="..\..\pathfinder\foxbig.gif" />
     <Image Include="..\..\pathfinder\foxmini.gif" />
-    <Image Include="..\..\pathfinder\goback.bmp" />
-    <Image Include="..\..\pathfinder\goforw.bmp" />
+    <Image Include="..\..\pathfinder\goback_gif.gif" />
+    <Image Include="..\..\pathfinder\godown_gif.gif" />
+    <Image Include="..\..\pathfinder\goforw_gif.gif" />
     <Image Include="..\..\pathfinder\gotodir.bmp" />
-    <Image Include="..\..\pathfinder\goup.bmp" />
-    <Image Include="..\..\pathfinder\home.gif" />
+    <Image Include="..\..\pathfinder\goup_gif.gif" />
+    <Image Include="..\..\pathfinder\home_gif.gif" />
     <Image Include="..\..\pathfinder\hosts.bmp" />
     <Image Include="..\..\pathfinder\iconpath.gif" />
     <Image Include="..\..\pathfinder\linkit.bmp" />
+    <Image Include="..\..\pathfinder\link_gif.gif" />
     <Image Include="..\..\pathfinder\location.gif" />
     <Image Include="..\..\pathfinder\maphost.bmp" />
     <Image Include="..\..\pathfinder\miscellaneous_gif.gif" />
     <Image Include="..\..\pathfinder\moveit.gif" />
+    <Image Include="..\..\pathfinder\move_gif.gif" />
     <Image Include="..\..\pathfinder\newfolder.bmp" />
-    <Image Include="..\..\pathfinder\paste.bmp" />
+    <Image Include="..\..\pathfinder\paste.gif" />
     <Image Include="..\..\pathfinder\pattern_gif.gif" />
     <Image Include="..\..\pathfinder\properties.bmp" />
+    <Image Include="..\..\pathfinder\property_gif.gif" />
     <Image Include="..\..\pathfinder\quit_gif.gif" />
     <Image Include="..\..\pathfinder\renameit.gif" />
+    <Image Include="..\..\pathfinder\rename_gif.gif" />
     <Image Include="..\..\pathfinder\rotateleft.gif" />
     <Image Include="..\..\pathfinder\rotateright.gif" />
     <Image Include="..\..\pathfinder\run_bmp.bmp" />
-    <Image Include="..\..\pathfinder\setbook.gif" />
+    <Image Include="..\..\pathfinder\search.gif" />
     <Image Include="..\..\pathfinder\setdir.gif" />
     <Image Include="..\..\pathfinder\smallicons.bmp" />
     <Image Include="..\..\pathfinder\sorting.bmp" />
     <Image Include="..\..\pathfinder\unmaphost.bmp" />
     <Image Include="..\..\pathfinder\warningicon_gif.gif" />
     <Image Include="..\..\pathfinder\work.gif" />
+    <Image Include="..\..\pathfinder\work_gif.gif" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -2308,13 +2308,7 @@
     <Image Include="..\..\lib\cmymode.gif">
       <Filter>Icons</Filter>
     </Image>
-    <Image Include="..\..\lib\deleteicon.gif">
-      <Filter>Icons</Filter>
-    </Image>
     <Image Include="..\..\lib\dialmode.gif">
-      <Filter>Icons</Filter>
-    </Image>
-    <Image Include="..\..\lib\dirupicon.gif">
       <Filter>Icons</Filter>
     </Image>
     <Image Include="..\..\lib\dockbottom.gif">
@@ -2477,6 +2471,36 @@
       <Filter>Icons</Filter>
     </Image>
     <Image Include="..\..\lib\winrestore.gif">
+      <Filter>Icons</Filter>
+    </Image>
+    <Image Include="..\..\lib\bookclr_gif.gif">
+      <Filter>Icons</Filter>
+    </Image>
+    <Image Include="..\..\lib\bookdel_gif.gif">
+      <Filter>Icons</Filter>
+    </Image>
+    <Image Include="..\..\lib\bookmrk_gif.gif">
+      <Filter>Icons</Filter>
+    </Image>
+    <Image Include="..\..\lib\booknxt_gif.gif">
+      <Filter>Icons</Filter>
+    </Image>
+    <Image Include="..\..\lib\bookprv_gif.gif">
+      <Filter>Icons</Filter>
+    </Image>
+    <Image Include="..\..\lib\bookset_gif.gif">
+      <Filter>Icons</Filter>
+    </Image>
+    <Image Include="..\..\lib\hammer_gif.gif">
+      <Filter>Icons</Filter>
+    </Image>
+    <Image Include="..\..\lib\redo_gif.gif">
+      <Filter>Icons</Filter>
+    </Image>
+    <Image Include="..\..\lib\dirup_gif.gif">
+      <Filter>Icons</Filter>
+    </Image>
+    <Image Include="..\..\lib\icons.cpparrownext.gif">
       <Filter>Icons</Filter>
     </Image>
   </ItemGroup>

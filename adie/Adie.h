@@ -48,12 +48,16 @@ protected:
   FXIcon             *bigicon;                  // Big application icon
   FXIcon             *smallicon;                // Small application icon
   FXIcon             *newicon;
+  FXIcon             *newfileicon;
   FXIcon             *reloadicon;
   FXIcon             *openicon;
+  FXIcon             *closeicon;
   FXIcon             *saveicon;
   FXIcon             *saveasicon;
   FXIcon             *savetoicon;
   FXIcon             *printicon;
+  FXIcon             *importicon;
+  FXIcon             *exporticon;
   FXIcon             *cuticon;
   FXIcon             *copyicon;
   FXIcon             *pasteicon;
@@ -65,12 +69,23 @@ protected:
   FXIcon             *quiticon;
   FXIcon             *searchicon;
   FXIcon             *replaceicon;
+  FXIcon             *expressicon;
+  FXIcon             *searchfilesicon;
   FXIcon             *searchnexticon;
   FXIcon             *searchprevicon;
+  FXIcon             *searchrexicon;
+  FXIcon             *searchnorexicon;
+  FXIcon             *searchcaseicon;
+  FXIcon             *searchnocaseicon;
+  FXIcon             *searchwordicon;
+  FXIcon             *searchnowordicon;
+  FXIcon             *searchupicon;
+  FXIcon             *searchdnicon;
   FXIcon             *bookseticon;
   FXIcon             *booknexticon;
   FXIcon             *bookprevicon;
   FXIcon             *bookdelicon;
+  FXIcon             *bookclricon;
   FXIcon             *shiftlefticon;
   FXIcon             *shiftrighticon;
   FXIcon             *configicon;
@@ -84,6 +99,15 @@ protected:
   FXIcon             *forwardicon;
   FXIcon             *shownicon;
   FXIcon             *hiddenicon;
+  FXIcon             *wordwrapicon;
+  FXIcon             *nowrapicon;
+  FXIcon             *filtericon;
+  FXIcon             *commandicon;
+  FXIcon             *scripticon;
+  FXIcon             *switchicon;
+  FXIcon             *openselicon;
+  FXIcon             *docsicon;
+  FXIcon             *pointicon;
 private:
   Adie(){}
   Adie(const Adie&);
