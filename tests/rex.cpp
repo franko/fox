@@ -25,15 +25,18 @@ static void printusage(){
   fxmessage("  options:\n");
   fxmessage("  -?, -h, --help                      Print help.\n");
   fxmessage("  -tracetopics <topics>               Enable trace topics.\n");
+  fxmessage("  -u, --unicode                       Unicode mode.\n");
+  fxmessage("  -s, --syntax                        Syntax check only.\n");
+  fxmessage("  -v, --verbatim                      Verbatim mode.\n");
   fxmessage("  -c, --capture                       Capturing parentheses.\n");
   fxmessage("  -i, --ignore-case                   Case-insensitive.\n");
-  fxmessage("  -n, --not-empty                     Match should be non-empty.\n");
+  fxmessage("  -nl, --newline                      Newline matches \"any\" character classes.\n");
   fxmessage("  -x, --exact                         Match should consume all of string.\n");
+  fxmessage("  -n, --not-empty                     Match should be non-empty.\n");
   fxmessage("  -r, --reverse                       Reverse match.\n");
+  fxmessage("  -w, --words                         Match whole words.\n");
   fxmessage("  -nb, --not-bol                      Start of string is not begin of line.\n");
   fxmessage("  -ne, --not-eol                      End of string is not end of line.\n");
-  fxmessage("  -u, --unicode                       Unicode mode.\n");
-  fxmessage("  -v, --verbatim                      Verbatim mode.\n");
   fxmessage("  -l <num>, --levels <num>            Capure levels.\n");
   }
 
@@ -51,32 +54,41 @@ int main(int argc,char** argv){
 
   // Parse options
   while(arg<argc && argv[arg][0]=='-'){
-    if(FXString::compare(argv[arg],"-c")==0 || FXString::compare(argv[arg],"--capture")==0){
+    if(FXString::compare(argv[arg],"-s")==0 || FXString::compare(argv[arg],"--syntax")==0){
+      mode|=FXRex::Syntax;
+      }
+    else if(FXString::compare(argv[arg],"-v")==0 || FXString::compare(argv[arg],"--verbatim")==0){
+      mode|=FXRex::Verbatim;
+      }
+    else if(FXString::compare(argv[arg],"-c")==0 || FXString::compare(argv[arg],"--capture")==0){
       mode|=FXRex::Capture;
       }
     else if(FXString::compare(argv[arg],"-i")==0 || FXString::compare(argv[arg],"--ignore-case")==0){
       mode|=FXRex::IgnoreCase;
       }
-    else if(FXString::compare(argv[arg],"-n")==0 || FXString::compare(argv[arg],"--not-empty")==0){
-      mode|=FXRex::NotEmpty;
+    else if(FXString::compare(argv[arg],"-nl")==0 || FXString::compare(argv[arg],"--newline")==0){
+      mode|=FXRex::Newline;
       }
     else if(FXString::compare(argv[arg],"-x")==0 || FXString::compare(argv[arg],"--exact")==0){
       mode|=FXRex::Exact;
       }
+    else if(FXString::compare(argv[arg],"-n")==0 || FXString::compare(argv[arg],"--not-empty")==0){
+      mode|=FXRex::NotEmpty;
+      }
     else if(FXString::compare(argv[arg],"-r")==0 || FXString::compare(argv[arg],"--reverse")==0){
       mode|=FXRex::Reverse;
       }
-    else if(FXString::compare(argv[arg],"-b")==0 || FXString::compare(argv[arg],"--not-bol")==0){
+    else if(FXString::compare(argv[arg],"-w")==0 || FXString::compare(argv[arg],"--words")==0){
+      mode|=FXRex::Words;
+      }
+    else if(FXString::compare(argv[arg],"-nb")==0 || FXString::compare(argv[arg],"--not-bol")==0){
       mode|=FXRex::NotBol;
       }
-    else if(FXString::compare(argv[arg],"-e")==0 || FXString::compare(argv[arg],"--not-eol")==0){
+    else if(FXString::compare(argv[arg],"-ne")==0 || FXString::compare(argv[arg],"--not-eol")==0){
       mode|=FXRex::NotEol;
       }
     else if(FXString::compare(argv[arg],"-u")==0 || FXString::compare(argv[arg],"--unicode")==0){
       mode|=FXRex::Unicode;
-      }
-    else if(FXString::compare(argv[arg],"-v")==0 || FXString::compare(argv[arg],"--verbatim")==0){
-      mode|=FXRex::Verbatim;
       }
     else if(FXString::compare(argv[arg],"-l")==0 || FXString::compare(argv[arg],"--levels")==0){
       if(++arg>=argc){ fxwarning("rex: missing capture levels.\n"); return 1; }
@@ -88,8 +100,7 @@ int main(int argc,char** argv){
       }
     else if(FXString::compare(argv[arg],"-tracetopics")==0){
       if(++arg>=argc){ fxwarning("rex: missing argument for -tracetopics.\n"); return 0; }
-      setTraceTopics(argv[arg++]);
-      continue;
+      setTraceTopics(argv[arg]);
       }
     arg++;
     }

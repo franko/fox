@@ -1399,14 +1399,14 @@ long Calculator::onCmdDigit(FXObject*,FXSelector sel,void*){
     if(text[pos]=='-' || text[pos]=='+') pos++;     // Skip sign
     if(text[pos]=='0' || (text[pos] && text[pos+1] && text[pos+2])){
       while(text[pos+1]){ text[pos]=text[pos+1]; pos++; }
-      text[pos]=FXString::value2Digit[FXSELID(sel)-ID_0];
+      text[pos]=Ascii::valueDigit(FXSELID(sel)-ID_0);
       }
     else{
-      text.append(FXString::value2Digit[FXSELID(sel)-ID_0]);
+      text.append(Ascii::valueDigit(FXSELID(sel)-ID_0));
       }
     }
   else if(digits<limit){
-    text+=FXString::value2Digit[FXSELID(sel)-ID_0];
+    text+=Ascii::valueDigit(FXSELID(sel)-ID_0);
     digits++;
     }
   setDisplayText(text);

@@ -79,6 +79,7 @@
 #include "FXScopedThread.h"
 #include "FXStream.h"
 #include "FXAutoPtr.h"
+#include "FXMarkedPtr.h"
 #include "FXPtrList.h"
 #include "FXPtrQueue.h"
 #include "FXIO.h"

@@ -186,6 +186,9 @@ namespace FXSystem {
   extern FXAPI FXString getUserDirectory(const FXString& user);
 
 
+  /// Kick off a command to the system
+  extern FXAPI FXint system(const FXString& cmd);
+
   /// Return host name
   extern FXAPI FXString getHostName();
 

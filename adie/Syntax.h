@@ -243,7 +243,7 @@ protected:
   RuleList      rules;          // Highlight rules
   FXString      language;       // Language name
   FXString      group;          // Group name for syntax coloring
-  FXString      extensions;     // File extensions to recognize language
+  FXString      patterns;       // Wildcard patters to recognize language
   FXString      contents;       // Contents to recognize language
   FXString      delimiters;     // Word delimiters in this language
   FXint         contextLines;   // Context lines needed for restyle
@@ -283,11 +283,11 @@ public:
   void setGroup(const FXString& grp){ group=grp; }
   const FXString& getGroup() const { return group; }
 
-  // Extensions
-  void setExtensions(const FXString& exts){ extensions=exts; }
-  const FXString& getExtensions() const { return extensions; }
+  // Wildcard patterns
+  void setPatterns(const FXString& wild){ patterns=wild; }
+  const FXString& getPatterns() const { return patterns; }
 
-  // Contents
+  // Regular expression to match contents
   void setContents(const FXString& cont){ contents=cont; }
   const FXString& getContents() const { return contents; }
 

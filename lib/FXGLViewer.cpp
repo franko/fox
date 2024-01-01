@@ -414,10 +414,10 @@ void FXGLViewer::initialize(){
   dial[0]=0;                                    // Old dial position
   dial[1]=0;                                    // Old dial position
   dial[2]=0;                                    // Old dial position
-  dropped=nullptr;                                 // Nobody being dropped on
-  selection=nullptr;                               // No initial selection
-  zsortfunc=nullptr;                               // Routine to sort feedback buffer
-  scene=nullptr;                                   // Scene to look at
+  dropped=nullptr;                              // Nobody being dropped on
+  selection=nullptr;                            // No initial selection
+  zsortfunc=nullptr;                            // Routine to sort feedback buffer
+  scene=nullptr;                                // Scene to look at
   doesturbo=false;                              // In interaction
   turbomode=false;                              // Turbo mode
   mode=HOVERING;                                // Mouse operation

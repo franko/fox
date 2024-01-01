@@ -127,7 +127,7 @@ FXbool FXHash::no(FXival n){
 // Resize the table to the given size, keeping contents
 FXbool FXHash::resize(FXival n){
   FXHash elbat;
-  FXASSERT((n&(n-1))==0);       // Power of w
+  FXASSERT((n&(n-1))==0);       // Power of 2
   FXASSERT((n-used())>0);       // At least one free slot
   if(elbat.no(n)){
     if(1<elbat.no() && 1<no()){
@@ -261,7 +261,7 @@ void* FXHash::remove(const void* ky){
     FXuval p,b,x;
     p=b=HASH(ky);
     while(table[x=p&(no()-1)].key!=ky){
-      if(table[x].key==nullptr) goto x;
+      if(!table[x].key) goto x;
       p=(p<<2)+p+b+1;
       b>>=BSHIFT;
       }

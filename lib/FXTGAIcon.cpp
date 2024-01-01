@@ -45,22 +45,6 @@
   - Targa does not support alpha in the file format.
   - You can also let the system guess a transparancy color based on the corners.
   - If that doesn't work, you can force a specific transparency color.
-  - This is just an idea at this point:
-
-      // Compute name of image support class
-      FXString name="FX"+ext.upper()+"Image";
-
-      // Find the meta class
-      const FXMetaClass *meta=FXMetaClass::getMetaClassFromName(name.text());
-
-      // Make instance of this class
-      if(meta) img=(FXImage*)meta->makeInstance();
-
-    The above is a simplistic view; we will need to set the image's visual,
-    options, and other stuff before this can work.
-    Also, when linking statically, we have to convince the linker to include
-    the referred image code...
-
 */
 
 using namespace FX;

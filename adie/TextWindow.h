@@ -22,7 +22,6 @@
 #define TEXTWINDOW_H
 
 
-
 class Adie;
 class Syntax;
 class HelpWindow;
@@ -36,6 +35,7 @@ typedef FXArray<FXHiliteStyle> FXHiliteArray;
 // Editor main window
 class TextWindow : public FXMainWindow {
   FXDECLARE(TextWindow)
+  friend class Preferences;
 protected:
   FXToolBarShell      *dragshell1;              // Shell for floating menubar
   FXToolBarShell      *dragshell2;              // Shell for floating toolbar
@@ -63,7 +63,8 @@ protected:
   FXText              *logger;                  // Logger text widget
   FXDirList           *dirlist;                 // Directory view
   FXComboBox          *filter;                  // Combobox for pattern list
-  FXTextField         *clock;                   // Time
+  FXLabel             *clock;                   // Time
+  FXLabel             *language;                // Language
   FXMenuBar           *menubar;                 // Menu bar
   FXToolBar           *toolbar;                 // Tool bar
   FXToolBar           *searchbar;               // Incremental search bar
@@ -71,6 +72,7 @@ protected:
   FXStatusBar         *statusbar;               // Status bar
   FXFont              *font;                    // Text window font
   FXint                bookmark[10];            // Book marks
+  FXint                insertpoint;             // Insert point
   Syntax              *syntax;                  // Syntax highlighter
   FXUndoList           undolist;                // Undo list
   FXRecentFiles        mrufiles;                // Recent files list
@@ -81,8 +83,6 @@ protected:
   FXString             searchpaths;             // Search paths for files
   FXHiliteArray        styles;                  // Highlight styles
   ShellCommand        *shellCommand;            // Running shell command, if any
-  FXint                replaceStart;            // Start of text to be replaced
-  FXint                replaceEnd;              // End of text to be replaced
   FXint                initialwidth;            // Initial width
   FXint                initialheight;           // Initial height
   FXbool               initialsize;             // New window is initialwidth x initialheight
@@ -103,6 +103,7 @@ protected:
   FXint                tabcols;                 // Tab indents this many columns
   FXbool               hardtabs;                // Insert hard tabs
   FXint                barcols;                 // Number of columns for line numbers
+  FXbool               mergeundos;              // Merge undos
   FXbool               showlogger;              // Showing error logger
   FXbool               colorize;                // Syntax coloring on if possible
   FXbool               stripcr;                 // Strip carriage returns
@@ -113,63 +114,84 @@ protected:
   FXbool               savemarks;               // Save bookmarks of files
   FXbool               warnchanged;             // Warn if changed by other program
 protected:
+
+  // Undo management
+  enum{
+    MAXUNDOSIZE=1000000,        // Don't let the undo buffer get out of hand
+    KEEPUNDOSIZE=500000         // When MAXUNDOSIZE was exceeded, trim down to this size
+    };
+
+  // Buffer I/O conversions
+  enum{
+    CRLF=1,                     // CRLF versus LF
+    LINE=2,                     // Append end of line
+    TRIM=4                      // trim trailing space
+    };
+
+private:
+  TextWindow(){}
+  TextWindow(const TextWindow&);
+  TextWindow& operator=(const TextWindow&);
   void createMenubar();
   void createToolbar();
   void createSearchbar();
   void createStatusbar();
   void readRegistry();
   void writeRegistry();
-  FXint findRestylePoint(FXint pos,FXint& style) const;
-  FXint backwardByContext(FXint pos) const;
   FXint forwardByContext(FXint pos) const;
+  FXint backwardByContext(FXint pos) const;
+  FXint findRestylePoint(FXint pos,FXint& style) const;
   void restyleText();
   void restyleText(FXint pos,FXint del,FXint ins);
   FXint restyleRange(FXint beg,FXint end,FXint& changed,FXint rule);
   FXHiliteStyle readStyleForRule(const FXString& group,const FXString& name,const FXString& style);
   void writeStyleForRule(const FXString& group,const FXString& name,const FXHiliteStyle& style);
-  FXbool matchesSelection(const FXString& string,FXint* beg,FXint* end,FXuint flgs,FXint npar) const;
-  void updateBookmarks(FXint pos,FXint nd,FXint ni);
-  void addSearchHistory(const FXString& pat,FXuint opt,FXbool rep);
   void loadSearchHistory();
   void saveSearchHistory();
-  FXbool saveChanges();
-protected:
+  void addSearchHistory(const FXString& pat,FXuint opt,FXbool rep);
+  void updateBookmarks(FXint pos,FXint nd,FXint ni);
+  FXbool insertSel();
+  FXbool extractSel();
+  FXbool insertFromFile(const FXString& file,FXint sp,FXint ep,FXint sc,FXint ec);
+  FXbool extractToFile(const FXString& file,FXint sp,FXint ep,FXint sc,FXint ec);
+  FXbool matchesSelection(const FXString& string,FXint* beg,FXint* end,FXuint flgs,FXint npar) const;
+  FXint changedExternally();
+  FXbool newDoc();
+  FXbool createDoc();
+  FXbool createDoc(const FXString& file);
+  FXbool saveDoc();
+  FXbool saveDocAs();
+  FXbool saveDocTo();
+  FXbool reloadDoc();
+  FXbool openDoc();
+  FXbool openDoc(const FXString& file);
+  FXbool switchDoc();
+  FXbool switchDoc(const FXString& file);
+  FXbool openSelDoc();
+private:
   static FXbool loadBuffer(const FXString& file,FXString& buffer,FXuint bits=0);
   static FXbool saveBuffer(const FXString& file,FXString& buffer,FXuint bits=0);
-protected:
-  enum{
-    MAXUNDOSIZE  = 1000000,     // Don't let the undo buffer get out of hand
-    KEEPUNDOSIZE = 500000       // When MAXUNDOSIZE was exceeded, trim down to this size
-    };
-private:
-  TextWindow(){}
-  TextWindow(const TextWindow&);
-  TextWindow& operator=(const TextWindow&);
 public:
   long onUpdate(FXObject*,FXSelector,void*);
   long onFocusIn(FXObject*,FXSelector,void*);
-  long onCmdAbout(FXObject*,FXSelector,void*);
-  long onCmdHelp(FXObject*,FXSelector,void*);
   long onUpdIsEditable(FXObject*,FXSelector,void*);
   long onUpdHasSelection(FXObject*,FXSelector,void*);
 
   // File management
   long onCmdNew(FXObject*,FXSelector,void*);
+  long onCmdNewFile(FXObject*,FXSelector,void*);
   long onCmdOpen(FXObject*,FXSelector,void*);
   long onCmdOpenRecent(FXObject*,FXSelector,void*);
   long onCmdOpenTree(FXObject*,FXSelector,void*);
   long onCmdOpenSelected(FXObject*,FXSelector,void*);
   long onCmdSwitch(FXObject*,FXSelector,void*);
-  long onCmdReopen(FXObject*,FXSelector,void*);
-  long onUpdReopen(FXObject*,FXSelector,void*);
+  long onCmdReload(FXObject*,FXSelector,void*);
+  long onUpdReload(FXObject*,FXSelector,void*);
   long onCmdSave(FXObject*,FXSelector,void*);
   long onUpdSave(FXObject*,FXSelector,void*);
   long onCmdSaveAs(FXObject*,FXSelector,void*);
   long onCmdSaveTo(FXObject*,FXSelector,void*);
-  long onCmdFont(FXObject*,FXSelector,void*);
-  long onCmdPrint(FXObject*,FXSelector,void*);
-  long onCmdSaveSettings(FXObject*,FXSelector,void*);
-  long onCmdReplaceFile(FXObject*,FXSelector,void*);
+  long onCmdInsertFile(FXObject*,FXSelector,void*);
   long onCmdExtractFile(FXObject*,FXSelector,void*);
 
   // Text display
@@ -240,6 +262,11 @@ public:
   long onTextRightMouse(FXObject*,FXSelector,void*);
 
   // Miscellaneous
+  long onCmdAbout(FXObject*,FXSelector,void*);
+  long onCmdHelp(FXObject*,FXSelector,void*);
+  long onCmdFont(FXObject*,FXSelector,void*);
+  long onCmdPrint(FXObject*,FXSelector,void*);
+  long onCmdSaveSettings(FXObject*,FXSelector,void*);
   long onCmdStripReturns(FXObject*,FXSelector,void*);
   long onUpdStripReturns(FXObject*,FXSelector,void*);
   long onCmdStripSpaces(FXObject*,FXSelector,void*);
@@ -258,6 +285,8 @@ public:
   long onUpdDelimiters(FXObject*,FXSelector,void*);
   long onCmdWheelAdjust(FXObject*,FXSelector,void*);
   long onUpdWheelAdjust(FXObject*,FXSelector,void*);
+  long onCmdInsertPoint(FXObject*,FXSelector,void*);
+  long onUpdInsertPoint(FXObject*,FXSelector,void*);
   long onCmdSetMark(FXObject*,FXSelector,void*);
   long onUpdSetMark(FXObject*,FXSelector,void*);
   long onCmdNextMark(FXObject*,FXSelector,void*);
@@ -295,8 +324,9 @@ public:
   long onUpdSearchPaths(FXObject*,FXSelector,void*);
   long onCmdFindInFiles(FXObject*,FXSelector,void*);
   long onQueryTextTip(FXObject*,FXSelector,void*);
-
   long onLoggerRightMouse(FXObject*,FXSelector,void*);
+  long onCmdMergeUndos(FXObject*,FXSelector,void*);
+  long onUpdMergeUndos(FXObject*,FXSelector,void*);
 
   // Shell commands
   long onCmdShellDialog(FXObject*,FXSelector,void*);
@@ -307,9 +337,8 @@ public:
   long onUpdShellFilter(FXObject*,FXSelector,void*);
   long onCmdShellCancel(FXObject*,FXSelector,void*);
   long onUpdShellCancel(FXObject*,FXSelector,void*);
-  long onCmdShellOutput(FXObject*,FXSelector,void*);
-  long onCmdShellError(FXObject*,FXSelector,void*);
-  long onCmdShellDone(FXObject*,FXSelector,void*);
+  long onCmdShellMenu(FXObject*,FXSelector,void*);
+  long onUpdShellMenu(FXObject*,FXSelector,void*);
 
   // Evaluate expression
   long onCmdExpression(FXObject*,FXSelector,void*);
@@ -342,6 +371,8 @@ public:
   long onCmdISearchHistDn(FXObject*,FXSelector,void*);
   long onUpdISearchCase(FXObject*,FXSelector,void*);
   long onCmdISearchCase(FXObject*,FXSelector,void*);
+  long onUpdISearchWords(FXObject*,FXSelector,void*);
+  long onCmdISearchWords(FXObject*,FXSelector,void*);
   long onUpdISearchDir(FXObject*,FXSelector,void*);
   long onCmdISearchDir(FXObject*,FXSelector,void*);
   long onUpdISearchRegex(FXObject*,FXSelector,void*);
@@ -373,12 +404,13 @@ public:
     ID_ABOUT=FXMainWindow::ID_LAST,
     ID_FILEFILTER,
     ID_NEW,
+    ID_NEW_FILE,
     ID_OPEN,
     ID_OPEN_TREE,
     ID_OPEN_SELECTED,
     ID_OPEN_RECENT,
     ID_SWITCH,
-    ID_REOPEN,
+    ID_RELOAD,
     ID_SAVE,
     ID_SAVEAS,
     ID_SAVETO,
@@ -414,6 +446,7 @@ public:
     ID_OVERSTRIKE,
     ID_READONLY,
     ID_TABMODE,
+    ID_MERGEUNDOS,
     ID_CLOCKTIME,
     ID_PREFERENCES,
     ID_TABCOLUMNS,
@@ -425,9 +458,10 @@ public:
     ID_BRACEMATCH,
     ID_BRACEMATCHTIME,
     ID_BRACEMATCHSTAY,
-    ID_REPLACE_FILE,
+    ID_INSERT_FILE,
     ID_EXTRACT_FILE,
     ID_WHEELADJUST,
+    ID_INSERTPOINT,
     ID_SET_MARK,
     ID_NEXT_MARK,
     ID_PREV_MARK,
@@ -511,6 +545,7 @@ public:
     ID_ISEARCH_FINISH,
     ID_ISEARCH_HIST_UP,
     ID_ISEARCH_HIST_DN,
+    ID_ISEARCH_WORDS,
     ID_TABSELECT_0,
     ID_TABSELECT_1,
     ID_TABSELECT_2,
@@ -524,11 +559,24 @@ public:
     ID_SHELL_FILTER,
     ID_SHELL_COMMAND,
     ID_SHELL_CANCEL,
-    ID_SHELL_OUTPUT,
-    ID_SHELL_ERROR,
-    ID_SHELL_DONE,
     ID_URL_ENCODE,
     ID_URL_DECODE,
+    ID_CUST_CMD0,
+    ID_CUST_CMD1,
+    ID_CUST_CMD2,
+    ID_CUST_CMD3,
+    ID_CUST_CMD4,
+    ID_CUST_CMD5,
+    ID_CUST_CMD6,
+    ID_CUST_CMD7,
+    ID_CUST_CMD8,
+    ID_CUST_CMD9,
+    ID_CUST_CMDA,
+    ID_CUST_CMDB,
+    ID_CUST_CMDC,
+    ID_CUST_CMDD,
+    ID_CUST_CMDE,
+    ID_CUST_CMDF,
     ID_LAST
     };
 public:
@@ -539,20 +587,8 @@ public:
   // Create window
   virtual void create();
 
-  // Detach window
-  virtual void detach();
-
-  // Close the window, return true if actually closed
-  virtual FXbool close(FXbool notify=false);
-
   // Return Adie application
   Adie* getApp() const { return (Adie*)FXMainWindow::getApp(); }
-
-  // Set current file of directory browser
-  void setBrowserCurrentFile(const FXString& file);
-
-  // Get current file of directory browser
-  FXString getBrowserCurrentFile() const;
 
   // Change this window's filename
   void setFilename(const FXString& file){ filename=file; }
@@ -575,26 +611,29 @@ public:
   // Is it modified
   FXbool isModified() const;
 
+  // Set current file of directory browser
+  void setBrowserCurrentFile(const FXString& file);
+
+  // Get current file of directory browser
+  FXString getBrowserCurrentFile() const;
+
+  // Set current directory
+  void setBrowserCurrentDirectory(const FXString& dir);
+
+  // Get current directory
+  FXString getBrowserCurrentDirectory() const;
+
   // Set editable flag
   void setEditable(FXbool edit=true);
 
   // Is it editable
   FXbool isEditable() const;
 
-  // Load text from file
-  FXbool loadFile(const FXString& file);
+  // Change current file pattern
+  void setCurrentPattern(FXint n);
 
-  // Save text to file
-  FXbool saveFile(const FXString& file);
-
-  // Save text to file
-  FXbool saveToFile(const FXString& file);
-
-  // Insert file at cursor
-  FXbool replaceByFile(const FXString& file,FXint startpos,FXint endpos,FXint startcol=-1,FXint endcol=-1);
-
-  // Extract selection to file
-  FXbool extractToFile(const FXString& file,FXint startpos,FXint endpos,FXint startcol=-1,FXint endcol=-1);
+  // Return current file pattern
+  FXint getCurrentPattern() const;
 
   // Change pattern list
   void setPatternList(const FXString& patterns);
@@ -608,14 +647,29 @@ public:
   // Get search paths
   FXString getSearchPaths() const;
 
-  // Change current file pattern
-  void setCurrentPattern(FXint n);
+  // Search for file using search paths
+  FXString searchForFile(const FXString& file);
 
-  // Return current file pattern
-  FXint getCurrentPattern() const;
+  // Visit position
+  void visitPosition(FXint pos);
 
-  // Goto position
-  void gotoPosition(FXint pos);
+  // Visit given line, and column
+  void visitLine(FXint line,FXint column=0);
+
+  // Ask user to save changes
+  FXbool saveChanges();
+
+  // Check for external changes
+  FXbool checkChanges();
+
+  // Load text from file
+  FXbool loadFile(const FXString& file);
+
+  // Save text to file
+  FXbool saveFile(const FXString& file);
+
+  // Save text to file
+  FXbool saveToFile(const FXString& file);
 
   // Add bookmark at given position pos
   void setBookmark(FXint pos);
@@ -629,9 +683,6 @@ public:
 
   // Remove bookmark at given position pos
   void clearBookmark(FXint pos);
-
-  // Visit given line, and column
-  void visitLine(FXint line,FXint column=0);
 
   // Read/write view
   void readView(const FXString& file);
@@ -647,13 +698,16 @@ public:
   FXbool performISearch(const FXString& text,FXuint opts,FXbool advance=false,FXbool notify=false);
 
   // Start shell command
-  FXbool startCommand(const FXString& command,const FXString& input=FXString::null);
+  FXbool startCommand(const FXString& command,FXint sp,FXint ep,FXint sc,FXint ec,FXuint flgs=0);
 
   // Done with command
   FXbool doneCommand();
 
   // Stop shell command
   FXbool stopCommand();
+
+  // Create command line
+  FXString makeCommandline(const FXString& cmd) const;
 
   // Set syntax
   void setSyntax(Syntax* syn);
@@ -669,6 +723,25 @@ public:
 
   // Set status message
   void setStatusMessage(const FXString& msg);
+
+  // Append to text window
+  void textAppend(const FXchar* text,FXint len);
+  void textAppend(const FXchar* text);
+  void textAppend(const FXString& text);
+
+  // Append to log window
+  void logAppend(const FXchar* text,FXint len);
+  void logAppend(const FXchar* text);
+  void logAppend(const FXString& text);
+
+  // Clear log window
+  void logClear();
+
+  // Detach window
+  virtual void detach();
+
+  // Close the window, return true if actually closed
+  virtual FXbool close(FXbool notify=false);
 
   // Delete text window
   virtual ~TextWindow();

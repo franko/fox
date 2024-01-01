@@ -30,6 +30,7 @@
 #include "FXSystem.h"
 #include "FXProcess.h"
 #include "FXPath.h"
+#include "FXIO.h"
 #include "FXStat.h"
 #include "FXFile.h"
 #include "FXDir.h"
@@ -379,7 +380,7 @@ FXbool FXRegistry::writeToRegistryGroup(const FXString& group,FXptr hbase){
           if(!data(s).empty(e) && data(s).mark(e)){
 
             // Create section in registry upon finding first key in it
-            if(hsection==nullptr){
+            if(!hsection){
               if(RegCreateKeyExA(hgroup,key(s).text(),0,REG_NONE,REG_OPTION_NON_VOLATILE,KEY_WRITE|KEY_READ,nullptr,&hsection,&disp)!=ERROR_SUCCESS) goto x;
               }
 

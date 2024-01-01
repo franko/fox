@@ -398,6 +398,7 @@ FXString FXSystem::getSystemDirectory(){
 
 
 /*
+
 BOOL WINAPI LookupAccountName(
   _In_opt_   LPCTSTR lpSystemName,
   _In_       LPCTSTR lpAccountName,
@@ -550,6 +551,121 @@ FXString FXSystem::getUserDirectory(const FXString& user){
   return FXString::null;
 #endif
   }
+
+
+#if defined(WIN32)
+
+// Kick off a command to the system
+// Note, this version launches cmd.exe w/o creating a terminal window.
+FXint FXSystem::system(const FXString& cmd){
+  FXint res=-1;
+  if(!cmd.empty()){
+#if defined(UNICODE)
+    FXnchar* cmd_arg;
+    if(callocElms(cmd_arg,cmd.length()+4)){
+      FXnchar cmd_exe[MAXPATHLEN];
+      PROCESS_INFORMATION pi;
+      STARTUPINFO si;
+
+      // Zero out process info and startup info
+      clearElms(&pi,1);
+      clearElms(&si,1);
+
+      // Init startup info
+      si.cb=sizeof(si);
+
+      // Also suggested; not sure if this is better than CREATE_NO_WINDOW
+      // for dwCreationFlags...
+//      si.dwFlags=STARTF_USESHOWWINDOW;
+//      si.wShowWindow=SW_HIDE;
+
+      // Option for cmd.exe
+      cmd_arg[0]='/';
+      cmd_arg[1]='c';
+      cmd_arg[2]=' ';
+
+      // Copy command
+      utf2ncs(&cmd_arg[3],cmd.text(),cmd.length());
+
+      // Path to cmd.exe
+      GetEnvironmentVariableW(L"COMSPEC",cmd_exe,MAXPATHLEN);
+
+      // Probably required
+     _flushall();
+
+      // Kick off command
+      DWORD dwCreationFlags = !GetConsoleWindow() ? CREATE_NO_WINDOW : 0;
+      if(CreateProcessW(cmd_exe,cmd_arg,nullptr,nullptr,false,dwCreationFlags,nullptr,nullptr,&si,&pi)){
+        WaitForSingleObject(pi.hProcess,INFINITE);
+        GetExitCodeProcess(pi.hProcess,(DWORD*)&res);
+        CloseHandle(pi.hProcess);
+        CloseHandle(pi.hThread);
+        }
+
+      // Free argument
+      freeElms(cmd_arg);
+      }
+#else
+    FXchar* cmd_arg;
+    if(callocElms(cmd_arg,cmd.length()+4)){
+      FXchar cmd_exe[MAXPATHLEN];
+      PROCESS_INFORMATION pi;
+      STARTUPINFO si;
+
+      // Zero out process info and startup info
+      clearElms(&pi,1);
+      clearElms(&si,1);
+
+      // Init startup info
+      si.cb=sizeof(si);
+
+      // Also suggested:
+//      si.dwFlags=STARTF_USESHOWWINDOW;
+//      si.wShowWindow=SW_HIDE;
+
+      // Option for cmd.exe
+      cmd_arg[0]='/';
+      cmd_arg[1]='c';
+      cmd_arg[2]=' ';
+
+      // Copy command
+      strncpy(&cmd_arg[3],cmd.text(),cmd.length());
+
+      // Path to cmd.exe
+      GetEnvironmentVariableA("COMSPEC",cmd_exe,MAXPATHLEN);
+
+      // Probably required
+     _flushall();
+
+      // Kick off command
+      DWORD dwCreationFlags = !GetConsoleWindow() ? CREATE_NO_WINDOW : 0;
+      if(CreateProcessA(cmd_exe,cmd_arg,nullptr,nullptr,false,dwCreationFlags,nullptr,nullptr,&si,&pi)){
+        WaitForSingleObject(pi.hProcess,INFINITE);
+        GetExitCodeProcess(pi.hProcess,(DWORD*)&res);
+        CloseHandle(pi.hProcess);
+        CloseHandle(pi.hThread);
+        }
+
+      // Free argument
+      freeElms(cmd_arg);
+      }
+#endif
+    }
+  return res;
+  }
+
+
+#else
+
+// Kick off a command to the system
+FXint FXSystem::system(const FXString& cmd){
+  if(!cmd.empty()){
+    return ::system(cmd.text());
+    }
+  return -1;
+  }
+
+#endif
 
 
 // Return host name

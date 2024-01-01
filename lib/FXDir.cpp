@@ -27,6 +27,7 @@
 #include "FXHash.h"
 #include "FXStream.h"
 #include "FXString.h"
+#include "FXIO.h"
 #include "FXStat.h"
 #include "FXFile.h"
 #include "FXPath.h"
@@ -59,7 +60,6 @@ struct SPACE {
   struct dirent*  dp;
   };
 #endif
-
 
 
 // Construct directory enumerator
@@ -111,7 +111,7 @@ FXbool FXDir::open(const FXString& path){
       }
 #else
     alias_cast<SPACE>(space)->handle=opendir(path.text());
-    if(alias_cast<SPACE>(space)->handle!=nullptr){
+    if(alias_cast<SPACE>(space)->handle){
       return true;
       }
 #endif

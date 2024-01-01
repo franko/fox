@@ -481,7 +481,7 @@ FXbool SyntaxParser::parseLanguage(SyntaxList& syntaxes){
 
     // Create language
     syntax=new Syntax(name,group);
-    syntax->setExtensions(filesmatch);
+    syntax->setPatterns(filesmatch);
     syntax->setContents(contentsmatch);
     syntax->setDelimiters(delimiters);
     syntax->setContextLines(contextlines);

@@ -49,30 +49,33 @@ namespace FX {
 /*******************************************************************************/
 
 /// EXPERIMENT ///
+#if defined(NEWMAP)
 
 
-typedef long (*NewMethod)(FX::FXObject*,FX::FXObject*,FX::FXSelector,void*);
 
-struct NewMapEntry {
-  FX::FXSelector keylo;
-  FX::FXSelector keyhi;
-  FX::NewMethod  method;
-  };
-
-extern const NewMapEntry messagemap[];
-
-
-template <typename T,long (T::*mfn)(FX::FXObject*,FX::FXSelector,void*)>
-static long method_call(FX::FXObject* tgt,FX::FXObject* obj,FX::FXSelector sel,void* ptr){
-  return (tgt->*mfn)(obj,sel,ptr);
-  }
-
-const NewMapEntry messagemap[]={
-  {100,200,&method_call<FXObject,&FXObject::onDefault>},
+const NewMapEntry FXObject::messagemap[]={
+  {100,200,&method_call<&FXObject::onDefault>},
   };
 
 
+
+/*
+if you define a function template
+
+  template <typename t, void (t::*mf)()> foo<t, mf> f(mf);
+
+where foo is your old-style class template like
+
+  template <typename t, void (t::*mf)()> class foo;
+
+then you can use decltype(f(&x::h)) to deduce the desired type foo<x, &x::h> without having to repeat x.
+the price is that you either need to say decltype everywhere, or you wrap that in a macro.
+
+*/
+
+#endif
 /// EXPERIMENT ///
+
 
 // Have to do this one `by hand' as it has no base class
 const FXMetaClass FXObject::metaClass("FXObject",FXObject::manufacture,nullptr,nullptr,0,0);
@@ -81,6 +84,12 @@ const FXMetaClass FXObject::metaClass("FXObject",FXObject::manufacture,nullptr,n
 // Build an object
 FXObject* FXObject::manufacture(){
   return new FXObject;
+  }
+
+
+// Get metaclass of object
+const FX::FXMetaClass* FXObject::getMetaClass() const {
+  return &FXObject::metaClass;
   }
 
 
@@ -93,6 +102,18 @@ const FXchar* FXObject::getClassName() const {
 // Check if object belongs to a class
 FXbool FXObject::isMemberOf(const FXMetaClass* metaclass) const {
   return getMetaClass()->isSubClassOf(metaclass);
+  }
+
+
+// Unhandled function
+long FXObject::onDefault(FXObject*,FXSelector,void*){
+  return 0;
+  }
+
+
+// Handle message
+long FXObject::handle(FXObject* sender,FXSelector sel,void* ptr){
+  return onDefault(sender,sel,ptr);
   }
 
 
@@ -109,16 +130,6 @@ void FXObject::save(FXStream&) const { }
 
 // Load from stream
 void FXObject::load(FXStream&){ }
-
-
-// Unhandled function
-long FXObject::onDefault(FXObject*,FXSelector,void*){ return 0; }
-
-
-// Handle message
-long FXObject::handle(FXObject* sender,FXSelector sel,void* ptr){
-  return onDefault(sender,sel,ptr);
-  }
 
 
 // Virtual destructor

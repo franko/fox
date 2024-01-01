@@ -18,12 +18,9 @@
 * You should have received a copy of the GNU General Public License             *
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.         *
 ********************************************************************************/
+#include "xincs.h"
 #include "fx.h"
 #include "fxkeys.h"
-#include <signal.h>
-#ifndef WIN32
-#include <sys/wait.h>
-#endif
 #include "HelpWindow.h"
 #include "Preferences.h"
 #include "Commands.h"
@@ -50,6 +47,7 @@ FXDEFMAP(Adie) AdieMap[]={
   FXMAPFUNC(SEL_SIGNAL,Adie::ID_CLOSEALL,Adie::onCmdCloseAll),
   FXMAPFUNC(SEL_COMMAND,Adie::ID_CLOSEALL,Adie::onCmdCloseAll),
   FXMAPFUNC(SEL_COMMAND,Adie::ID_SYNTAXPATHS,Adie::onCmdSyntaxPaths),
+  FXMAPFUNC(SEL_COMMAND,Adie::ID_MAPS,Adie::onCmdDumpMaps),
   FXMAPFUNC(SEL_UPDATE,Adie::ID_SYNTAXPATHS,Adie::onUpdSyntaxPaths),
   };
 
@@ -68,17 +66,21 @@ Adie::Adie(const FXString& name):FXApp(name){
   // Make some icons; these are shared between all text windows
   bigicon=new FXGIFIcon(this,big_gif);
   smallicon=new FXGIFIcon(this,small_gif);
-  newicon=new FXGIFIcon(this,new_gif,0,IMAGE_ALPHAGUESS);
+  newicon=new FXGIFIcon(this,new_gif);
+  newfileicon=new FXGIFIcon(this,newfile_gif);
   reloadicon=new FXGIFIcon(this,reload_gif);
   openicon=new FXGIFIcon(this,open_gif);
+  closeicon=new FXGIFIcon(this,close_gif);
   saveicon=new FXGIFIcon(this,save_gif);
-  saveasicon=new FXGIFIcon(this,saveas_gif,0,IMAGE_ALPHAGUESS);
-  savetoicon=new FXGIFIcon(this,saveto_gif,0,IMAGE_ALPHAGUESS);
+  saveasicon=new FXGIFIcon(this,saveas_gif);
+  savetoicon=new FXGIFIcon(this,saveto_gif);
   printicon=new FXGIFIcon(this,print_gif);
+  importicon=new FXGIFIcon(this,import_gif);
+  exporticon=new FXGIFIcon(this,export_gif);
   cuticon=new FXGIFIcon(this,cut_gif);
   copyicon=new FXGIFIcon(this,copy_gif);
   pasteicon=new FXGIFIcon(this,paste_gif);
-  deleteicon=new FXGIFIcon(this,delete_gif);
+  deleteicon=new FXGIFIcon(this,delete_gif,0,IMAGE_THRESGUESS);
   undoicon=new FXGIFIcon(this,undo_gif);
   redoicon=new FXGIFIcon(this,redo_gif);
   fontsicon=new FXGIFIcon(this,fonts_gif);
@@ -86,12 +88,23 @@ Adie::Adie(const FXString& name):FXApp(name){
   quiticon=new FXGIFIcon(this,quit_gif);
   searchicon=new FXGIFIcon(this,search_gif,0,IMAGE_ALPHAGUESS);
   replaceicon=new FXGIFIcon(this,replace_gif,0,IMAGE_ALPHAGUESS);
+  expressicon=new FXGIFIcon(this,express_gif);
+  searchfilesicon=new FXGIFIcon(this,searchfiles_gif);
   searchnexticon=new FXGIFIcon(this,searchnext_gif,0,IMAGE_ALPHAGUESS);
   searchprevicon=new FXGIFIcon(this,searchprev_gif,0,IMAGE_ALPHAGUESS);
-  bookseticon=new FXGIFIcon(this,bookset_gif);
-  booknexticon=new FXGIFIcon(this,booknext_gif);
-  bookprevicon=new FXGIFIcon(this,bookprev_gif);
-  bookdelicon=new FXGIFIcon(this,bookdel_gif);
+  searchrexicon=new FXGIFIcon(this,search_rex);
+  searchnorexicon=new FXGIFIcon(this,search_norex);
+  searchcaseicon=new FXGIFIcon(this,search_case);
+  searchnocaseicon=new FXGIFIcon(this,search_nocase);
+  searchwordicon=new FXGIFIcon(this,search_word);
+  searchnowordicon=new FXGIFIcon(this,search_noword);
+  searchupicon=new FXGIFIcon(this,search_up);
+  searchdnicon=new FXGIFIcon(this,search_dn);
+  bookseticon=new FXGIFIcon(this,bookset2_gif);
+  booknexticon=new FXGIFIcon(this,booknxt2_gif);
+  bookprevicon=new FXGIFIcon(this,bookprv2_gif);
+  bookdelicon=new FXGIFIcon(this,bookdel2_gif);
+  bookclricon=new FXGIFIcon(this,bookclr2_gif);
   shiftlefticon=new FXGIFIcon(this,shiftleft_gif);
   shiftrighticon=new FXGIFIcon(this,shiftright_gif);
   configicon=new FXGIFIcon(this,config_gif);
@@ -103,8 +116,17 @@ Adie::Adie(const FXString& name):FXApp(name){
   lowercaseicon=new FXGIFIcon(this,lowercase);
   backwardicon=new FXGIFIcon(this,backward_gif);
   forwardicon=new FXGIFIcon(this,forward_gif);
-  shownicon=new FXGIFIcon(this,fileshown);
-  hiddenicon=new FXGIFIcon(this,filehidden);
+  shownicon=new FXGIFIcon(this,fileshown_gif);
+  hiddenicon=new FXGIFIcon(this,filehidden_gif);
+  wordwrapicon=new FXGIFIcon(this,wordwrap_gif);
+  nowrapicon=new FXGIFIcon(this,nowrap_gif);
+  filtericon=new FXGIFIcon(this,filter_gif);
+  commandicon=new FXGIFIcon(this,terminal_gif);
+  scripticon=new FXGIFIcon(this,script_gif);
+  switchicon=new FXGIFIcon(this,switch_gif);
+  openselicon=new FXGIFIcon(this,opensel_gif);
+  docsicon=new FXGIFIcon(this,docs_gif);
+  pointicon=new FXGIFIcon(this,point2_gif);
 
 #ifndef DEBUG
   // If interrupt happens, quit gracefully; we may want to
@@ -123,6 +145,84 @@ Adie::Adie(const FXString& name):FXApp(name){
   //addSignal(SIGCHLD,this,ID_HARVEST,true);
 #endif
   }
+
+
+/*******************************************************************************/
+
+
+// Clean up the mess
+Adie::~Adie(){
+  FXTRACE((10,"Adie::~Adie()\n"));
+  for(int i=0; i<numSyntaxes(); i++) delete getSyntax(i);
+  FXASSERT(numWindows()==0);
+  delete associations;
+  delete bigicon;
+  delete smallicon;
+  delete newicon;
+  delete newfileicon;
+  delete reloadicon;
+  delete openicon;
+  delete closeicon;
+  delete saveicon;
+  delete saveasicon;
+  delete savetoicon;
+  delete printicon;
+  delete importicon;
+  delete exporticon;
+  delete cuticon;
+  delete copyicon;
+  delete pasteicon;
+  delete deleteicon;
+  delete undoicon;
+  delete redoicon;
+  delete fontsicon;
+  delete helpicon;
+  delete quiticon;
+  delete searchicon;
+  delete replaceicon;
+  delete expressicon;
+  delete searchfilesicon;
+  delete searchnexticon;
+  delete searchprevicon;
+  delete searchrexicon;
+  delete searchnorexicon;
+  delete searchcaseicon;
+  delete searchnocaseicon;
+  delete searchwordicon;
+  delete searchnowordicon;
+  delete searchupicon;
+  delete searchdnicon;
+  delete bookseticon;
+  delete booknexticon;
+  delete bookprevicon;
+  delete bookdelicon;
+  delete bookclricon;
+  delete shiftlefticon;
+  delete shiftrighticon;
+  delete configicon;
+  delete browsericon;
+  delete nobrowsericon;
+  delete loggericon;
+  delete nologgericon;
+  delete uppercaseicon;
+  delete lowercaseicon;
+  delete backwardicon;
+  delete forwardicon;
+  delete shownicon;
+  delete hiddenicon;
+  delete wordwrapicon;
+  delete nowrapicon;
+  delete filtericon;
+  delete commandicon;
+  delete scripticon;
+  delete switchicon;
+  delete openselicon;
+  delete docsicon;
+  delete pointicon;
+  }
+
+
+/*******************************************************************************/
 
 
 // Get syntax for language name
@@ -261,10 +361,16 @@ TextWindow* Adie::openFileWindow(const FXString& file,FXbool edit){
 
 // Harvest the zombies :-)
 long Adie::onSigHarvest(FXObject*,FXSelector,void*){
-  fxmessage("Harvesting...\n");
 #ifndef WIN32
   while(waitpid(-1,nullptr,WNOHANG)>0){ }
 #endif
+  return 1;
+  }
+
+
+// Change syntax paths
+long Adie::onCmdDumpMaps(FXObject*,FXSelector,void*){
+  FXMetaClass::dumpMetaClasses();
   return 1;
   }
 
@@ -297,21 +403,24 @@ static void printusage(){
   fxmessage("Usage: adie [options] files...\n");
   fxmessage("  options:\n");
   fxmessage("  --help, -h               Print help.\n");
+  fxmessage("  --detach, -d             Detach from terminal.\n");
   fxmessage("  --version                Print version number.\n");
   fxmessage("  --view                   Start in view-only mode.\n");
   fxmessage("  --edit                   Start in edit-mode.\n");
   fxmessage("  --line=NUM               Jump cursor position to line number.\n");
   fxmessage("  --column=NUM             Jump cursor position to column.\n");
-  fxmessage("  --syntax=SYNTAXFILE      Load given syntax file.\n");
   fxmessage("  --lang=LANGUAGE          Force language mode.\n");
   fxmessage("  --size=WxH+X+Y           Force window size and placement.\n");
+  fxmessage("  --syntax=SYNTAXFILE      Syntax file (default: Adie.stx).\n");
+  fxmessage("  --iconpath=PATHLIST      Directories to search for icons.\n");
+  fxmessage("  --syntaxpath=PATHLIST    Directories to search for syntax file.\n");
   }
 
 
 // Print verson info
 static void printversion(){
   fxmessage("A.d.i.e. - ADvanced Interactive Editor %d.%d.%d.\n",VERSION_MAJOR,VERSION_MINOR,VERSION_PATCH);
-  fxmessage("Copyright (C) 2000,2022 Jeroen van der Zijp.  All Rights Reserved.\n\n");
+  fxmessage("Copyright (C) 2000,2023 Jeroen van der Zijp.  All Rights Reserved.\n\n");
   fxmessage("Please visit: http://www.fox-toolkit.org for further information.\n");
   fxmessage("\n");
   fxmessage("This program is free software: you can redistribute it and/or modify\n");
@@ -331,13 +440,12 @@ static void printversion(){
 
 // Parse line and column following filename, if any
 static FXString parseFileAndLocation(const FXString& string,FXint& line,FXint& col){
-  FXString result('\0',1024);
-  line=col=0;
-  if(string.scan("%1023[^:]:%d:%d",result.text(),&line,&col)==3){
-    return result;
+  FXchar filename[1024];
+  if(string.scan("%1023[^:]:%d:%d",filename,&line,&col)==3){
+    return FXString(filename);
     }
-  if(string.scan("%1023[^:]:%d",result.text(),&line)==2){
-    return result;
+  if(string.scan("%1023[^:]:%d",filename,&line)==2){
+    return FXString(filename);
     }
   return string;
   }
@@ -346,7 +454,7 @@ static FXString parseFileAndLocation(const FXString& string,FXint& line,FXint& c
 // Start the application
 FXint Adie::start(int argc,char** argv){
   FXString    name,execpath,iconpath,syntaxfile;
-  FXString    file=FXPath::absolute("untitled");
+  FXString    file(FXPath::absolute("untitled"));
   TextWindow *window=nullptr;
   Syntax     *syntax=nullptr;
   FXbool      edit=true;
@@ -371,26 +479,41 @@ FXint Adie::start(int argc,char** argv){
   // Exec path is default for syntax path
   execpath=FXSystem::getExecPath();
 
-  FXTRACE((11,"execpath=%s\n",execpath.text()));
+  // See if override paths are provided in the registry
+  syntaxpaths=reg().readStringEntry("SETTINGS","syntaxpaths",execpath.text());
 
   // Get icon search path
   iconpath=reg().readStringEntry("SETTINGS","iconpath",FXIconCache::defaultIconPath);
 
+  FXTRACE((11,"execpath=%s\n",execpath.text()));
   FXTRACE((11,"iconpath=%s\n",iconpath.text()));
-
-  // Change icon search path
-  associations->setIconPath(iconpath);
-
-  // See if override paths are provided in the registry
-  syntaxpaths=reg().readStringEntry("SETTINGS","syntaxpaths",execpath.text());
-
   FXTRACE((11,"syntaxpaths=%s\n",syntaxpaths.text()));
 
-  // Look for syntax file in the syntax paths
-  syntaxfile=FXPath::search(syntaxpaths,"Adie.stx");
-
-  // Global options
+  // A few boilerplate options before starting
   while(arg<argc){
+    if(FXString::compare(argv[arg],"--syntax=",9)==0){
+      syntaxfile=argv[arg]+9;
+      arg++;
+      continue;
+      }
+    if(FXString::compare(argv[arg],"--iconpath=",11)==0){
+      iconpath=argv[arg]+11;
+      arg++;
+      continue;
+      }
+    if(FXString::compare(argv[arg],"--syntaxpath=",13)==0){
+      syntaxpaths=argv[arg]+13;
+      arg++;
+      continue;
+      }
+#if defined(HAVE_DAEMON)
+    if(FXString::compare(argv[arg],"--detach")==0 || FXString::compare(argv[arg],"-d")==0){
+      FXint junk=daemon(1,0);
+      (void)junk;
+      arg++;
+      continue;
+      }
+#endif
     if(FXString::compare(argv[arg],"-h")==0){
       printusage();
       return 0;
@@ -403,12 +526,15 @@ FXint Adie::start(int argc,char** argv){
       printversion();
       return 0;
       }
-    if(FXString::compare(argv[arg],"--syntax=",9)==0){
-      syntaxfile=argv[arg]+9;
-      arg++;
-      continue;
-      }
     break;
+    }
+
+  // Change icon search path
+  associations->setIconPath(iconpath);
+
+  // Look for syntax file in the syntax paths, if not specified
+  if(syntaxfile.empty()){
+    syntaxfile=FXPath::search(syntaxpaths,"Adie.stx");
     }
 
   FXTRACE((11,"syntaxfile=%s\n",syntaxfile.text()));
@@ -420,45 +546,45 @@ FXint Adie::start(int argc,char** argv){
       }
     }
 
-  // Load filenames
+  // Open files
   while(arg<argc){
 
-    // File viewing only
+    // Open for viewing
     if(FXString::compare(argv[arg],"--view")==0){
       edit=false;
       arg++;
       continue;
       }
 
-    // File viewing and editing
+    // Open for editing
     if(FXString::compare(argv[arg],"--edit")==0){
       edit=true;
       arg++;
       continue;
       }
 
-    // Get language
+    // Specify language
     if(FXString::compare(argv[arg],"--lang=",7)==0){
       syntax=getSyntaxByName(argv[arg]+7);
       arg++;
       continue;
       }
 
-    // Window size
+    // Specify window geometry
     if(FXString::compare(argv[arg],"--size=",7)==0){
       geom=fxparsegeometry(argv[arg]+7,winx,winy,winw,winh);
       arg++;
       continue;
       }
 
-    // Get line number
+    // Jump to line after opening
     if(FXString::compare(argv[arg],"--line=",7)==0){
       sscanf(argv[arg]+7,"%d",&line);
       arg++;
       continue;
       }
 
-    // Get column number
+    // Jump to column after opening
     if(FXString::compare(argv[arg],"--column=",9)==0){
       sscanf(argv[arg]+9,"%d",&col);
       arg++;
@@ -548,54 +674,5 @@ FXint Adie::start(int argc,char** argv){
 
   // Now run
   return run();
-  }
-
-/*******************************************************************************/
-
-// Clean up the mess
-Adie::~Adie(){
-  FXTRACE((10,"Adie::~Adie()\n"));
-  for(int i=0; i<numSyntaxes(); i++) delete getSyntax(i);
-  FXASSERT(numWindows()==0);
-  delete associations;
-  delete bigicon;
-  delete smallicon;
-  delete newicon;
-  delete reloadicon;
-  delete openicon;
-  delete saveicon;
-  delete saveasicon;
-  delete savetoicon;
-  delete printicon;
-  delete cuticon;
-  delete copyicon;
-  delete pasteicon;
-  delete deleteicon;
-  delete undoicon;
-  delete redoicon;
-  delete fontsicon;
-  delete helpicon;
-  delete quiticon;
-  delete searchicon;
-  delete replaceicon;
-  delete searchnexticon;
-  delete searchprevicon;
-  delete bookseticon;
-  delete booknexticon;
-  delete bookprevicon;
-  delete bookdelicon;
-  delete shiftlefticon;
-  delete shiftrighticon;
-  delete configicon;
-  delete browsericon;
-  delete nobrowsericon;
-  delete loggericon;
-  delete nologgericon;
-  delete uppercaseicon;
-  delete lowercaseicon;
-  delete backwardicon;
-  delete forwardicon;
-  delete shownicon;
-  delete hiddenicon;
   }
 

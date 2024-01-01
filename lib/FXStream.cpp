@@ -23,7 +23,6 @@
 #include "fxdefs.h"
 #include "fxmath.h"
 #include "FXElement.h"
-#include "FXArray.h"
 #include "FXHash.h"
 #include "FXStream.h"
 #include "FXString.h"
@@ -883,7 +882,7 @@ FXStream& FXStream::saveObject(const FXObject* v){
     const FXchar *name;
     FXuint tag,zero=0;
     void* ref;
-    if(v==nullptr){                             // Its a NULL
+    if(!v){                                     // Its a NULL
       *this << zero;                            // Save special null-object tag
       return *this;
       }
@@ -947,7 +946,7 @@ FXStream& FXStream::loadObject(FXObject*& v){
       }
     load(name,tag);                             // Load class name
     cls=FXMetaClass::getMetaClassFromName(name);
-    if(cls==nullptr){                           // We don't have a class with this name
+    if(!cls){                                   // We don't have a class with this name
       code=FXStreamUnknown;                     // Unknown class
       return *this;
       }

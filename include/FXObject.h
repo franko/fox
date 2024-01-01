@@ -30,14 +30,28 @@ namespace FX {
 
 class FXStream;
 
+
+/// Minimum and maximum message type
+enum {
+  MINTYPE = 0,
+  MAXTYPE = 65535
+  };
+
+/// Minimum and maximum message id
+enum {
+  MINKEY = 0,
+  MAXKEY = 65535
+  };
+
+
 /// Macro to set up class declaration
 #define FXDECLARE(classname) \
   public: \
    struct FXMapEntry { FX::FXSelector keylo; FX::FXSelector keyhi; long (classname::* func)(FX::FXObject*,FX::FXSelector,void*); }; \
    static const FX::FXMetaClass metaClass; \
    static FX::FXObject* manufacture(); \
+   virtual const FX::FXMetaClass* getMetaClass() const; \
    virtual long handle(FX::FXObject* sender,FX::FXSelector sel,void* ptr); \
-   virtual const FX::FXMetaClass* getMetaClass() const { return &metaClass; } \
   private:
 
 
@@ -45,6 +59,7 @@ class FXStream;
 #define FXIMPLEMENT(classname,baseclassname,mapping,nmappings) \
   FX::FXObject* classname::manufacture(){return new classname;} \
   const FX::FXMetaClass classname::metaClass(#classname,classname::manufacture,&baseclassname::metaClass,mapping,nmappings,sizeof(classname::FXMapEntry)); \
+  const FX::FXMetaClass* classname::getMetaClass() const { return &classname::metaClass; } \
   long classname::handle(FX::FXObject* sender,FX::FXSelector sel,void* ptr){ \
     const FXMapEntry* me=(const FXMapEntry*)metaClass.search(sel); \
     return me ? (this->* me->func)(sender,sel,ptr) : baseclassname::handle(sender,sel,ptr); \
@@ -56,14 +71,15 @@ class FXStream;
   public: \
    struct FXMapEntry { FX::FXSelector keylo; FX::FXSelector keyhi; long (classname::* func)(FX::FXObject*,FX::FXSelector,void*); }; \
    static const FX::FXMetaClass metaClass; \
+   virtual const FX::FXMetaClass* getMetaClass() const; \
    virtual long handle(FX::FXObject* sender,FX::FXSelector sel,void* ptr); \
-   virtual const FX::FXMetaClass* getMetaClass() const { return &metaClass; } \
   private:
 
 
 /// Macro to set up abstract class implementation
 #define FXIMPLEMENT_ABSTRACT(classname,baseclassname,mapping,nmappings) \
   const FX::FXMetaClass classname::metaClass(#classname,FX::FXMetaClass::nullObject,&baseclassname::metaClass,mapping,nmappings,sizeof(classname::FXMapEntry)); \
+  const FX::FXMetaClass* classname::getMetaClass() const { return &classname::metaClass; } \
   long classname::handle(FX::FXObject* sender,FX::FXSelector sel,void* ptr){ \
     const FXMapEntry* me=(const FXMapEntry*)metaClass.search(sel); \
     return me ? (this->* me->func)(sender,sel,ptr) : baseclassname::handle(sender,sel,ptr); \
@@ -89,6 +105,15 @@ class FXStream;
 /// Define one function
 #define FXMAPFUNC(type,key,func) {FXSEL(type,key),FXSEL(type,key),&func}
 
+#if defined(NEWMAP)
+typedef long (*NewMethod)(FX::FXObject*,FX::FXObject*,FX::FXSelector,void*);
+
+struct NewMapEntry {
+  FX::FXSelector keylo;
+  FX::FXSelector keyhi;
+  FX::NewMethod  method;
+  };
+#endif
 
 /**
 * Object is the base class for all objects in FOX; in order to receive
@@ -102,6 +127,15 @@ class FXStream;
 class FXAPI FXObject {
   FXDECLARE(FXObject)
 public:
+
+#if defined(NEWMAP)
+static const NewMapEntry messagemap[];
+
+  template <long (FXObject::*mfn)(FX::FXObject*,FX::FXSelector,void*)>
+  static long method_call(FX::FXObject* tgt,FX::FXObject* sender,FX::FXSelector sel,void* ptr){
+    return (tgt->*mfn)(sender,sel,ptr);
+    }
+#endif
 
   /// Get class name of some object
   const FXchar* getClassName() const;

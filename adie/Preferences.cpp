@@ -59,7 +59,7 @@ Preferences::Preferences(TextWindow *own):FXDialogBox(own,"Adie Preferences",DEC
   FXVerticalFrame* editorpane=new FXVerticalFrame(switcher,LAYOUT_FILL_X|LAYOUT_FILL_Y,0,0,0,0, 0,0,0,0, 0,0);
   new FXLabel(editorpane,tr("Editor settings"),nullptr,LAYOUT_LEFT);
   new FXHorizontalSeparator(editorpane,SEPARATOR_LINE|LAYOUT_FILL_X);
-  FXMatrix *matrix2=new FXMatrix(editorpane,10,MATRIX_BY_ROWS|PACK_UNIFORM_HEIGHT|LAYOUT_FILL_X|LAYOUT_FILL_Y,0,0,0,0, 4,4,4,4, 4, 2);
+  FXMatrix *matrix2=new FXMatrix(editorpane,11,MATRIX_BY_ROWS|PACK_UNIFORM_HEIGHT|LAYOUT_FILL_X|LAYOUT_FILL_Y,0,0,0,0, 4,4,4,4, 4, 2);
 
   new FXLabel(matrix2,tr("Word wrapping:"),nullptr,JUSTIFY_LEFT|LAYOUT_CENTER_Y|LAYOUT_FILL_X|LAYOUT_FILL_ROW);
   new FXLabel(matrix2,tr("Auto indent:\tAutomatically indent new line same as previous line\tAutomatically indent new line same as previous line."),nullptr,JUSTIFY_LEFT|LAYOUT_CENTER_Y|LAYOUT_FILL_X|LAYOUT_FILL_ROW);
@@ -70,7 +70,8 @@ Preferences::Preferences(TextWindow *own):FXDialogBox(own,"Adie Preferences",DEC
   new FXLabel(matrix2,tr("Append newline at end of file:\tAppend a newline at the end of the file if needed\tEnsure file ends with a newline when saved."),nullptr,JUSTIFY_LEFT|LAYOUT_CENTER_Y|LAYOUT_FILL_X|LAYOUT_FILL_ROW);
   new FXLabel(matrix2,tr("Insert tab characters:"),nullptr,JUSTIFY_LEFT|LAYOUT_CENTER_Y|LAYOUT_FILL_X|LAYOUT_FILL_ROW);
   new FXLabel(matrix2,tr("Brace matching:\tHighlight matching braces, parentheses, or brackets\tHighlight matching braces, parentheses, or brackets."),nullptr,JUSTIFY_LEFT|LAYOUT_CENTER_Y|LAYOUT_FILL_X|LAYOUT_FILL_ROW);
-  new FXLabel(matrix2,tr("Modeline parsing support:\tParse adie, emacs, or vim modelines\tParse adie, emacs, or vim modelines to set language and other attributes."),nullptr,JUSTIFY_LEFT|LAYOUT_CENTER_Y|LAYOUT_FILL_X);
+  new FXLabel(matrix2,tr("Modeline parsing support:\tParse adie, emacs, or vim modelines\tParse adie, emacs, or vim modelines to set language and other attributes."),nullptr,JUSTIFY_LEFT|LAYOUT_CENTER_Y|LAYOUT_FILL_X|LAYOUT_FILL_ROW);
+  new FXLabel(matrix2,tr("Warn if changed externally:\tWarn if another program changed the file\tWarn if another program changed the file being edited."),nullptr,JUSTIFY_LEFT|LAYOUT_CENTER_Y|LAYOUT_FILL_X|LAYOUT_FILL_ROW);
 
   new FXCheckButton(matrix2,FXString::null,own,TextWindow::ID_TOGGLE_WRAP,LAYOUT_LEFT|LAYOUT_CENTER_Y|LAYOUT_FILL_ROW,0,0,0,0, 0,0,0,0);
   new FXCheckButton(matrix2,FXString::null,own,TextWindow::ID_AUTOINDENT,LAYOUT_LEFT|LAYOUT_CENTER_Y|LAYOUT_FILL_ROW,0,0,0,0, 0,0,0,0);
@@ -81,8 +82,10 @@ Preferences::Preferences(TextWindow *own):FXDialogBox(own,"Adie Preferences",DEC
   new FXCheckButton(matrix2,FXString::null,own,TextWindow::ID_APPEND_NL,LAYOUT_LEFT|LAYOUT_CENTER_Y|LAYOUT_FILL_ROW,0,0,0,0, 0,0,0,0);
   new FXCheckButton(matrix2,FXString::null,own,TextWindow::ID_INSERTTABS,LAYOUT_LEFT|LAYOUT_CENTER_Y|LAYOUT_FILL_ROW,0,0,0,0, 0,0,0,0);
   new FXCheckButton(matrix2,FXString::null,own,TextWindow::ID_BRACEMATCH,LAYOUT_LEFT|LAYOUT_CENTER_Y|LAYOUT_FILL_ROW,0,0,0,0, 0,0,0,0);
-  new FXCheckButton(matrix2,FXString::null,own,TextWindow::ID_MODELINE,LAYOUT_LEFT|LAYOUT_CENTER_Y,0,0,0,0, 0,0,0,0);
+  new FXCheckButton(matrix2,FXString::null,own,TextWindow::ID_MODELINE,LAYOUT_LEFT|LAYOUT_CENTER_Y|LAYOUT_FILL_ROW,0,0,0,0, 0,0,0,0);
+  new FXCheckButton(matrix2,FXString::null,own,TextWindow::ID_WARNCHANGED,LAYOUT_LEFT|LAYOUT_CENTER_Y|LAYOUT_FILL_ROW,0,0,0,0, 0,0,0,0);
 
+  new FXFrame(matrix2,LAYOUT_FILL_COLUMN|LAYOUT_FILL_ROW);
   new FXFrame(matrix2,LAYOUT_FILL_COLUMN|LAYOUT_FILL_ROW);
   new FXFrame(matrix2,LAYOUT_FILL_COLUMN|LAYOUT_FILL_ROW);
   new FXFrame(matrix2,LAYOUT_FILL_COLUMN|LAYOUT_FILL_ROW);
@@ -96,27 +99,28 @@ Preferences::Preferences(TextWindow *own):FXDialogBox(own,"Adie Preferences",DEC
 
   new FXLabel(matrix2,tr("Wrap margin:"),nullptr,JUSTIFY_LEFT|LAYOUT_CENTER_Y|LAYOUT_FILL_X|LAYOUT_FILL_ROW);
   new FXLabel(matrix2,tr("Tab columns:"),nullptr,JUSTIFY_LEFT|LAYOUT_CENTER_Y|LAYOUT_FILL_X|LAYOUT_FILL_ROW);
-  new FXLabel(matrix2,tr("Brace match time (ms):"),nullptr,JUSTIFY_LEFT|LAYOUT_CENTER_Y|LAYOUT_FILL_X|LAYOUT_FILL_ROW);
   new FXLabel(matrix2,tr("Mouse wheel lines:"),nullptr,JUSTIFY_LEFT|LAYOUT_CENTER_Y|LAYOUT_FILL_X|LAYOUT_FILL_ROW);
   new FXLabel(matrix2,tr("Line number space:"),nullptr,JUSTIFY_LEFT|LAYOUT_CENTER_Y|LAYOUT_FILL_X|LAYOUT_FILL_ROW);
+  new FXLabel(matrix2,tr("Brace match time (ms):"),nullptr,JUSTIFY_LEFT|LAYOUT_CENTER_Y|LAYOUT_FILL_X|LAYOUT_FILL_ROW);
+  new FXLabel(matrix2,tr("Brace match stays:\tMatching brace stays highlighted\tMatching brace stays highlighted until cursor moves."),nullptr,JUSTIFY_LEFT|LAYOUT_CENTER_Y|LAYOUT_FILL_X|LAYOUT_FILL_ROW);
   new FXLabel(matrix2,tr("Save view of file:\tSave and restore file view\tPermanently remember view for each file."),nullptr,JUSTIFY_LEFT|LAYOUT_CENTER_Y|LAYOUT_FILL_X|LAYOUT_FILL_ROW);
   new FXLabel(matrix2,tr("Save bookmarks:\tSave and restore bookmarks\tPermanently remember bookmark positions for each file."),nullptr,JUSTIFY_LEFT|LAYOUT_CENTER_Y|LAYOUT_FILL_X|LAYOUT_FILL_ROW);
-  new FXLabel(matrix2,tr("Warn if changed externally:\tWarn if another program changed the file\tWarn if another program changed the file being edited."),nullptr,JUSTIFY_LEFT|LAYOUT_CENTER_Y|LAYOUT_FILL_X|LAYOUT_FILL_ROW);
-  new FXLabel(matrix2,tr("Brace match stays:\tMatching brace stays highlighted\tMatching brace stays highlighted until cursor moves."),nullptr,JUSTIFY_LEFT|LAYOUT_CENTER_Y|LAYOUT_FILL_X|LAYOUT_FILL_ROW);
+  new FXLabel(matrix2,tr("Merge undos:\tMerge undo commands\tMerge contiguous insertions or deletions."),nullptr,JUSTIFY_LEFT|LAYOUT_CENTER_Y|LAYOUT_FILL_X|LAYOUT_FILL_ROW);
+  new FXLabel(matrix2,tr("Alternate history:\tAlternate history undo\tKeep alternate history for undo."),nullptr,JUSTIFY_LEFT|LAYOUT_CENTER_Y|LAYOUT_FILL_X|LAYOUT_FILL_ROW);
   new FXFrame(matrix2,LAYOUT_FILL_COLUMN|LAYOUT_FILL_ROW);
 
   new FXTextField(matrix2,6,own,TextWindow::ID_WRAPCOLUMNS,JUSTIFY_RIGHT|FRAME_SUNKEN|FRAME_THICK|LAYOUT_CENTER_Y|LAYOUT_FILL_X|LAYOUT_FILL_ROW,0,0,0,0, 2,2,1,1);
   new FXTextField(matrix2,6,own,TextWindow::ID_TABCOLUMNS,JUSTIFY_RIGHT|FRAME_SUNKEN|FRAME_THICK|LAYOUT_CENTER_Y|LAYOUT_FILL_X|LAYOUT_FILL_ROW,0,0,0,0, 2,2,1,1);
-  new FXTextField(matrix2,6,own,TextWindow::ID_BRACEMATCHTIME,JUSTIFY_RIGHT|FRAME_SUNKEN|FRAME_THICK|LAYOUT_CENTER_Y|LAYOUT_FILL_X|LAYOUT_FILL_ROW,0,0,0,0, 2,2,1,1);
   FXSpinner* spinner=new FXSpinner(matrix2,3,own,TextWindow::ID_WHEELADJUST,JUSTIFY_RIGHT|FRAME_SUNKEN|FRAME_THICK|LAYOUT_CENTER_Y|LAYOUT_FILL_X|LAYOUT_FILL_ROW,0,0,0,0, 2,2,1,1);
   spinner->setRange(1,100);
   FXSpinner* spinner1=new FXSpinner(matrix2,3,own,TextWindow::ID_TEXT_LINENUMS,JUSTIFY_RIGHT|FRAME_SUNKEN|FRAME_THICK|LAYOUT_CENTER_Y|LAYOUT_FILL_X|LAYOUT_FILL_ROW,0,0,0,0, 2,2,1,1);
   spinner1->setRange(0,8);
+  new FXTextField(matrix2,6,own,TextWindow::ID_BRACEMATCHTIME,JUSTIFY_RIGHT|FRAME_SUNKEN|FRAME_THICK|LAYOUT_CENTER_Y|LAYOUT_FILL_X|LAYOUT_FILL_ROW,0,0,0,0, 2,2,1,1);
+  new FXCheckButton(matrix2,FXString::null,own,TextWindow::ID_BRACEMATCHSTAY,LAYOUT_LEFT|LAYOUT_CENTER_Y|LAYOUT_FILL_ROW,0,0,0,0, 0,0,0,0);
   new FXCheckButton(matrix2,FXString::null,own,TextWindow::ID_SAVEVIEWS,LAYOUT_LEFT|LAYOUT_CENTER_Y|LAYOUT_FILL_ROW,0,0,0,0, 0,0,0,0);
   new FXCheckButton(matrix2,FXString::null,own,TextWindow::ID_SAVEMARKS,LAYOUT_LEFT|LAYOUT_CENTER_Y|LAYOUT_FILL_ROW,0,0,0,0, 0,0,0,0);
-  new FXCheckButton(matrix2,FXString::null,own,TextWindow::ID_WARNCHANGED,LAYOUT_LEFT|LAYOUT_CENTER_Y|LAYOUT_FILL_ROW,0,0,0,0, 0,0,0,0);
-  new FXCheckButton(matrix2,FXString::null,own,TextWindow::ID_BRACEMATCHSTAY,LAYOUT_LEFT|LAYOUT_CENTER_Y|LAYOUT_FILL_ROW,0,0,0,0, 0,0,0,0);
-  new FXFrame(matrix2,LAYOUT_FILL_COLUMN|LAYOUT_FILL_ROW);
+  new FXCheckButton(matrix2,FXString::null,own,TextWindow::ID_MERGEUNDOS,LAYOUT_LEFT|LAYOUT_CENTER_Y|LAYOUT_FILL_ROW,0,0,0,0, 0,0,0,0);
+  new FXCheckButton(matrix2,FXString::null,&own->undolist,FXUndoList::ID_ALT_HISTORY,LAYOUT_LEFT|LAYOUT_CENTER_Y|LAYOUT_FILL_ROW,0,0,0,0, 0,0,0,0);
 
   //// Editor settings button
   new FXButton(buttons,tr("Editor\tEditor settings\tChange editor settings and other things."),ind,switcher,FXSwitcher::ID_OPEN_FIRST,FRAME_RAISED|ICON_ABOVE_TEXT|LAYOUT_FILL_Y);

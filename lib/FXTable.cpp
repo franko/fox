@@ -1252,7 +1252,7 @@ void FXTable::updateItem(FXint row,FXint col) const {
 void FXTable::setItemText(FXint row,FXint col,const FXString& text,FXbool notify){
   if(row<0 || nrows<=row || col<0 || ncols<=col){ fxerror("%s::setItemText: index out of range.\n",getClassName()); }
   FXTableItem* item=cells[row*ncols+col];
-  if(item==nullptr){
+  if(!item){
     cells[row*ncols+col]=item=createItem(FXString::null,nullptr,nullptr);
     if(isItemSelected(row,col)) item->setSelected(true);
     }
@@ -1280,7 +1280,7 @@ FXString FXTable::getItemText(FXint row,FXint col) const {
 void FXTable::setItemTipText(FXint row,FXint col,const FXString& text){
   if(row<0 || nrows<=row || col<0 || ncols<=col){ fxerror("%s::setItemTipText: index out of range.\n",getClassName()); }
   FXTableItem* item=cells[row*ncols+col];
-  if(item==nullptr){
+  if(!item){
     cells[row*ncols+col]=item=createItem(FXString::null,nullptr,nullptr);
     if(isItemSelected(row,col)) item->setSelected(true);
     }
@@ -1300,7 +1300,7 @@ FXString FXTable::getItemTipText(FXint row,FXint col) const {
 void FXTable::setItemIcon(FXint row,FXint col,FXIcon* icon,FXbool owned,FXbool notify){
   if(row<0 || col<0 || nrows<=row || ncols<=col){ fxerror("%s::setItemIcon: index out of range.\n",getClassName()); }
   FXTableItem* item=cells[row*ncols+col];
-  if(item==nullptr){
+  if(!item){
     cells[row*ncols+col]=item=createItem(FXString::null,nullptr,nullptr);
     if(isItemSelected(row,col)) item->setSelected(true);
     }
@@ -1328,7 +1328,7 @@ FXIcon* FXTable::getItemIcon(FXint row,FXint col) const {
 void FXTable::setItemData(FXint row,FXint col,FXptr ptr){
   if(row<0 || col<0 || nrows<=row || ncols<=col){ fxerror("%s::setItemData: index out of range.\n",getClassName()); }
   FXTableItem* item=cells[row*ncols+col];
-  if(item==nullptr){
+  if(!item){
     cells[row*ncols+col]=item=createItem(FXString::null,nullptr,nullptr);
     if(isItemSelected(row,col)) item->setSelected(true);
     }
@@ -1361,7 +1361,7 @@ FXbool FXTable::isItemEnabled(FXint row,FXint col) const {
 FXbool FXTable::enableItem(FXint row,FXint col){
   if(0<=row && 0<=col && row<nrows && col<ncols){
     FXTableItem* item=cells[row*ncols+col];
-    if(item==nullptr){
+    if(!item){
       cells[row*ncols+col]=item=createItem(FXString::null,nullptr,nullptr);
       if(isItemSelected(row,col)) item->setSelected(true);
       }
@@ -1379,7 +1379,7 @@ FXbool FXTable::enableItem(FXint row,FXint col){
 FXbool FXTable::disableItem(FXint row,FXint col){
   if(0<=row && 0<=col && row<nrows && col<ncols){
     FXTableItem* item=cells[row*ncols+col];
-    if(item==nullptr){
+    if(!item){
       cells[row*ncols+col]=item=createItem(FXString::null,nullptr,nullptr);
       if(isItemSelected(row,col)) item->setSelected(true);
       }
@@ -1397,7 +1397,7 @@ FXbool FXTable::disableItem(FXint row,FXint col){
 void FXTable::setItemJustify(FXint row,FXint col,FXuint justify){
   if(row<0 || nrows<=row || col<0 || ncols<=col){ fxerror("%s::setItemJustify: index out of range.\n",getClassName()); }
   FXTableItem* item=cells[row*ncols+col];
-  if(item==nullptr){
+  if(!item){
     cells[row*ncols+col]=item=createItem(FXString::null,nullptr,nullptr);
     if(isItemSelected(row,col)) item->setSelected(true);
     }
@@ -1419,7 +1419,7 @@ FXuint FXTable::getItemJustify(FXint row,FXint col) const {
 void FXTable::setItemIconPosition(FXint row,FXint col,FXuint m){
   if(row<0 || nrows<=row || col<0 || ncols<=col){ fxerror("%s::setItemIconPosition: index out of range.\n",getClassName()); }
   FXTableItem* item=cells[row*ncols+col];
-  if(item==nullptr){
+  if(!item){
     cells[row*ncols+col]=item=createItem(FXString::null,nullptr,nullptr);
     if(isItemSelected(row,col)) item->setSelected(true);
     }
@@ -1441,7 +1441,7 @@ FXuint FXTable::getItemIconPosition(FXint row,FXint col) const {
 void FXTable::setItemBorders(FXint row,FXint col,FXuint borders){
   if(row<0 || nrows<=row || col<0 || ncols<=col){ fxerror("%s::setItemBorders: index out of range.\n",getClassName()); }
   FXTableItem* item=cells[row*ncols+col];
-  if(item==nullptr){
+  if(!item){
     cells[row*ncols+col]=item=createItem(FXString::null,nullptr,nullptr);
     if(isItemSelected(row,col)) item->setSelected(true);
     }
@@ -1463,7 +1463,7 @@ FXuint FXTable::getItemBorders(FXint row,FXint col) const {
 void FXTable::setItemStipple(FXint row,FXint col,FXStipplePattern pattern){
   if(row<0 || nrows<=row || col<0 || ncols<=col){ fxerror("%s::setItemStipple: index out of range.\n",getClassName()); }
   FXTableItem* item=cells[row*ncols+col];
-  if(item==nullptr){
+  if(!item){
     cells[row*ncols+col]=item=createItem(FXString::null,nullptr,nullptr);
     if(isItemSelected(row,col)) item->setSelected(true);
     }
@@ -1488,7 +1488,7 @@ void FXTable::extractText(FXchar*& text,FXint& size,FXint startrow,FXint endrow,
   FXString string;
 
   // Verify arguments
-  if(cs==nullptr || rs==nullptr){ fxerror("%s::extractText: bad argument.\n",getClassName()); }
+  if(!cs || !rs){ fxerror("%s::extractText: bad argument.\n",getClassName()); }
 
   // Verify range
   if(startrow<0 || startcol<0 || nrows<=endrow || ncols<=endcol){ fxerror("%s::extractText: index out of range.\n",getClassName()); }
@@ -1522,14 +1522,14 @@ void FXTable::extractText(FXchar*& text,FXint& size,FXint startrow,FXint endrow,
       for(r=startrow; r<=endrow; r++){
         for(c=startcol; c<=endcol; c++){
           string=getItemText(r,c);
-          memcpy(ptr,string.text(),string.length());
+          copyElms(ptr,string.text(),string.length());
           ptr+=string.length();
           if(c==endcol){
-            memcpy(ptr,rs,nrs);
+            copyElms(ptr,rs,nrs);
             ptr+=nrs;
             }
           else{
-            memcpy(ptr,cs,ncs);
+            copyElms(ptr,cs,ncs);
             ptr+=ncs;
             }
           }
@@ -1546,7 +1546,7 @@ void FXTable::extractText(FXString& text,FXint startrow,FXint endrow,FXint start
   FXString string;
 
   // Verify arguments
-  if(cs==nullptr || rs==nullptr){ fxerror("%s::extractText: bad argument.\n",getClassName()); }
+  if(!cs || !rs){ fxerror("%s::extractText: bad argument.\n",getClassName()); }
 
   // Verify range
   if(startrow<0 || startcol<0 || nrows<=endrow || ncols<=endcol){ fxerror("%s::extractText: index out of range.\n",getClassName()); }
@@ -1598,7 +1598,7 @@ void FXTable::countText(FXint& nr,FXint& nc,const FXchar* text,FXint size,const 
   FXint c=0,i=0,item=0;
 
   // Verify arguments
-  if(size<0 || text==nullptr || cs==nullptr || rs==nullptr){ fxerror("%s::countText: bad argument.\n",getClassName()); }
+  if(size<0 || !text || !cs || !rs){ fxerror("%s::countText: bad argument.\n",getClassName()); }
 
   nr=nc=0;
 
@@ -1643,7 +1643,7 @@ void FXTable::overlayText(FXint startrow,FXint endrow,FXint startcol,FXint endco
   FXint beg=0,end=0,r,c;
 
   // Verify arguments
-  if(size<0 || text==nullptr || cs==nullptr || rs==nullptr){ fxerror("%s::overlayText: bad argument.\n",getClassName()); }
+  if(size<0 || !text || !cs || !rs){ fxerror("%s::overlayText: bad argument.\n",getClassName()); }
 
   // Verify range
   if(startrow<0 || startcol<0 || startrow>endrow || startcol>endcol){ fxerror("%s::overlayText: index out of range.\n",getClassName()); }
@@ -1907,7 +1907,7 @@ FXbool FXTable::killSelection(FXbool notify){
 // Get input control to edit the item
 FXWindow* FXTable::getControlForItem(FXint row,FXint col){
   FXTableItem* item=cells[row*ncols+col];
-  if(item==nullptr){
+  if(!item){
     cells[row*ncols+col]=item=createItem(FXString::null,nullptr,nullptr);
     if(isItemSelected(row,col)) item->setSelected(false);
     }
@@ -1918,7 +1918,7 @@ FXWindow* FXTable::getControlForItem(FXint row,FXint col){
 // Set the item from the input control
 void FXTable::setItemFromControl(FXint row,FXint col,FXWindow* control){
   FXTableItem* item=cells[row*ncols+col];
-  if(item==nullptr){
+  if(!item){
     cells[row*ncols+col]=item=createItem(FXString::null,nullptr,nullptr);
     if(isItemSelected(row,col)) item->setSelected(false);
     }

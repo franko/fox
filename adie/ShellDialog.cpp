@@ -24,9 +24,23 @@
 
 /*
   Notes:
+
   - Collect a command from the user, remembering the last few commands for
     next time in the history buffer.
-  - If a new command was entered, save it to the history.
+  - If a new command was entered, save it to the history, you can scroll
+    back into history and re-execute it again w/o retyping it.
+  - Some special sequences are replaced in the command string:
+
+         %f           Replaced by (quoted) current full path name
+         %F           Replaced by the (quoted) selected full path names
+         %n           Replaced by the (quoted) current file name
+         %N           Replaced by the (quoted) selected file names
+         %u           Replaced by (quoted) URL-encoded of the current filename
+         %U           Replaced by the (quoted) URL-encoded selected filenames
+         %d           Replaced by current working directory
+         %%           Replaced by '%'
+
+  - This is similar to what PathFinder does; we love consistency...
 */
 
 // Padding for buttons
@@ -76,6 +90,8 @@ ShellDialog::ShellDialog(FXWindow* own,const FXString& name,const FXString& labe
   new FXLabel(entry,label,nullptr,JUSTIFY_LEFT|ICON_BEFORE_TEXT|LAYOUT_TOP|LAYOUT_LEFT|LAYOUT_FILL_X);
   FXHorizontalFrame* searchbox=new FXHorizontalFrame(entry,FRAME_SUNKEN|FRAME_THICK|LAYOUT_FILL_X|LAYOUT_CENTER_Y,0,0,0,0, 0,0,0,0, 0,0);
   input=new FXTextField(searchbox,50,this,ID_ACCEPT,TEXTFIELD_ENTER_ONLY|LAYOUT_FILL_X|LAYOUT_FILL_Y,0,0,0,0, 3,3,3,3);
+  input->setTipText(tr("Command to execute\nCommand line arguments are processed as follows:\n  %f  Replaced by current file;\n  %F  Replaced by currently open files;\n  %n  Replaced by current file's name;\n  %N  Replaced by currently open file names;\n  %u  Replaced by URL encoding of current file;\n  %U  Replaced by URL encoding of currently open files;\n  %d  Replaced by current working directory;\n  %%  Replaced by simply '%'."));
+  input->setHelpText(tr("Execute shell command from editor."));
   FXVerticalFrame* historyarrows=new FXVerticalFrame(searchbox,LAYOUT_RIGHT|LAYOUT_FILL_Y,0,0,0,0, 0,0,0,0, 0,0);
   FXArrowButton* ar1=new FXArrowButton(historyarrows,this,ID_HISTORY_UP,FRAME_RAISED|FRAME_THICK|ARROW_UP|ARROW_REPEAT|LAYOUT_FILL_Y|LAYOUT_FIX_WIDTH, 0,0,16,0, 1,1,1,1);
   FXArrowButton* ar2=new FXArrowButton(historyarrows,this,ID_HISTORY_DN,FRAME_RAISED|FRAME_THICK|ARROW_DOWN|ARROW_REPEAT|LAYOUT_FILL_Y|LAYOUT_FIX_WIDTH, 0,0,16,0, 1,1,1,1);

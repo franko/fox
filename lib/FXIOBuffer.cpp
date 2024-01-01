@@ -57,7 +57,7 @@ FXIOBuffer::FXIOBuffer(FXuchar* ptr,FXuval sz):buffer(nullptr),space(0){
 
 // Open buffer
 FXbool FXIOBuffer::open(FXuchar* ptr,FXuval sz){
-  if(ptr!=nullptr && 0<sz){
+  if(ptr && 0<sz){
     buffer=ptr;
     pointer=0;
     space=sz;
@@ -98,7 +98,7 @@ FXlong FXIOBuffer::position(FXlong offset,FXuint from){
 
 // Read block
 FXival FXIOBuffer::readBlock(void* ptr,FXival count){
-  if(buffer!=nullptr && ptr!=nullptr){
+  if(buffer && ptr){
     FXival remaining=space-pointer;
     if(remaining<count) count=remaining;
     memcpy(ptr,&buffer[pointer],count);
@@ -111,7 +111,7 @@ FXival FXIOBuffer::readBlock(void* ptr,FXival count){
 
 // Write block
 FXival FXIOBuffer::writeBlock(const void* ptr,FXival count){
-  if(buffer!=nullptr && ptr!=nullptr){
+  if(buffer && ptr){
     FXival remaining=space-pointer;
     if(remaining<count) count=remaining;
     memcpy(&buffer[pointer],ptr,count);
@@ -124,7 +124,7 @@ FXival FXIOBuffer::writeBlock(const void* ptr,FXival count){
 
 // Truncate file
 FXlong FXIOBuffer::truncate(FXlong sz){
-  if(buffer!=nullptr && 0<=sz && sz<=(FXlong)space){
+  if(buffer && 0<=sz && sz<=(FXlong)space){
     if(pointer>sz) pointer=sz;
     space=sz;
     return sz;
