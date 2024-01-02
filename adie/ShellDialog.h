@@ -28,7 +28,7 @@ namespace FX {
 * Shell dialog grabs a command to be executed.
 * It has history scrollback for convenience.
 */
-class FXAPI ShellDialog : public FXDialogBox {
+class ShellDialog : public FXDialogBox {
   FXDECLARE(ShellDialog)
 protected:
   FXTextField *input;      // Text field widget
