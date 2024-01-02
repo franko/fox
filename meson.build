@@ -82,21 +82,33 @@ fox_defines += [
     '-DVERSION="@0@"'.format(fox_version)
 ]
 
+have_glu = false
 if get_option('opengl')
     gl = dependency('gl', required : true)
     fox_ext_defines += '-DHAVE_GL_H'
     fox_ext_deps += gl
 
+    if use_x_window
+        if cc.has_header('GL/glx.h')
+            fox_ext_defines += '-DHAVE_GLX_H'
+            fox_ext_deps += dependency('glx')
+        else
+            error('Cannot find GL/glx.h headers: required by opengl')
+        endif
+    endif
+
     if host_system == 'windows'
         if cc.has_header('GL/glu.h')
             fox_ext_defines += '-DHAVE_GLU_H'
             fox_ext_deps += cc.find_library('glu32', required : true)
+            have_glu = true
         endif
     else
         glu = dependency('glu', required : false)
         if glu.found()
             fox_ext_defines += '-DHAVE_GLU_H'
             fox_ext_deps += glu
+            have_glu = true
         endif
     endif
 endif
@@ -273,6 +285,7 @@ subdir('utils')
 subdir('lib')
 if get_option('apps')
     subdir('controlpanel')
+    subdir('glviewer')
     subdir('adie')
     subdir('calculator')
     subdir('chart')
