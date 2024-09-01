@@ -3,7 +3,7 @@
 *              D o u b l e - P r e c i s i o n  Q u a t e r n i o n             *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 1994,2022 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 1994,2024 by Jeroen van der Zijp.   All Rights Reserved.        *
 *********************************************************************************
 * This library is free software; you can redistribute it and/or modify          *
 * it under the terms of the GNU Lesser General Public License as published by   *
@@ -261,14 +261,14 @@ public:
 
 
 /// Scaling
-inline FXQuatd operator*(const FXQuatd& a,FXdouble n){return FXQuatd(a.x*n,a.y*n,a.z*n,a.w*n);}
-inline FXQuatd operator*(FXdouble n,const FXQuatd& a){return FXQuatd(n*a.x,n*a.y,n*a.z,n*a.w);}
-inline FXQuatd operator/(const FXQuatd& a,FXdouble n){return FXQuatd(a.x/n,a.y/n,a.z/n,a.w/n);}
-inline FXQuatd operator/(FXdouble n,const FXQuatd& a){return FXQuatd(n/a.x,n/a.y,n/a.z,n/a.w);}
+static inline FXQuatd operator*(const FXQuatd& a,FXdouble n){return FXQuatd(a.x*n,a.y*n,a.z*n,a.w*n);}
+static inline FXQuatd operator*(FXdouble n,const FXQuatd& a){return FXQuatd(n*a.x,n*a.y,n*a.z,n*a.w);}
+static inline FXQuatd operator/(const FXQuatd& a,FXdouble n){return FXQuatd(a.x/n,a.y/n,a.z/n,a.w/n);}
+static inline FXQuatd operator/(FXdouble n,const FXQuatd& a){return FXQuatd(n/a.x,n/a.y,n/a.z,n/a.w);}
 
 /// Quaternion and quaternion multiply
-inline FXQuatd operator*(const FXQuatd& a,const FXQuatd& b){ return FXQuatd(a.w*b.x+a.x*b.w+a.y*b.z-a.z*b.y, a.w*b.y+a.y*b.w+a.z*b.x-a.x*b.z, a.w*b.z+a.z*b.w+a.x*b.y-a.y*b.x, a.w*b.w-a.x*b.x-a.y*b.y-a.z*b.z); }
-inline FXQuatd operator/(const FXQuatd& a,const FXQuatd& b){ return a*b.invert(); }
+static inline FXQuatd operator*(const FXQuatd& a,const FXQuatd& b){ return FXQuatd(a.w*b.x+a.x*b.w+a.y*b.z-a.z*b.y, a.w*b.y+a.y*b.w+a.z*b.x-a.x*b.z, a.w*b.z+a.z*b.w+a.x*b.y-a.y*b.x, a.w*b.w-a.x*b.x-a.y*b.y-a.z*b.z); }
+static inline FXQuatd operator/(const FXQuatd& a,const FXQuatd& b){ return a*b.invert(); }
 
 /// Rotation unit-quaternion and vector q . v = (q* . v . q)
 extern FXAPI FXVec3d operator*(const FXQuatd& q,const FXVec3d& v);
@@ -277,18 +277,24 @@ extern FXAPI FXVec3d operator*(const FXQuatd& q,const FXVec3d& v);
 extern FXAPI FXVec3d operator*(const FXVec3d& v,const FXQuatd& q);
 
 /// Quaternion and quaternion addition
-inline FXQuatd operator+(const FXQuatd& a,const FXQuatd& b){ return FXQuatd(a.x+b.x,a.y+b.y,a.z+b.z,a.w+b.w); }
-inline FXQuatd operator-(const FXQuatd& a,const FXQuatd& b){ return FXQuatd(a.x-b.x,a.y-b.y,a.z-b.z,a.w-b.w); }
+static inline FXQuatd operator+(const FXQuatd& a,const FXQuatd& b){ return FXQuatd(a.x+b.x,a.y+b.y,a.z+b.z,a.w+b.w); }
+static inline FXQuatd operator-(const FXQuatd& a,const FXQuatd& b){ return FXQuatd(a.x-b.x,a.y-b.y,a.z-b.z,a.w-b.w); }
 
 /// Equality tests
-inline FXbool operator==(const FXQuatd& a,FXdouble n){return a.x==n && a.y==n && a.z==n && a.w==n;}
-inline FXbool operator!=(const FXQuatd& a,FXdouble n){return a.x!=n || a.y!=n || a.z!=n || a.w!=n;}
-inline FXbool operator==(FXdouble n,const FXQuatd& a){return n==a.x && n==a.y && n==a.z && n==a.w;}
-inline FXbool operator!=(FXdouble n,const FXQuatd& a){return n!=a.x || n!=a.y || n!=a.z || n!=a.w;}
+static inline FXbool operator==(const FXQuatd& a,FXdouble n){return a.x==n && a.y==n && a.z==n && a.w==n;}
+static inline FXbool operator!=(const FXQuatd& a,FXdouble n){return a.x!=n || a.y!=n || a.z!=n || a.w!=n;}
+static inline FXbool operator==(FXdouble n,const FXQuatd& a){return n==a.x && n==a.y && n==a.z && n==a.w;}
+static inline FXbool operator!=(FXdouble n,const FXQuatd& a){return n!=a.x || n!=a.y || n!=a.z || n!=a.w;}
 
 /// Equality tests
-inline FXbool operator==(const FXQuatd& a,const FXQuatd& b){ return a.x==b.x && a.y==b.y && a.z==b.z && a.w==b.w; }
-inline FXbool operator!=(const FXQuatd& a,const FXQuatd& b){ return a.x!=b.x || a.y!=b.y || a.z!=b.z || a.w!=b.w; }
+static inline FXbool operator==(const FXQuatd& a,const FXQuatd& b){ return a.x==b.x && a.y==b.y && a.z==b.z && a.w==b.w; }
+static inline FXbool operator!=(const FXQuatd& a,const FXQuatd& b){ return a.x!=b.x || a.y!=b.y || a.z!=b.z || a.w!=b.w; }
+
+/// Normalize non-zero quaternion such that |Q|==1
+static inline FXQuatd normalize(const FXQuatd& q){ return q*Math::rsqrt(q.length2()); }
+
+/// Normalize quaternion incrementally; assume |Q| is approximately 1 already
+static inline FXQuatd fastnormalize(const FXQuatd& q){ return q*((3.0-q.length2())*0.5); }
 
 
 /// Construct quaternion from arc a->b on unit sphere
@@ -299,12 +305,6 @@ extern FXAPI FXQuatd lerp(const FXQuatd& u,const FXQuatd& v,FXdouble f);
 
 /// Derivative of spherical lerp of unit quaternions u,v
 extern FXAPI FXQuatd lerpdot(const FXQuatd& u,const FXQuatd& v,FXdouble f);
-
-/// Normalize quaternion such that |Q|==1
-extern FXAPI FXQuatd normalize(const FXQuatd& q);
-
-/// Normalize quaternion incrementally; assume |Q| approximately 1 already
-extern FXAPI FXQuatd fastnormalize(const FXQuatd& q);
 
 /// Cubic hermite quaternion interpolation
 extern FXAPI FXQuatd hermite(const FXQuatd& q0,const FXVec3d& r0,const FXQuatd& q1,const FXVec3d& r1,FXdouble t);

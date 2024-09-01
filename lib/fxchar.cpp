@@ -3,7 +3,7 @@
 *     U n i c o d e   C h a r a c t e r   E n c o d i n g   S u p p o r t       *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 1997,2022 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 1997,2024 by Jeroen van der Zijp.   All Rights Reserved.        *
 *********************************************************************************
 * This library is free software; you can redistribute it and/or modify          *
 * it under the terms of the GNU Lesser General Public License as published by   *
@@ -20,7 +20,6 @@
 ********************************************************************************/
 #include "xincs.h"
 #include "fxver.h"
-#define __NEW_DEFS__ 1
 #include "fxdefs.h"
 #include "fxchar.h"
 #include "fxmath.h"

@@ -3,7 +3,7 @@
 *                             String Format I/O Test                            *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 2007,2023 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 2007,2024 by Jeroen van der Zijp.   All Rights Reserved.        *
 ********************************************************************************/
 #include "fx.h"
 //#include <locale.h>
@@ -355,10 +355,28 @@ int main(int argc,char* argv[]){
 #if defined(__GNUC__) && (__GNUC__ >= 14)
   __snprintf(buffer,sizeof(buffer),"%.18le",0x0.0000000002788p-1023);
   fprintf(stdout,"hex format=\"%s\" output=\"%s\"\n","%.18le",buffer);
-
   __snprintf(buffer,sizeof(buffer),"%a",0x0.0000000002788p-1023);
   fprintf(stdout,"hex format=\"%s\" output=\"%s\"\n","%a",buffer);
+  fprintf(stdout,"\n");
 
+  __snprintf(buffer,sizeof(buffer),"%.18le",0x1.0p-53);
+  fprintf(stdout,"hex format=\"%s\" output=\"%s\"\n","%.18le",buffer);
+  __snprintf(buffer,sizeof(buffer),"%a",0x1.0p-53);
+  fprintf(stdout,"hex format=\"%s\" output=\"%s\"\n","%a",buffer);
+  __snprintf(buffer,sizeof(buffer),"%a",1.110223024625156480e-16);
+  fprintf(stdout,"hex format=\"%s\" output=\"%s\"\n","%a",buffer);
+  __snprintf(buffer,sizeof(buffer),"%a",1.0/(FXLONG(1)<<53));
+  fprintf(stdout,"hex format=\"%s\" output=\"%s\"\n","%a",buffer);
+  fprintf(stdout,"\n");
+
+  __snprintf(buffer,sizeof(buffer),"%.18le",0x1.0p-24);
+  fprintf(stdout,"hex format=\"%s\" output=\"%s\"\n","%.18le",buffer);
+  __snprintf(buffer,sizeof(buffer),"%a",0x1.0p-24);
+  fprintf(stdout,"hex format=\"%s\" output=\"%s\"\n","%a",buffer);
+  __snprintf(buffer,sizeof(buffer),"%a",(FXdouble)(5.960464477539062784e-08f));
+  fprintf(stdout,"hex format=\"%s\" output=\"%s\"\n","%a",buffer);
+  __snprintf(buffer,sizeof(buffer),"%a",(FXdouble)(1.0f/(FXLONG(1)<<24)));
+  fprintf(stdout,"hex format=\"%s\" output=\"%s\"\n","%a",buffer);
   fprintf(stdout,"\n");
 
   // Scan ourselves

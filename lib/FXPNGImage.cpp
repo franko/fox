@@ -3,7 +3,7 @@
 *                          P N G   I m a g e   O b j e c t                      *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 1999,2022 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 1999,2024 by Jeroen van der Zijp.   All Rights Reserved.        *
 *********************************************************************************
 * This library is free software; you can redistribute it and/or modify          *
 * it under the terms of the GNU Lesser General Public License as published by   *
@@ -22,21 +22,14 @@
 #include "fxver.h"
 #include "fxdefs.h"
 #include "fxmath.h"
-#include "FXArray.h"
+#include "FXElement.h"
+#include "FXMetaClass.h"
 #include "FXHash.h"
-#include "FXMutex.h"
 #include "FXStream.h"
 #include "FXMemoryStream.h"
-#include "FXString.h"
-#include "FXSize.h"
-#include "FXPoint.h"
-#include "FXRectangle.h"
-#include "FXStringDictionary.h"
-#include "FXSettings.h"
-#include "FXRegistry.h"
-#include "FXEvent.h"
-#include "FXWindow.h"
-#include "FXApp.h"
+#include "FXRunnable.h"
+#include "FXAutoThreadStorageKey.h"
+#include "FXThread.h"
 #include "FXPNGImage.h"
 
 
@@ -65,7 +58,7 @@ const FXchar FXPNGImage::mimeType[]="image/png";
 FXIMPLEMENT(FXPNGImage,FXImage,nullptr,0)
 
 
-#ifdef HAVE_PNG_H
+#ifdef HAVE_ZLIB_H
 const FXbool FXPNGImage::supported=true;
 #else
 const FXbool FXPNGImage::supported=false;
@@ -73,7 +66,7 @@ const FXbool FXPNGImage::supported=false;
 
 
 // Initialize
-FXPNGImage::FXPNGImage(FXApp* a,const FXuchar *pix,FXuint opts,FXint w,FXint h):FXImage(a,nullptr,opts,w,h){
+FXPNGImage::FXPNGImage(FXApp* a,const FXuchar *pix,FXuint opts,FXint w,FXint h,FXuint fl):FXImage(a,nullptr,opts,w,h),flags(fl){
   if(pix){
     FXMemoryStream ms(FXStreamLoad,const_cast<FXuchar*>(pix));
     loadPixels(ms);
@@ -83,7 +76,7 @@ FXPNGImage::FXPNGImage(FXApp* a,const FXuchar *pix,FXuint opts,FXint w,FXint h):
 
 // Save the pixels only
 FXbool FXPNGImage::savePixels(FXStream& store) const {
-  if(fxsavePNG(store,data,width,height)){
+  if(fxsavePNG(store,data,width,height,flags)){
     return true;
     }
   return false;

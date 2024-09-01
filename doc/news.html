@@ -16,6 +16,59 @@ News  <A href='news.html' target="_top" align=left><font  size=-2>[Remove Frame]
 <!--- TOPIC TITLE -->
 <p>
 <table width=100% cellpadding=0 cellspacing=2><tr><td width=100% valign=bottom id=HEADLINE><b>
+August 15 - FOX DEVELOPMENT 1.7.85
+<br><img src='art/line.gif' width=100% height=1></b></td></tr></table>
+<p>
+<!--- TOPIC TITLE -->
+<ul>
+<li>New PNG image support.  First, its faster!  Also, it no longer requires libpng; the PNG format support is
+now built-in, although the libz compression library is still required [for now...].</li>
+<li>fxsavePNG() supports some fine-control via new save-flags.  You can analyze the image, and shrink output
+by taking advantage of image features; for example, saving opaque image means alpha-channel may be dropped.
+If the image is gray-levels only, the RGB may be dropped to plain gray only.  Also, shrinking further by emitting
+colormapped [indexed-color] image is possible if only a few colors are used.  Finally, pre-compression filtering,
+as well as desired compression level can be selected.</li>
+<li>PNG I/O is optimized with when target ISA x86-64-v2 or higher are selected.</li>
+<li>FXStat::isSame() checks if two files are the same (same inode).</li>
+<li>FOX Desktop Calculator augmented with Unicode button labels (please select a font that has
+the math symbols!), also now supports additional functions, common physics constants, and other features.</li>
+<li>The fxCPUFeatures now can detect AVX512 presence.</li>
+<li>New FXPerformanceCounter and associated macros may be used to count clockcyles of critical code segments.</li>
+<li>FXAtomic.h APIs now mostly inlined for lower overhead.</li>
+<li>Read processor ticks on AARCH64.</li>
+<li>Adie text editor undo buffer size and undo buffer items can now be configured.</li>
+<li>New QOIF (Quite OK Image Format) now supported for either images (FXQOIFImage) or icons (FXQOIFIcon).</li>
+<li>FXColor to/from FXVec3d, FXVec3f, FXVec4d, FXVec4f now using SSE if compiled for x86-64-v2 or higher.</li>
+<li>Updated byte swap APIs in fxendian.h.</li>
+<li>New APIs in FXMat3f, FXMat3d, etc. classes to set up mirror-matrix.</li>
+<li>Moved new hash32() etc. functions into fxendian.h.</li>
+<li>Bug fix in FXIODevice reading &gt; 1GB files in one readBlock(), writeBlock() call.</li>
+<li>Markdown syntax coloring in Adie.</li>
+<li>Per-syntax mode setting for removing trailing spaces in Adie saving a text file.</li>
+<li>Subtle change in operation of FXPath::relative().</li>
+<li>Support for CRC32 calculations added.</li>
+<li>Additional conversion options in FXString::fromFloat() and FXString::fromDouble(): thousands
+groupings, force decimal point, and hexadecimal float output.</li>
+<li>FXJSON JSON loader now may report duplicate key warning reading json file.</li>
+<li>FXMappedFile improvements.</li>
+<li>FXString uncode escapes bug fix.</li>
+</ul>
+
+
+<!--- TOPIC TITLE -->
+<p>
+<table width=100% cellpadding=0 cellspacing=2><tr><td width=100% valign=bottom id=HEADLINE><b>
+May 13 - FOX STABLE 1.6.58
+<br><img src='art/line.gif' width=100% height=1></b></td></tr></table>
+<p>
+<!--- TOPIC TITLE -->
+<ul>
+<li>FXSemaphore patch applied for MacOS build.</li>
+</ul>
+
+<!--- TOPIC TITLE -->
+<p>
+<table width=100% cellpadding=0 cellspacing=2><tr><td width=100% valign=bottom id=HEADLINE><b>
 September 10 - FOX DEVELOPMENT 1.7.84
 <br><img src='art/line.gif' width=100% height=1></b></td></tr></table>
 <p>

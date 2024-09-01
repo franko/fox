@@ -3,7 +3,7 @@
 *                      J S O N   R e a d e r  &  W r i t e r                    *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 2013,2022 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 2013,2024 by Jeroen van der Zijp.   All Rights Reserved.        *
 *********************************************************************************
 * This library is free software; you can redistribute it and/or modify          *
 * it under the terms of the GNU Lesser General Public License as published by   *
@@ -94,6 +94,7 @@ public:
     ErrQuote,           /// Expected closing quote
     ErrNumber,          /// Numeric conversion
     ErrIdent,           /// Unexpected identifier
+    ErrDuplicate,       /// Duplicate key encountered
     ErrEnd              /// Unexpected end of file
     };
 
@@ -215,8 +216,8 @@ public:
   * This controls the number of significant digits written to
   * the output.  The default is 15.
   */
-  void setNumericPrecision(FXint p){ prec=p; }
-  FXint getNumericPrecision() const { return prec; }
+  void setNumericPrecision(FXuchar p){ prec=p; }
+  FXuchar getNumericPrecision() const { return prec; }
 
   /**
   * Floating point output format control.
@@ -228,8 +229,8 @@ public:
   *
   * The default mode is 2.
   */
-  void setNumericFormat(FXint f){ fmt=f; }
-  FXint getNumericFormat() const { return fmt; }
+  void setNumericFormat(FXuchar f){ fmt=f; }
+  FXuchar getNumericFormat() const { return fmt; }
 
   /**
   * Change output flow format (Stream, Compact, Pretty).
@@ -240,15 +241,15 @@ public:
   * Pretty will print one item on each line, with indentation.  It is very easily
   * readable but produces large numbers of text lines.
   */
-  void setOutputFlow(FXint f){ flow=f; }
-  FXint getOutputFlow() const { return flow; }
+  void setOutputFlow(FXuchar f){ flow=f; }
+  FXuchar getOutputFlow() const { return flow; }
 
   /**
   * Change indentation level for pretty print flow, the amount of
   * indentation applied for each level.
   */
-  void setIndentation(FXint d){ dent=d; }
-  FXint getIndentation() const { return dent; }
+  void setIndentation(FXuchar d){ dent=d; }
+  FXuchar getIndentation() const { return dent; }
 
   /**
   * Change column at which lines are wrapped.
@@ -266,20 +267,20 @@ public:
   *
   * Default is to escape control characters only.
   */
-  void setEscapeMode(FXint e){ esc=e; }
-  FXint getEscapeMode() const { return esc; }
+  void setEscapeMode(FXuchar e){ esc=e; }
+  FXuchar getEscapeMode() const { return esc; }
 
   /**
   * Change json version.
   */
-  void setVersion(FXint v){ ver=v; }
-  FXint getVersion() const { return ver; }
+  void setVersion(FXuchar v){ ver=v; }
+  FXuchar getVersion() const { return ver; }
 
   /**
   * Change quote type, either (') or (").
   */
-  void setQuote(FXint q){ quote=q; }
-  FXint getQuote() const { return quote; }
+  void setQuote(FXchar q){ quote=q; }
+  FXchar getQuote() const { return quote; }
 
   /**
   * Close stream and delete buffer, if owned.

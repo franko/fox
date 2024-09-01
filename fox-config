@@ -1,11 +1,11 @@
 #! /bin/sh
 
-version="1.7.84"
+version="1.7.85"
 prefix="/home/jeroen/FOX/DIR"
 exec_prefix="${prefix}"
 libdir="${exec_prefix}/lib"
 includedir="${prefix}/include/fox-1.7"
-LIBS="-ldl -lpthread -lrt  -ljpeg -lopenjpeg -lpng -lwebp -ltiff -lz -lbz2 -lGL"
+LIBS="-ldl -lpthread -lrt  -ljpeg -lopenjpeg -lwebp -ltiff -lz -lbz2 -lGL"
 X_LIBS=""
 X_BASE_LIBS="-lX11 -lXext -lXcursor -lXrender -lXrandr -lXfixes -lXi -lfreetype -lfontconfig  -lXft"
 X_EXTRA_LIBS=""

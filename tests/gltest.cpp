@@ -247,7 +247,7 @@ void GLSettingsDialog::setup() {
 #ifdef GLU_VERSION_1_1
   tmp=(char*)gluGetString(GLU_EXTENSIONS);
   if(tmp){
-    text=strdup(tmp);
+    text=fxstrdup(tmp);
     token=strtok(text," ");
     while(token!=nullptr){
       extensionlist->appendItem(token);

@@ -3,7 +3,7 @@
 *                         F O X   E v e n t   L o o p                           *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 2019,2022 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 2019,2024 by Jeroen van der Zijp.   All Rights Reserved.        *
 *********************************************************************************
 * This library is free software; you can redistribute it and/or modify          *
 * it under the terms of the GNU Lesser General Public License as published by   *

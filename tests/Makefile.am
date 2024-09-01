@@ -16,6 +16,7 @@ datatarget \
 dctest \
 dialog \
 dirlist \
+dictest \
 expression \
 format \
 foursplit \
@@ -100,6 +101,7 @@ parallel_SOURCES	= parallel.cpp
 variant_SOURCES         = variant.cpp
 math_SOURCES            = math.cpp
 xml_SOURCES             = xml.cpp
+dictest_SOURCES             = dictest.cpp
 
 
 

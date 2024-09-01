@@ -3,7 +3,7 @@
 *                          P N G   I m a g e   O b j e c t                      *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 1999,2022 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 1999,2024 by Jeroen van der Zijp.   All Rights Reserved.        *
 *********************************************************************************
 * This library is free software; you can redistribute it and/or modify          *
 * it under the terms of the GNU Lesser General Public License as published by   *
@@ -32,6 +32,8 @@ namespace FX {
 class FXAPI FXPNGIcon : public FXIcon {
   FXDECLARE(FXPNGIcon)
 protected:
+  FXuint flags;
+protected:
   FXPNGIcon(){}
 private:
   FXPNGIcon(const FXPNGIcon&);
@@ -42,10 +44,16 @@ public:
 public:
 
   /// Construct an icon from memory stream formatted in PNG format
-  FXPNGIcon(FXApp *a,const FXuchar *pix=nullptr,FXColor clr=FXRGB(192,192,192),FXuint opts=0,FXint w=1,FXint h=1);
+  FXPNGIcon(FXApp *a,const FXuchar *pix=nullptr,FXColor clr=FXRGB(192,192,192),FXuint opts=0,FXint w=1,FXint h=1,FXuint fl=PNG_IMAGE_ANALYZE);
 
   /// True if format is supported
   static const FXbool supported;
+
+  /// Set image save flags
+  void setFlags(FXint opts){ options=opts; }
+
+  /// Get image save flags
+  FXint getFlags() const { return options; }
 
   /// Save pixels into stream in PNG format
   virtual FXbool savePixels(FXStream& store) const;
@@ -56,31 +64,6 @@ public:
   /// Destroy
   virtual ~FXPNGIcon();
   };
-
-
-#ifndef FXLOADPNG
-#define FXLOADPNG
-
-/**
-* Check if stream contains a PNG, return true if so.
-*/
-extern FXAPI FXbool fxcheckPNG(FXStream& store);
-
-
-/**
-* Load an PNG (Portable Network Graphics) file from a stream.
-* Upon successful return, the pixel array and size are returned.
-* If an error occurred, the pixel array is set to NULL.
-*/
-extern FXAPI FXbool fxloadPNG(FXStream& store,FXColor*& data,FXint& width,FXint& height);
-
-
-/**
-* Save an PNG (Portable Network Graphics) file to a stream.
-*/
-extern FXAPI FXbool fxsavePNG(FXStream& store,const FXColor* data,FXint width,FXint height);
-
-#endif
 
 }
 

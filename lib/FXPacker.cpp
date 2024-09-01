@@ -3,7 +3,7 @@
 *                P a c k e r   C o n t a i n e r   O b j e c t                  *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 1997,2022 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 1997,2024 by Jeroen van der Zijp.   All Rights Reserved.        *
 *********************************************************************************
 * This library is free software; you can redistribute it and/or modify          *
 * it under the terms of the GNU Lesser General Public License as published by   *
@@ -22,7 +22,9 @@
 #include "fxver.h"
 #include "fxdefs.h"
 #include "fxmath.h"
+#include "FXElement.h"
 #include "FXArray.h"
+#include "FXMetaClass.h"
 #include "FXHash.h"
 #include "FXMutex.h"
 #include "FXStream.h"

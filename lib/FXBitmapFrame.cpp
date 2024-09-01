@@ -3,7 +3,7 @@
 *                       I m a g e   F r a m e   W i d g e t                     *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 2001,2022 by H. J. Daniel III. All Rights Reserved.             *
+* Copyright (C) 2001,2024 by H. J. Daniel III. All Rights Reserved.             *
 *********************************************************************************
 * This library is free software; you can redistribute it and/or modify          *
 * it under the terms of the GNU Lesser General Public License as published by   *
@@ -22,14 +22,15 @@
 #include "fxver.h"
 #include "fxdefs.h"
 #include "fxmath.h"
-#include "FXArray.h"
-#include "FXHash.h"
 #include "FXMutex.h"
-#include "FXStream.h"
-#include "FXString.h"
 #include "FXSize.h"
 #include "FXPoint.h"
 #include "FXRectangle.h"
+#include "FXElement.h"
+#include "FXMetaClass.h"
+#include "FXHash.h"
+#include "FXStream.h"
+#include "FXString.h"
 #include "FXStringDictionary.h"
 #include "FXSettings.h"
 #include "FXRegistry.h"

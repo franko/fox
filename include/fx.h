@@ -3,7 +3,7 @@
 *                   M a i n   F O X   I n c l u d e   F i l e                   *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 1997,2022 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 1997,2024 by Jeroen van der Zijp.   All Rights Reserved.        *
 *********************************************************************************
 * This library is free software; you can redistribute it and/or                 *
 * modify it under the terms of the GNU Lesser General Public                    *
@@ -62,6 +62,7 @@
 #include "FXRefPtr.h"
 #include "FXElement.h"
 #include "FXArray.h"
+#include "FXMetaClass.h"
 #include "FXHash.h"
 #include "FXHashOf.h"
 #include "FXCallback.h"
@@ -171,6 +172,7 @@
 #include "FXJP2Image.h"
 #include "FXWEBPImage.h"
 #include "FXEXEImage.h"
+#include "FXQOIFImage.h"
 #include "FXBMPIcon.h"
 #include "FXGIFIcon.h"
 #include "FXICOIcon.h"
@@ -189,6 +191,7 @@
 #include "FXJP2Icon.h"
 #include "FXWEBPIcon.h"
 #include "FXEXEIcon.h"
+#include "FXQOIFIcon.h"
 #include "FXRegion.h"
 #include "FXDC.h"
 #include "FXDCWindow.h"

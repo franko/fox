@@ -3,7 +3,7 @@
 *                   S y n t a x   H i g h l i g h t   E n g i n e               *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 2002,2023 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 2002,2024 by Jeroen van der Zijp.   All Rights Reserved.        *
 *********************************************************************************
 * This program is free software: you can redistribute it and/or modify          *
 * it under the terms of the GNU General Public License as published by          *
@@ -253,6 +253,7 @@ protected:
   FXint         tabwidth;       // Tab is this many columns
   FXint         wrapmode;       // Wrap lines on or off
   FXint         tabmode;        // Tab key inserts spaces
+  FXint         strip;          // Strip spaces
 protected:
   Syntax(){}
 private:
@@ -322,6 +323,10 @@ public:
   // Access tab expand mode
   void setTabMode(FXint m){ tabmode=m; }
   FXint getTabMode() const { return tabmode; }
+
+  // Access strip trailing spaces
+  void setStripSpaces(FXint s){ strip=s; }
+  FXint getStripSpaces() const { return strip; }
 
   // Find rule index, given name
   FXint getNamedRule(const FXString& name) const;

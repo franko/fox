@@ -3,7 +3,7 @@
 *                      J P E G    I n p u t / O u t p u t                       *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 2000,2022 by David Tyree.   All Rights Reserved.                *
+* Copyright (C) 2000,2024 by David Tyree.   All Rights Reserved.                *
 *********************************************************************************
 * This library is free software; you can redistribute it and/or modify          *
 * it under the terms of the GNU Lesser General Public License as published by   *
@@ -22,7 +22,8 @@
 #include "fxver.h"
 #include "fxdefs.h"
 #include "fxmath.h"
-#include "FXArray.h"
+#include "FXElement.h"
+#include "FXMetaClass.h"
 #include "FXHash.h"
 #include "FXElement.h"
 #include "FXStream.h"

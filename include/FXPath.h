@@ -3,7 +3,7 @@
 *                  P a t h   N a m e   M a n i p u l a t i o n                  *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 2000,2022 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 2000,2024 by Jeroen van der Zijp.   All Rights Reserved.        *
 *********************************************************************************
 * This library is free software; you can redistribute it and/or modify          *
 * it under the terms of the GNU Lesser General Public License as published by   *
@@ -63,16 +63,20 @@ namespace FXPath {
   extern FXAPI FXString name(const FXString& file);
 
   /**
-  * Return file stem, i.e. document name only.
+  * Return file stem, i.e. file name without the file
+  * extension.  The extension is defined as the part past
+  * the last '.' of the last path-component, if the '.' is
+  * not the first character of the file name.
   */
   extern FXAPI FXString stem(const FXString& file);
 
   /**
   * Return extension part of the file name.
-  * This returns the string after the last '.' in the last path-component of the
-  * file, provided that the '.' was not the first character of the path-component.
-  * For example, extension("/usr/share/icons/folder.png") returns "png", but the call to
-  * extension("../path.name/.bashrc") returns "".
+  * This returns the string after the last '.' in the last
+  * path-component of the file, provided that the '.' was not
+  * the first character of the path-component.
+  * For example, extension("/usr/share/icons/folder.png") returns "png",
+  * but the call to extension("../path.name/.bashrc") returns "".
   */
   extern FXAPI FXString extension(const FXString& file);
 

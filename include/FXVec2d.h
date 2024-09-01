@@ -3,7 +3,7 @@
 *       D o u b l e - P r e c i s i o n   2 - E l e m e n t   V e c t o r       *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 1994,2022 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 1994,2024 by Jeroen van der Zijp.   All Rights Reserved.        *
 *********************************************************************************
 * This library is free software; you can redistribute it and/or modify          *
 * it under the terms of the GNU Lesser General Public License as published by   *
@@ -95,77 +95,83 @@ public:
 
 
 /// Dot product
-inline FXdouble operator*(const FXVec2d& a,const FXVec2d& b){ return a.x*b.x+a.y*b.y; }
+static inline FXdouble operator*(const FXVec2d& a,const FXVec2d& b){ return a.x*b.x+a.y*b.y; }
 
 /// Scaling
-inline FXVec2d operator*(const FXVec2d& a,FXdouble n){return FXVec2d(a.x*n,a.y*n);}
-inline FXVec2d operator*(FXdouble n,const FXVec2d& a){return FXVec2d(n*a.x,n*a.y);}
-inline FXVec2d operator/(const FXVec2d& a,FXdouble n){return FXVec2d(a.x/n,a.y/n);}
-inline FXVec2d operator/(FXdouble n,const FXVec2d& a){return FXVec2d(n/a.x,n/a.y);}
+static inline FXVec2d operator*(const FXVec2d& a,FXdouble n){return FXVec2d(a.x*n,a.y*n);}
+static inline FXVec2d operator*(FXdouble n,const FXVec2d& a){return FXVec2d(n*a.x,n*a.y);}
+static inline FXVec2d operator/(const FXVec2d& a,FXdouble n){return FXVec2d(a.x/n,a.y/n);}
+static inline FXVec2d operator/(FXdouble n,const FXVec2d& a){return FXVec2d(n/a.x,n/a.y);}
 
 /// Vector and vector addition
-inline FXVec2d operator+(const FXVec2d& a,const FXVec2d& b){ return FXVec2d(a.x+b.x,a.y+b.y); }
-inline FXVec2d operator-(const FXVec2d& a,const FXVec2d& b){ return FXVec2d(a.x-b.x,a.y-b.y); }
+static inline FXVec2d operator+(const FXVec2d& a,const FXVec2d& b){ return FXVec2d(a.x+b.x,a.y+b.y); }
+static inline FXVec2d operator-(const FXVec2d& a,const FXVec2d& b){ return FXVec2d(a.x-b.x,a.y-b.y); }
 
 /// Element-wise multiply and divide
-inline FXVec2d operator%(const FXVec2d& a,const FXVec2d& b){ return FXVec2d(a.x*b.x,a.y*b.y); }
-inline FXVec2d operator/(const FXVec2d& a,const FXVec2d& b){ return FXVec2d(a.x/b.x,a.y/b.y); }
+static inline FXVec2d operator%(const FXVec2d& a,const FXVec2d& b){ return FXVec2d(a.x*b.x,a.y*b.y); }
+static inline FXVec2d operator/(const FXVec2d& a,const FXVec2d& b){ return FXVec2d(a.x/b.x,a.y/b.y); }
 
 /// Equality tests
-inline FXbool operator==(const FXVec2d& a,FXdouble n){return a.x==n && a.y==n;}
-inline FXbool operator!=(const FXVec2d& a,FXdouble n){return a.x!=n || a.y!=n;}
-inline FXbool operator==(FXdouble n,const FXVec2d& a){return n==a.x && n==a.y;}
-inline FXbool operator!=(FXdouble n,const FXVec2d& a){return n!=a.x || n!=a.y;}
+static inline FXbool operator==(const FXVec2d& a,FXdouble n){return a.x==n && a.y==n;}
+static inline FXbool operator!=(const FXVec2d& a,FXdouble n){return a.x!=n || a.y!=n;}
+static inline FXbool operator==(FXdouble n,const FXVec2d& a){return n==a.x && n==a.y;}
+static inline FXbool operator!=(FXdouble n,const FXVec2d& a){return n!=a.x || n!=a.y;}
 
 /// Equality tests
-inline FXbool operator==(const FXVec2d& a,const FXVec2d& b){ return a.x==b.x && a.y==b.y; }
-inline FXbool operator!=(const FXVec2d& a,const FXVec2d& b){ return a.x!=b.x || a.y!=b.y; }
+static inline FXbool operator==(const FXVec2d& a,const FXVec2d& b){ return a.x==b.x && a.y==b.y; }
+static inline FXbool operator!=(const FXVec2d& a,const FXVec2d& b){ return a.x!=b.x || a.y!=b.y; }
 
 /// Inequality tests
-inline FXbool operator<(const FXVec2d& a,FXdouble n){return a.x<n && a.y<n;}
-inline FXbool operator<=(const FXVec2d& a,FXdouble n){return a.x<=n && a.y<=n;}
-inline FXbool operator>(const FXVec2d& a,FXdouble n){return a.x>n && a.y>n;}
-inline FXbool operator>=(const FXVec2d& a,FXdouble n){return a.x>=n && a.y>=n;}
+static inline FXbool operator<(const FXVec2d& a,FXdouble n){return a.x<n && a.y<n;}
+static inline FXbool operator<=(const FXVec2d& a,FXdouble n){return a.x<=n && a.y<=n;}
+static inline FXbool operator>(const FXVec2d& a,FXdouble n){return a.x>n && a.y>n;}
+static inline FXbool operator>=(const FXVec2d& a,FXdouble n){return a.x>=n && a.y>=n;}
 
 /// Inequality tests
-inline FXbool operator<(FXdouble n,const FXVec2d& a){return n<a.x && n<a.y;}
-inline FXbool operator<=(FXdouble n,const FXVec2d& a){return n<=a.x && n<=a.y;}
-inline FXbool operator>(FXdouble n,const FXVec2d& a){return n>a.x && n>a.y;}
-inline FXbool operator>=(FXdouble n,const FXVec2d& a){return n>=a.x && n>=a.y;}
+static inline FXbool operator<(FXdouble n,const FXVec2d& a){return n<a.x && n<a.y;}
+static inline FXbool operator<=(FXdouble n,const FXVec2d& a){return n<=a.x && n<=a.y;}
+static inline FXbool operator>(FXdouble n,const FXVec2d& a){return n>a.x && n>a.y;}
+static inline FXbool operator>=(FXdouble n,const FXVec2d& a){return n>=a.x && n>=a.y;}
 
 /// Inequality tests
-inline FXbool operator<(const FXVec2d& a,const FXVec2d& b){ return a.x<b.x && a.y<b.y; }
-inline FXbool operator<=(const FXVec2d& a,const FXVec2d& b){ return a.x<=b.x && a.y<=b.y; }
-inline FXbool operator>(const FXVec2d& a,const FXVec2d& b){ return a.x>b.x && a.y>b.y; }
-inline FXbool operator>=(const FXVec2d& a,const FXVec2d& b){ return a.x>=b.x && a.y>=b.y; }
+static inline FXbool operator<(const FXVec2d& a,const FXVec2d& b){ return a.x<b.x && a.y<b.y; }
+static inline FXbool operator<=(const FXVec2d& a,const FXVec2d& b){ return a.x<=b.x && a.y<=b.y; }
+static inline FXbool operator>(const FXVec2d& a,const FXVec2d& b){ return a.x>b.x && a.y>b.y; }
+static inline FXbool operator>=(const FXVec2d& a,const FXVec2d& b){ return a.x>=b.x && a.y>=b.y; }
 
 /// Lowest components
-inline FXVec2d lo(const FXVec2d& a,const FXVec2d& b){return FXVec2d(Math::fmin(a.x,b.x),Math::fmin(a.y,b.y));}
-inline FXVec2d lo(const FXVec2d& a,FXdouble n){return FXVec2d(Math::fmin(a.x,n),Math::fmin(a.y,n));}
-inline FXVec2d lo(FXdouble n,const FXVec2d& b){return FXVec2d(Math::fmin(n,b.x),Math::fmin(n,b.y));}
+static inline FXVec2d lo(const FXVec2d& a,const FXVec2d& b){return FXVec2d(Math::fmin(a.x,b.x),Math::fmin(a.y,b.y));}
+static inline FXVec2d lo(const FXVec2d& a,FXdouble n){return FXVec2d(Math::fmin(a.x,n),Math::fmin(a.y,n));}
+static inline FXVec2d lo(FXdouble n,const FXVec2d& b){return FXVec2d(Math::fmin(n,b.x),Math::fmin(n,b.y));}
 
 /// Highest components
-inline FXVec2d hi(const FXVec2d& a,const FXVec2d& b){return FXVec2d(Math::fmax(a.x,b.x),Math::fmax(a.y,b.y));}
-inline FXVec2d hi(const FXVec2d& a,FXdouble n){return FXVec2d(Math::fmax(a.x,n),Math::fmax(a.y,n));}
-inline FXVec2d hi(FXdouble n,const FXVec2d& b){return FXVec2d(Math::fmax(n,b.x),Math::fmax(n,b.y));}
+static inline FXVec2d hi(const FXVec2d& a,const FXVec2d& b){return FXVec2d(Math::fmax(a.x,b.x),Math::fmax(a.y,b.y));}
+static inline FXVec2d hi(const FXVec2d& a,FXdouble n){return FXVec2d(Math::fmax(a.x,n),Math::fmax(a.y,n));}
+static inline FXVec2d hi(FXdouble n,const FXVec2d& b){return FXVec2d(Math::fmax(n,b.x),Math::fmax(n,b.y));}
 
 /// Clamp components of vector between lower and upper limits
-inline FXVec2d clamp(FXdouble lower,const FXVec2d& x,FXdouble upper){return hi(lo(x,upper),lower);}
+static inline FXVec2d clamp(FXdouble lower,const FXVec2d& x,FXdouble upper){return hi(lo(x,upper),lower);}
+
+/// Clamp components of vector to [-limit...limit]
+static inline FXVec2d clamp(const FXVec2d& x,FXdouble limit){return hi(lo(x,limit),-limit);}
 
 /// Clamp components of vector between lower corner and upper corner
-inline FXVec2d clamp(const FXVec2d& lower,const FXVec2d& x,const FXVec2d& upper){return hi(lo(x,upper),lower);}
+static inline FXVec2d clamp(const FXVec2d& lower,const FXVec2d& x,const FXVec2d& upper){return hi(lo(x,upper),lower);}
+
+/// Clamp components of vector to [-limit...limit] corners
+static inline FXVec2d clamp(const FXVec2d& x,const FXVec2d& limit){return hi(lo(x,limit),-limit);}
 
 /// Return vector of absolute value of each element
-inline FXVec2d abs(const FXVec2d& a){return FXVec2d(Math::fabs(a.x),Math::fabs(a.y));}
+static inline FXVec2d abs(const FXVec2d& a){return FXVec2d(Math::fabs(a.x),Math::fabs(a.y));}
 
 /// Return maximum component of vector
-inline FXdouble max(const FXVec2d& a){ return Math::fmax(a.x,a.y); }
+static inline FXdouble max(const FXVec2d& a){ return Math::fmax(a.x,a.y); }
 
 /// Return minimum component of vector
-inline FXdouble min(const FXVec2d& a){ return Math::fmin(a.x,a.y); }
+static inline FXdouble min(const FXVec2d& a){ return Math::fmin(a.x,a.y); }
 
 /// Linearly interpolate
-inline FXVec2d lerp(const FXVec2d& u,const FXVec2d& v,FXdouble f){return (v-u)*f+u;}
+static inline FXVec2d lerp(const FXVec2d& u,const FXVec2d& v,FXdouble f){return (v-u)*f+u;}
 
 /// Normalize vector
 extern FXAPI FXVec2d normalize(const FXVec2d& v);

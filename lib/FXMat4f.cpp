@@ -3,7 +3,7 @@
 *            S i n g l e - P r e c i s i o n   4 x 4   M a t r i x              *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 1994,2022 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 1994,2024 by Jeroen van der Zijp.   All Rights Reserved.        *
 *********************************************************************************
 * This library is free software; you can redistribute it and/or modify          *
 * it under the terms of the GNU Lesser General Public License as published by   *
@@ -22,10 +22,11 @@
 #include "fxver.h"
 #include "fxdefs.h"
 #include "fxmath.h"
+#include "FXElement.h"
 #include "FXArray.h"
+#include "FXMetaClass.h"
 #include "FXHash.h"
 #include "FXStream.h"
-#include "FXObject.h"
 #include "FXVec2f.h"
 #include "FXVec3f.h"
 #include "FXVec4f.h"
@@ -800,6 +801,37 @@ FXMat4f& FXMat4f::scale(const FXVec3f& v){
 // Scale uniform
 FXMat4f& FXMat4f::scale(FXfloat s){
   return scale(s,s,s);
+  }
+
+
+// Mirror-matrix with normal n, which performs
+// the following operation:
+//
+//      Y    N    X
+//       \   |   /
+//        \  |  /
+//         \ | /
+//          \|/
+//           *
+//
+//    Y = X - 2 * (N.X) * X
+//
+FXMat4f& FXMat4f::mirror(const FXVec3f& n){
+  FXfloat tnx=-2.0f*n.x;
+  FXfloat tny=-2.0f*n.y;
+  FXfloat tnz=-2.0f*n.z;
+  FXfloat tnxnx=tnx*n.x;
+  FXfloat tnyny=tny*n.y;
+  FXfloat tnznz=tnz*n.z;
+  FXfloat tnxny=tnx*n.y;
+  FXfloat tnxnz=tnx*n.z;
+  FXfloat tnynz=tny*n.z;
+  FXMat4f reflect(tnxnx+1.0f,tnxny,     tnxnz,     0.0f,
+                  tnxny,     tnyny+1.0f,tnynz,     0.0f,
+                  tnxnz,     tnynz,     tnznz+1.0f,0.0f,
+                  0.0f,      0.0f,      0.0f,      1.0f);
+  *this *= reflect;
+  return *this;
   }
 
 

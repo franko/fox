@@ -3,7 +3,7 @@
 *            D o u b l e - P r e c i s i o n   4 x 4   M a t r i x              *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 1994,2022 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 1994,2024 by Jeroen van der Zijp.   All Rights Reserved.        *
 *********************************************************************************
 * This library is free software; you can redistribute it and/or modify          *
 * it under the terms of the GNU Lesser General Public License as published by   *
@@ -22,10 +22,11 @@
 #include "fxver.h"
 #include "fxdefs.h"
 #include "fxmath.h"
+#include "FXElement.h"
 #include "FXArray.h"
+#include "FXMetaClass.h"
 #include "FXHash.h"
 #include "FXStream.h"
-#include "FXObject.h"
 #include "FXVec2d.h"
 #include "FXVec3d.h"
 #include "FXVec4d.h"
@@ -1094,6 +1095,37 @@ FXMat4d& FXMat4d::scale(const FXVec3d& v){
 // Scale uniform
 FXMat4d& FXMat4d::scale(FXdouble s){
   return scale(s,s,s);
+  }
+
+
+// Mirror-matrix with normal n, which performs
+// the following operation:
+//
+//      Y    N    X
+//       \   |   /
+//        \  |  /
+//         \ | /
+//          \|/
+//           *
+//
+//    Y = X - 2 * (N.X) * X
+//
+FXMat4d& FXMat4d::mirror(const FXVec3d& n){
+  FXdouble tnx=-2.0*n.x;
+  FXdouble tny=-2.0*n.y;
+  FXdouble tnz=-2.0*n.z;
+  FXdouble tnxnx=tnx*n.x;
+  FXdouble tnyny=tny*n.y;
+  FXdouble tnznz=tnz*n.z;
+  FXdouble tnxny=tnx*n.y;
+  FXdouble tnxnz=tnx*n.z;
+  FXdouble tnynz=tny*n.z;
+  FXMat4d reflect(tnxnx+1.0,tnxny,    tnxnz,    0.0,
+                  tnxny,    tnyny+1.0,tnynz,    0.0,
+                  tnxnz,    tnynz,    tnznz+1.0,0.0,
+                  0.0,      0.0,      0.0,      1.0);
+  *this *= reflect;
+  return *this;
   }
 
 

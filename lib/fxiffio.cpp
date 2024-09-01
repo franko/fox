@@ -3,7 +3,7 @@
 *                          I F F   I n p u t / O u t p u t                      *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 2004,2022 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 2004,2024 by Jeroen van der Zijp.   All Rights Reserved.        *
 *********************************************************************************
 * This library is free software; you can redistribute it and/or modify          *
 * it under the terms of the GNU Lesser General Public License as published by   *
@@ -22,7 +22,7 @@
 #include "fxver.h"
 #include "fxdefs.h"
 #include "fxmath.h"
-#include "FXArray.h"
+#include "FXElement.h"
 #include "FXHash.h"
 #include "FXElement.h"
 #include "FXStream.h"
@@ -38,6 +38,8 @@
   - Some day, when I have some sample files, I may support Maya IFF also.
 
 */
+
+#define TOPIC_DETAIL 1015
 
 using namespace FX;
 
@@ -132,7 +134,7 @@ FXbool fxloadIFF(FXStream& store,FXColor*& data,FXint& width,FXint& height){
   // Read tag
   store >> tag;
 
-  FXTRACE((100,"fxloadIFF tag=%c%c%c%c\n",(tag>>24)&255,(tag>>16)&255,(tag>>8)&255,tag&255));
+  FXTRACE((TOPIC_DETAIL,"fxloadIFF tag=%c%c%c%c\n",(tag>>24)&255,(tag>>16)&255,(tag>>8)&255,tag&255));
 
   // Check for FORM tag
   if(tag==FORM || tag==FOR1 || tag==FOR2 || tag==FOR3 || tag==FOR4){
@@ -162,7 +164,7 @@ FXbool fxloadIFF(FXStream& store,FXColor*& data,FXint& width,FXint& height){
         // Empty block is a problem too
         if(size==0) goto x;
 
-        FXTRACE((100,"CHUNK %c%c%c%c POS=%ld SIZE=%d\n",(tag>>24)&255,(tag>>16)&255,(tag>>8)&255,tag&255,pos,size));
+        FXTRACE((TOPIC_DETAIL,"CHUNK %c%c%c%c POS=%ld SIZE=%d\n",(tag>>24)&255,(tag>>16)&255,(tag>>8)&255,tag&255,pos,size));
 
         // Bitmap header
         if(tag==BMHD){
@@ -198,7 +200,7 @@ FXbool fxloadIFF(FXStream& store,FXColor*& data,FXint& width,FXint& height){
         // Commodore AMiGa
         else if(tag==CAMG){
           store >> view;
-          FXTRACE((100,"view=%04x\n",view));
+          FXTRACE((TOPIC_DETAIL,"view=%04x\n",view));
           }
 
         // Body
@@ -211,7 +213,7 @@ FXbool fxloadIFF(FXStream& store,FXColor*& data,FXint& width,FXint& height){
         }
 
       // Wat voor vlees in de kuip?
-      FXTRACE((100,"fxloadIFF: Width=%d Height=%d planes=%d masking=%d compress=%d padding=%d\n",Width,Height,planes,masking,compress,padding));
+      FXTRACE((TOPIC_DETAIL,"fxloadIFF: Width=%d Height=%d planes=%d masking=%d compress=%d padding=%d\n",Width,Height,planes,masking,compress,padding));
 
       // Determine format
       if(planes==24){
@@ -353,7 +355,5 @@ FXbool fxloadIFF(FXStream& store,FXColor*& data,FXint& width,FXint& height){
 x:store.swapBytes(swap);
   return ok;
   }
-
-
 
 }

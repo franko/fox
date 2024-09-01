@@ -3,7 +3,7 @@
 *                          M o d e l i n e   P a r s e r                        *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 2017,2023 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 2017,2024 by Jeroen van der Zijp.   All Rights Reserved.        *
 *********************************************************************************
 * This program is free software: you can redistribute it and/or modify          *
 * it under the terms of the GNU General Public License as published by          *
@@ -34,6 +34,7 @@ private:
   FXint    tabwidth;    // Tab stop columns
   FXint    wrapmode;    // Wrap lines
   FXint    tabmode;     // Tabs expanded into spaces
+  FXint    strip;       // Strip trailing spaces
 private:
   FXbool parseVimModeline(const FXchar* s);
   FXbool parseEmacsModeline(const FXchar* s);
@@ -72,6 +73,10 @@ public:
   // Access tab expand mode
   void setTabMode(FXint m){ tabmode=m; }
   FXint getTabMode() const { return tabmode; }
+
+  // Access strip trailing spaces
+  void setStripSpaces(FXint s){ strip=s; }
+  FXint getStripSpaces() const { return strip; }
 
   // Clear for another call
   void clear();

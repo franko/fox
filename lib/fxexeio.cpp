@@ -3,7 +3,7 @@
 *                L o a d   I c o n   F r o m   E x e c u t a b l e              *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 2014,2022 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 2014,2024 by Jeroen van der Zijp.   All Rights Reserved.        *
 *********************************************************************************
 * This library is free software; you can redistribute it and/or modify          *
 * it under the terms of the GNU Lesser General Public License as published by   *
@@ -24,7 +24,7 @@
 #include "fxmath.h"
 #include "fxascii.h"
 #include "fxunicode.h"
-#include "FXArray.h"
+#include "FXElement.h"
 #include "FXHash.h"
 #include "FXStream.h"
 #include "FXString.h"
@@ -404,7 +404,7 @@ static FXbool scanresources(FXStream& store,FXColor*& data,FXint& width,FXint& h
         FXTRACE((100,"%*sentry.name: %u\n",lev<<2,"",entry.name));
 
         // If don't care match or matching ID then check the rest, otherwise move on to next
-        if(want==-1 || (!(entry.name&IMAGE_RESOURCE_NAME_IS_STRING) && (entry.name&0xFFFF)==want)){
+        if(want==-1 || (!(entry.name&IMAGE_RESOURCE_NAME_IS_STRING) && (entry.name&0xFFFF)==(FXuint)want)){
           if(entry.data&IMAGE_RESOURCE_DATA_IS_DIRECTORY){
             entry.data&=~IMAGE_RESOURCE_DATA_IS_DIRECTORY;
             result=scanresources(store,data,width,height,ctx,ctx.pointer+entry.data,lev+1);

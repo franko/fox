@@ -3,7 +3,7 @@
 *                           O p e n G L   V i e w e r                           *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 1997,2022 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 1997,2024 by Jeroen van der Zijp.   All Rights Reserved.        *
 *********************************************************************************
 * This library is free software; you can redistribute it and/or modify          *
 * it under the terms of the GNU Lesser General Public License as published by   *
@@ -23,7 +23,8 @@
 #include "fxdefs.h"
 #include "fxmath.h"
 #include "fxkeys.h"
-#include "FXArray.h"
+#include "FXElement.h"
+#include "FXMetaClass.h"
 #include "FXHash.h"
 #include "FXMutex.h"
 #include "FXElement.h"
@@ -2563,7 +2564,7 @@ void FXGLViewer::drawFeedback(FXDCPrint& pdc,const FXfloat* buffer,FXint used){
   FXint nvertices,smooth,token,i,p;
 
   // Draw background
-  pdc.outf("%lg %lg %lg C\n",background[0][0],background[0][1],background[0][2]);
+  pdc.outf("%lg %lg %lg C\n",(FXdouble)background[0][0],(FXdouble)background[0][1],(FXdouble)background[0][2]);
   pdc.outf("newpath\n");
   pdc.outf("%lg %lg moveto\n",0.0,0.0);
   pdc.outf("%lg %lg lineto\n",0.0,(FXdouble)height);
@@ -2581,7 +2582,7 @@ void FXGLViewer::drawFeedback(FXDCPrint& pdc,const FXfloat* buffer,FXint used){
 
       // Point primitive
       case GL_POINT_TOKEN:
-        pdc.outf("%lg %lg %lg %lg %lg P\n",buffer[p+0],buffer[p+1],buffer[p+3],buffer[p+4],buffer[p+5]);
+        pdc.outf("%lg %lg %lg %lg %lg P\n",(FXdouble)buffer[p+0],(FXdouble)buffer[p+1],(FXdouble)buffer[p+3],(FXdouble)buffer[p+4],(FXdouble)buffer[p+5]);
         p+=7;             // Each vertex element in the feedback buffer is 7 floats
         break;
 
@@ -2589,10 +2590,10 @@ void FXGLViewer::drawFeedback(FXDCPrint& pdc,const FXfloat* buffer,FXint used){
       case GL_LINE_RESET_TOKEN:
       case GL_LINE_TOKEN:
         if(Math::fabs(buffer[p+3]-buffer[p+7+3])<1E-4f || Math::fabs(buffer[p+4]-buffer[p+7+4])<1E-4f || Math::fabs(buffer[p+5]-buffer[p+7+5])<1E-4f){
-          pdc.outf("%lg %lg %lg %lg %lg %lg %lg %lg %lg %lg SL\n",buffer[p+0],buffer[p+1],buffer[p+3],buffer[p+4],buffer[p+5], buffer[p+7+0],buffer[p+7+1],buffer[p+7+3],buffer[p+7+4],buffer[p+7+5]);
+          pdc.outf("%lg %lg %lg %lg %lg %lg %lg %lg %lg %lg SL\n",(FXdouble)buffer[p+0],(FXdouble)buffer[p+1],(FXdouble)buffer[p+3],(FXdouble)buffer[p+4],(FXdouble)buffer[p+5],(FXdouble)buffer[p+7+0],(FXdouble)buffer[p+7+1],(FXdouble)buffer[p+7+3],(FXdouble)buffer[p+7+4],(FXdouble)buffer[p+7+5]);
           }
         else{
-          pdc.outf("%lg %lg %lg %lg %lg %lg %lg L\n",buffer[p+0],buffer[p+1],buffer[p+7+0],buffer[p+7+1],buffer[p+3],buffer[p+4],buffer[p+5]);
+          pdc.outf("%lg %lg %lg %lg %lg %lg %lg L\n",(FXdouble)buffer[p+0],(FXdouble)buffer[p+1],(FXdouble)buffer[p+7+0],(FXdouble)buffer[p+7+1],(FXdouble)buffer[p+3],(FXdouble)buffer[p+4],(FXdouble)buffer[p+5]);
           }
         p+=14;            // Each vertex element in the feedback buffer is 7 GLfloats
         break;
@@ -2606,10 +2607,10 @@ void FXGLViewer::drawFeedback(FXDCPrint& pdc,const FXfloat* buffer,FXint used){
             if(Math::fabs(buffer[p+3]-buffer[p+i*7+3])<1E-4f || Math::fabs(buffer[p+4]-buffer[p+i*7+4])<1E-4f || Math::fabs(buffer[p+5]-buffer[p+i*7+5])<1E-4f){ smooth=1; break; }
             }
           if(smooth){
-            pdc.outf("%lg %lg %lg %lg %lg %lg %lg %lg %lg %lg %lg %lg %lg %lg %lg ST\n",buffer[p+0],buffer[p+1],buffer[p+3],buffer[p+4],buffer[p+5], buffer[p+7+0],buffer[p+7+1],buffer[p+7+3],buffer[p+7+4],buffer[p+7+5], buffer[p+14+0],buffer[p+14+1],buffer[p+14+3],buffer[p+14+4],buffer[p+14+5]);
+            pdc.outf("%lg %lg %lg %lg %lg %lg %lg %lg %lg %lg %lg %lg %lg %lg %lg ST\n",(FXdouble)buffer[p+0],(FXdouble)buffer[p+1],(FXdouble)buffer[p+3],(FXdouble)buffer[p+4],(FXdouble)buffer[p+5],(FXdouble)buffer[p+7+0],(FXdouble)buffer[p+7+1],(FXdouble)buffer[p+7+3],(FXdouble)buffer[p+7+4],(FXdouble)buffer[p+7+5],(FXdouble)buffer[p+14+0],(FXdouble)buffer[p+14+1],(FXdouble)buffer[p+14+3],(FXdouble)buffer[p+14+4],(FXdouble)buffer[p+14+5]);
             }
           else{
-            pdc.outf("%lg %lg %lg %lg %lg %lg %lg %lg %lg T\n",buffer[p+0],buffer[p+1], buffer[p+7+0],buffer[p+7+1], buffer[p+14+0],buffer[p+14+1], buffer[p+3],buffer[p+4],buffer[p+5]);
+            pdc.outf("%lg %lg %lg %lg %lg %lg %lg %lg %lg T\n",(FXdouble)buffer[p+0],(FXdouble)buffer[p+1],(FXdouble)buffer[p+7+0],(FXdouble)buffer[p+7+1],(FXdouble)buffer[p+14+0],(FXdouble)buffer[p+14+1],(FXdouble)buffer[p+3],(FXdouble)buffer[p+4],(FXdouble)buffer[p+5]);
             }
           }
         p+=nvertices*7;   // Each vertex element in the feedback buffer is 7 GLfloats

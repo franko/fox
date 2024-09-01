@@ -3,7 +3,7 @@
 *                  F O X   D e s k t o p   C a l c u l a t o r                  *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 2001,2023 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 2001,2024 by Jeroen van der Zijp.   All Rights Reserved.        *
 *********************************************************************************
 * This program is free software: you can redistribute it and/or modify          *
 * it under the terms of the GNU General Public License as published by          *
@@ -24,6 +24,11 @@
 
 /*******************************************************************************/
 
+// Version
+#define VERSION_MAJOR 3
+#define VERSION_MINOR 0
+#define VERSION_PATCH 0
+
 
 // Show exponent
 enum {
@@ -40,7 +45,9 @@ protected:
   enum{STACKLEN=32};
 protected:
   FXTextField *display;             // Number display
-  FXFont      *font;                // Display font
+  FXFont      *displayFont;         // Display font
+  FXFont      *modeFont;            // Mode buttons font
+  FXFont      *operatorFont;        // Operator buttons font
   FXButton    *digit[16];           // Digit buttons
   FXButton    *memory[4];           // Memory buttons
   FXButton    *clearbtn;            // Clear entry button
@@ -55,6 +62,7 @@ protected:
   FXIcon      *smallicon;           // Small application icon
   FXIcon      *cmem;		    // Label
   FXIcon      *quest;		    // Question mark
+  FXString     clipped;             // Clipped text
   FXdouble     numstack[STACKLEN];  // Evaluation stack
   FXint        numsp;               // Evaluation stack pointer
   FXuchar      opstack[STACKLEN];   // Operator stack
@@ -99,6 +107,8 @@ public:
   long onUpdBase(FXObject*,FXSelector,void*);
   long onUpdDigit(FXObject*,FXSelector,void*);
   long onCmdDigit(FXObject*,FXSelector,void*);
+  long onUpdHexDigit(FXObject*,FXSelector,void*);
+  long onCmdHexDigit(FXObject*,FXSelector,void*);
   long onCmdPoint(FXObject*,FXSelector,void*);
   long onUpdPoint(FXObject*,FXSelector,void*);
   long onCmdExp(FXObject*,FXSelector,void*);
@@ -159,16 +169,25 @@ public:
   long onCmdPreferences(FXObject*,FXSelector,void*);
   long onUpdColor(FXObject*,FXSelector,void*);
   long onCmdColor(FXObject*,FXSelector,void*);
-  long onCmdFont(FXObject*,FXSelector,void*);
+  long onCmdDisplayFont(FXObject*,FXSelector,void*);
+  long onCmdModeFont(FXObject*,FXSelector,void*);
+  long onCmdOperatorFont(FXObject*,FXSelector,void*);
   long onCmdExponent(FXObject*,FXSelector,void*);
   long onUpdExponent(FXObject*,FXSelector,void*);
   long onCmdEngineeringMode(FXObject*,FXSelector,void*);
   long onUpdEngineeringMode(FXObject*,FXSelector,void*);
+  long onCmdDecimalPoint(FXObject*,FXSelector,void*);
+  long onUpdDecimalPoint(FXObject*,FXSelector,void*);
   long onCmdPrecision(FXObject*,FXSelector,void*);
   long onUpdPrecision(FXObject*,FXSelector,void*);
   long onCmdBeep(FXObject*,FXSelector,void*);
   long onUpdBeep(FXObject*,FXSelector,void*);
   long onCmdQuestion(FXObject*,FXSelector,void*);
+  long onCmdClipboardCopy(FXObject*,FXSelector,void*);
+  long onCmdClipboardPaste(FXObject*,FXSelector,void*);
+  long onClipboardGained(FXObject*,FXSelector,void*);
+  long onClipboardLost(FXObject*,FXSelector,void*);
+  long onClipboardRequest(FXObject*,FXSelector,void*);
 public:
   enum {
     MOD_INV=1,        // Modes
@@ -212,7 +231,9 @@ public:
     UN_RECIP,
     UN_FAC,
     UN_SQRT,
-    UN_QUAD,
+    UN_SQR,
+    UN_CBRT,
+    UN_CUB,
     UN_2LOG,
     UN_2TOX,
     UN_LOG,
@@ -230,7 +251,9 @@ public:
     UN_TAN,
     UN_ATAN,
     UN_TANH,
-    UN_ATANH
+    UN_ATANH,
+    UN_CEIL,
+    UN_FLOOR
     };
 public:
   enum {
@@ -249,13 +272,18 @@ public:
     ID_COLOR_HYPER,
     ID_COLOR_CLEARALL,
     ID_COLOR_CLEAR,
+    ID_CLIPBOARD_COPY,
+    ID_CLIPBOARD_PASTE,
     ID_EXPONENT_ALWAYS,
     ID_EXPONENT_NEVER,
     ID_ENGINEERING_MODE,
+    ID_DECIMAL_POINT,
     ID_PRECISION,
     ID_QUESTION,
     ID_BEEP,
-    ID_FONT,
+    ID_DISPLAYFONT,
+    ID_MODEFONT,
+    ID_OPERATORFONT,
     ID_BASE,
     ID_BIN=ID_BASE+NUM_BIN,
     ID_OCT=ID_BASE+NUM_OCT,
@@ -401,6 +429,10 @@ public:
   void setEngineeringMode(FXbool engmode);
   FXbool getEngineeringMode() const { return !!(exponent&4); }
 
+  /// Force decimal point
+  void setDecimalPoint(FXbool forcedec);
+  FXbool getDecimalPoint() const { return !!(exponent&8); }
+
   /// Set precision
   void setPrecision(FXint prec);
   FXint getPrecision() const { return precision; }
@@ -412,6 +444,14 @@ public:
   /// Set display font
   void setDisplayFont(FXFont* font);
   FXFont* getDisplayFont() const;
+
+  /// Set mode button font
+  void setModeFont(FXFont* font);
+  FXFont* getModeFont() const;
+
+  /// Set operator button font
+  void setOperatorFont(FXFont* font);
+  FXFont* getOperatorFont() const;
 
   /// Clear the calculator
   void clearAll();

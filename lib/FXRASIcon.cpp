@@ -3,7 +3,7 @@
 *                   S U N   R A S T E R   I m a g e   O b j e c t               *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 2004,2022 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 2004,2024 by Jeroen van der Zijp.   All Rights Reserved.        *
 *********************************************************************************
 * This library is free software; you can redistribute it and/or modify          *
 * it under the terms of the GNU Lesser General Public License as published by   *
@@ -22,22 +22,13 @@
 #include "fxver.h"
 #include "fxdefs.h"
 #include "fxmath.h"
+#include "FXElement.h"
 #include "FXArray.h"
+#include "FXMetaClass.h"
 #include "FXHash.h"
 #include "FXMutex.h"
 #include "FXStream.h"
 #include "FXMemoryStream.h"
-#include "FXString.h"
-#include "FXSize.h"
-#include "FXPoint.h"
-#include "FXRectangle.h"
-#include "FXObject.h"
-#include "FXStringDictionary.h"
-#include "FXSettings.h"
-#include "FXRegistry.h"
-#include "FXEvent.h"
-#include "FXWindow.h"
-#include "FXApp.h"
 #include "FXRASIcon.h"
 
 

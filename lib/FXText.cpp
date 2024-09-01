@@ -3,7 +3,7 @@
 *                   M u l t i - L i n e   T e x t   W i d g e t                 *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 1998,2022 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 1998,2024 by Jeroen van der Zijp.   All Rights Reserved.        *
 *********************************************************************************
 * This library is free software; you can redistribute it and/or modify          *
 * it under the terms of the GNU Lesser General Public License as published by   *
@@ -27,18 +27,18 @@
 #include "fxascii.h"
 #include "fxunicode.h"
 #include "FXColors.h"
+#include "FXElement.h"
 #include "FXArray.h"
+#include "FXMetaClass.h"
 #include "FXHash.h"
 #include "FXMutex.h"
 #include "FXStream.h"
 #include "FXString.h"
-#include "FXElement.h"
 #include "FXException.h"
 #include "FXRex.h"
 #include "FXSize.h"
 #include "FXPoint.h"
 #include "FXRectangle.h"
-#include "FXObject.h"
 #include "FXStringDictionary.h"
 #include "FXSettings.h"
 #include "FXRegistry.h"
@@ -648,7 +648,6 @@ FXint FXText::getCharLen(FXint pos) const {
 
 // Get character, assuming that gap never inside utf8 encoding
 FXwchar FXText::getChar(FXint pos) const {
-  FXASSERT(0<=pos && pos<=length);
   const FXuchar* ptr=(FXuchar*)&buffer[(((~pos+gapbeg)>>31)&gaplen)+pos];
   FXwchar w=ptr[0];
   if(0xC0<=w){ w=(w<<6)^ptr[1]^0x3080;
@@ -2540,34 +2539,31 @@ static inline void wcskip(const FXchar*& src){
 
 // Copy columns up from col to endcol
 static FXint copycols(FXchar*& dst,FXchar* dstend,const FXchar*& src,const FXchar* srcend,FXint ncols=2147483647){
-  FXint nc=ncols;
-  while(0<nc && dst<dstend && src<srcend && *src!='\n'){
-    wccopy(dst,src);
-    nc--;
+  FXint c=0;
+  while(c<ncols && dst<dstend && src<srcend && *src!='\n'){
+    wccopy(dst,src); c++;
     }
-  return ncols-nc;
+  return c;
   }
 
 
 // Skip columns from col to endcol
 static FXint skipcols(const FXchar*& src,const FXchar* srcend,FXint ncols=2147483647){
-  FXint nc=ncols;
-  while(0<nc && src<srcend && *src!='\n'){
-    wcskip(src);
-    nc--;
+  FXint c=0;
+  while(c<ncols && src<srcend && *src!='\n'){
+    wcskip(src); c++;
     }
-  return ncols-nc;
+  return c;
   }
 
 
 // Padd output until endcol
 static FXint padcols(FXchar*& dst,FXchar* dstend,FXint ncols=0){
-  FXint nc=ncols;
-  while(0<nc && dst<dstend){
-    *dst++=' ';
-    nc--;
+  FXint c=0;
+  while(c<ncols && dst<dstend){
+    *dst++=' '; c++;
     }
-  return ncols-nc;
+  return c;
   }
 
 
@@ -2590,13 +2586,13 @@ static FXchar* removecolumns(FXchar* dst,FXchar* dstend,const FXchar* src,const 
 
 
 // Replicate text at src n times to dst
-static FXchar* replicatecolumns(FXchar* dst,FXchar* dstend,const FXchar* src,const FXchar* srcend,FXint nr){
-  while(0<nr && dst<dstend){
+static FXchar* replicatecolumns(FXchar* dst,FXchar* dstend,const FXchar* src,const FXchar* srcend,FXint n){
+  while(0<n && dst<dstend){
     const FXchar *ptr=src;
     while(dst<dstend && ptr<srcend && *ptr!='\n'){
       wccopy(dst,ptr);
       }
-    if(dst<dstend && --nr>0){
+    if(dst<dstend && --n>0){
       *dst++='\n';
       }
     }
@@ -2684,6 +2680,35 @@ static FXchar* replacecolumns(FXchar* dst,FXchar* dstend,const FXchar* src,const
   }
 
 
+// Overstrike columns starting at startcol with new text; assume inputs have been detabbed.
+static FXchar* overstrikecolumns(FXchar* dst,FXchar* dstend,const FXchar* src,const FXchar* srcend,const FXchar* ovr,const FXchar* ovrend,FXint startcol){
+  FXint sc,ec; FXuchar c;
+  while(dst<dstend && (src<srcend || ovr<ovrend)){
+    sc=ec=copycols(dst,dstend,src,srcend,startcol);             // Copy up to startcol
+    if(ovr<ovrend && *ovr!='\n'){                               // Overstrike block is non-empty
+      ec+=padcols(dst,dstend,startcol-ec);                      // Pad up to column where overstrike starts
+      ec+=copycols(dst,dstend,ovr,ovrend);                      // Copy new overstruck block
+      }
+    if(src<srcend && *src!='\n'){                               // More stuff past startcol
+      sc+=skipcols(src,srcend,ec-sc);                           // Skip past overstruck text
+      copycols(dst,dstend,src,srcend);                          // Copy the rest
+      }
+    c=0;
+    if(dst<dstend && src<srcend && *src=='\n'){                 // Advance over line end
+      *dst=*src++; c=1;
+      }
+    if(dst<dstend && ovr<ovrend && *ovr=='\n'){
+      *dst=*ovr++; c=1;
+      }
+    dst+=c;
+    }
+  FXASSERT(src<=srcend);
+  FXASSERT(ovr<=ovrend);
+  FXASSERT(dst<=dstend);
+  return dst;
+  }
+
+
 // Count (maximum) columns in text
 static FXint countColumns(const FXString& text,FXint tabcols=8){
   FXint result=0,indent=0,p=0;
@@ -2717,8 +2742,9 @@ static FXString overstrikeColumns(const FXString& src,const FXString& ovr,FXint 
   if(result.length(src.length()+ovr.length()+startcol)){
     FXint srccol=0,ovrcol=0,skpcol=0,d=0,s=0,o=0;
     FXuchar c;
-    while(s<src.length() && srccol<startcol){
-      c=result[d++]=src[s++]; srccol++;
+    while(srccol<startcol && s<src.length()){
+      srccol++;
+      c=result[d++]=src[s++];
       if(c<0xC0) continue;
       result[d++]=src[s++];
       if(c<0xE0) continue;
@@ -2728,10 +2754,12 @@ static FXString overstrikeColumns(const FXString& src,const FXString& ovr,FXint 
       }
     if(0<ovr.length()){
       while(srccol<startcol){
-        result[d++]=' '; srccol++;
+        srccol++;
+        result[d++]=' ';
         }
       while(o<ovr.length()){
-        c=result[d++]=ovr[o++]; ovrcol++;
+        ovrcol++;
+        c=result[d++]=ovr[o++];
         if(c<0xC0) continue;
         result[d++]=ovr[o++];
         if(c<0xE0) continue;
@@ -2739,8 +2767,9 @@ static FXString overstrikeColumns(const FXString& src,const FXString& ovr,FXint 
         if(c<0xF0) continue;
         result[d++]=ovr[o++];
         }
-      while(s<src.length() && skpcol<ovrcol){
-        c=src[s++]; skpcol++;
+      while(skpcol<ovrcol && s<src.length()){
+        skpcol++;
+        c=src[s++];
         if(c<0xC0) continue;
         s++;
         if(c<0xE0) continue;
@@ -2771,8 +2800,9 @@ static FXString insertColumns(const FXString& src,const FXString& ins,FXint star
   if(result.length(src.length()+ins.length()+startcol+numcols)){
     FXint srccol=0,d=0,s=0,i=0;
     FXuchar c;
-    while(s<src.length() && srccol<startcol){
-      c=result[d++]=src[s++]; srccol++;
+    while(srccol<startcol && s<src.length()){
+      srccol++;
+      c=result[d++]=src[s++];
       if(c<0xC0) continue;
       result[d++]=src[s++];
       if(c<0xE0) continue;
@@ -2780,12 +2810,14 @@ static FXString insertColumns(const FXString& src,const FXString& ins,FXint star
       if(c<0xF0) continue;
       result[d++]=src[s++];
       }
-    if(0<ins.length()){
+    if(0<numcols && 0<ins.length()){
       while(srccol<startcol){
-        result[d++]=' '; srccol++;
+        srccol++;
+        result[d++]=' ';
         }
-      while(i<ins.length() && srccol<startcol+numcols){
-        c=result[d++]=ins[i++]; srccol++;
+      while(srccol<startcol+numcols && i<ins.length()){
+        srccol++;
+        c=result[d++]=ins[i++];
         if(c<0xC0) continue;
         result[d++]=ins[i++];
         if(c<0xE0) continue;
@@ -2796,7 +2828,8 @@ static FXString insertColumns(const FXString& src,const FXString& ins,FXint star
       }
     if(s<src.length()){
       while(srccol<startcol+numcols){
-        result[d++]=' '; srccol++;
+        srccol++;
+        result[d++]=' ';
         }
       while(s<src.length()){
         c=result[d++]=src[s++];
@@ -2821,9 +2854,9 @@ static FXString replaceColumns(const FXString& src,const FXString& ins,FXint sta
   if(result.length(src.length()+ins.length()+startcol+numcols)){
     FXint srccol=0,inscol=0,d=0,s=0,i=0;
     FXuchar c;
-    while(s<src.length() && srccol<startcol){
+    while(srccol<startcol && s<src.length()){
+      srccol++;
       c=result[d++]=src[s++];
-      srccol++;
       if(c<0xC0) continue;
       result[d++]=src[s++];
       if(c<0xE0) continue;
@@ -2831,9 +2864,9 @@ static FXString replaceColumns(const FXString& src,const FXString& ins,FXint sta
       if(c<0xF0) continue;
       result[d++]=src[s++];
       }
-    while(s<src.length() && srccol<endcol){
+    while(srccol<endcol && s<src.length()){
+      srccol++;
       c=src[s++];
-      srccol++;
       if(c<0xC0) continue;
       s++;
       if(c<0xE0) continue;
@@ -2841,14 +2874,14 @@ static FXString replaceColumns(const FXString& src,const FXString& ins,FXint sta
       if(c<0xF0) continue;
       s++;
       }
-    if(0<ins.length()){
+    if(0<numcols && 0<ins.length()){
       while(srccol<startcol){
-        result[d++]=' ';
         srccol++;
+        result[d++]=' ';
         }
-      while(i<ins.length()){
-        c=result[d++]=ins[i++];
+      while(inscol<numcols && i<ins.length()){
         inscol++;
+        c=result[d++]=ins[i++];
         if(c<0xC0) continue;
         result[d++]=ins[i++];
         if(c<0xE0) continue;
@@ -2859,8 +2892,8 @@ static FXString replaceColumns(const FXString& src,const FXString& ins,FXint sta
       }
     if(s<src.length()){
       while(inscol<numcols){
-        result[d++]=' ';
         inscol++;
+        result[d++]=' ';
         }
       while(s<src.length()){
         c=result[d++]=src[s++];
@@ -2885,8 +2918,9 @@ static FXString removeColumns(const FXString& src,FXint startcol,FXint numcols){
   if(result.length(src.length())){
     FXint srccol=0,remcol=0,d=0,s=0;
     FXuchar c;
-    while(s<src.length() && srccol<startcol){
-      c=result[d++]=src[s++]; srccol++;
+    while(srccol<startcol && s<src.length()){
+      srccol++;
+      c=result[d++]=src[s++];
       if(c<0xC0) continue;
       result[d++]=src[s++];
       if(c<0xE0) continue;
@@ -2894,8 +2928,9 @@ static FXString removeColumns(const FXString& src,FXint startcol,FXint numcols){
       if(c<0xF0) continue;
       result[d++]=src[s++];
       }
-    while(s<src.length() && remcol<numcols){
-      c=src[s++]; remcol++;
+    while(remcol<numcols && s<src.length()){
+      remcol++;
+      c=src[s++];
       if(c<0xC0) continue;
       s++;
       if(c<0xE0) continue;
@@ -2925,8 +2960,9 @@ static FXString extractColumns(const FXString& src,FXint startcol,FXint numcols)
   if(result.length(src.length())){
     FXint srccol=0,dstcol=0,s=0,d=0;
     FXuchar c;
-    while(s<src.length() && srccol<startcol){
-      c=src[s++]; srccol++;
+    while(srccol<startcol && s<src.length()){
+      srccol++;
+      c=src[s++];
       if(c<0xC0) continue;
       s++;
       if(c<0xE0) continue;
@@ -2934,8 +2970,9 @@ static FXString extractColumns(const FXString& src,FXint startcol,FXint numcols)
       if(c<0xF0) continue;
       s++;
       }
-    while(s<src.length() && dstcol<numcols){
-      c=result[d++]=src[s++]; dstcol++;
+    while(dstcol<numcols && s<src.length()){
+      dstcol++;
+      c=result[d++]=src[s++];
       if(c<0xC0) continue;
       result[d++]=src[s++];
       if(c<0xE0) continue;
@@ -2949,34 +2986,6 @@ static FXString extractColumns(const FXString& src,FXint startcol,FXint numcols)
   return result;
   }
 
-
-// Overstrike columns starting at startcol with new text; assume inputs have been detabbed.
-static FXchar* overstrikecolumns(FXchar* dst,FXchar* dstend,const FXchar* src,const FXchar* srcend,const FXchar* ovr,const FXchar* ovrend,FXint startcol){
-  FXint sc,ec; FXuchar c;
-  while(dst<dstend && (src<srcend || ovr<ovrend)){
-    sc=ec=copycols(dst,dstend,src,srcend,startcol);             // Copy up to startcol
-    if(ovr<ovrend && *ovr!='\n'){                               // Overstrike block is non-empty
-      ec+=padcols(dst,dstend,startcol-ec);                      // Pad up to column where overstrike starts
-      ec+=copycols(dst,dstend,ovr,ovrend);                      // Copy new overstruck block
-      }
-    if(src<srcend && *src!='\n'){                               // More stuff past startcol
-      sc+=skipcols(src,srcend,ec-sc);                           // Skip past overstruck text
-      copycols(dst,dstend,src,srcend);                          // Copy the rest
-      }
-    c=0;
-    if(dst<dstend && src<srcend && *src=='\n'){                 // Advance over line end
-      *dst=*src++; c=1;
-      }
-    if(dst<dstend && ovr<ovrend && *ovr=='\n'){
-      *dst=*ovr++; c=1;
-      }
-    dst+=c;
-    }
-  FXASSERT(src<=srcend);
-  FXASSERT(ovr<=ovrend);
-  FXASSERT(dst<=dstend);
-  return dst;
-  }
 
 /*******************************************************************************/
 

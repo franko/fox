@@ -3,7 +3,7 @@
 *                        P r e f e r e n c e s   D i a l o g                    *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 1998,2023 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 1998,2024 by Jeroen van der Zijp.   All Rights Reserved.        *
 *********************************************************************************
 * This program is free software: you can redistribute it and/or modify          *
 * it under the terms of the GNU General Public License as published by          *
@@ -55,22 +55,44 @@ Preferences::Preferences(Calculator *own):FXDialogBox(own,"Calculator Preference
   FXVerticalFrame* pane2=new FXVerticalFrame(switcher,LAYOUT_FILL_X|LAYOUT_FILL_Y);
   new FXLabel(pane2,tr("Calculator settings"),nullptr,LAYOUT_LEFT);
   new FXHorizontalSeparator(pane2,SEPARATOR_LINE|LAYOUT_FILL_X);
-  FXMatrix *matrix2=new FXMatrix(pane2,6,MATRIX_BY_ROWS|PACK_UNIFORM_HEIGHT|LAYOUT_FILL_X|LAYOUT_FILL_Y);
+  FXMatrix *matrix2=new FXMatrix(pane2,5,MATRIX_BY_COLUMNS|PACK_UNIFORM_HEIGHT|LAYOUT_FILL_X|LAYOUT_FILL_Y);
 
-  new FXLabel(matrix2,tr("Display Font:"),nullptr,JUSTIFY_LEFT|LAYOUT_CENTER_Y|LAYOUT_FILL_X|LAYOUT_FILL_ROW);
   new FXLabel(matrix2,tr("Always show exponent:"),nullptr,JUSTIFY_LEFT|LAYOUT_CENTER_Y|LAYOUT_FILL_X|LAYOUT_FILL_ROW);
-  new FXLabel(matrix2,tr("Never show exponent:"),nullptr,JUSTIFY_LEFT|LAYOUT_CENTER_Y|LAYOUT_FILL_X|LAYOUT_FILL_ROW);
-  new FXLabel(matrix2,tr("Engineering mode:"),nullptr,JUSTIFY_LEFT|LAYOUT_CENTER_Y|LAYOUT_FILL_X|LAYOUT_FILL_ROW);
-  new FXLabel(matrix2,tr("Precision:"),nullptr,JUSTIFY_LEFT|LAYOUT_CENTER_Y|LAYOUT_FILL_X|LAYOUT_FILL_ROW);
-  new FXLabel(matrix2,tr("Beep on error:"),nullptr,JUSTIFY_LEFT|LAYOUT_CENTER_Y|LAYOUT_FILL_X|LAYOUT_FILL_COLUMN|LAYOUT_FILL_ROW);
+  new FXCheckButton(matrix2,FXString::null,own,Calculator::ID_EXPONENT_ALWAYS,LAYOUT_LEFT|LAYOUT_CENTER_Y|LAYOUT_FILL_ROW,0,0,0,0, 0,0,0,0);
+  new FXFrame(matrix2,FRAME_NONE|LAYOUT_FILL_X|LAYOUT_FILL_COLUMN|LAYOUT_FILL_ROW);
+  new FXLabel(matrix2,tr("Display Font:"),nullptr,JUSTIFY_LEFT|LAYOUT_CENTER_Y|LAYOUT_FILL_X|LAYOUT_FILL_ROW);
+  new FXButton(matrix2,tr("Set..."),nullptr,own,Calculator::ID_DISPLAYFONT,FRAME_RAISED|FRAME_THICK|LAYOUT_LEFT|LAYOUT_CENTER_Y|LAYOUT_FILL_ROW);
 
-  new FXButton(matrix2,tr("Set..."),nullptr,own,Calculator::ID_FONT,FRAME_RAISED|FRAME_THICK|LAYOUT_LEFT|LAYOUT_CENTER_Y|LAYOUT_FILL_COLUMN|LAYOUT_FILL_ROW);
-  new FXCheckButton(matrix2,FXString::null,own,Calculator::ID_EXPONENT_ALWAYS,LAYOUT_LEFT|LAYOUT_CENTER_Y|LAYOUT_FILL_COLUMN|LAYOUT_FILL_ROW,0,0,0,0, 0,0,0,0);
-  new FXCheckButton(matrix2,FXString::null,own,Calculator::ID_EXPONENT_NEVER,LAYOUT_LEFT|LAYOUT_CENTER_Y|LAYOUT_FILL_COLUMN|LAYOUT_FILL_ROW,0,0,0,0, 0,0,0,0);
-  new FXCheckButton(matrix2,FXString::null,own,Calculator::ID_ENGINEERING_MODE,LAYOUT_LEFT|LAYOUT_CENTER_Y|LAYOUT_FILL_COLUMN|LAYOUT_FILL_ROW,0,0,0,0, 0,0,0,0);
-  FXSpinner* spinner=new FXSpinner(matrix2,2,own,Calculator::ID_PRECISION,JUSTIFY_RIGHT|FRAME_SUNKEN|FRAME_THICK|LAYOUT_CENTER_Y|LAYOUT_LEFT|LAYOUT_FILL_COLUMN|LAYOUT_FILL_ROW);
+  new FXLabel(matrix2,tr("Never show exponent:"),nullptr,JUSTIFY_LEFT|LAYOUT_CENTER_Y|LAYOUT_FILL_X|LAYOUT_FILL_ROW);
+  new FXCheckButton(matrix2,FXString::null,own,Calculator::ID_EXPONENT_NEVER,LAYOUT_LEFT|LAYOUT_CENTER_Y|LAYOUT_FILL_ROW,0,0,0,0, 0,0,0,0);
+  new FXFrame(matrix2,FRAME_NONE|LAYOUT_FILL_X|LAYOUT_FILL_COLUMN|LAYOUT_FILL_ROW);
+  new FXLabel(matrix2,tr("Mode Font:"),nullptr,JUSTIFY_LEFT|LAYOUT_CENTER_Y|LAYOUT_FILL_X|LAYOUT_FILL_ROW);
+  new FXButton(matrix2,tr("Set..."),nullptr,own,Calculator::ID_MODEFONT,FRAME_RAISED|FRAME_THICK|LAYOUT_LEFT|LAYOUT_CENTER_Y|LAYOUT_FILL_ROW);
+
+  new FXLabel(matrix2,tr("Engineering mode:"),nullptr,JUSTIFY_LEFT|LAYOUT_CENTER_Y|LAYOUT_FILL_X|LAYOUT_FILL_ROW);
+  new FXCheckButton(matrix2,FXString::null,own,Calculator::ID_ENGINEERING_MODE,LAYOUT_LEFT|LAYOUT_CENTER_Y|LAYOUT_FILL_ROW,0,0,0,0, 0,0,0,0);
+  new FXFrame(matrix2,FRAME_NONE|LAYOUT_FILL_X|LAYOUT_FILL_COLUMN|LAYOUT_FILL_ROW);
+  new FXLabel(matrix2,tr("Operator Font:"),nullptr,JUSTIFY_LEFT|LAYOUT_CENTER_Y|LAYOUT_FILL_X|LAYOUT_FILL_ROW);
+  new FXButton(matrix2,tr("Set..."),nullptr,own,Calculator::ID_OPERATORFONT,FRAME_RAISED|FRAME_THICK|LAYOUT_LEFT|LAYOUT_CENTER_Y|LAYOUT_FILL_ROW);
+
+  new FXLabel(matrix2,tr("Force decimal point:"),nullptr,JUSTIFY_LEFT|LAYOUT_CENTER_Y|LAYOUT_FILL_X|LAYOUT_FILL_ROW);
+  new FXCheckButton(matrix2,FXString::null,own,Calculator::ID_DECIMAL_POINT,LAYOUT_LEFT|LAYOUT_CENTER_Y|LAYOUT_FILL_ROW,0,0,0,0, 0,0,0,0);
+  new FXFrame(matrix2,FRAME_NONE|LAYOUT_FILL_X|LAYOUT_FILL_COLUMN|LAYOUT_FILL_ROW);
+  new FXFrame(matrix2,FRAME_NONE|LAYOUT_FILL_X|LAYOUT_FILL_ROW);
+  new FXFrame(matrix2,FRAME_NONE|LAYOUT_FILL_X|LAYOUT_FILL_ROW);
+
+  new FXLabel(matrix2,tr("Beep on error:"),nullptr,JUSTIFY_LEFT|LAYOUT_CENTER_Y|LAYOUT_FILL_X|LAYOUT_FILL_ROW);
+  new FXCheckButton(matrix2,FXString::null,own,Calculator::ID_BEEP,LAYOUT_LEFT|LAYOUT_CENTER_Y|LAYOUT_FILL_ROW,0,0,0,0, 0,0,0,0);
+  new FXFrame(matrix2,FRAME_NONE|LAYOUT_FILL_X|LAYOUT_FILL_COLUMN|LAYOUT_FILL_ROW);
+  new FXFrame(matrix2,FRAME_NONE|LAYOUT_FILL_X|LAYOUT_FILL_ROW);
+  new FXFrame(matrix2,FRAME_NONE|LAYOUT_FILL_X|LAYOUT_FILL_ROW);
+
+  new FXLabel(matrix2,tr("Precision:"),nullptr,JUSTIFY_LEFT|LAYOUT_CENTER_Y|LAYOUT_FILL_X|LAYOUT_FILL_ROW);
+  FXSpinner* spinner=new FXSpinner(matrix2,2,own,Calculator::ID_PRECISION,JUSTIFY_RIGHT|FRAME_SUNKEN|FRAME_THICK|LAYOUT_CENTER_Y|LAYOUT_LEFT|LAYOUT_FILL_ROW);
   spinner->setRange(1,30);
-  new FXCheckButton(matrix2,FXString::null,own,Calculator::ID_BEEP,LAYOUT_LEFT|LAYOUT_CENTER_Y|LAYOUT_FILL_COLUMN|LAYOUT_FILL_ROW,0,0,0,0, 0,0,0,0);
+  new FXFrame(matrix2,FRAME_NONE|LAYOUT_FILL_X|LAYOUT_FILL_COLUMN|LAYOUT_FILL_ROW);
+  new FXFrame(matrix2,FRAME_NONE|LAYOUT_FILL_X|LAYOUT_FILL_ROW);
+  new FXFrame(matrix2,FRAME_NONE|LAYOUT_FILL_X|LAYOUT_FILL_ROW);
 
   // Button 2
   new FXButton(buttons,tr("Calculator\tCalculator settings\tChange calculator settings."),calculator,switcher,FXSwitcher::ID_OPEN_FIRST,FRAME_RAISED|ICON_ABOVE_TEXT|LAYOUT_FILL_Y);
@@ -129,7 +151,7 @@ Preferences::Preferences(Calculator *own):FXDialogBox(own,"Calculator Preference
   new FXHorizontalSeparator(pane3,SEPARATOR_LINE|LAYOUT_FILL_X);
   FXHorizontalFrame *sub3=new FXHorizontalFrame(pane3,LAYOUT_FILL_Y|LAYOUT_FILL_X);
   new FXLabel(sub3,FXString::null,calculator,LAYOUT_CENTER_Y,0,0,0,0,20,20,20,20);
-  new FXLabel(sub3,FXString::value(tr("The FOX Calculator\n\nA Programmer's Desktop Calculator version 2.2.0.\nFOX library version %d.%d.%d.\nHome Page: http://www.fox-toolkit.org\nFTP Site: ftp://ftp.fox-toolkit.org\n\nCopyright (C) 2001,2022 Jeroen van der Zijp."),FOX_MAJOR,FOX_MINOR,FOX_LEVEL),nullptr,JUSTIFY_LEFT|LAYOUT_CENTER_Y);
+  new FXLabel(sub3,FXString::value(tr("The Programmer's Desktop Calculator\n\nA no-frills, user-friendly scientific calculator, version %d.%d.%d (%s %s).\nUsing The FOX Toolkit (www.fox-toolkit.org), version %d.%d.%d.\nCopyright (C) 2001,2024 Jeroen van der Zijp (jeroen@fox-toolkit.net)."),VERSION_MAJOR,VERSION_MINOR,VERSION_PATCH,__DATE__,__TIME__,FOX_MAJOR,FOX_MINOR,FOX_LEVEL),nullptr,JUSTIFY_LEFT|LAYOUT_CENTER_Y);
 
   // Button 3
   new FXButton(buttons,tr("About\tAbout FOX Calculator\tAbout the FOX Calculator."),info,switcher,FXSwitcher::ID_OPEN_THIRD,FRAME_RAISED|ICON_ABOVE_TEXT|LAYOUT_FILL_Y);

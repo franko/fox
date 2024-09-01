@@ -129,6 +129,7 @@
       <ControlFlowGuard>false</ControlFlowGuard>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>

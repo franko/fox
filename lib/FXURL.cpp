@@ -3,7 +3,7 @@
 *                       U R L   M a n i p u l a t i o n                         *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 2000,2022 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 2000,2024 by Jeroen van der Zijp.   All Rights Reserved.        *
 *********************************************************************************
 * This library is free software; you can redistribute it and/or modify          *
 * it under the terms of the GNU Lesser General Public License as published by   *
@@ -23,7 +23,7 @@
 #include "fxdefs.h"
 #include "fxmath.h"
 #include "fxascii.h"
-#include "FXArray.h"
+#include "FXElement.h"
 #include "FXHash.h"
 #include "FXStream.h"
 #include "FXString.h"

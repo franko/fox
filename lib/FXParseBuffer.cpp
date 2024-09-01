@@ -3,7 +3,7 @@
 *                            P a r s e - B u f f e r                            *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 2013,2022 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 2013,2024 by Jeroen van der Zijp.   All Rights Reserved.        *
 *********************************************************************************
 * This library is free software; you can redistribute it and/or modify          *
 * it under the terms of the GNU Lesser General Public License as published by   *
@@ -26,6 +26,7 @@
 #include "fxunicode.h"
 #include "FXElement.h"
 #include "FXArray.h"
+#include "FXMetaClass.h"
 #include "FXString.h"
 #include "FXIO.h"
 #include "FXIODevice.h"

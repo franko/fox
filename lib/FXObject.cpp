@@ -3,7 +3,7 @@
 *                         T o p l e v e l   O b j e c t                         *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 1997,2022 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 1997,2024 by Jeroen van der Zijp.   All Rights Reserved.        *
 *********************************************************************************
 * This library is free software; you can redistribute it and/or modify          *
 * it under the terms of the GNU Lesser General Public License as published by   *
@@ -21,11 +21,10 @@
 #include "xincs.h"
 #include "fxver.h"
 #include "fxdefs.h"
-#include "FXArray.h"
-#include "FXHash.h"
-#include "FXStream.h"
-#include "FXObject.h"
 #include "FXElement.h"
+#include "FXArray.h"
+#include "FXMetaClass.h"
+#include "FXObject.h"
 #include "FXException.h"
 
 
@@ -53,11 +52,10 @@ namespace FX {
 
 
 
-const NewMapEntry FXObject::messagemap[]={
-  {100,200,&method_call<&FXObject::onDefault>},
+static const NewMapEntry messagemap[]={
+//  {100,200,&method_call<&FXObject::onDefault>},
+  {100,200,&FXMessageCallback::MethodCall<FXObject,&FXObject::onDefault>},
   };
-
-
 
 /*
 if you define a function template

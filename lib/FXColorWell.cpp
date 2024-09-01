@@ -3,7 +3,7 @@
 *                         C o l o r W e l l   C l a s s                         *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 1998,2022 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 1998,2024 by Jeroen van der Zijp.   All Rights Reserved.        *
 *********************************************************************************
 * This library is free software; you can redistribute it and/or modify          *
 * it under the terms of the GNU Lesser General Public License as published by   *
@@ -23,17 +23,16 @@
 #include "fxdefs.h"
 #include "fxmath.h"
 #include "fxkeys.h"
-#include "FXArray.h"
-#include "FXHash.h"
 #include "FXMutex.h"
-#include "FXElement.h"
-#include "FXStream.h"
-#include "FXString.h"
-#include "FXColors.h"
 #include "FXSize.h"
 #include "FXPoint.h"
 #include "FXRectangle.h"
-#include "FXObject.h"
+#include "FXColors.h"
+#include "FXElement.h"
+#include "FXMetaClass.h"
+#include "FXHash.h"
+#include "FXStream.h"
+#include "FXString.h"
 #include "FXStringDictionary.h"
 #include "FXSettings.h"
 #include "FXRegistry.h"

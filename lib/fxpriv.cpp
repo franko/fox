@@ -3,7 +3,7 @@
 *              P r i v a t e   I n t e r n a l   F u n c t i o n s              *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 2000,2022 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 2000,2024 by Jeroen van der Zijp.   All Rights Reserved.        *
 *********************************************************************************
 * This library is free software; you can redistribute it and/or modify          *
 * it under the terms of the GNU Lesser General Public License as published by   *
@@ -22,9 +22,9 @@
 #include "fxver.h"
 #include "fxdefs.h"
 #include "fxmath.h"
-#include "FXArray.h"
-#include "FXHash.h"
 #include "FXElement.h"
+#include "FXMetaClass.h"
+#include "FXHash.h"
 #include "FXMutex.h"
 #include "FXAutoThreadStorageKey.h"
 #include "FXRunnable.h"
@@ -34,7 +34,6 @@
 #include "FXSize.h"
 #include "FXPoint.h"
 #include "FXRectangle.h"
-#include "FXObject.h"
 #include "FXStringDictionary.h"
 #include "FXSettings.h"
 #include "FXRegistry.h"

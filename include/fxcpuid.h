@@ -3,7 +3,7 @@
 *                              C P U I D   S u p p o r t                        *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 1998,2022 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 1998,2024 by Jeroen van der Zijp.   All Rights Reserved.        *
 *********************************************************************************
 * This library is free software; you can redistribute it and/or modify          *
 * it under the terms of the GNU Lesser General Public License as published by   *
@@ -48,7 +48,13 @@ enum {
   CPU_HAS_XOP       = 0x0040000,
   CPU_HAS_FMA4      = 0x0080000,
   CPU_HAS_TBM       = 0x0100000,
-  CPU_HAS_RAND      = 0x0200000
+  CPU_HAS_RAND      = 0x0200000,
+  CPU_HAS_AVX512F   = 0x0400000,
+  CPU_HAS_AVX512DQ  = 0x0800000,
+  CPU_HAS_AVX512CD  = 0x1000000,
+  CPU_HAS_AVX512BW  = 0x2000000,
+  CPU_HAS_AVX512VL  = 0x4000000,
+  CPU_HAS_AVX512VBMI= 0x8000000
   };
 
 

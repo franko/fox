@@ -3,7 +3,7 @@
 *                          V a r i a n t   T y p e                              *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 2013,2022 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 2013,2024 by Jeroen van der Zijp.   All Rights Reserved.        *
 *********************************************************************************
 * This library is free software; you can redistribute it and/or modify          *
 * it under the terms of the GNU Lesser General Public License as published by   *
@@ -34,6 +34,7 @@
 
 /*
   Notes:
+  
   - Variant is a "discriminated union" type that may hold a integer, floating
     point number, string, or respectively an array or key/value collection of
     variants.  Thus, a single Variant can hold an arbitrarily complex collection
@@ -69,9 +70,11 @@
     reference to newly created variant object.
     The const operators will return default Null variant if referencing non-existing
     members.
-  - Probably should simplify storage of all integer types to either FXlong or FXulong;
-    this will lead to fewer cases and cost no extra storage at all since the union is
-    the size of the biggest type, anyway.
+    
+  - When conversions take place, ok-flag is set to false if an overflow occurred.
+    The returned value will be clamped to the legal range.
+    For other conversion errors, 0, 0.0, false, or empty-string will be returned,
+    as determined by the conversion type.
 */
 
 // Largest and smallest long values
@@ -87,17 +90,18 @@
 
 using namespace FX;
 
-namespace FX {
-
 /*******************************************************************************/
+
+namespace FX {
 
 // Default variant
 const FXVariant FXVariant::null;
 
 
 // Initialize with default value for type t
-FXbool FXVariant::init(Type t){
-  switch(t){
+void FXVariant::init(Type t){
+  type=t;
+  switch(type){
   case BoolType:
   case CharType:
   case IntType:
@@ -106,29 +110,25 @@ FXbool FXVariant::init(Type t){
   case ULongType:
   case PointerType:
     value.u=0;
-    type=t;
-    return true;
+    return;
   case FloatType:
   case DoubleType:
     value.d=0.0;
-    type=t;
-    return true;
+    return;
   case StringType:
     construct(reinterpret_cast<FXString*>(&value.p));
-    type=t;
-    return true;
+    return;
   case ArrayType:
     construct(reinterpret_cast<FXVariantArray*>(&value.p));
-    type=t;
-    return true;
+    return;
   case MapType:
     construct(reinterpret_cast<FXVariantMap*>(&value.p));
-    type=t;
-    return true;
+    return;
+  case NullType:
+    return;
   default:
-    return true;
+    __unreachable();
     }
-  return true;
   }
 
 
@@ -144,26 +144,28 @@ FXbool FXVariant::clear(){
   case PointerType:
   case FloatType:
   case DoubleType:
-    value.u=0L;
     type=NullType;
+    value.u=0L;
     return true;
   case StringType:
+    type=NullType;
     destruct(reinterpret_cast<FXString*>(&value.p));
     value.u=0L;
-    type=NullType;
     return true;
   case ArrayType:
+    type=NullType;
     destruct(reinterpret_cast<FXVariantArray*>(&value.p));
     value.u=0L;
-    type=NullType;
     return true;
   case MapType:
+    type=NullType;
     destruct(reinterpret_cast<FXVariantMap*>(&value.p));
     value.u=0L;
-    type=NullType;
+    return true;
+  case NullType:
     return true;
   default:
-    return true;
+    __unreachable();
     }
   return true;
   }
@@ -173,7 +175,8 @@ FXbool FXVariant::clear(){
 FXVariant& FXVariant::assign(const FXVariant& other){
   if(this!=&other){
     clear();
-    switch(other.type){
+    type=other.type;
+    switch(type){
     case BoolType:
     case CharType:
     case IntType:
@@ -184,22 +187,20 @@ FXVariant& FXVariant::assign(const FXVariant& other){
     case DoubleType:
     case PointerType:
       value=other.value;
-      type=other.type;
       return *this;
     case StringType:
       construct(reinterpret_cast<FXString*>(&value.p),*reinterpret_cast<const FXString*>(&other.value.p));
-      type=other.type;
       return *this;
     case ArrayType:
       construct(reinterpret_cast<FXVariantArray*>(&value.p),*reinterpret_cast<const FXVariantArray*>(&other.value.p));
-      type=other.type;
       return *this;
     case MapType:
       construct(reinterpret_cast<FXVariantMap*>(&value.p),*reinterpret_cast<const FXVariantMap*>(&other.value.p));
-      type=other.type;
+      return *this;
+    case NullType:
       return *this;
     default:
-      return *this;
+     __unreachable();
       }
     }
   return *this;
@@ -220,91 +221,91 @@ FXVariant& FXVariant::adopt(FXVariant& other){
 
 // Initialize null variant
 FXVariant::FXVariant():type(NullType){
-  FXASSERT(sizeof(value)>=sizeof(FXString) && sizeof(value)>=sizeof(FXVariantArray) &&  sizeof(value)>=sizeof(FXVariantMap));
+  FXASSERT_STATIC(sizeof(value)>=sizeof(FXString) && sizeof(value)>=sizeof(FXVariantArray) &&  sizeof(value)>=sizeof(FXVariantMap));
   value.u=0;
   }
 
 
 // Copy constructor
 FXVariant::FXVariant(const FXVariant& other):type(NullType){
-  FXASSERT(sizeof(value)>=sizeof(FXString) && sizeof(value)>=sizeof(FXVariantArray) &&  sizeof(value)>=sizeof(FXVariantMap));
+  FXASSERT_STATIC(sizeof(value)>=sizeof(FXString) && sizeof(value)>=sizeof(FXVariantArray) &&  sizeof(value)>=sizeof(FXVariantMap));
   assign(other);
   }
 
 
 // Construct and initialize with bool
 FXVariant::FXVariant(FXbool val):type(BoolType){
-  FXASSERT(sizeof(value)>=sizeof(FXString) && sizeof(value)>=sizeof(FXVariantArray) &&  sizeof(value)>=sizeof(FXVariantMap));
+  FXASSERT_STATIC(sizeof(value)>=sizeof(FXString) && sizeof(value)>=sizeof(FXVariantArray) &&  sizeof(value)>=sizeof(FXVariantMap));
   value.u=val;
   }
 
 
 // Construct and initialize with char
 FXVariant::FXVariant(FXchar val):type(CharType){
-  FXASSERT(sizeof(value)>=sizeof(FXString) && sizeof(value)>=sizeof(FXVariantArray) &&  sizeof(value)>=sizeof(FXVariantMap));
+  FXASSERT_STATIC(sizeof(value)>=sizeof(FXString) && sizeof(value)>=sizeof(FXVariantArray) &&  sizeof(value)>=sizeof(FXVariantMap));
   value.u=val;
   }
 
 
 // Construct and initialize with int
 FXVariant::FXVariant(FXint val):type(IntType){
-  FXASSERT(sizeof(value)>=sizeof(FXString) && sizeof(value)>=sizeof(FXVariantArray) &&  sizeof(value)>=sizeof(FXVariantMap));
+  FXASSERT_STATIC(sizeof(value)>=sizeof(FXString) && sizeof(value)>=sizeof(FXVariantArray) &&  sizeof(value)>=sizeof(FXVariantMap));
   value.i=val;
   }
 
 
 // Construct and initialize with unsigned int
 FXVariant::FXVariant(FXuint val):type(UIntType){
-  FXASSERT(sizeof(value)>=sizeof(FXString) && sizeof(value)>=sizeof(FXVariantArray) &&  sizeof(value)>=sizeof(FXVariantMap));
+  FXASSERT_STATIC(sizeof(value)>=sizeof(FXString) && sizeof(value)>=sizeof(FXVariantArray) &&  sizeof(value)>=sizeof(FXVariantMap));
   value.u=val;
   }
 
 
 // Construct and initialize with long
 FXVariant::FXVariant(FXlong val):type(LongType){
-  FXASSERT(sizeof(value)>=sizeof(FXString) && sizeof(value)>=sizeof(FXVariantArray) &&  sizeof(value)>=sizeof(FXVariantMap));
+  FXASSERT_STATIC(sizeof(value)>=sizeof(FXString) && sizeof(value)>=sizeof(FXVariantArray) &&  sizeof(value)>=sizeof(FXVariantMap));
   value.i=val;
   }
 
 
 // Construct and initialize with unsigned long
 FXVariant::FXVariant(FXulong val):type(ULongType){
-  FXASSERT(sizeof(value)>=sizeof(FXString) && sizeof(value)>=sizeof(FXVariantArray) &&  sizeof(value)>=sizeof(FXVariantMap));
+  FXASSERT_STATIC(sizeof(value)>=sizeof(FXString) && sizeof(value)>=sizeof(FXVariantArray) &&  sizeof(value)>=sizeof(FXVariantMap));
   value.u=val;
   }
 
 
 // Construct and initialize with float
 FXVariant::FXVariant(FXfloat val):type(FloatType){
-  FXASSERT(sizeof(value)>=sizeof(FXString) && sizeof(value)>=sizeof(FXVariantArray) &&  sizeof(value)>=sizeof(FXVariantMap));
-  value.d=val;
+  FXASSERT_STATIC(sizeof(value)>=sizeof(FXString) && sizeof(value)>=sizeof(FXVariantArray) &&  sizeof(value)>=sizeof(FXVariantMap));
+  value.d=(FXdouble)val;
   }
 
 
 // Construct and initialize with double
 FXVariant::FXVariant(FXdouble val):type(DoubleType){
-  FXASSERT(sizeof(value)>=sizeof(FXString) && sizeof(value)>=sizeof(FXVariantArray) &&  sizeof(value)>=sizeof(FXVariantMap));
+  FXASSERT_STATIC(sizeof(value)>=sizeof(FXString) && sizeof(value)>=sizeof(FXVariantArray) &&  sizeof(value)>=sizeof(FXVariantMap));
   value.d=val;
   }
 
 
 // Construct and initialize with pointer
 FXVariant::FXVariant(FXptr val):type(PointerType){
-  FXASSERT(sizeof(value)>=sizeof(FXString) && sizeof(value)>=sizeof(FXVariantArray) &&  sizeof(value)>=sizeof(FXVariantMap));
+  FXASSERT_STATIC(sizeof(value)>=sizeof(FXString) && sizeof(value)>=sizeof(FXVariantArray) &&  sizeof(value)>=sizeof(FXVariantMap));
   value.p=val;
   }
 
 
 // Construct and initialize with string
 FXVariant::FXVariant(const FXchar *val):type(StringType){
-  FXASSERT(sizeof(value)>=sizeof(FXString) && sizeof(value)>=sizeof(FXVariantArray) &&  sizeof(value)>=sizeof(FXVariantMap));
+  FXASSERT_STATIC(sizeof(value)>=sizeof(FXString) && sizeof(value)>=sizeof(FXVariantArray) &&  sizeof(value)>=sizeof(FXVariantMap));
   construct(reinterpret_cast<FXString*>(&value.p),val);
   }
 
 
 // Construct and initialize with string
 FXVariant::FXVariant(const FXString& val):type(StringType){
-  FXASSERT(sizeof(value)>=sizeof(FXString) && sizeof(value)>=sizeof(FXVariantArray) &&  sizeof(value)>=sizeof(FXVariantMap));
+  FXASSERT_STATIC(sizeof(value)>=sizeof(FXString) && sizeof(value)>=sizeof(FXVariantArray) &&  sizeof(value)>=sizeof(FXVariantMap));
   construct(reinterpret_cast<FXString*>(&value.p),val);
   }
 
@@ -319,20 +320,20 @@ void FXVariant::setType(Type t){
 
 // Return size of array
 FXival FXVariant::no() const {
-  return (type==ArrayType) ? reinterpret_cast<const FXVariantArray*>(&value.p)->no() : 0;
+  return isArray() ? asArray().no() : 0;
   }
 
 
 // Change number of elements in array
 FXbool FXVariant::no(FXival n){
-  if(type!=ArrayType){ clear(); init(ArrayType); }
-  return reinterpret_cast<FXVariantArray*>(&value.p)->no(n);
+  if(!isArray()){ clear(); init(ArrayType); }
+  return asArray().no(n);
   }
 
 
 // Check if key is mapped
 FXbool FXVariant::has(const FXchar* key) const {
-  return (type==MapType) && (reinterpret_cast<const FXVariantMap*>(&value.p)->has(key));
+  return isMap() && asMap().has(key);
   }
 
 
@@ -356,8 +357,10 @@ FXbool FXVariant::toBool() const {
     return !!asArray().no();                            // True for non-empty array
   case MapType:
     return !asMap().empty();                            // True for non-empty map
-  default:
+  case NullType:
     return false;                                       // Always false
+  default:
+    __unreachable();
     }
   return false;
   }
@@ -365,14 +368,14 @@ FXbool FXVariant::toBool() const {
 
 // Convert to pointer
 FXptr FXVariant::toPtr() const {
-  return (type==PointerType) ? value.p : nullptr;       // NULL anything not a pointer
+  return isPtr() ? value.p : nullptr;                   // NULL anything not a pointer
   }
 
 
 // Convert to int
 FXint FXVariant::toInt(FXbool* ok) const {
-  FXbool flag=false;
   FXlong result=0;
+  FXbool flag=false;
   switch(type){
   case BoolType:
   case CharType:
@@ -394,8 +397,13 @@ FXint FXVariant::toInt(FXbool* ok) const {
     break;
   case StringType:
     return asString().toInt(10,ok);
-  default:
+  case PointerType:
+  case ArrayType:
+  case MapType:
+  case NullType:
     break;
+  default:
+    __unreachable();
     }
   if(__unlikely(ok)){ *ok=flag; }
   return (FXint)result;
@@ -404,8 +412,8 @@ FXint FXVariant::toInt(FXbool* ok) const {
 
 // Convert to unsigned int
 FXuint FXVariant::toUInt(FXbool* ok) const {
-  FXbool flag=false;
   FXlong result=0;
+  FXbool flag=false;
   switch(type){
   case BoolType:
   case CharType:
@@ -427,8 +435,13 @@ FXuint FXVariant::toUInt(FXbool* ok) const {
     break;
   case StringType:
     return asString().toUInt(10,ok);
-  default:
+  case PointerType:
+  case ArrayType:
+  case MapType:
+  case NullType:
     break;
+  default:
+    __unreachable();
     }
   if(__unlikely(ok)){ *ok=flag; }
   return (FXuint)result;
@@ -437,8 +450,8 @@ FXuint FXVariant::toUInt(FXbool* ok) const {
 
 // Convert to long
 FXlong FXVariant::toLong(FXbool* ok) const {
-  FXbool flag=false;
   FXlong result=0;
+  FXbool flag=false;
   switch(type){
   case BoolType:
   case CharType:
@@ -458,8 +471,13 @@ FXlong FXVariant::toLong(FXbool* ok) const {
     break;
   case StringType:
     return asString().toLong(10,ok);
-  default:
+  case PointerType:
+  case ArrayType:
+  case MapType:
+  case NullType:
     break;
+  default:
+    __unreachable();
     }
   if(__unlikely(ok)){ *ok=flag; }
   return result;
@@ -468,8 +486,8 @@ FXlong FXVariant::toLong(FXbool* ok) const {
 
 // Convert to unsigned long
 FXulong FXVariant::toULong(FXbool* ok) const {
-  FXbool flag=false;
   FXulong result=0;
+  FXbool flag=false;
   switch(type){
   case BoolType:
   case CharType:
@@ -489,8 +507,13 @@ FXulong FXVariant::toULong(FXbool* ok) const {
     break;
   case StringType:
     return asString().toULong(10,ok);
-  default:
+  case PointerType:
+  case ArrayType:
+  case MapType:
+  case NullType:
     break;
+  default:
+    __unreachable();
     }
   if(__unlikely(ok)){ *ok=flag; }
   return result;
@@ -499,8 +522,8 @@ FXulong FXVariant::toULong(FXbool* ok) const {
 
 // Convert to float
 FXfloat FXVariant::toFloat(FXbool* ok) const {
-  FXbool flag=false;
   FXfloat result=0.0f;
+  FXbool flag=false;
   switch(type){
   case BoolType:
   case IntType:
@@ -521,8 +544,13 @@ FXfloat FXVariant::toFloat(FXbool* ok) const {
     break;
   case StringType:
     return asString().toFloat(ok);
-  default:
+  case PointerType:
+  case ArrayType:
+  case MapType:
+  case NullType:
     break;
+  default:
+    __unreachable();
     }
   if(__unlikely(ok)){ *ok=flag; }
   return result;
@@ -531,8 +559,8 @@ FXfloat FXVariant::toFloat(FXbool* ok) const {
 
 // Convert to double
 FXdouble FXVariant::toDouble(FXbool* ok) const {
-  FXbool flag=false;
   FXdouble result=0.0;
+  FXbool flag=false;
   switch(type){
   case BoolType:
   case IntType:
@@ -553,8 +581,13 @@ FXdouble FXVariant::toDouble(FXbool* ok) const {
     break;
   case StringType:
     return asString().toDouble(ok);
-  default:
+  case PointerType:
+  case ArrayType:
+  case MapType:
+  case NullType:
     break;
+  default:
+    __unreachable();
     }
   if(__unlikely(ok)){ *ok=flag; }
   return result;
@@ -563,7 +596,7 @@ FXdouble FXVariant::toDouble(FXbool* ok) const {
 
 // Convert to char pointer
 const FXchar* FXVariant::toChars() const {
-  return (type==StringType) ? value.s : FXString::null;
+  return isString() ? value.s : FXString::null;
   }
 
 
@@ -592,9 +625,14 @@ FXString FXVariant::toString(FXbool* ok) const {
   case StringType:
     if(ok) *ok=true;
     return asString();
-  default:
+  case NullType:
+  case PointerType:
+  case ArrayType:
+  case MapType:
     if(ok) *ok=false;
     return FXString::null;
+  default:
+    __unreachable();
     }
   return FXString::null;
   }
@@ -658,7 +696,7 @@ FXVariant& FXVariant::operator=(FXulong val){
 // Assign with float
 FXVariant& FXVariant::operator=(FXfloat val){
   clear();
-  value.d=val;
+  value.d=(FXdouble)val;
   type=FloatType;
   return *this;
   }
@@ -709,72 +747,61 @@ FXVariant& FXVariant::operator=(const FXVariant& val){
 
 // Remove entry from the table
 FXbool FXVariant::remove(const FXchar* key){
-  if(type==MapType && key){
-    return reinterpret_cast<FXVariantMap*>(&value.p)->remove(key);
-    }
-  return false;
+  return isMap() && asMap().remove(key);
   }
 
 
 // Erase entry at pos in the table
 FXbool FXVariant::erase(FXival idx){
-  if(type==ArrayType && 0<=idx && reinterpret_cast<const FXVariantArray*>(&value.p)->no()){
-    return reinterpret_cast<FXVariantArray*>(&value.p)->erase(idx);
-    }
-  return false;
+  return isArray() && 0<=idx && idx<asArray().no() && asArray().erase(idx);
   }
 
 /*******************************************************************************/
 
 // Return value of object member
 FXVariant& FXVariant::at(const FXchar* key){
-  if(type!=MapType){ clear(); init(MapType); }
-  return reinterpret_cast<FXVariantMap*>(&value.p)->at(key);
+  if(!isMap()){ clear(); init(MapType); }
+  return asMap().at(key);
   }
 
 
 // Return value of object member
 const FXVariant& FXVariant::at(const FXchar* key) const {
-  if(type!=MapType){ return FXVariant::null; }
-  return reinterpret_cast<const FXVariantMap*>(&value.p)->at(key);
+  return isMap() ? asMap().at(key) : FXVariant::null;
   }
 
 
 // Return value of object member
 FXVariant& FXVariant::at(const FXString& key){
-  if(type!=MapType){ clear(); init(MapType); }
-  return reinterpret_cast<FXVariantMap*>(&value.p)->at(key);
+  if(!isMap()){ clear(); init(MapType); }
+  return asMap().at(key);
   }
 
 
 // Return value of object member
 const FXVariant& FXVariant::at(const FXString& key) const {
-  if(type!=MapType){ return FXVariant::null; }
-  return reinterpret_cast<const FXVariantMap*>(&value.p)->at(key);
+  return isMap() ? asMap().at(key) : FXVariant::null;
   }
 
 /*******************************************************************************/
 
 // Return value of array member
 FXVariant& FXVariant::at(FXival idx){
-  if(idx<0){ throw FXRangeException("FXVariant: index out of range\n"); }
-  if(type!=ArrayType){ clear(); init(ArrayType); }
-  if(idx>=reinterpret_cast<FXVariantArray*>(&value.p)->no()){
-    if(!reinterpret_cast<FXVariantArray*>(&value.p)->append(FXVariant::null,idx-reinterpret_cast<FXVariantArray*>(&value.p)->no()+1)){
+  if(__unlikely(idx<0)){ throw FXRangeException("FXVariant: index out of range\n"); }
+  if(!isArray()){ clear(); init(ArrayType); }
+  if(idx>=asArray().no()){
+    if(!asArray().append(FXVariant::null,idx-asArray().no()+1)){
       throw FXMemoryException("FXVariant: out of memory\n");
       }
     }
-  return reinterpret_cast<FXVariantArray*>(&value.p)->at(idx);
+  return asArray().at(idx);
   }
 
 
 // Return value of array member
 const FXVariant& FXVariant::at(FXival idx) const {
-  if(idx<0){ throw FXRangeException("FXVariant: index out of range\n"); }
-  if(type==ArrayType && idx<reinterpret_cast<const FXVariantArray*>(&value.p)->no()){
-    return reinterpret_cast<const FXVariantArray*>(&value.p)->at(idx);
-    }
-  return FXVariant::null;
+  if(__unlikely(idx<0)){ throw FXRangeException("FXVariant: index out of range\n"); }
+  return isArray() && idx<asArray().no() ? asArray().at(idx) : FXVariant::null;
   }
 
 /*******************************************************************************/

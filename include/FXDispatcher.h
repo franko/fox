@@ -3,7 +3,7 @@
 *                      C a l l b a c k   D i s p a t c h e r                    *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 2006,2022 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 2006,2024 by Jeroen van der Zijp.   All Rights Reserved.        *
 ********************************************************************************/
 #ifndef FXDISPATCHER_H
 #define FXDISPATCHER_H

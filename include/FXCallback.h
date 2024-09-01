@@ -3,7 +3,7 @@
 *                          C a l l B a c k    C l a s s                         *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 2016,2022 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 2016,2024 by Jeroen van der Zijp.   All Rights Reserved.        *
 *********************************************************************************
 * This library is free software; you can redistribute it and/or modify          *
 * it under the terms of the GNU Lesser General Public License as published by   *

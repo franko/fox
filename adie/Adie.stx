@@ -3,7 +3,7 @@
 #                       A d i e   S y n t a x   F i l e                         #
 #                                                                               #
 #################################################################################
-# Copyright (C) 2004,2023 by Jeroen van der Zijp.   All Rights Reserved.        #
+# Copyright (C) 2004,2024 by Jeroen van der Zijp.   All Rights Reserved.        #
 #################################################################################
 # This program is free software; you can redistribute it and/or modify          #
 # it under the terms of the GNU General Public License as published by          #
@@ -78,7 +78,7 @@ language "Adie Syntax"
     end
   end
   rule "Keyword"
-    pattern "\<(language|filesmatch|contentsmatch|delimiters|contextlines|contextchars|rule|group|pattern|open|close|stop|span|end|style|autoindent|wrapwidth|tabwidth|wordwrap|expandtabs)\>"
+    pattern "\<(language|filesmatch|contentsmatch|delimiters|contextlines|contextchars|rule|group|pattern|open|close|stop|span|end|style|autoindent|wrapwidth|tabwidth|wordwrap|expandtabs|stripspaces)\>"
     style   "yellow"
   end
   rule "String"
@@ -889,6 +889,81 @@ language "Fortran"
     pattern "\<(\l[\l\d_]*)\>"
   end
 end
+
+
+
+# BASIC programming language
+language "BASIC"
+
+  # File patterns for this language mode
+  filesmatch "*.bas,*.BAS"
+
+  contextlines 1
+
+  # Word delimiters
+  delimiters "~.,/\`'!@#$%^&*()-=+{}|[]\":;<>?"
+
+  # String
+  rule "String"
+    open  "\""
+    close "\""
+    stop  "$"
+    style "blue"
+    rule "OctalEscape"
+      pattern "\\[0-7]{1,3}"
+      style   "carrot"
+    end
+    rule "HexEscape"
+      pattern "\\x\h\h"
+      style   "carrot"
+    end
+    rule "ControlEscape"
+      pattern "\\."
+      style   "carrot"
+    end
+    rule "Format"
+      pattern "%\*?(\d+\$)?['#0 +-]*(\*(\d+\$)?|\d*)(\.(\*(\d+\$)?|\d*))?(ll|l|hh|h|L|q|t|z)?([dDbiouxXeEfFgGaAcspn]|\[.*?\])"
+      style   "fuchsia"
+    end
+  end
+
+  # Char constant
+  rule "Char"
+    open  "'"
+    close "'"
+    stop  "$"
+    style "blue"
+    rule "OctalEscape"
+      pattern "\\[0-7]{1,3}"
+      style   "carrot"
+    end
+    rule "HexEscape"
+      pattern "\\x\h\h"
+      style   "carrot"
+    end
+    rule "ControlEscape"
+      pattern "\\."
+      style   "carrot"
+    end
+  end
+
+
+  rule "Keyword"
+    pattern "\<(?iIF|THEN|ELSEIF|ELSE|WHILE|END|LET|FOR|NEXT|STEP|DO|LOOP|GOTO|GOSUB|INPUT|PRINT|DECLARE|FUNCTION|SUB|DIM|RETURN|DELETE|CLS)\>"
+    style   "red"
+  end
+
+  rule "Number"
+    pattern "\<(((\.\d++|\d++((\.\d*+)?|(?=[Ee][+-]?\d++)))([eE][+-]?+\d++)?|0[Xx](\.\h++|\h++(\.\h*+)?)[Pp][+-]?\d++)[LlFfQq]?|(0[xX]\h++|0[0-7]*+|[1-9]\d*+)[Uu]?[Ll]{0,2})\>"
+    style   "blue"
+  end
+
+  rule "Operator"
+    pattern "(?i\(|\)|\^|\*|\\|<=|<|<>|>=|>|=|AND|OR|NOT)"
+    style   "red"
+  end
+end
+
 
 
 # Matlab language
@@ -2393,6 +2468,7 @@ language "Make"
   filesmatch "GNUmakefile,Makefile*,makefile*"
   contextlines 1000
   expandtabs   no
+  stripspaces  yes
   rule "Comment"
     open  "#"
     close "$"
@@ -2790,5 +2866,116 @@ language "Markup"
     close ";"
   end
 end
+
+# Markdown patterns
+language "Markdown"
+  filesmatch "*.md"
+  contextlines 1
+  stripspaces no
+  rule "Heading1"
+    open  "^#\s+"
+    close "$"
+  end
+  rule "Heading2"
+    open  "^##\s+"
+    close "$"
+  end
+  rule "Heading3"
+    open  "^###\s+"
+    close "$"
+  end
+  rule "Heading4"
+    open  "^####\s+"
+    close "$"
+  end
+  rule "Heading5"
+    open  "^#####\s+"
+    close "$"
+  end
+  rule "Heading6"
+    open  "^######\s+"
+    close "$"
+  end
+  rule "Bullits"
+    open  "\*\s+"
+    stop  "$"
+    close "$"
+    rule "Italic"
+      open  "\*(?=\S)"
+      close "(?<=\S)\*"
+    end
+    rule "Bold"
+      open  "\*\*(?=\S)"
+      close "(?<=\S)\*\*"
+    end
+    rule "BoldItalic"
+      open  "\*\*\*(?=\S)"
+      close "(?<=\S)\*\*\*"
+    end
+  end
+  rule "List"
+    open  "-\s+"
+    stop  "$"
+    close "$"
+    rule "Italic"
+      open  "\*(?=\S)"
+      close "(?<=\S)\*"
+    end
+    rule "Bold"
+      open  "\*\*(?=\S)"
+      close "(?<=\S)\*\*"
+    end
+    rule "BoldItalic"
+      open  "\*\*\*(?=\S)"
+      close "(?<=\S)\*\*\*"
+    end
+  end
+  rule "OrderedList"
+    open  "\d\.\s+"
+    stop  "$"
+    close "$"
+    rule "Italic"
+      open  "\*(?=\S)"
+      close "(?<=\S)\*"
+    end
+    rule "Bold"
+      open  "\*\*(?=\S)"
+      close "(?<=\S)\*\*"
+    end
+    rule "BoldItalic"
+      open  "\*\*\*(?=\S)"
+      close "(?<=\S)\*\*\*"
+    end
+  end
+  rule "Italic"
+    open  "\*(?=\S)"
+    close "(?<=\S)\*"
+    rule "Link"
+      span "\[[\w ]+\]\([\w/.:?#]+\)"
+    end
+  end
+  rule "Bold"
+    open  "\*\*(?=\S)"
+    close "(?<=\S)\*\*"
+    rule "Link"
+      span "\[[\w ]+\]\([\w/.:?#]+\)"
+    end
+  end
+  rule "BoldItalic"
+    open  "\*\*\*(?=\S)"
+    close "(?<=\S)\*\*\*"
+    rule "Link"
+      span "\[[\w ]+\]\([\w/.:?#]+\)"
+    end
+  end
+  rule "Code"
+    open  "```"
+    close "```"
+  end
+  rule "Link"
+    span "\[[\w. ]+\]\([\w/.:?#]+\)"
+  end
+end
+
 
 

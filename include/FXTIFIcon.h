@@ -3,7 +3,7 @@
 *                          T I F F   I c o n   O b j e c t                      *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 2001,2022 Eric Gillet.   All Rights Reserved.                   *
+* Copyright (C) 2001,2024 Eric Gillet.   All Rights Reserved.                   *
 *********************************************************************************
 * This library is free software; you can redistribute it and/or modify          *
 * it under the terms of the GNU Lesser General Public License as published by   *
@@ -50,10 +50,10 @@ public:
   static const FXbool supported;
 
   /// Set codec to save with
-  void setCodec(FXuint c){ codec=c; }
+  void setCodec(FXushort c){ codec=c; }
 
   /// Get codec setting
-  FXuint getCodec() const { return codec; }
+  FXushort getCodec() const { return codec; }
 
   /// Save pixels into stream in TIFF format
   virtual FXbool savePixels(FXStream& store) const;

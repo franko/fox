@@ -3,7 +3,7 @@
 *                   S y n t a x   H i g h l i g h t   E n g i n e               *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 2002,2023 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 2002,2024 by Jeroen van der Zijp.   All Rights Reserved.        *
 *********************************************************************************
 * This program is free software: you can redistribute it and/or modify          *
 * it under the terms of the GNU General Public License as published by          *
@@ -66,7 +66,7 @@
           rule's style.  Subrules under the BracketRule may colorize parts
           differently.
 
-       4  SafeBracketRule. This rule behaves like BracketRule.  Except that
+       4  SafeBracketRule. This rule behaves like BracketRule, except that
           each time a sub-chunk is matched, a stop-pattern is tested to see
           if we end the subrule prior to the normal closing-pattern.
           The extra clause provides a safety back-stop against matching a
@@ -377,7 +377,7 @@ CapturingRule::~CapturingRule(){
 
 
 // Construct syntax object; needs at least one master rule
-Syntax::Syntax(const FXString& lang,const FXString& grp):language(lang),group(grp),delimiters(FXText::textDelimiters),contextLines(1),contextChars(1),autoindent(-1),wrapwidth(-1),tabwidth(-1),wrapmode(-1),tabmode(-1){
+Syntax::Syntax(const FXString& lang,const FXString& grp):language(lang),group(grp),delimiters(FXText::textDelimiters),contextLines(1),contextChars(1),autoindent(-1),wrapwidth(-1),tabwidth(-1),wrapmode(-1),tabmode(-1),strip(-1){
   FXTRACE((10,"Syntax::Syntax(\"%s\",\"%s\")\n",lang.text(),grp.text()));
   rules.append(new DefaultRule("Default",FXString::null,-1,0));
   }

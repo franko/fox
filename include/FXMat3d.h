@@ -3,7 +3,7 @@
 *            D o u b l e - P r e c i s i o n   3 x 3   M a t r i x              *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 2003,2022 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 2003,2024 by Jeroen van der Zijp.   All Rights Reserved.        *
 *********************************************************************************
 * This library is free software; you can redistribute it and/or modify          *
 * it under the terms of the GNU Lesser General Public License as published by   *
@@ -159,6 +159,9 @@ public:
   FXMat3d& scale(FXdouble sx,FXdouble sy,FXdouble sz);
   FXMat3d& scale(const FXVec3d& v);
   FXMat3d& scale(FXdouble s);
+
+  /// Mirror-matrix with plane normal n
+  FXMat3d& mirror(const FXVec3d& n);
 
   /// Determinant
   FXdouble det() const;

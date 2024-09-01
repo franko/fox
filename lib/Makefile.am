@@ -204,7 +204,6 @@ FXAccelTable.cpp \
 FXApp.cpp \
 FXArray.cpp \
 FXArrowButton.cpp \
-FXAtomic.cpp \
 FXAutoThreadStorageKey.cpp \
 FXBarrier.cpp \
 FXBMPIcon.cpp \
@@ -373,6 +372,7 @@ FXPPMImage.cpp \
 FXPacker.cpp \
 FXParseBuffer.cpp \
 FXPath.cpp \
+FXPerformance.cpp \
 FXPicker.cpp \
 FXPipe.cpp  \
 FXPopup.cpp \
@@ -383,6 +383,8 @@ FXProgressBar.cpp \
 FXProgressDialog.cpp \
 FXPtrList.cpp \
 FXPtrQueue.cpp \
+FXQOIFIcon.cpp \
+FXQOIFImage.cpp \
 FXQuatd.cpp \
 FXQuatf.cpp \
 FXRASIcon.cpp \
@@ -498,6 +500,7 @@ fxbase64.cpp \
 fxbase85.cpp \
 fxchar.cpp \
 fxcpuid.cpp \
+fxcrc.cpp \
 fxbmpio.cpp \
 fxcompose.cpp \
 fxddsio.cpp \
@@ -522,6 +525,7 @@ fxprintf.cpp \
 fxpriv.h \
 fxpriv.cpp \
 fxpsio.cpp \
+fxqoifio.cpp \
 fxrasio.cpp \
 fxrgbio.cpp \
 fxscanf.cpp \

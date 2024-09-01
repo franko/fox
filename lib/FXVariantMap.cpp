@@ -3,7 +3,7 @@
 *                              V a r i a n t - M a p                            *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 1998,2022 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 1998,2024 by Jeroen van der Zijp.   All Rights Reserved.        *
 *********************************************************************************
 * This library is free software; you can redistribute it and/or modify          *
 * it under the terms of the GNU Lesser General Public License as published by   *
@@ -22,9 +22,8 @@
 #include "fxver.h"
 #include "fxdefs.h"
 #include "fxmath.h"
-#include "FXArray.h"
-#include "FXString.h"
 #include "FXElement.h"
+#include "FXString.h"
 #include "FXException.h"
 #include "FXVariant.h"
 #include "FXVariantMap.h"

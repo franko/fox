@@ -3,7 +3,7 @@
 *                        P r e f e r e n c e s   D i a l o g                    *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 1998,2023 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 1998,2024 by Jeroen van der Zijp.   All Rights Reserved.        *
 *********************************************************************************
 * This program is free software: you can redistribute it and/or modify          *
 * it under the terms of the GNU General Public License as published by          *
@@ -35,6 +35,8 @@ protected:
   FXMatrix        *stylemat;
   FXTextField     *searchtext;
   FXTextField     *syntaxtext;
+  FXTextField     *undotrimtext;
+  FXTextField     *undokeeptext;
   FXIcon          *pal;
   FXIcon          *ind;
   FXIcon          *pat;

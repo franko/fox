@@ -3,7 +3,7 @@
 *                   B a s e   C a l e n d a r   W i d g e t                     *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 2006,2022 by Sander Jansen.   All Rights Reserved.              *
+* Copyright (C) 2006,2024 by Sander Jansen.   All Rights Reserved.              *
 *********************************************************************************
 * This library is free software; you can redistribute it and/or modify          *
 * it under the terms of the GNU Lesser General Public License as published by   *
@@ -24,15 +24,16 @@
 #include "fxmath.h"
 #include "fxascii.h"
 #include "fxkeys.h"
-#include "FXArray.h"
-#include "FXHash.h"
 #include "FXMutex.h"
-#include "FXStream.h"
-#include "FXString.h"
 #include "FXSize.h"
 #include "FXPoint.h"
-#include "FXObjectList.h"
 #include "FXRectangle.h"
+#include "FXElement.h"
+#include "FXMetaClass.h"
+#include "FXHash.h"
+#include "FXStream.h"
+#include "FXString.h"
+#include "FXObjectList.h"
 #include "FXStringDictionary.h"
 #include "FXSettings.h"
 #include "FXRegistry.h"

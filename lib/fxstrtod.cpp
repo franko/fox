@@ -3,7 +3,7 @@
 *               S t r i n g   t o   D o u b l e   C o n v e r s i o n           *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 2005,2022 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 2005,2024 by Jeroen van der Zijp.   All Rights Reserved.        *
 *********************************************************************************
 * This library is free software; you can redistribute it and/or modify          *
 * it under the terms of the GNU Lesser General Public License as published by   *
@@ -22,6 +22,9 @@
 #include "fxver.h"
 #include "fxdefs.h"
 #include "fxmath.h"
+#include "FXElement.h"
+#include "FXArray.h"
+#include "FXMetaClass.h"
 #include "fxascii.h"
 
 

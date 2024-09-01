@@ -1101,6 +1101,15 @@
     <ClInclude Include="..\..\include\FXMarkedPtr.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\include\fxcrc.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\FXQOIFIcon.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\include\FXQOIFImage.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\lib\FX4Splitter.cpp">
@@ -1167,9 +1176,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\lib\fxascii.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\lib\FXAtomic.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\lib\FXAutoThreadStorageKey.cpp">
@@ -2246,6 +2252,18 @@
     <ClCompile Include="..\..\lib\FXMappedFile.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\lib\fxcrc.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\lib\FXQOIFIcon.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\lib\FXQOIFImage.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\lib\fxqoifio.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Image Include="..\..\lib\arrownext.gif">
@@ -2506,5 +2524,10 @@
     <Image Include="..\..\lib\icons.cpparrownext.gif">
       <Filter>Icons</Filter>
     </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\include\Makefile.am">
+      <Filter>Header Files</Filter>
+    </None>
   </ItemGroup>
 </Project>

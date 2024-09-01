@@ -3,7 +3,7 @@
 *                              D a t a   T a r g e t                            *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 1997,2022 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 1997,2024 by Jeroen van der Zijp.   All Rights Reserved.        *
 *********************************************************************************
 * This library is free software; you can redistribute it and/or modify          *
 * it under the terms of the GNU Lesser General Public License as published by   *
@@ -23,14 +23,15 @@
 #include "fxdefs.h"
 #include "fxmath.h"
 #include "fxkeys.h"
-#include "FXArray.h"
-#include "FXHash.h"
 #include "FXMutex.h"
-#include "FXStream.h"
-#include "FXString.h"
 #include "FXSize.h"
 #include "FXPoint.h"
 #include "FXRectangle.h"
+#include "FXElement.h"
+#include "FXMetaClass.h"
+#include "FXHash.h"
+#include "FXStream.h"
+#include "FXString.h"
 #include "FXStringDictionary.h"
 #include "FXSettings.h"
 #include "FXRegistry.h"
@@ -123,7 +124,7 @@ long FXDataTarget::onCmdValue(FXObject* sender,FXSelector sel,void*){
       sender->handle(this,FXSEL(SEL_COMMAND,FXWindow::ID_GETLONGVALUE),data);
       break;
     case DT_FLOAT:
-      d=*((FXfloat*)data);
+      d=(FXdouble)*((FXfloat*)data);
       sender->handle(this,FXSEL(SEL_COMMAND,FXWindow::ID_GETREALVALUE),(void*)&d);
       *((FXfloat*)data)=(FXfloat)d;
       break;
@@ -179,7 +180,7 @@ long FXDataTarget::onUpdValue(FXObject* sender,FXSelector,void*){
       sender->handle(this,FXSEL(SEL_COMMAND,FXWindow::ID_SETLONGVALUE),data);
       break;
     case DT_FLOAT:
-      d=*((FXfloat*)data);
+      d=(FXdouble)*((FXfloat*)data);
       sender->handle(this,FXSEL(SEL_COMMAND,FXWindow::ID_SETREALVALUE),(void*)&d);
       break;
     case DT_DOUBLE:

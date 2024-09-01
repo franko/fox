@@ -3,7 +3,7 @@
 *                    J P E G - 2 0 0 0   I n p u t / O u t p u t                *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 2009,2022 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 2009,2024 by Jeroen van der Zijp.   All Rights Reserved.        *
 *********************************************************************************
 * This library is free software; you can redistribute it and/or modify          *
 * it under the terms of the GNU Lesser General Public License as published by   *
@@ -77,6 +77,8 @@
 #define BOX_XML         0x786d6c20              // XML box
 #define BOX_RREQ        0x72726571              // RREQ box
 
+#define TOPIC_DETAIL 1015
+
 using namespace FX;
 
 /*******************************************************************************/
@@ -99,19 +101,19 @@ extern FXAPI FXbool fxsaveJP2(FXStream& store,const FXColor* data,FXint width,FX
 
 // Report error
 void j2k_error_callback(const char *msg, void *client_data){
-  FXTRACE((100,"fxjp2io: error: %s.\n",msg));
+  FXTRACE((TOPIC_DETAIL,"fxjp2io: error: %s.\n",msg));
   }
 
 
 // Report warning
 void j2k_warning_callback(const char *msg, void *client_data){
-  FXTRACE((100,"fxjp2io: warning: %s.\n",msg));
+  FXTRACE((TOPIC_DETAIL,"fxjp2io: warning: %s.\n",msg));
   }
 
 
 // Report info
 void j2k_info_callback(const char *msg, void *client_data){
-  FXTRACE((100,"fxjp2io: info: %s.\n",msg));
+  FXTRACE((TOPIC_DETAIL,"fxjp2io: info: %s.\n",msg));
   }
 
 
@@ -155,7 +157,7 @@ FXbool fxloadJP2(FXStream& store,FXColor*& data,FXint& width,FXint& height,FXint
     size=store.position()-pos;
     store.position(pos);
 
-    FXTRACE((100,"fxloadJP2: file size=%d\n",size));
+    FXTRACE((TOPIC_DETAIL,"fxloadJP2: file size=%d\n",size));
 
     // Allocate chunk for file data
     if(allocElms(ptr,size)){
@@ -197,7 +199,7 @@ FXbool fxloadJP2(FXStream& store,FXColor*& data,FXint& width,FXint& height,FXint
             width=image->x1-image->x0;
             height=image->y1-image->y0;
 
-            FXTRACE((100,"fxloadJP2: width=%d height=%d numcomps=%d color_space=%d\n",width,height,image->numcomps,image->color_space));
+            FXTRACE((TOPIC_DETAIL,"fxloadJP2: width=%d height=%d numcomps=%d color_space=%d\n",width,height,image->numcomps,image->color_space));
 
             // Only support GREY, RGB, and RGBA
             if(((image->numcomps==1) && (image->color_space==CLRSPC_GRAY)) || ((image->numcomps==3 || image->numcomps==4) && (image->color_space==CLRSPC_SRGB))){

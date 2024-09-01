@@ -3,7 +3,7 @@
 *                        C o l o r W h e e l   W i d g e t                      *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 2001,2022 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 2001,2024 by Jeroen van der Zijp.   All Rights Reserved.        *
 *********************************************************************************
 * This library is free software; you can redistribute it and/or modify          *
 * it under the terms of the GNU Lesser General Public License as published by   *
@@ -23,14 +23,15 @@
 #include "fxdefs.h"
 #include "fxmath.h"
 #include "fxkeys.h"
-#include "FXArray.h"
-#include "FXHash.h"
 #include "FXMutex.h"
-#include "FXStream.h"
-#include "FXString.h"
 #include "FXSize.h"
 #include "FXPoint.h"
 #include "FXRectangle.h"
+#include "FXElement.h"
+#include "FXMetaClass.h"
+#include "FXHash.h"
+#include "FXStream.h"
+#include "FXString.h"
 #include "FXStringDictionary.h"
 #include "FXSettings.h"
 #include "FXRegistry.h"
@@ -60,7 +61,6 @@ using namespace FX;
 namespace FX {
 
 // Special single-precision versions
-const FXfloat pi=3.1415926535897932384626433833f;
 const FXfloat dtor=0.0174532925199432957692369077f;
 const FXfloat rtod=57.295779513082320876798154814f;
 

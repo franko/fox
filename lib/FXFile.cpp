@@ -3,7 +3,7 @@
 *                             F i l e   C l a s s                               *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 2000,2022 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 2000,2024 by Jeroen van der Zijp.   All Rights Reserved.        *
 *********************************************************************************
 * This library is free software; you can redistribute it and/or modify          *
 * it under the terms of the GNU Lesser General Public License as published by   *
@@ -24,7 +24,7 @@
 #include "fxchar.h"
 #include "fxmath.h"
 #include "fxascii.h"
-#include "FXArray.h"
+#include "FXElement.h"
 #include "FXHash.h"
 #include "FXStream.h"
 #include "FXString.h"
@@ -251,7 +251,7 @@ FXbool FXFile::flush(){
   if(device!=BadHandle){
 #if defined(WIN32)
     return ::FlushFileBuffers(device)!=0;
-#elif defined(_BSD_SOURCE) || defined(_XOPEN_SOURCE) || (_POSIX_C_SOURCE >= 200112L)
+#else
     return ::fsync(device)==0;
 #endif
     }

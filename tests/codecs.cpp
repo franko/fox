@@ -3,7 +3,7 @@
 *                                 Codecs Tests                                  *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 2005,2023 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 2005,2024 by Jeroen van der Zijp.   All Rights Reserved.        *
 ********************************************************************************/
 #include "fx.h"
 #include <stdio.h>
@@ -149,11 +149,6 @@ int main(int argc,char *argv[]){
   FXwchar w1,w2;
   FXint n,m,s;
   FXint mode=0;
-
-  FXchar c=Ascii::toUpper(argv[0][0]);
-  fxwarning("c=%c\n",c);
-  return 0;
-
 
   // Round-trip tests
   fxmessage("**** Testing utf2wcs(wcs2utf(str))\n");

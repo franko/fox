@@ -3,7 +3,7 @@
 *                         OpenGL Application coding sample                      *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 1998,2023 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 1998,2024 by Jeroen van der Zijp.   All Rights Reserved.        *
 ********************************************************************************/
 #include "fx.h"
 #include "fx3d.h"
@@ -798,16 +798,16 @@ GLViewWindow::GLViewWindow(FXApp* a):FXMainWindow(a,"OpenGL Test Application",nu
 //   scene->append(new FXGLLine(0,0,0, 1,1,1));
   FXGLGroup *gp2=new FXGLGroup;
   scene->append(gp2);
-  FXGLSphere *sphere=new FXGLSphere(1.0, 1.0, 0.0, 0.5);
+  FXGLSphere *sphere=new FXGLSphere(1.0f, 1.0f, 0.0f, 0.5f);
   sphere->setTipText("Sphere");
-  FXGLSphere *sphere2=new FXGLSphere(0.0, 0.0, 0.0, 0.8);
+  FXGLSphere *sphere2=new FXGLSphere(0.0f, 0.0f, 0.0f, 0.8f);
   sphere2->setTipText("Sphere2");
-  gp2->append(new FXGLCube(-1.0, 0.0, 0.0,  1.0, 1.0, 1.0));
-  gp2->append(new FXGLCube( 1.0, 0.0, 0.0,  1.0, 1.0, 1.0));
-  gp2->append(new FXGLCube( 0.0,-1.0, 0.0,  1.0, 1.0, 1.0));
-  gp2->append(new FXGLCube( 0.0, 1.0, 0.0,  1.0, 1.0, 1.0));
-  gp2->append(new FXGLCone(1.0,-1.5, 0.0, 1.0, 0.5));
-  gp2->append(new FXGLCylinder(-1.0, 0.5, 0.0, 1.0, 0.5));
+  gp2->append(new FXGLCube(-1.0f, 0.0f, 0.0f,  1.0f, 1.0f, 1.0f));
+  gp2->append(new FXGLCube( 1.0f, 0.0f, 0.0f,  1.0f, 1.0f, 1.0f));
+  gp2->append(new FXGLCube( 0.0f,-1.0f, 0.0f,  1.0f, 1.0f, 1.0f));
+  gp2->append(new FXGLCube( 0.0f, 1.0f, 0.0f,  1.0f, 1.0f, 1.0f));
+  gp2->append(new FXGLCone(1.0f,-1.5f, 0.0f, 1.0f, 0.5f));
+  gp2->append(new FXGLCylinder(-1.0f, 0.5f, 0.0f, 1.0f, 0.5f));
   gp2->append(sphere);
   gp2->append(sphere2);
 

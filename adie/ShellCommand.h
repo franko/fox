@@ -3,7 +3,7 @@
 *                             S h e l l - C o m m a n d                         *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 2014,2023 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 2014,2024 by Jeroen van der Zijp.   All Rights Reserved.        *
 *********************************************************************************
 * This program is free software: you can redistribute it and/or modify          *
 * it under the terms of the GNU General Public License as published by          *
@@ -27,11 +27,14 @@
 class ShellCommand : public FXObject {
   FXDECLARE(ShellCommand)
 private:
-  FXProcess       process;      // Child process
-  FXPipe          pipe[3];      // Pipes to communicate with child {in,out,err}
   FXApp          *app;          // Application
   TextWindow     *window;       // Window to send messages to
-  FXTextSelection selection;    // Selection in window
+  FXProcess       process;      // Child process
+  FXPipe          pipe[3];      // Pipes to communicate with child {in,out,err}
+  FXint           selstartpos;  // Start of selection
+  FXint           selendpos;    // End of selection
+  FXint           selstartcol;  // Start column
+  FXint           selendcol;    // End column
   FXString        directory;    // Directory where to start
   FXString        input;        // Input to child process
   FXString        output;       // Output from child process
@@ -107,16 +110,16 @@ public:
   void setSelection(FXint sp=0,FXint ep=-1,FXint sc=0,FXint ec=-1);
 
   // Return selection start position
-  FXint getSelStartPos() const { return selection.startpos; }
+  FXint getSelStartPos() const { return selstartpos; }
 
   // Return selection end position
-  FXint getSelEndPos() const { return selection.endpos; }
+  FXint getSelEndPos() const { return selendpos; }
 
   // Return selection start column
-  FXint getSelStartColumn() const { return selection.startcol; }
+  FXint getSelStartColumn() const { return selstartcol; }
 
   // Return selection end column
-  FXint getSelEndColumn() const { return selection.endcol; }
+  FXint getSelEndColumn() const { return selendcol; }
 
   // Start command
   virtual FXbool start(const FXString& command);

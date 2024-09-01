@@ -3,7 +3,7 @@
 *                              C P U I D   S u p p o r t                        *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 1998,2022 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 1998,2024 by Jeroen van der Zijp.   All Rights Reserved.        *
 *********************************************************************************
 * This library is free software; you can redistribute it and/or modify          *
 * it under the terms of the GNU Lesser General Public License as published by   *
@@ -117,33 +117,44 @@ FXbool fxCPUGetXCaps(FXuint level,FXuint count,FXuint features[]){
 FXuint fxCPUFeatures(){
   FXuint features[4];
   if(fxCPUGetCaps(1,features)){
-    FXuint blank=(CPU_HAS_AVX|CPU_HAS_AVX2|CPU_HAS_FMA|CPU_HAS_FMA4|CPU_HAS_XOP);
     FXuint caps=0;
+    FXuint cr=0;
     if(FXBIT(features[2],0)) caps|=CPU_HAS_SSE3;
     if(FXBIT(features[3],8)) caps|=CPU_HAS_CX8;
     if(FXBIT(features[2],9)) caps|=CPU_HAS_SSSE3;
-    if(FXBIT(features[2],12)) caps|=CPU_HAS_FMA;
     if(FXBIT(features[2],13)) caps|=CPU_HAS_CX16;
     if(FXBIT(features[2],19)) caps|=CPU_HAS_SSE41;
     if(FXBIT(features[2],20)) caps|=CPU_HAS_SSE42;
     if(FXBIT(features[2],23)) caps|=CPU_HAS_POPCNT;
     if(FXBIT(features[2],25)) caps|=CPU_HAS_AES;
-    if(FXBIT(features[2],28)) caps|=CPU_HAS_AVX;
     if(FXBIT(features[2],29)) caps|=CPU_HAS_F16;        // Half-floats
     if(FXBIT(features[2],30)) caps|=CPU_HAS_RAND;
     if(FXBIT(features[3],25)) caps|=CPU_HAS_SSE;
     if(FXBIT(features[3],26)) caps|=CPU_HAS_SSE2;
     if(FXBIT(features[2],27)){                          // OSXSAVE
 #if ((defined(__GNUC__) || defined(__INTEL_COMPILER)) && (defined(__i686__) || defined(__x86_64__)))
-      FXuint lo,hi;
-      __asm__ __volatile__(".byte 0x0f,0x01,0xd0" : "=a" (lo), "=d" (hi) : "c" (0));    // XGETBV ecx=0
-      if((lo&6)==6) blank=0;                            // Don't blank out AVX, AVX2, FMA, FMA4, XOP later
+      __asm__ __volatile__(".byte 0x0f,0x01,0xd0 \n\t" : "=a" (cr) : "c" (0) : "%edx" );
+#elif (defined(_WIN32) && (defined(_M_IX86) || defined(_M_X64)) && (_MSC_VER >= 1500))
+      cr=(FXuint)_xgetbv(0);
 #endif
-// _xgetbv(0); // For _MSC_VER
+      if((cr&6)==6){            // YMM0-15/XMM0-15
+        if(FXBIT(features[2],28)) caps|=CPU_HAS_AVX;
+        if(FXBIT(features[2],12)) caps|=CPU_HAS_FMA;
+        if(fxCPUGetXCaps(7,0,features)){
+          if(FXBIT(features[1],5)) caps|=CPU_HAS_AVX2;
+          if((cr&0xE0)==0xE0){  // OPMASK/ZMM0-15/ZMM16-31
+            if(FXBIT(features[1],16)) caps|=CPU_HAS_AVX512F;
+            if(FXBIT(features[1],17)) caps|=CPU_HAS_AVX512DQ;
+            if(FXBIT(features[1],28)) caps|=CPU_HAS_AVX512CD;
+            if(FXBIT(features[1],30)) caps|=CPU_HAS_AVX512BW;
+            if(FXBIT(features[1],31)) caps|=CPU_HAS_AVX512VL;
+            if(FXBIT(features[2],1)) caps|=CPU_HAS_AVX512VBMI;
+            }
+          }
+        }
       }
     if(fxCPUGetXCaps(7,0,features)){
       if(FXBIT(features[1],3)) caps|=CPU_HAS_BMI1;
-      if(FXBIT(features[1],5)) caps|=CPU_HAS_AVX2;
       if(FXBIT(features[1],8)) caps|=CPU_HAS_BMI2;
       }
     if(fxCPUGetCaps(0,features) && (features[1]==0x68747541) && (features[2]==0x444d4163) && (features[3]==0x69746e65)){
@@ -155,7 +166,6 @@ FXuint fxCPUFeatures(){
         if(FXBIT(features[2],21)) caps|=CPU_HAS_TBM;
         }
       }
-    caps&=~blank;
     return caps;
     }
   return 0;

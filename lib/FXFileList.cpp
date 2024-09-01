@@ -3,7 +3,7 @@
 *                        F i l e    L i s t   O b j e c t                       *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 1998,2022 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 1998,2024 by Jeroen van der Zijp.   All Rights Reserved.        *
 *********************************************************************************
 * This library is free software; you can redistribute it and/or modify          *
 * it under the terms of the GNU Lesser General Public License as published by   *
@@ -25,15 +25,16 @@
 #include "fxkeys.h"
 #include "fxascii.h"
 #include "fxunicode.h"
-#include "FXArray.h"
-#include "FXHash.h"
 #include "FXMutex.h"
-#include "FXStream.h"
-#include "FXObjectList.h"
-#include "FXString.h"
 #include "FXSize.h"
 #include "FXPoint.h"
 #include "FXRectangle.h"
+#include "FXElement.h"
+#include "FXMetaClass.h"
+#include "FXHash.h"
+#include "FXStream.h"
+#include "FXObjectList.h"
+#include "FXString.h"
 #include "FXSystem.h"
 #include "FXPath.h"
 #include "FXIO.h"
@@ -87,6 +88,8 @@
   - If you land in a large directory with images, things are a tad slow;
     need to speed this up some how.
 */
+
+#define TOPIC_FILELIST 1002
 
 
 #define OPENDIRDELAY        700000000   // Delay before opening directory
@@ -580,7 +583,7 @@ long FXFileList::onCmdPasteSel(FXObject*,FXSelector,void*){
   FXString files,action;
   if(getDNDData(FROM_CLIPBOARD,urilistType,files)){
     if(getDNDData(FROM_CLIPBOARD,actionType,action)){
-      FXTRACE((100,"%s::onCmdPasteSel(): Action: %s Files: %s\n",getClassName(),action.text(),files.text()));
+      FXTRACE((TOPIC_FILELIST,"%s::onCmdPasteSel(): Action: %s Files: %s\n",getClassName(),action.text(),files.text()));
       if(action[0]=='1'){
         move_files(directory,files);
         }
@@ -624,7 +627,7 @@ long FXFileList::onCmdCopySel(FXObject*,FXSelector,void*){
 // We lost the selection somehow
 long FXFileList::onClipboardLost(FXObject* sender,FXSelector sel,void* ptr){
   FXIconList::onClipboardLost(sender,sel,ptr);
-  FXTRACE((100,"deleting clipfiles\n"));
+  FXTRACE((TOPIC_FILELIST,"deleting clipfiles\n"));
   clipfiles=FXString::null;
   clipcut=false;
   return 1;
@@ -639,14 +642,14 @@ long FXFileList::onClipboardRequest(FXObject* sender,FXSelector sel,void* ptr){
 
   // Return list of filenames as a uri-list
   if(((FXEvent*)ptr)->target==urilistType){
-    FXTRACE((100,"Returning urilistType\n"));
+    FXTRACE((TOPIC_FILELIST,"Returning urilistType\n"));
     setDNDData(FROM_CLIPBOARD,urilistType,clipfiles);
     return 1;
     }
 
   // Return type of clipboard action
   if(((FXEvent*)ptr)->target==actionType){
-    FXTRACE((100,"Returning actionType\n"));
+    FXTRACE((TOPIC_FILELIST,"Returning actionType\n"));
     setDNDData(FROM_CLIPBOARD,actionType,clipcut?"1":"0");
     return 1;
     }
@@ -968,7 +971,7 @@ long FXFileList::onDNDRequest(FXObject* sender,FXSelector sel,void* ptr){
 
   // Delete selected files
   if(((FXEvent*)ptr)->target==deleteType){
-    FXTRACE((100,"Delete files not yet implemented\n"));
+    FXTRACE((TOPIC_FILELIST,"Delete files not yet implemented\n"));
     return 1;
     }
 
@@ -1383,7 +1386,7 @@ static FXbool fileequal(const FXchar* p1,const FXchar* p2){
 FXbool FXFileList::listItems(FXbool force,FXbool notify){
   FXStat info;
 
-  FXTRACE((100,"%s::listItems(%d,%d)\n",getClassName(),force,notify));
+  FXTRACE((TOPIC_FILELIST,"%s::listItems(%d,%d)\n",getClassName(),force,notify));
 
   // See if directory still there
   if(FXStat::statFile(directory,info)){
@@ -1598,7 +1601,7 @@ FXbool FXFileList::listItems(FXbool force,FXbool notify){
 
 // Set current file; return true if success
 FXbool FXFileList::setCurrentFile(const FXString& file,FXbool notify){
-  FXTRACE((100,"%s::setCurrentFile(%s)\n",getClassName(),file.text()));
+  FXTRACE((TOPIC_FILELIST,"%s::setCurrentFile(%s)\n",getClassName(),file.text()));
   if(setDirectory(FXPath::directory(file),notify)){
     FXint index=findItem(FXPath::name(file));
     if(0<=index){
@@ -1624,7 +1627,7 @@ FXString FXFileList::getCurrentFile() const {
 
 // Set current directory; return true if success
 FXbool FXFileList::setDirectory(const FXString& pathname,FXbool notify){
-  FXTRACE((100,"%s::setDirectory(%s)\n",getClassName(),pathname.text()));
+  FXTRACE((TOPIC_FILELIST,"%s::setDirectory(%s)\n",getClassName(),pathname.text()));
   FXString path(FXPath::absolute(directory,pathname));
   if(FXStat::isDirectory(path)){
     if(directory==path) return true;

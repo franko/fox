@@ -3,7 +3,7 @@
 *                          V a r i a n t   T y p e                              *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 2013,2022 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 2013,2024 by Jeroen van der Zijp.   All Rights Reserved.        *
 *********************************************************************************
 * This library is free software; you can redistribute it and/or modify          *
 * it under the terms of the GNU Lesser General Public License as published by   *
@@ -70,7 +70,7 @@ private:
   Value      value;     // Current value
   Type       type;      // Type of value
 private:
-  FXbool init(Type t);
+  void init(Type t);
 public:
 
   /// Default constructor makes null type
@@ -209,16 +209,16 @@ public:
   operator FXptr() const { return toPtr(); }
 
   /// Convert to char
-  operator FXchar() const { return toInt(); }
+  operator FXchar() const { return (FXchar)toInt(); }
 
-  /// Convert to char
-  operator FXuchar() const { return toUInt(); }
+  /// Convert to unsigned char
+  operator FXuchar() const { return (FXuchar)toUInt(); }
 
   /// Convert to short
-  operator FXshort() const { return toInt(); }
+  operator FXshort() const { return (FXshort)toInt(); }
 
   /// Convert to unsigned short
-  operator FXushort() const { return toUInt(); }
+  operator FXushort() const { return (FXushort)toUInt(); }
 
   /// Convert to int
   operator FXint() const { return toInt(); }

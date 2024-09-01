@@ -3,7 +3,7 @@
 *                     M a i n   W i n d o w   O b j e c t                       *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 1998,2022 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 1998,2024 by Jeroen van der Zijp.   All Rights Reserved.        *
 *********************************************************************************
 * This library is free software; you can redistribute it and/or modify          *
 * it under the terms of the GNU Lesser General Public License as published by   *
@@ -23,18 +23,16 @@
 #include "fxdefs.h"
 #include "fxmath.h"
 #include "FXMutex.h"
-#include "FXArray.h"
-#include "FXHash.h"
-#include "FXStream.h"
-#include "FXString.h"
 #include "FXSize.h"
 #include "FXPoint.h"
 #include "FXRectangle.h"
+#include "FXElement.h"
+#include "FXMetaClass.h"
+#include "FXHash.h"
+#include "FXString.h"
 #include "FXStringDictionary.h"
 #include "FXSettings.h"
 #include "FXRegistry.h"
-#include "FXAccelTable.h"
-#include "FXCursor.h"
 #include "FXEvent.h"
 #include "FXWindow.h"
 #include "FXApp.h"

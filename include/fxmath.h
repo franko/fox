@@ -3,7 +3,7 @@
 *                           M a t h   F u n c t i o n s                         *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 2015,2022 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 2015,2024 by Jeroen van der Zijp.   All Rights Reserved.        *
 *********************************************************************************
 * This library is free software; you can redistribute it and/or modify          *
 * it under the terms of the GNU Lesser General Public License as published by   *
@@ -197,6 +197,9 @@ const FXdouble RTOD=57.295779513082320876798154814;
 /// Feigenbaum constant
 const FXdouble FEIGENBAUM=4.6692016091029906718532038215;
 
+/// Golden ratio
+const FXdouble GOLDENRATIO=1.6180339887498948482045868343;
+
 /*********************************  Functions  *********************************/
 
 // FOX math functions live here
@@ -323,22 +326,48 @@ static inline FXint imin(FXint x,FXint y){
   return (x<y)?x:y;
   }
 
+/// Minimum if two unsigned integers
+static inline FXuint imin(FXuint x,FXuint y){
+  return (x<y)?x:y;
+  }
+
 /// Minimum if two longs
 static inline FXlong imin(FXlong x,FXlong y){
   return (x<y)?x:y;
   }
 
+/// Minimum if two unsigned longs
+static inline FXulong imin(FXulong x,FXulong y){
+  return (x<y)?x:y;
+  }
 
-/// Minimum of two integers
+
+/// Maximum of two integers
 static inline FXint imax(FXint x,FXint y){
   return (x>y)?x:y;
   }
 
-/// Minimum of two longs
+/// Maximum of two unsigned integers
+static inline FXuint imax(FXuint x,FXuint y){
+  return (x>y)?x:y;
+  }
+
+
+/// Maximum of two longs
 static inline FXlong imax(FXlong x,FXlong y){
   return (x>y)?x:y;
   }
 
+/// Maximum of two unsigned longs
+static inline FXulong imax(FXulong x,FXulong y){
+  return (x>y)?x:y;
+  }
+
+
+/// Absolute value of short
+static inline FXshort iabs(FXshort x){
+  return 0<x?x:-x;
+  }
 
 /// Absolute value of integer
 static inline FXint iabs(FXint x){
@@ -612,7 +641,7 @@ static inline FXint lrint(FXfloat x){
 #if defined(NO_LRINTF)
   return (FXint)(x+Math::copysign(0.5f,x));
 #else
-  return ::lrintf(x);
+  return (FXint)::lrintf(x);
 #endif
  }
 
@@ -621,7 +650,7 @@ static inline FXlong lrint(FXdouble x){
 #if defined(NO_LRINT)
  return (FXlong)(x+Math::copysign(0.5,x));
 #else
- return ::lrint(x);
+ return (FXlong)::lrint(x);
 #endif
  }
 
@@ -953,6 +982,30 @@ static inline FXdouble cub(FXdouble x){
   }
 
 
+/// Single precision reciprocal square root
+static inline FXfloat rsqrt(FXfloat x){
+  return 1.0f/Math::sqrt(x);
+  }
+
+
+/// Double precision reciprocal square root
+static inline FXdouble rsqrt(FXdouble x){
+  return 1.0/Math::sqrt(x);
+  }
+
+
+/// Single precision reciprocal
+static inline FXfloat recip(FXfloat x){
+  return 1.0f/x;
+  }
+
+
+/// Double precision reciprocal
+static inline FXdouble recip(FXdouble x){
+  return 1.0/x;
+  }
+
+
 /// Single precision calculate hypothenuse sqrt(x^2+y^2)
 static inline FXfloat hypot(FXfloat x,FXfloat y){
 #if defined(NO_HYPOTF)
@@ -1158,52 +1211,6 @@ static inline FXfloat log10(FXfloat x){
 /// Double precision base 10 logarithm
 static inline FXdouble log10(FXdouble x){
   return ::log10(x);
-  }
-
-
-/// Hash of 32-bit integer
-static inline FXuint hash32(FXuint x){
-  x=((x>>16)^x)*0x21F0AAAD;
-  x=((x>>15)^x)*0x735A2D97;
-  x=((x>>15)^x);
-  return x;
-  }
-
-/// Unhash of 32-bit integer
-static inline FXuint unhash32(FXuint x){
-  x=((x>>15)^(x>>30)^x)*0x97132227;
-  x=((x>>15)^(x>>30)^x)*0x333C4925;
-  x=((x>>16)^x);
-  return x;
-  }
-
-
-/// Hash of 64-bit integer
-static inline FXulong hash64(FXulong x){
-  x=(x^(x>>30))*FXULONG(0xBF58476D1CE4E5B9);
-  x=(x^(x>>27))*FXULONG(0x94D049BB133111EB);
-  x=x^(x>>31);
-  return x;
-  }
-
-/// Unhash of 64-bit integer
-static inline FXulong unhash64(FXulong x){
-  x=(x^(x>>31)^(x>>62))*FXULONG(0x319642B2D24D8EC3);
-  x=(x^(x>>27)^(x>>54))*FXULONG(0x96DE1B173F119089);
-  x=x^(x>>30)^(x>>60);
-  return x;
-  }
-
-
-/// Hash of 32-bit float
-static inline FXuint hash32(FXfloat x){
-  return x!=0.0f ? hash32(fpBits(x)) : 0;
-  }
-
-
-/// Hash of 64-bit double
-static inline FXulong hash64(FXdouble x){
-  return x!=0.0 ? hash64(fpBits(x)) : 0;
   }
 
 

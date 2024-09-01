@@ -3,7 +3,7 @@
 *                        F i l e   S t a t i s t i c s                          *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 2005,2022 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 2005,2024 by Jeroen van der Zijp.   All Rights Reserved.        *
 *********************************************************************************
 * This library is free software; you can redistribute it and/or modify          *
 * it under the terms of the GNU Lesser General Public License as published by   *
@@ -24,7 +24,9 @@
 #include "fxchar.h"
 #include "fxmath.h"
 #include "fxascii.h"
+#include "FXElement.h"
 #include "FXArray.h"
+#include "FXMetaClass.h"
 #include "FXHash.h"
 #include "FXStream.h"
 #include "FXString.h"
@@ -969,6 +971,18 @@ FXbool FXStat::isAccessible(const FXString& file,FXuint m){
     if(m&FXIO::Executable) mode|=X_OK;
     return access(file.text(),mode)==0;
 #endif
+    }
+  return false;
+  }
+
+
+// Return true if file1 is the same as file2
+FXbool FXStat::isSame(const FXString& file1,const FXString& file2){
+  if(!file1.empty() && !file2.empty()){
+    FXStat info1,info2;
+    if(statFile(file1,info1) && statFile(file2,info2)){
+      return info1.index()==info2.index() && info1.volume()==info2.volume();
+      }
     }
   return false;
   }

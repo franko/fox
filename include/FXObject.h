@@ -3,7 +3,7 @@
 *                         T o p l e v e l   O b j e c t                         *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 1997,2022 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 1997,2024 by Jeroen van der Zijp.   All Rights Reserved.        *
 *********************************************************************************
 * This library is free software; you can redistribute it and/or modify          *
 * it under the terms of the GNU Lesser General Public License as published by   *
@@ -21,8 +21,8 @@
 #ifndef FXOBJECT_H
 #define FXOBJECT_H
 
-#ifndef FXMETACLASS_H
-#include "FXMetaClass.h"
+#ifndef FXCALLBACK_H
+#include "FXCallback.h"
 #endif
 
 namespace FX {
@@ -105,14 +105,21 @@ enum {
 /// Define one function
 #define FXMAPFUNC(type,key,func) {FXSEL(type,key),FXSEL(type,key),&func}
 
+
+//#define NEWMAP 1
 #if defined(NEWMAP)
-typedef long (*NewMethod)(FX::FXObject*,FX::FXObject*,FX::FXSelector,void*);
+
+typedef FXCallback<long (FXObject*,FXSelector,FXptr)> FXMessageCallback;
+
+
+typedef FXMessageCallback::Method FXMessageCallbackWrapper;
 
 struct NewMapEntry {
   FX::FXSelector keylo;
   FX::FXSelector keyhi;
-  FX::NewMethod  method;
+  FX::FXMessageCallbackWrapper method;
   };
+
 #endif
 
 /**
@@ -127,15 +134,6 @@ struct NewMapEntry {
 class FXAPI FXObject {
   FXDECLARE(FXObject)
 public:
-
-#if defined(NEWMAP)
-static const NewMapEntry messagemap[];
-
-  template <long (FXObject::*mfn)(FX::FXObject*,FX::FXSelector,void*)>
-  static long method_call(FX::FXObject* tgt,FX::FXObject* sender,FX::FXSelector sel,void* ptr){
-    return (tgt->*mfn)(sender,sel,ptr);
-    }
-#endif
 
   /// Get class name of some object
   const FXchar* getClassName() const;

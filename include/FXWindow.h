@@ -3,7 +3,7 @@
 *                            W i n d o w   O b j e c t                          *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 1997,2022 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 1997,2024 by Jeroen van der Zijp.   All Rights Reserved.        *
 *********************************************************************************
 * This library is free software; you can redistribute it and/or modify          *
 * it under the terms of the GNU Lesser General Public License as published by   *
@@ -366,12 +366,6 @@ public:
   /// Return a pointer to the owner window
   FXWindow* getOwner() const { return owner; }
 
-  /// Return a pointer to the shell window
-  FXWindow* getShell() const;
-
-  /// Return a pointer to the root window
-  FXWindow* getRoot() const;
-
   /// Return a pointer to the next (sibling) window, if any
   FXWindow* getNext() const { return next; }
 
@@ -386,6 +380,12 @@ public:
 
   /// Return a pointer to the currently focused child window
   FXWindow* getFocus() const { return focus; }
+
+  /// Return a pointer to the shell window
+  FXWindow* getShell() const;
+
+  /// Return a pointer to the root window
+  FXWindow* getRoot() const;
 
   /// Get window class
   virtual WindowClass getWindowClass() const;

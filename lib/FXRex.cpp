@@ -3,7 +3,7 @@
 *                 R e g u l a r   E x p r e s s i o n   C l a s s               *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 1999,2023 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 1999,2024 by Jeroen van der Zijp.   All Rights Reserved.        *
 *********************************************************************************
 * This library is free software; you can redistribute it and/or modify          *
 * it under the terms of the GNU Lesser General Public License as published by   *
@@ -26,6 +26,8 @@
 #include "fxascii.h"
 #include "fxunicode.h"
 #include "FXElement.h"
+#include "FXArray.h"
+#include "FXMetaClass.h"
 #include "FXHash.h"
 #include "FXStream.h"
 #include "FXString.h"
@@ -493,7 +495,7 @@
     And/or heterogeneous set; method #2 (OP_ANY_OF/OP_ANY_BUT):
 
                   <N>
-           c1, c2, c3, ... cN
+           c1, c2, c3, ... cN, 0
 
     Choose which based on the input; for example:
 
@@ -617,6 +619,8 @@ enum {
   OP_NOT_IN,            // Any character not in set
   OP_ANY_OF,            // Any character in list
   OP_ANY_BUT,           // Any character not in list
+  OP_RNG,               // Any character in a range
+  OP_NOT_RNG,           // Any character not in a range
   OP_UPPER,             // Match upper case
   OP_LOWER,             // Match lower case
   OP_SPACE,             // White space
@@ -647,6 +651,8 @@ enum {
   OP_UNOT_IN,           // Unicode any character not in set
   OP_UANY_OF,           // Unicode any character in list
   OP_UANY_BUT,          // Unicode any character not in list
+  OP_URNG,              // Any character in a range
+  OP_UNOT_RNG,          // Any character not in a range
   OP_UUPPER,            // Unicode uppercase
   OP_ULOWER,            // Unicode lowercase
   OP_UTITLE,            // Unicode title case
@@ -724,6 +730,7 @@ enum {
   OP_REF_7,
   OP_REF_8,
   OP_REF_9,
+
   OP_REF_CI_0,          // Case insensitive back reference to substring 0, 1, ...
   OP_REF_CI_1,
   OP_REF_CI_2,
@@ -746,6 +753,7 @@ enum {
   OP_ZERO_7,
   OP_ZERO_8,
   OP_ZERO_9,
+
   OP_INCR_0,            // Increment counter 0, 1, ...
   OP_INCR_1,
   OP_INCR_2,
@@ -756,6 +764,7 @@ enum {
   OP_INCR_7,
   OP_INCR_8,
   OP_INCR_9,
+
   OP_JUMPLT_0,          // Jump if counter 0, 1, ... less than value
   OP_JUMPLT_1,
   OP_JUMPLT_2,
@@ -766,6 +775,7 @@ enum {
   OP_JUMPLT_7,
   OP_JUMPLT_8,
   OP_JUMPLT_9,
+
   OP_JUMPGT_0,          // Jump if counter 0, 1, ... greater than value
   OP_JUMPGT_1,
   OP_JUMPGT_2,
@@ -1051,13 +1061,20 @@ static inline void UNION(FXuchar set[],const FXuchar src[]){
   }
 
 
-// Character in list at prg
-static inline FXbool INLIST(const FXchar* p,FXchar ch){
-  const FXchar* q=p+(FXuchar)*p;
-  while(p<q && *++p!=ch){ }
-  return (*p==ch);
+// Character in list at p [nbytes, c1,...]
+static inline FXbool LIST(const FXchar* p,FXchar ch){
+  FXuchar n=*p++;
+  do{ if(*p++==ch){ return true; } }while(--n);
+  return false;
   }
 
+
+// Unicodde character in unicode list at p [nbytes, w1,...]
+static inline FXbool ULIST(const FXchar* p,FXwchar ch){
+  FXuchar n=*p++;
+  do{ if(wcnxt(p)==ch){ return true; } }while(--n);
+  return false;
+  }
 
 #if 0
 // Check if wide-character at wcs is in enumerated wide-character set
@@ -2525,10 +2542,9 @@ FXExecute::FXExecute(const FXchar* sbeg,const FXchar* send,FXint* b,FXint* e,FXi
 FXbool FXExecute::match(const FXchar* prog){
   if(recs<MAXRECURSION){
     FXint no,keep,rep_min,rep_max,greediness;
-    const FXchar *save,*beg,*end;
-    const FXchar *ptr;
+    const FXchar *ptr,*save,*beg,*end;
     FXuchar op;
-    FXwchar ch;
+    FXwchar ch,w1,w2;
 
     // Recurse deeper
     ++recs;
@@ -2749,14 +2765,28 @@ nxt:op=*prog++;
 */
       case OP_ANY_OF:                           // Match character in list
         if(str_end<=str) goto f;
-        if(!INLIST(prog,*str)) goto f;
-        prog+=1+(FXuchar)*prog;
+        if(!LIST(prog,*str)) goto f;
+        no=(FXuchar)*prog++;
+        prog+=no;
         str++;
         goto nxt;
       case OP_ANY_BUT:                          // Match character NOT in list
         if(str_end<=str) goto f;
-        if(INLIST(prog,*str)) goto f;
-        prog+=1+(FXuchar)*prog;
+        if(LIST(prog,*str)) goto f;
+        no=(FXuchar)*prog++;
+        prog+=no;
+        str++;
+        goto nxt;
+      case OP_RNG:                              // Any character in a range
+        if(str_end<=str) goto f;
+        if((FXuchar)*str<(FXuchar)prog[0] || (FXuchar)*str>(FXuchar)prog[1]) goto f;
+        prog+=2;
+        str++;
+        goto nxt;
+      case OP_NOT_RNG:                          // Any character not in a range
+        if(str_end<=str) goto f;
+        if((FXuchar)prog[0]<=(FXuchar)*str && (FXuchar)prog[1]<=(FXuchar)*str) goto f;
+        prog+=2;
         str++;
         goto nxt;
       case OP_UPPER:                            // Match if uppercase
@@ -2895,12 +2925,32 @@ nxt:op=*prog++;
         FXASSERT(0);
         goto nxt;
       case OP_UANY_OF:                          // Unicode any character in list
-        // FIXME
-        FXASSERT(0);
+        if(str_end<=str) goto f;
+        ch=wcnxt(str);
+        if(!ULIST(prog,ch)) goto f;
+        no=(FXuchar)*prog++;
+        prog+=no;
         goto nxt;
       case OP_UANY_BUT:                         // Unicode any character not in list
-        // FIXME
-        FXASSERT(0);
+        if(str_end<=str) goto f;
+        ch=wcnxt(str);
+        if(ULIST(prog,ch)) goto f;
+        no=(FXuchar)*prog++;
+        prog+=no;
+        goto nxt;
+      case OP_URNG:                             // Any character in a range
+        if(str_end<=str) goto f;
+        ch=wcnxt(str);
+        w1=wcnxt(prog);
+        w2=wcnxt(prog);
+        if(ch<w1 || w2<ch) goto f;
+        goto nxt;
+      case OP_UNOT_RNG:                         // Any character not in a range
+        if(str_end<=str) goto f;
+        ch=wcnxt(str);
+        w1=wcnxt(prog);
+        w2=wcnxt(prog);
+        if(w1<=ch && ch<=w2) goto f;
         goto nxt;
       case OP_UUPPER:                           // Match if unicode uppercase
         if(str_end<=str) goto f;
@@ -3113,13 +3163,25 @@ rep:    if(str+rep_min>str_end) goto f;         // Can't possibly succeed
             while(str<str_end && no<rep_max && !ISIN(prog,*str)){ ++str; ++no; }
             prog+=32;
             goto asc;
-          case OP_ANY_OF:                       // Match character in list
-            while(str<str_end && no<rep_max && INLIST(prog,*str)){ ++str; ++no; }
-            prog+=1+(FXuchar)*prog;
+          case OP_ANY_OF:                       // Match characters in list
+            while(str<str_end && no<rep_max && LIST(prog,*str)){ ++str; ++no; }
+            no=(FXuchar)*prog++;
+            prog+=no;
             goto asc;
-          case OP_ANY_BUT:                      // Match character NOT in list
-            while(str<str_end && no<rep_max && !INLIST(prog,*str)){ ++str; ++no; }
-            prog+=1+(FXuchar)*prog;
+          case OP_ANY_BUT:                      // Match characters NOT in list
+            while(str<str_end && no<rep_max && !LIST(prog,*str)){ ++str; ++no; }
+            no=(FXuchar)*prog++;
+            prog+=no;
+            goto asc;
+          case OP_RNG:                          // Any characters in a range
+            w1=(FXuchar)*prog++;
+            w2=(FXuchar)*prog++;
+            while(str<str_end && no<rep_max && w1<=*str && *str<=w2){ ++str; ++no; }
+            goto asc;
+          case OP_NOT_RNG:                      // Any characters not in a range
+            w1=(FXuchar)*prog++;
+            w2=(FXuchar)*prog++;
+            while(str<str_end && no<rep_max && (*str<w1 || w2<*str)){ ++str; ++no; }
             goto asc;
           case OP_UPPER:
             while(str<str_end && no<rep_max && Ascii::isUpper(*str)){ ++str; ++no; }
@@ -3202,10 +3264,32 @@ rep:    if(str+rep_min>str_end) goto f;         // Can't possibly succeed
             FXASSERT(0);
             goto uni;
           case OP_UANY_OF:
-            FXASSERT(0);
+            save=str;
+            while(str<str_end && no<rep_max && ULIST(prog,wcnxt(str))){ save=str; ++no; }
+            str=save;
+            no=(FXuchar)*prog++;
+            prog+=no;
             goto uni;
           case OP_UANY_BUT:
-            FXASSERT(0);
+            save=str;
+            while(str<str_end && no<rep_max && !ULIST(prog,wcnxt(str))){ save=str; ++no; }
+            str=save;
+            no=(FXuchar)*prog++;
+            prog+=no;
+            goto uni;
+          case OP_URNG:
+            w1=wcnxt(prog);
+            w2=wcnxt(prog);
+            save=str;
+            while(str<str_end && no<rep_max && (ch=wcnxt(str))>=w1 && ch<=w2){ save=str; ++no; }
+            str=save;
+            goto uni;
+          case OP_UNOT_RNG:
+            w1=wcnxt(prog);
+            w2=wcnxt(prog);
+            save=str;
+            while(str<str_end && no<rep_max && ((ch=wcnxt(str))<w1 || ch>w2)){ save=str; ++no; }
+            str=save;
             goto uni;
           case OP_UUPPER:
             save=str;
@@ -3589,10 +3673,9 @@ f:  --recs;
 FXbool FXExecute::revmatch(const FXchar* prog){
   if(recs<MAXRECURSION){
     FXint no,keep,rep_min,rep_max,greediness;
-    const FXchar *save,*beg,*end;
-    const FXchar *ptr;
+    const FXchar *ptr,*save,*beg,*end;
     FXuchar op;
-    FXwchar ch;
+    FXwchar ch,w1,w2;
 
     // Recurse deeper
     ++recs;
@@ -3784,14 +3867,28 @@ nxt:op=*prog++;
         goto nxt;
       case OP_ANY_OF:                           // Match character in list
         if(str<=str_beg) goto f;
-        if(!INLIST(prog,*(str-1))) goto f;
-        prog+=1+(FXuchar)*prog;
+        if(!LIST(prog,*(str-1))) goto f;
+        no=(FXuchar)*prog++;
+        prog+=no;
         str--;
         goto nxt;
       case OP_ANY_BUT:                          // Match character NOT in list
         if(str<=str_beg) goto f;
-        if(INLIST(prog,*(str-1))) goto f;
-        prog+=1+(FXuchar)*prog;
+        if(LIST(prog,*(str-1))) goto f;
+        no=(FXuchar)*prog++;
+        prog+=no;
+        str--;
+        goto nxt;
+      case OP_RNG:                              // Any character in a range
+        if(str_end<=str) goto f;
+        if((FXuchar)*(str-1)<(FXuchar)prog[0] || (FXuchar)*(str-1)>(FXuchar)prog[1]) goto f;
+        prog+=2;
+        str--;
+        goto nxt;
+      case OP_NOT_RNG:                          // Any character not in a range
+        if(str_end<=str) goto f;
+        if((FXuchar)prog[0]<=(FXuchar)*(str-1) && (FXuchar)prog[1]<=(FXuchar)*(str-1)) goto f;
+        prog+=2;
         str--;
         goto nxt;
       case OP_UPPER:                            // Match if uppercase
@@ -3930,12 +4027,32 @@ nxt:op=*prog++;
         FXASSERT(0);
         goto nxt;
       case OP_UANY_OF:                          // Unicode any character in list
-        // FIXME
-        FXASSERT(0);
+        if(str<=str_beg) goto f;
+        ch=wcprv(str);
+        if(!ULIST(prog,ch)) goto f;
+        no=(FXuchar)*prog++;
+        prog+=no;
         goto nxt;
       case OP_UANY_BUT:                         // Unicode any character not in list
-        // FIXME
-        FXASSERT(0);
+        if(str<=str_beg) goto f;
+        ch=wcprv(str);
+        if(ULIST(prog,ch)) goto f;
+        no=(FXuchar)*prog++;
+        prog+=no;
+        goto nxt;
+      case OP_URNG:                             // Any character in a range
+        if(str<=str_beg) goto f;
+        ch=wcprv(str);
+        w1=wcnxt(prog);
+        w2=wcnxt(prog);
+        if(ch<w1 || w2<ch) goto f;
+        goto nxt;
+      case OP_UNOT_RNG:                         // Any character not in a range
+        if(str<=str_beg) goto f;
+        ch=wcprv(str);
+        w1=wcnxt(prog);
+        w2=wcnxt(prog);
+        if(w1<=ch && ch<=w2) goto f;
         goto nxt;
       case OP_UUPPER:                           // Match if unicode uppercase
         if(str<=str_beg) goto f;
@@ -4149,12 +4266,24 @@ rep:    if(str-rep_min<str_beg) goto f;         // Can't possibly succeed
             prog+=32;
             goto asc;
           case OP_ANY_OF:                       // Match character in list
-            while(str_beg<str && no<rep_max && INLIST(prog,*(str-1))){ --str; ++no; }
-            prog+=1+(FXuchar)*prog;
+            while(str_beg<str && no<rep_max && LIST(prog,*(str-1))){ --str; ++no; }
+            no=(FXuchar)*prog++;
+            prog+=no;
             goto asc;
           case OP_ANY_BUT:                      // Match character NOT in list
-            while(str_beg<str && no<rep_max && !INLIST(prog,*(str-1))){ --str; ++no; }
-            prog+=1+(FXuchar)*prog;
+            while(str_beg<str && no<rep_max && !LIST(prog,*(str-1))){ --str; ++no; }
+            no=(FXuchar)*prog++;
+            prog+=no;
+            goto asc;
+          case OP_RNG:                          // Any characters in a range
+            w1=(FXuchar)*prog++;
+            w2=(FXuchar)*prog++;
+            while(str<str_end && no<rep_max && w1<=*(str-1) && *(str-1)<=w2){ --str; ++no; }
+            goto asc;
+          case OP_NOT_RNG:                      // Any characters not in a range
+            w1=(FXuchar)*prog++;
+            w2=(FXuchar)*prog++;
+            while(str<str_end && no<rep_max && (*(str-1)<w1 || w2<*(str-1))){ --str; ++no; }
             goto asc;
           case OP_UPPER:
             while(str_beg<str && no<rep_max && Ascii::isUpper(*(str-1))){ --str; ++no; }
@@ -4237,10 +4366,32 @@ rep:    if(str-rep_min<str_beg) goto f;         // Can't possibly succeed
             FXASSERT(0);
             goto uni;
           case OP_UANY_OF:
-            FXASSERT(0);
+            save=str;
+            while(str_beg<str && no<rep_max && ULIST(prog,wcprv(str))){ save=str; ++no; }
+            str=save;
+            no=(FXuchar)*prog++;
+            prog+=no;
             goto uni;
           case OP_UANY_BUT:
-            FXASSERT(0);
+            save=str;
+            while(str_beg<str && no<rep_max && !ULIST(prog,wcprv(str))){ save=str; ++no; }
+            str=save;
+            no=(FXuchar)*prog++;
+            prog+=no;
+            goto uni;
+          case OP_URNG:
+            w1=wcnxt(prog);
+            w2=wcnxt(prog);
+            save=str;
+            while(str<str_end && no<rep_max && (ch=wcprv(str))>=w1 && ch<=w2){ save=str; ++no; }
+            str=save;
+            goto uni;
+          case OP_UNOT_RNG:
+            w1=wcnxt(prog);
+            w2=wcnxt(prog);
+            save=str;
+            while(str<str_end && no<rep_max && ((ch=wcprv(str))<w1 || ch>w2)){ save=str; ++no; }
+            str=save;
             goto uni;
           case OP_UUPPER:
             save=str;

@@ -3,7 +3,7 @@
 *                  U n d o / R e d o - a b l e   C o m m a n d                  *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 2000,2022 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 2000,2024 by Jeroen van der Zijp.   All Rights Reserved.        *
 *********************************************************************************
 * This library is free software; you can redistribute it and/or modify          *
 * it under the terms of the GNU Lesser General Public License as published by   *
@@ -23,7 +23,9 @@
 #include "fxdefs.h"
 #include "fxmath.h"
 #include "FXPtrList.h"
+#include "FXElement.h"
 #include "FXArray.h"
+#include "FXMetaClass.h"
 #include "FXMarkedPtr.h"
 #include "FXString.h"
 #include "FXRectangle.h"
@@ -113,6 +115,9 @@
     when space is exceeded one might want to start deleting alternate
     history before deleting linear history.
 */
+
+#define TOPIC_DEBUG     1002
+
 
 using namespace FX;
 
@@ -317,7 +322,7 @@ void FXUndoList::undo(){
     redocount++;
 
     working=false;
-    FXTRACE((100,"FXUndoList::undo: space=%lu undocount=%d redocount=%d marker=%d\n",space,undoCount(),redoCount(),marker));
+    FXTRACE((TOPIC_DEBUG,"FXUndoList::undo: space=%lu undocount=%d redocount=%d marker=%d\n",space,undoCount(),redoCount(),marker));
     }
   }
 
@@ -345,7 +350,7 @@ void FXUndoList::redo(){
     undocount++;
 
     working=false;
-    FXTRACE((100,"FXUndoList::redo: space=%lu undocount=%d redocount=%d marker=%d\n",space,undoCount(),redoCount(),marker));
+    FXTRACE((TOPIC_DEBUG,"FXUndoList::redo: space=%lu undocount=%d redocount=%d marker=%d\n",space,undoCount(),redoCount(),marker));
     }
   }
 
@@ -404,8 +409,8 @@ void FXUndoList::revert(){
 //
 // Assuming undo() is the opposite of redo(), and vice-versa, we can save
 // VAST quantities of memory by sharing the original commands and simply
-// keeping track of a flag to indicate if we're performing a command
-// in reverse or not.
+// keeping track of a flag to indicate if we're performing a command in
+// reverse or not.
 //
 // The special class FXMarkedPtr is a "smart" pointer which keeps an extra
 // flag around for this purpose.  It is no larger than a pointer, taking
@@ -415,7 +420,7 @@ void FXUndoList::revert(){
 //
 // Thus, the "overhead" of this system is only a single pointer's worth,
 // and each the command is recorded only once regardless how many times
-// histroy folds back on itself!
+// history folds back on itself!
 // Reference counting the commands will allow us to decide when to finally
 // delete them.
 //
@@ -444,7 +449,7 @@ FXbool FXUndoList::cut(){
       // Update the books
       undocount+=redocount;
       redocount=0;
-      FXTRACE((100,"FXUndoList::cut: space=%lu undocount=%d redocount=%d marker=%d\n",space,undoCount(),redoCount(),marker));
+      FXTRACE((TOPIC_DEBUG,"FXUndoList::cut: space=%lu undocount=%d redocount=%d marker=%d\n",space,undoCount(),redoCount(),marker));
       return true;
       }
 
@@ -456,7 +461,7 @@ FXbool FXUndoList::cut(){
 
     // Update the books
     redocount=0;
-    FXTRACE((100,"FXUndoList::cut: space=%lu undocount=%d redocount=%d marker=%d\n",space,undoCount(),redoCount(),marker));
+    FXTRACE((TOPIC_DEBUG,"FXUndoList::cut: space=%lu undocount=%d redocount=%d marker=%d\n",space,undoCount(),redoCount(),marker));
     }
   return true;
   }
@@ -535,7 +540,7 @@ FXbool FXUndoList::add(FXCommand* cmd,FXbool doit,FXbool merge){
           delete cmd;
 
           working=false;
-          FXTRACE((100,"FXUndoList::add: space=%lu undocount=%d marker=%d\n",space,undoCount(),marker));
+          FXTRACE((TOPIC_DEBUG,"FXUndoList::add: space=%lu undocount=%d marker=%d\n",space,undoCount(),marker));
           return true;
           }
         }
@@ -564,7 +569,7 @@ FXbool FXUndoList::add(FXCommand* cmd,FXbool doit,FXbool merge){
 
       working=false;
 
-      FXTRACE((100,"FXUndoList::add: space=%lu undocount=%d marker=%d\n",space,undoCount(),marker));
+      FXTRACE((TOPIC_DEBUG,"FXUndoList::add: space=%lu undocount=%d marker=%d\n",space,undoCount(),marker));
       return true;
       }
     working=false;
@@ -664,7 +669,7 @@ FXbool FXUndoList::abort(){
 
 // Clear list
 void FXUndoList::clear(){
-  FXTRACE((100,"FXUndoList::clear: space=%lu undocount=%d redocount=%d marker=%d\n",space,undoCount(),redoCount(),marker));
+  FXTRACE((TOPIC_DEBUG,"FXUndoList::clear: space=%lu undocount=%d redocount=%d marker=%d\n",space,undoCount(),redoCount(),marker));
   FXCommandGroup::clear();
   space=0;
   undocount=0;
@@ -677,7 +682,7 @@ void FXUndoList::clear(){
 
 // Trim undo list down to at most nc records
 void FXUndoList::trimCount(FXint nc){
-  FXTRACE((100,"FXUndoList::trimCount: was: space=%lu undocount=%d; marker=%d ",space,undocount,marker));
+  FXTRACE((TOPIC_DEBUG,"FXUndoList::trimCount: was: space=%lu undocount=%d; marker=%d ",space,undocount,marker));
   if(nc<undocount){
     FXint i=0;
     while(i<undocount-nc){
@@ -689,13 +694,13 @@ void FXUndoList::trimCount(FXint nc){
     undocount-=i;
     if(undocount<marker) markset=false;
     }
-  FXTRACE((100,"now: space=%lu undocount=%d; marker=%d\n",space,undocount,marker));
+  FXTRACE((TOPIC_DEBUG,"now: space=%lu undocount=%d; marker=%d\n",space,undocount,marker));
   }
 
 
 // Trim undo list down to at most size sz
 void FXUndoList::trimSize(FXuval sz){
-  FXTRACE((100,"FXUndoList::trimSize: was: space=%lu undocount=%d; marker=%d ",space,undocount,marker));
+  FXTRACE((TOPIC_DEBUG,"FXUndoList::trimSize: was: space=%lu undocount=%d; marker=%d ",space,undocount,marker));
   if(sz<space){
     FXint i=0;
     while(i<undocount && sz<space){
@@ -707,13 +712,13 @@ void FXUndoList::trimSize(FXuval sz){
     undocount-=i;
     if(undocount<marker) markset=false;
     }
-  FXTRACE((100,"now: space=%lu undocount=%d; marker=%d\n",space,undocount,marker));
+  FXTRACE((TOPIC_DEBUG,"now: space=%lu undocount=%d; marker=%d\n",space,undocount,marker));
   }
 
 
 // Trim undo list down to (but not including) marked node.
 void FXUndoList::trimMark(){
-  FXTRACE((100,"FXUndoList::trimSize: was: space=%lu undocount=%d; marker=%d ",space,undocount,marker));
+  FXTRACE((TOPIC_DEBUG,"FXUndoList::trimSize: was: space=%lu undocount=%d; marker=%d ",space,undocount,marker));
   if(markset && marker<undocount){
     FXint i=0;
     while(i<undocount-marker){
@@ -725,7 +730,7 @@ void FXUndoList::trimMark(){
     undocount-=i;
     FXASSERT(undocount==marker);
     }
-  FXTRACE((100,"now: space=%lu undocount=%d; marker=%d\n",space,undocount,marker));
+  FXTRACE((TOPIC_DEBUG,"now: space=%lu undocount=%d; marker=%d\n",space,undocount,marker));
   }
 
 

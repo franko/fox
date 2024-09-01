@@ -3,7 +3,7 @@
 *                  F i l e   P r o p e r t i e s   D i a l o g                  *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 2000,2023 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 2000,2024 by Jeroen van der Zijp.   All Rights Reserved.        *
 *********************************************************************************
 * This program is free software: you can redistribute it and/or modify          *
 * it under the terms of the GNU General Public License as published by          *
