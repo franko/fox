@@ -3,7 +3,7 @@
 *                             S h e l l - C o m m a n d                         *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 2014,2023 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 2014,2024 by Jeroen van der Zijp.   All Rights Reserved.        *
 *********************************************************************************
 * This program is free software: you can redistribute it and/or modify          *
 * it under the terms of the GNU General Public License as published by          *
@@ -60,21 +60,17 @@ FXIMPLEMENT(ShellCommand,FXObject,ShellCommandMap,ARRAYNUMBER(ShellCommandMap))
 
 
 // Construct shell command
-ShellCommand::ShellCommand(TextWindow* win,const FXString& dir,FXuint flgs):app(win->getApp()),window(win),directory(dir),ninput(0),noutput(0),flags(flgs){
+ShellCommand::ShellCommand(TextWindow* win,const FXString& dir,FXuint flgs):app(win->getApp()),window(win),selstartpos(0),selendpos(-1),selstartcol(0),selendcol(-1),directory(dir),ninput(0),noutput(0),flags(flgs){
   FXTRACE((1,"ShellCommand::ShellCommand(%p,%s,%x)\n",win,dir.text(),flgs));
-  selection.startpos=0;
-  selection.endpos=-1;
-  selection.startcol=0;
-  selection.endcol=-1;
   }
 
 
 // Set selection
 void ShellCommand::setSelection(FXint sp,FXint ep,FXint sc,FXint ec){
-  selection.startpos=sp;
-  selection.endpos=ep;
-  selection.startcol=sc;
-  selection.endcol=ec;
+  selstartpos=sp;
+  selendpos=ep;
+  selstartcol=sc;
+  selendcol=ec;
   }
 
 
@@ -197,14 +193,13 @@ FXbool ShellCommand::cancel(){
 
 // Input to child process
 long ShellCommand::onCmdInput(FXObject*,FXSelector sel,void*){
-  FXint  index=sel-FXSEL(SEL_IO_WRITE,ID_INPUT);
-  FXival count=pipe[index].writeBlock(&input[ninput],input.length()-ninput);
+  FXival count=pipe[0].writeBlock(&input[ninput],input.length()-ninput);
   if(count==FXIO::Again) return 1;
   if(0<=count){
     ninput+=count;
     if(count==0){
-      getApp()->removeInput(pipe[index].handle(),INPUT_WRITE);
-      pipe[index].close();
+      getApp()->removeInput(pipe[0].handle(),INPUT_WRITE);
+      pipe[0].close();
       }
     return 1;
     }
@@ -215,9 +210,8 @@ long ShellCommand::onCmdInput(FXObject*,FXSelector sel,void*){
 // Output from child process
 long ShellCommand::onCmdOutput(FXObject*,FXSelector sel,void*){
   FXchar buffer[BUFFERSIZE+1];
-  FXint  index=sel-FXSEL(SEL_IO_READ,ID_INPUT);
-  FXival count=pipe[index].readBlock(buffer,BUFFERSIZE);
-  FXTRACE((1,"ShellCommand::onCmdOutput: pipe[%d]: bytes: %ld\n",index,count));
+  FXival count=pipe[1].readBlock(buffer,BUFFERSIZE);
+  FXTRACE((1,"ShellCommand::onCmdOutput: pipe[%d]: bytes: %ld\n",1,count));
   if(count==FXIO::Again) return 1;
   if(0<=count){
     buffer[count]='\0';
@@ -254,9 +248,8 @@ long ShellCommand::onCmdOutput(FXObject*,FXSelector sel,void*){
 // FIXME could use one color for stdout, and another for stderr.
 long ShellCommand::onCmdLogger(FXObject*,FXSelector sel,void*){
   FXchar buffer[BUFFERSIZE+1];
-  FXint  index=sel-FXSEL(SEL_IO_READ,ID_INPUT);
-  FXival count=pipe[index].readBlock(buffer,BUFFERSIZE);
-  FXTRACE((1,"ShellCommand::onCmdLogger: pipe[%d]: bytes: %ld\n",index,count));
+  FXival count=pipe[2].readBlock(buffer,BUFFERSIZE);
+  FXTRACE((1,"ShellCommand::onCmdLogger: pipe[%d]: bytes: %ld\n",2,count));
   if(count==FXIO::Again) return 1;
   if(0<=count){
     buffer[count]='\0';

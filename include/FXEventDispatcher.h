@@ -3,7 +3,7 @@
 *                          E v e n t   D i s p a t c h e r                      *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 2019,2022 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 2019,2024 by Jeroen van der Zijp.   All Rights Reserved.        *
 ********************************************************************************/
 #ifndef FXEVENTDISPATCHER_H
 #define FXEVENTDISPATCHER_H

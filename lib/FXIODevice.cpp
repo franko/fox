@@ -3,7 +3,7 @@
 *                        I / O   D e v i c e   C l a s s                        *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 2005,2022 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 2005,2024 by Jeroen van der Zijp.   All Rights Reserved.        *
 *********************************************************************************
 * This library is free software; you can redistribute it and/or modify          *
 * it under the terms of the GNU Lesser General Public License as published by   *
@@ -23,7 +23,8 @@
 #include "fxdefs.h"
 #include "fxmath.h"
 #include "fxascii.h"
-#include "FXArray.h"
+#include "FXElement.h"
+#include "FXMetaClass.h"
 #include "FXHash.h"
 #include "FXStream.h"
 #include "FXString.h"
@@ -304,22 +305,40 @@ FXbool FXIODevice::detach(){
 // Read block
 FXival FXIODevice::readBlock(void* ptr,FXival count){
   if(device!=BadHandle){
+    FXuchar* pointer=(FXuchar*)ptr;
+    FXival nread=0;
 #if defined(WIN32)
-    DWORD nread;
-    if(::ReadFile(device,ptr,(DWORD)count,&nread,nullptr)==0){
-      if(GetLastError()==ERROR_IO_PENDING) return FXIO::Again;
-      return FXIO::Error;
+    DWORD nr,ct,er;
+    while(0<count){
+      ct=(DWORD)FXMIN(count,1073741824);
+      if(::ReadFile(device,pointer,ct,&nr,nullptr)==0){
+        er=GetLastError();
+        if(er==ERROR_HANDLE_EOF) return nread;
+        if(er==ERROR_IO_PENDING) return FXIO::Again;
+        if(er==ERROR_BROKEN_PIPE) return FXIO::Broken;
+        return FXIO::Error;
+        }
+      if(nr==0) return nread;
+      pointer+=nr;
+      nread+=nr;
+      count-=nr;
       }
     return nread;
 #else
-    FXival nread;
-a:  nread=::read(device,ptr,count);
-    if(nread<0){
-      if(errno==EINTR) goto a;
-      if(errno==EAGAIN) return FXIO::Again;
-      if(errno==EWOULDBLOCK) return FXIO::Again;
-      if(errno==EPIPE) return FXIO::Broken;
-      return FXIO::Error;
+    FXival nr,ct;
+    while(0<count){
+      ct=FXMIN(count,1073741824);
+      nr=::read(device,pointer,ct);
+      if(nr<0){
+        if(errno==EINTR) continue;
+        if(errno==EAGAIN) return FXIO::Again;
+        if(errno==EWOULDBLOCK) return FXIO::Again;
+        return FXIO::Error;
+        }
+      if(nr==0) return nread;
+      pointer+=nr;
+      nread+=nr;
+      count-=nr;
       }
     return nread;
 #endif
@@ -331,21 +350,41 @@ a:  nread=::read(device,ptr,count);
 // Write block
 FXival FXIODevice::writeBlock(const void* ptr,FXival count){
   if(device!=BadHandle){
+    const FXuchar* pointer=(const FXuchar*)ptr;
+    FXival nwritten=0;
 #if defined(WIN32)
-    DWORD nwritten;
-    if(::WriteFile(device,ptr,(DWORD)count,&nwritten,nullptr)==0){
-      return FXIO::Error;
+    DWORD nw,ct,er;
+    while(0<count){
+      ct=(DWORD)FXMIN(count,1073741824);
+      if(::WriteFile(device,pointer,ct,&nw,nullptr)==0){
+        er=GetLastError();
+        if(er==ERROR_HANDLE_EOF) return nwritten;
+        if(er==ERROR_IO_PENDING) return FXIO::Again;
+        if(er==ERROR_BROKEN_PIPE) return FXIO::Broken;
+        return FXIO::Error;
+        }
+      if(nw==0) return nwritten;
+      pointer+=nw;
+      nwritten+=nw;
+      count-=nw;
       }
     return nwritten;
 #else
-    FXival nwritten;
-a:  nwritten=::write(device,ptr,count);
-    if(nwritten<0){
-      if(errno==EINTR) goto a;
-      if(errno==EAGAIN) return FXIO::Again;
-      if(errno==EWOULDBLOCK) return FXIO::Again;
-      if(errno==EPIPE) return FXIO::Broken;
-      return FXIO::Error;
+    FXival nw,ct;
+    while(0<count){
+      ct=FXMIN(count,1073741824);
+      nw=::write(device,pointer,ct);
+      if(nw<0){
+        if(errno==EINTR) continue;
+        if(errno==EAGAIN) return FXIO::Again;
+        if(errno==EWOULDBLOCK) return FXIO::Again;
+        if(errno==EPIPE) return FXIO::Broken;
+        return FXIO::Error;
+        }
+      if(nw==0) return nwritten;
+      pointer+=nw;
+      nwritten+=nw;
+      count-=nw;
       }
     return nwritten;
 #endif

@@ -3,7 +3,7 @@
 *                    I R I S   R G B   I n p u t / O u t p u t                  *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 2002,2022 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 2002,2024 by Jeroen van der Zijp.   All Rights Reserved.        *
 *********************************************************************************
 * This library is free software; you can redistribute it and/or modify          *
 * it under the terms of the GNU Lesser General Public License as published by   *
@@ -37,6 +37,8 @@
     doesn't seek around on the file but loads all data sequentially.
   - We now handle Luminance, Luminance/Alpha, RGB, and RGBA flavors of IRIS RGB.
 */
+
+#define TOPIC_DETAIL 1015
 
 using namespace FX;
 
@@ -231,7 +233,7 @@ FXbool fxloadRGB(FXStream& store,FXColor*& data,FXint& width,FXint& height){
   store.load(name,80);  // IMAGENAME (80)
   store >> colormap;    // Colormap ID (4)
 
-  FXTRACE((100,"fxloadRGB: magic=%d name=%s width=%d height=%d nchannels=%d dimension=%d storage=%d bpc=%d\n",magic,name,w,h,channels,dimension,storage,bpc));
+  FXTRACE((TOPIC_DETAIL,"fxloadRGB: magic=%d name=%s width=%d height=%d nchannels=%d dimension=%d storage=%d bpc=%d\n",magic,name,w,h,channels,dimension,storage,bpc));
 
   // Check magic number and other parameters
   if(magic==474 && 1<=channels && channels<=4 && bpc==1 && 0<w && 0<h){

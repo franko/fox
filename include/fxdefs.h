@@ -3,7 +3,7 @@
 *                     FOX Definitions, Types, and Macros                        *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 1997,2022 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 1997,2024 by Jeroen van der Zijp.   All Rights Reserved.        *
 *********************************************************************************
 * This library is free software; you can redistribute it and/or modify          *
 * it under the terms of the GNU Lesser General Public License as published by   *
@@ -158,13 +158,29 @@
 #define __unlikely(cond)  (!!(cond))
 #endif
 
-// Unreachable part of code
-#if defined(__GNUC__) && (__GNUC__ >= 4)
+// An assumption that compiler may use to optimize
+#if (__GNUC__ >= 13)
+#define __assume(expr)  __attribute__((__assume__(expr)))
+#elif (__clang__ >= 14)
+#define __assume(expr)  __builtin_assume(expr)
+#elif !defined(_MSC_VER)
+#define __assume(expr)
+#endif
+
+// An unreachable part of code may be optimized away
+#if (__GNUC__ >= 4)
 #define __unreachable()    __builtin_unreachable()
 #elif defined(_MSC_VER)
 #define __unreachable()    __assume(false)
 #else
 #define __unreachable()
+#endif
+
+// Define parameters not-aliased hint
+#if defined(__GNUC__)
+#define __restrict  __restrict__
+#elif !defined(_MSC_VER)
+#define __restrict
 #endif
 
 // Prefetch address

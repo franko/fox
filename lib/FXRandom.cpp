@@ -3,7 +3,7 @@
 *                  R a n d o m   N u m b e r   G e n e r a t o r                *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 2007,2022 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 2007,2024 by Jeroen van der Zijp.   All Rights Reserved.        *
 *********************************************************************************
 * This library is free software; you can redistribute it and/or modify          *
 * it under the terms of the GNU Lesser General Public License as published by   *
@@ -93,7 +93,7 @@ FXulong FXRandom::randLong(){
   return next()*FXULONG(2685821657736338717);
   }
 
-
+#if 0
 // Get random float
 // We're drawing an unsigned-long, but interpreting this as a signed-long;
 // this enables a signed-integer to float conversion, which is a single
@@ -117,6 +117,31 @@ FXfloat FXRandom::randFloat(){
 FXdouble FXRandom::randDouble(){
   FXlong num=(FXlong)randLong();
   return Math::fabs(num*1.0842021724855044340074528008699e-19);
+  }
+#endif
+
+
+// Get random float.
+// Shift random bits down by 64-24=40 bits, this creates an integer
+// in the range 0...2^24-1, which is exactly representable as a float.
+// Then convert this to float (implicitly done) and scale it by 2^-24
+// to bring it to the 0...1 range.
+FXfloat FXRandom::randFloat(){
+  const FXfloat SCALE=1.0f/(1<<24);
+  FXlong num=(FXlong)(randLong()>>40);
+  return num*SCALE;
+  }
+
+
+// Get random double.
+// Shift random bits down by 64-53=11 bits, this creates an integer
+// in the range 0...2^53-1, which is exactly representable by a double.
+// Then convert this to double (implicitly done) and scale it by 2^-53
+// to bring it to the 0...1 range.
+FXdouble FXRandom::randDouble(){
+  const FXdouble SCALE=1.0/(FXULONG(1)<<53);
+  FXlong num=(FXlong)(randLong()>>11);
+  return num*SCALE;
   }
 
 }

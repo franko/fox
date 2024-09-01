@@ -3,7 +3,7 @@
 *                             X M L - F i l e   I / O                           *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 2016,2022 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 2016,2024 by Jeroen van der Zijp.   All Rights Reserved.        *
 *********************************************************************************
 * This library is free software; you can redistribute it and/or modify          *
 * it under the terms of the GNU Lesser General Public License as published by   *
@@ -25,7 +25,7 @@
 #include "fxmath.h"
 #include "fxascii.h"
 #include "FXElement.h"
-#include "FXArray.h"
+#include "FXMetaClass.h"
 #include "FXString.h"
 #include "FXParseBuffer.h"
 #include "FXIO.h"

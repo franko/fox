@@ -3,7 +3,7 @@
 *                S h u t t e r   B u g   A p p l i c a t i o n                  *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 2003,2023 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 2003,2024 by Jeroen van der Zijp.   All Rights Reserved.        *
 *********************************************************************************
 * This program is free software: you can redistribute it and/or modify          *
 * it under the terms of the GNU General Public License as published by          *
@@ -110,7 +110,8 @@ const FXchar patterns[]=
   "\nXBM Image (*.xbm)"
   "\nTARGA Image (*.tga)"
   "\nPPM Image (*.ppm)"
-#ifdef HAVE_PNG_H
+  "\nQOIF Image (*.qoi)"
+#ifdef HAVE_ZLIB_H
   "\nPNG Image (*.png)"
 #endif
 #ifdef HAVE_JPEG_H
@@ -136,7 +137,8 @@ enum {
   ,TYPE_XBM
   ,TYPE_TGA
   ,TYPE_PPM
-#ifdef HAVE_PNG_H
+  ,TYPE_QOI
+#ifdef HAVE_ZLIB_H
   ,TYPE_PNG
 #endif
 #ifdef HAVE_JPEG_H
@@ -607,7 +609,8 @@ FXbool ShutterBug::saveImage(const FXString& file,FXColor* pixels,FXint w,FXint 
       case TYPE_XBM: ok=fxsaveXBM(outfile,pixels,w,h); break;
       case TYPE_TGA: ok=fxsaveTGA(outfile,pixels,w,h); break;
       case TYPE_PPM: ok=fxsavePPM(outfile,pixels,w,h); break;
-#ifdef HAVE_PNG_H
+      case TYPE_QOI: ok=fxsaveQOIF(outfile,pixels,w,h); break;
+#ifdef HAVE_ZLIB_H
       case TYPE_PNG: ok=fxsavePNG(outfile,pixels,w,h); break;
 #endif
 #ifdef HAVE_JPEG_H

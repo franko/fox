@@ -3,7 +3,7 @@
 *                     A p p l i c a t i o n   O b j e c t                       *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 1997,2022 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 1997,2024 by Jeroen van der Zijp.   All Rights Reserved.        *
 *********************************************************************************
 * This library is free software; you can redistribute it and/or modify          *
 * it under the terms of the GNU Lesser General Public License as published by   *
@@ -284,6 +284,7 @@ private:
   FXID             wmNetBelowOthers;    // Extended Window Manager below others
   FXID             wmNetAboveOthers;    // Extended Window Manager above others
   FXID             wmNetNeedAttention;  // Extended Window Manager need attention
+  FXID             wmNetActiveWindow;   // Extended Window Manager active window
   FXID             wmNetMoveResize;     // Extended Window Manager drag corner
   FXID             wmNetRestack;        // Extended Window Manager change stacking order
   FXID             wmNetPing;           // Extended Window Manager ping

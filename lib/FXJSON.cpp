@@ -3,7 +3,7 @@
 *                      J S O N   R e a d e r  &  W r i t e r                    *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 2013,2022 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 2013,2024 by Jeroen van der Zijp.   All Rights Reserved.        *
 *********************************************************************************
 * This library is free software; you can redistribute it and/or modify          *
 * it under the terms of the GNU Lesser General Public License as published by   *
@@ -27,6 +27,7 @@
 #include "fxunicode.h"
 #include "FXElement.h"
 #include "FXArray.h"
+#include "FXMetaClass.h"
 #include "FXString.h"
 #include "FXParseBuffer.h"
 #include "FXException.h"
@@ -232,6 +233,9 @@
     if the json5 file is to be loaded correctly.
 */
 
+// Line termination length
+#define ENDLINELENGTH (sizeof(ENDLINE)-1)
+
 using namespace FX;
 
 /*******************************************************************************/
@@ -239,9 +243,7 @@ using namespace FX;
 namespace FX {
 
 // Maximum token size
-enum {
-  MAXTOKEN = 256
-  };
+const FXuval MAXTOKEN=256;
 
 
 // Error messages
@@ -258,6 +260,7 @@ const FXchar *const FXJSON::errors[]={
   "Unmatched '\''",
   "Bad number",
   "Unexpected identifier",
+  "Duplicate key",
   "Unexpected end of file"
   };
 
@@ -295,7 +298,7 @@ FXJSON::FXJSON(FXchar* buffer,FXuval sz,Direction d):FXParseBuffer(buffer,sz,d),
 // Open JSON stream for given direction and set its buffer
 FXbool FXJSON::open(FXchar* buffer,FXuval sz,Direction d){
   FXTRACE((101,"FXJSON::open(%p,%lu,%s)\n",buffer,sz,(d==Save)?"Save":(d==Load)?"Load":"Stop"));
-  if(FXParseBuffer::open(buffer,Math::imax(sz,MAXTOKEN),d)){
+  if(FXParseBuffer::open(buffer,sz,d)){
     value=FXString::null;
     token=TK_ERROR;
     offset=0;
@@ -883,7 +886,7 @@ FXJSON::Token FXJSON::ident(){
         sptr+=4;
         break;
       default:                                          // Identifier or reserved word
-end:    value.append(rptr,sptr-rptr);                   // Reserved words can be interpreted as identifier,
+end:    value.append(rptr,(FXint)(sptr-rptr));          // Reserved words can be interpreted as identifier,
         return identoken(value);                        // so we must copy them, just in case.
       }
 
@@ -892,7 +895,7 @@ end:    value.append(rptr,sptr-rptr);                   // Reserved words can be
 
     // Big token handling
     if(sptr+MAXTOKEN>wptr && wptr==endptr){
-      value.append(rptr,sptr-rptr);
+      value.append(rptr,(FXint)(sptr-rptr));
       rptr=sptr;
       }
     }
@@ -929,7 +932,7 @@ FXJSON::Token FXJSON::string(){
         offset++;
         sptr++;
         if(q!=c) break;                                 // Opening quote?
-        value.append(rptr,sptr-rptr);                   // Copy tail-end of string
+        value.append(rptr,(FXint)(sptr-rptr));          // Copy tail-end of string
         return TK_STRING;
       case '\\':                                        // Escape next character
         column++;
@@ -1131,7 +1134,7 @@ FXJSON::Token FXJSON::string(){
 
     // Big token handling
     if(sptr+MAXTOKEN>wptr && wptr==endptr){
-      value.append(rptr,sptr-rptr);
+      value.append(rptr,(FXint)(sptr-rptr));
       rptr=sptr;
       }
     }
@@ -1160,6 +1163,9 @@ FXJSON::Error FXJSON::loadMap(FXVariant& var){
     else{
       key=value;
       }
+
+    // Check for duplicates
+    if(var.has(key)) return ErrDuplicate;
 
     // Token following the string
     token=next();
@@ -1394,9 +1400,9 @@ FXJSON::Error FXJSON::saveMap(const FXVariant& var){
 
     // Write indent
     if(flow==Pretty){
-      if(!emit(ENDLINE,strlen(ENDLINE))) return ErrSave;
+      if(!emit(ENDLINE,ENDLINELENGTH)) return ErrSave;
       column=0;
-      offset+=strlen(ENDLINE);
+      offset+=ENDLINELENGTH;
       line++;
       if(!emit(' ',indent)) return ErrSave;
       column+=indent;
@@ -1444,9 +1450,9 @@ FXJSON::Error FXJSON::saveMap(const FXVariant& var){
 
         // Write newline and indent
         if(flow || wrap<column){
-          if(!emit(ENDLINE,strlen(ENDLINE))) return ErrSave;
+          if(!emit(ENDLINE,ENDLINELENGTH)) return ErrSave;
           column=0;
-          offset+=strlen(ENDLINE);
+          offset+=ENDLINELENGTH;
           line++;
           if(!emit(' ',indent)) return ErrSave;
           column+=indent;
@@ -1459,9 +1465,9 @@ FXJSON::Error FXJSON::saveMap(const FXVariant& var){
 
     // Write indent
     if(flow==Pretty){
-      if(!emit(ENDLINE,strlen(ENDLINE))) return ErrSave;
+      if(!emit(ENDLINE,ENDLINELENGTH)) return ErrSave;
       column=0;
-      offset+=strlen(ENDLINE);
+      offset+=ENDLINELENGTH;
       line++;
       if(!emit(' ',indent)) return ErrSave;
       column+=indent;
@@ -1497,9 +1503,9 @@ FXJSON::Error FXJSON::saveArray(const FXVariant& var){
 
     // Write indent
     if(flow==Pretty){
-      if(!emit(ENDLINE,strlen(ENDLINE))) return ErrSave;
+      if(!emit(ENDLINE,ENDLINELENGTH)) return ErrSave;
       column=0;
-      offset+=strlen(ENDLINE);
+      offset+=ENDLINELENGTH;
       line++;
       if(!emit(' ',indent)) return ErrSave;
       column+=indent;
@@ -1522,9 +1528,9 @@ FXJSON::Error FXJSON::saveArray(const FXVariant& var){
 
         // Write space or newline and indent
         if(flow==Pretty || wrap<column || (flow==Compact && FXVariant::MapType==var.asArray().at(i).getType())){
-          if(!emit(ENDLINE,strlen(ENDLINE))) return ErrSave;
+          if(!emit(ENDLINE,ENDLINELENGTH)) return ErrSave;
           column=0;
-          offset+=strlen(ENDLINE);
+          offset+=ENDLINELENGTH;
           line++;
           if(!emit(' ',indent)) return ErrSave;
           column+=indent;
@@ -1542,9 +1548,9 @@ FXJSON::Error FXJSON::saveArray(const FXVariant& var){
 
     // Write indent
     if(flow==Pretty){
-      if(!emit(ENDLINE,strlen(ENDLINE))) return ErrSave;
+      if(!emit(ENDLINE,ENDLINELENGTH)) return ErrSave;
       column=0;
-      offset+=strlen(ENDLINE);
+      offset+=ENDLINELENGTH;
       line++;
       if(!emit(' ',indent)) return ErrSave;
       column+=indent;

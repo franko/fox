@@ -3,7 +3,7 @@
 *                          M o d e l i n e   P a r s e r                        *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 2017,2023 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 2017,2024 by Jeroen van der Zijp.   All Rights Reserved.        *
 *********************************************************************************
 * This program is free software: you can redistribute it and/or modify          *
 * it under the terms of the GNU General Public License as published by          *
@@ -83,6 +83,7 @@
         et      Expand tabs to spaces.  Possible values 0,1.
         wr      Wrap mode. Possible values 0,1
         ai      Autoindent.  Possible values: 0,1.
+        ss      Strip trailing spaces.  Possible values: 0,1.
 
   - Modelines, when present, will override user-settings and language-dependent
     settings if Modeline support is enabled and modelines are detected in designated
@@ -97,7 +98,7 @@
 
 
 // Initialize modeline
-Modeline::Modeline():autoindent(-1),wrapwidth(-1),tabwidth(-1),wrapmode(-1),tabmode(-1){
+Modeline::Modeline():autoindent(-1),wrapwidth(-1),tabwidth(-1),wrapmode(-1),tabmode(-1),strip(-1){
   }
 
 
@@ -256,6 +257,9 @@ FXbool Modeline::parseAdieModeline(const FXchar* s){
     else if(key=="ai"){
       setAutoIndent(val!="0");
       }
+    else if(key=="ss"){
+      setStripSpaces(val!="0");
+      }
     }
   return true;
   }
@@ -312,4 +316,5 @@ void Modeline::clear(){
   tabwidth=-1;
   wrapmode=-1;
   tabmode=-1;
+  strip=-1;
   }

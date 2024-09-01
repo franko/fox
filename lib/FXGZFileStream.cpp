@@ -3,7 +3,7 @@
 *                     G Z F i l e S t r e a m   C l a s s e s                   *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 2002,2022 by Sander Jansen.   All Rights Reserved.              *
+* Copyright (C) 2002,2024 by Sander Jansen.   All Rights Reserved.              *
 *********************************************************************************
 * This library is free software; you can redistribute it and/or modify          *
 * it under the terms of the GNU Lesser General Public License as published by   *
@@ -22,13 +22,10 @@
 #include "fxver.h"
 #include "fxdefs.h"
 #include "fxmath.h"
-#include "FXArray.h"
-#include "FXHash.h"
-#include "FXMutex.h"
 #include "FXElement.h"
+#include "FXMetaClass.h"
+#include "FXHash.h"
 #include "FXStream.h"
-#include "FXString.h"
-#include "FXObject.h"
 #include "FXFile.h"
 #include "FXGZFileStream.h"
 

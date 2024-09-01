@@ -3,7 +3,7 @@
 *                      I m a g e   V i e w e r   D e m o                        *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 2000,2023 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 2000,2024 by Jeroen van der Zijp.   All Rights Reserved.        *
 ********************************************************************************/
 #include "fx.h"
 #include <stdio.h>
@@ -191,6 +191,7 @@ const FXchar patterns[]=
   "\nIFF Image (*.iff)"
   "\nJP2 Image (*.jp2)"
   "\nEXE Image (*.exe)"
+  "\nQOIF Image (*.qoi)"
   ;
 
 /*******************************************************************************/
@@ -251,9 +252,6 @@ ImageWindow::ImageWindow(FXApp* a):FXMainWindow(a,"FOX Image Viewer: - untitled"
 
   // Tool bar
   toolbar=new FXToolBar(this,LAYOUT_SIDE_TOP|PACK_UNIFORM_WIDTH|PACK_UNIFORM_HEIGHT|FRAME_RAISED|LAYOUT_FILL_X);
-
-  // Make menu bar
-  //menubar=new FXMenuBar(this,LAYOUT_SIDE_TOP|LAYOUT_FILL_X|FRAME_RAISED);
 
   // Tool bar
   //FXHorizontalFrame* toolbarcontainer=new FXHorizontalFrame(this,LAYOUT_SIDE_TOP|LAYOUT_FILL_X,0,0,0,0, 0,0,0,0, 0,0);
@@ -446,7 +444,9 @@ FXbool ImageWindow::loadimage(const FXString& file){
     img=new FXRASImage(getApp(),nullptr,IMAGE_KEEP|IMAGE_SHMI|IMAGE_SHMP);
     }
   else if(FXString::comparecase(ext,"png")==0){
-    img=new FXPNGImage(getApp(),nullptr,IMAGE_KEEP|IMAGE_SHMI|IMAGE_SHMP);
+//    img=new FXPNGImage(getApp(),nullptr,IMAGE_KEEP|IMAGE_SHMI|IMAGE_SHMP,0,0,PNG_FILTER_BEST|PNG_IMAGE_ANALYZE|PNG_INDEX_COLOR);
+    img=new FXPNGImage(getApp(),nullptr,IMAGE_KEEP|IMAGE_SHMI|IMAGE_SHMP,0,0,PNG_FILTER_BEST|PNG_IMAGE_ANALYZE);
+//    img=new FXPNGImage(getApp(),nullptr,IMAGE_KEEP|IMAGE_SHMI|IMAGE_SHMP,0,0,PNG_FILTER_BEST);
     }
   else if(FXString::comparecase(ext,"jpg")==0 || FXString::comparecase(ext,"jpeg")==0){
     img=new FXJPGImage(getApp(),nullptr,IMAGE_KEEP|IMAGE_SHMI|IMAGE_SHMP);
@@ -465,6 +465,9 @@ FXbool ImageWindow::loadimage(const FXString& file){
     }
   else if(FXString::comparecase(ext,"exe")==0 || FXString::comparecase(ext,"dll")==0){
     img=new FXEXEImage(getApp(),nullptr,IMAGE_KEEP|IMAGE_SHMI|IMAGE_SHMP);
+    }
+  else if(FXString::comparecase(ext,"qoi")==0 || FXString::comparecase(ext,"qoif")==0){
+    img=new FXQOIFImage(getApp(),nullptr,IMAGE_KEEP|IMAGE_SHMI|IMAGE_SHMP);
     }
 
   // Perhaps failed
@@ -755,9 +758,6 @@ int main(int argc,char *argv[]){
 
   // Make window
   ImageWindow* window=new ImageWindow(&application);
-
-  // Handle interrupt to save stuff nicely
-  application.addSignal(SIGINT,window,ImageWindow::ID_QUIT);
 
   // Create it
   application.create();

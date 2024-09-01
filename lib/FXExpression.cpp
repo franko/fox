@@ -3,7 +3,7 @@
 *                      E x p r e s s i o n   E v a l u a t o r                  *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 1998,2023 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 1998,2024 by Jeroen van der Zijp.   All Rights Reserved.        *
 *********************************************************************************
 * This library is free software; you can redistribute it and/or modify          *
 * it under the terms of the GNU Lesser General Public License as published by   *
@@ -24,7 +24,7 @@
 #include "fxmath.h"
 #include "fxascii.h"
 #include "fxunicode.h"
-#include "FXArray.h"
+#include "FXElement.h"
 #include "FXHash.h"
 #include "FXStream.h"
 #include "FXElement.h"

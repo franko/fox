@@ -3,7 +3,7 @@
 *                     T h e   A d i e   T e x t   E d i t o r                   *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 1998,2023 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 1998,2024 by Jeroen van der Zijp.   All Rights Reserved.        *
 *********************************************************************************
 * This program is free software: you can redistribute it and/or modify          *
 * it under the terms of the GNU General Public License as published by          *
@@ -71,17 +71,17 @@ protected:
   FXTextField         *searchtext;              // Incremental search text field
   FXStatusBar         *statusbar;               // Status bar
   FXFont              *font;                    // Text window font
-  FXint                bookmark[10];            // Book marks
-  FXint                insertpoint;             // Insert point
   Syntax              *syntax;                  // Syntax highlighter
   FXUndoList           undolist;                // Undo list
   FXRecentFiles        mrufiles;                // Recent files list
+  FXHiliteArray        styles;                  // Highlight styles
+  FXint                bookmark[10];            // Book marks
+  FXint                insertpoint;             // Insert point
   FXString             filename;                // File being edited
   FXTime               filetime;                // Original modtime of file
   FXbool               filenameset;             // Filename is set
   FXString             delimiters;              // Text delimiters
   FXString             searchpaths;             // Search paths for files
-  FXHiliteArray        styles;                  // Highlight styles
   ShellCommand        *shellCommand;            // Running shell command, if any
   FXint                initialwidth;            // Initial width
   FXint                initialheight;           // Initial height
@@ -103,6 +103,9 @@ protected:
   FXint                tabcols;                 // Tab indents this many columns
   FXbool               hardtabs;                // Insert hard tabs
   FXint                barcols;                 // Number of columns for line numbers
+  FXint                cursormoved;             // Cursor moved counter
+  FXuint               undoMaxSize;             // Maximum undo buffer size
+  FXuint               undoKeepSize;            // Keep up to this size when trimming
   FXbool               mergeundos;              // Merge undos
   FXbool               showlogger;              // Showing error logger
   FXbool               colorize;                // Syntax coloring on if possible
@@ -115,17 +118,11 @@ protected:
   FXbool               warnchanged;             // Warn if changed by other program
 protected:
 
-  // Undo management
-  enum{
-    MAXUNDOSIZE=1000000,        // Don't let the undo buffer get out of hand
-    KEEPUNDOSIZE=500000         // When MAXUNDOSIZE was exceeded, trim down to this size
-    };
-
   // Buffer I/O conversions
   enum{
     CRLF=1,                     // CRLF versus LF
     LINE=2,                     // Append end of line
-    TRIM=4                      // trim trailing space
+    TRIM=4                      // Trim trailing space
     };
 
 private:
@@ -155,7 +152,6 @@ private:
   FXbool insertFromFile(const FXString& file,FXint sp,FXint ep,FXint sc,FXint ec);
   FXbool extractToFile(const FXString& file,FXint sp,FXint ep,FXint sc,FXint ec);
   FXbool matchesSelection(const FXString& string,FXint* beg,FXint* end,FXuint flgs,FXint npar) const;
-  FXint changedExternally();
   FXbool newDoc();
   FXbool createDoc();
   FXbool createDoc(const FXString& file);
@@ -173,7 +169,6 @@ private:
   static FXbool saveBuffer(const FXString& file,FXString& buffer,FXuint bits=0);
 public:
   long onUpdate(FXObject*,FXSelector,void*);
-  long onFocusIn(FXObject*,FXSelector,void*);
   long onUpdIsEditable(FXObject*,FXSelector,void*);
   long onUpdHasSelection(FXObject*,FXSelector,void*);
 
@@ -257,6 +252,7 @@ public:
   long onTextInserted(FXObject*,FXSelector,void*);
   long onTextReplaced(FXObject*,FXSelector,void*);
   long onTextDeleted(FXObject*,FXSelector,void*);
+  long onTextChanged(FXObject*,FXSelector,void*);
   long onTextDNDDrop(FXObject*,FXSelector,void*);
   long onTextDNDMotion(FXObject*,FXSelector,void*);
   long onTextRightMouse(FXObject*,FXSelector,void*);
@@ -280,9 +276,14 @@ public:
   long onUpdReadOnly(FXObject*,FXSelector,void*);
   long onUpdTabMode(FXObject*,FXSelector,void*);
   long onClock(FXObject*,FXSelector,void*);
+  long onCheckChange(FXObject*,FXSelector,void*);
   long onCmdPreferences(FXObject*,FXSelector,void*);
   long onCmdDelimiters(FXObject*,FXSelector,void*);
   long onUpdDelimiters(FXObject*,FXSelector,void*);
+  long onCmdUndoMaxSize(FXObject*,FXSelector,void*);
+  long onUpdUndoMaxSize(FXObject*,FXSelector,void*);
+  long onCmdUndoKeepSize(FXObject*,FXSelector,void*);
+  long onUpdUndoKeepSize(FXObject*,FXSelector,void*);
   long onCmdWheelAdjust(FXObject*,FXSelector,void*);
   long onUpdWheelAdjust(FXObject*,FXSelector,void*);
   long onCmdInsertPoint(FXObject*,FXSelector,void*);
@@ -452,6 +453,8 @@ public:
     ID_TABCOLUMNS,
     ID_WRAPCOLUMNS,
     ID_DELIMITERS,
+    ID_UNDOMAXSIZE,
+    ID_UNDOKEEPSIZE,
     ID_INSERTTABS,
     ID_AUTOINDENT,
     ID_MODELINE,
@@ -481,6 +484,7 @@ public:
     ID_SAVEVIEWS,
     ID_SHOWACTIVE,
     ID_WARNCHANGED,
+    ID_CHECKCHANGE,
     ID_SYNTAX,
     ID_RESTYLE,
     ID_WINDOW_1,
@@ -629,6 +633,10 @@ public:
   // Is it editable
   FXbool isEditable() const;
 
+  // Access strip trailing spaces
+  void setStripSpaces(FXint s){ stripsp=s; }
+  FXint getStripSpaces() const { return stripsp; }
+
   // Change current file pattern
   void setCurrentPattern(FXint n);
 
@@ -658,9 +666,6 @@ public:
 
   // Ask user to save changes
   FXbool saveChanges();
-
-  // Check for external changes
-  FXbool checkChanges();
 
   // Load text from file
   FXbool loadFile(const FXString& file);

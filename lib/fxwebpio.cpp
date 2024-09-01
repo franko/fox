@@ -3,7 +3,7 @@
 *                    W e b - P   I m a g e   I n p u t / O u t p u t            *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 2011,2022 by S. Jansen & J. van der Zijp.  All Rights Reserved. *
+* Copyright (C) 2011,2024 by S. Jansen & J. van der Zijp.  All Rights Reserved. *
 *********************************************************************************
 * This library is free software; you can redistribute it and/or modify          *
 * it under the terms of the GNU Lesser General Public License as published by   *
@@ -22,9 +22,8 @@
 #include "fxver.h"
 #include "fxdefs.h"
 #include "fxmath.h"
-#include "FXArray.h"
-#include "FXHash.h"
 #include "FXElement.h"
+#include "FXHash.h"
 #include "FXStream.h"
 #ifdef HAVE_WEBP_H
 #include "webp/types.h"

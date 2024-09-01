@@ -3,7 +3,7 @@
 *                            W i n d o w   O b j e c t                          *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 1997,2022 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 1997,2024 by Jeroen van der Zijp.   All Rights Reserved.        *
 *********************************************************************************
 * This library is free software; you can redistribute it and/or modify          *
 * it under the terms of the GNU Lesser General Public License as published by   *
@@ -22,19 +22,20 @@
 #include "fxver.h"
 #include "fxdefs.h"
 #include "fxmath.h"
-#include "FXArray.h"
+#include "FXMutex.h"
+#include "FXSize.h"
+#include "FXPoint.h"
+#include "FXRectangle.h"
+#include "FXRegion.h"
+#include "FXElement.h"
+#include "FXMetaClass.h"
 #include "FXHash.h"
 #include "FXElement.h"
-#include "FXMutex.h"
 #include "FXAutoThreadStorageKey.h"
 #include "FXRunnable.h"
 #include "FXThread.h"
 #include "FXStream.h"
 #include "FXString.h"
-#include "FXSize.h"
-#include "FXPoint.h"
-#include "FXRectangle.h"
-#include "FXRegion.h"
 #include "FXStringDictionary.h"
 #include "FXSettings.h"
 #include "FXRegistry.h"
@@ -95,6 +96,7 @@
 
 #define TOPIC_CONSTRUCT 1000
 #define TOPIC_CREATION  1001
+#define TOPIC_CONFIGURE 1002
 #define TOPIC_KEYBOARD  1009
 
 #ifndef WIN32
@@ -455,17 +457,16 @@ FXWindow::WindowClass FXWindow::getWindowClass() const {
 
 // Return a pointer to the shell window
 FXWindow* FXWindow::getShell() const {
-  FXWindow *win=const_cast<FXWindow*>(this);
-  FXWindow *p;
-  while((p=win->parent)!=nullptr && p->parent) win=p;
+  FXWindow* win=const_cast<FXWindow*>(this);
+  while(win->getParent() && win->getParent()->getParent()){ win=win->getParent(); }
   return win;
   }
 
 
 // Return a pointer to the root window
 FXWindow* FXWindow::getRoot() const {
-  FXWindow *win=const_cast<FXWindow*>(this);
-  while(win->parent) win=win->parent;
+  FXWindow* win=const_cast<FXWindow*>(this);
+  while(win->getParent()){ win=win->getParent(); }
   return win;
   }
 
@@ -657,14 +658,14 @@ long FXWindow::onPaint(FXObject*,FXSelector,void* ptr){
 
 // Window was mapped to screen
 long FXWindow::onMap(FXObject*,FXSelector,void* ptr){
-  FXTRACE((250,"%s::onMap %p\n",getClassName(),this));
+  FXTRACE((TOPIC_CONFIGURE,"%s::onMap %p\n",getClassName(),this));
   return target && target->tryHandle(this,FXSEL(SEL_MAP,message),ptr);
   }
 
 
 // Window was unmapped; the grab is lost
 long FXWindow::onUnmap(FXObject*,FXSelector,void* ptr){
-  FXTRACE((250,"%s::onUnmap %p\n",getClassName(),this));
+  FXTRACE((TOPIC_CONFIGURE,"%s::onUnmap %p\n",getClassName(),this));
   if(getApp()->mouseGrabWindow==this) getApp()->mouseGrabWindow=nullptr;
   if(getApp()->keyboardGrabWindow==this) getApp()->keyboardGrabWindow=nullptr;
   return target && target->tryHandle(this,FXSEL(SEL_UNMAP,message),ptr);
@@ -673,14 +674,14 @@ long FXWindow::onUnmap(FXObject*,FXSelector,void* ptr){
 
 // Handle configure notify
 long FXWindow::onConfigure(FXObject*,FXSelector,void* ptr){
-  FXTRACE((250,"%s::onConfigure %p\n",getClassName(),this));
+  FXTRACE((TOPIC_CONFIGURE,"%s::onConfigure %p\n",getClassName(),this));
   return target && target->tryHandle(this,FXSEL(SEL_CONFIGURE,message),ptr);
   }
 
 
 // The window was destroyed; the grab is lost
 long FXWindow::onDestroy(FXObject*,FXSelector,void*){
-  FXTRACE((250,"%s::onDestroy %p\n",getClassName(),this));
+  FXTRACE((TOPIC_CONFIGURE,"%s::onDestroy %p\n",getClassName(),this));
   getApp()->hash.remove((FXptr)xid);
   if(getApp()->mouseGrabWindow==this) getApp()->mouseGrabWindow=nullptr;
   if(getApp()->keyboardGrabWindow==this) getApp()->keyboardGrabWindow=nullptr;

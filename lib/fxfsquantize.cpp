@@ -3,7 +3,7 @@
 *                     F S   C o l o r   Q u a n t i z a t i o n                 *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 1999,2022 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 1999,2024 by Jeroen van der Zijp.   All Rights Reserved.        *
 *********************************************************************************
 * This library is free software; you can redistribute it and/or modify          *
 * it under the terms of the GNU Lesser General Public License as published by   *
@@ -149,6 +149,5 @@ FXbool fxfsquantize(FXuchar* dst,const FXColor* src,FXColor* colormap,FXint& act
   actualcolors=256;
   return true;
   }
-
 
 }

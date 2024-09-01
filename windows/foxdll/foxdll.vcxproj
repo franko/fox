@@ -286,6 +286,7 @@ $(OutputPath)reswrap.exe -nc -h -n FX -o icons.h  arrownext.gif arrowprev.gif bi
     <ClInclude Include="..\..\include\FXCP869Codec.h" />
     <ClInclude Include="..\..\include\FXCP874Codec.h" />
     <ClInclude Include="..\..\include\fxcpuid.h" />
+    <ClInclude Include="..\..\include\fxcrc.h" />
     <ClInclude Include="..\..\include\FXCURCursor.h" />
     <ClInclude Include="..\..\include\FXCursor.h" />
     <ClInclude Include="..\..\include\FXDataTarget.h" />
@@ -443,6 +444,8 @@ $(OutputPath)reswrap.exe -nc -h -n FX -o icons.h  arrownext.gif arrowprev.gif bi
     <ClInclude Include="..\..\include\FXProgressDialog.h" />
     <ClInclude Include="..\..\include\FXPtrList.h" />
     <ClInclude Include="..\..\include\FXPtrQueue.h" />
+    <ClInclude Include="..\..\include\FXQOIFIcon.h" />
+    <ClInclude Include="..\..\include\FXQOIFImage.h" />
     <ClInclude Include="..\..\include\FXQuatd.h" />
     <ClInclude Include="..\..\include\FXQuatf.h" />
     <ClInclude Include="..\..\include\FXRadioButton.h" />
@@ -587,7 +590,6 @@ $(OutputPath)reswrap.exe -nc -h -n FX -o icons.h  arrownext.gif arrowprev.gif bi
     <ClCompile Include="..\..\lib\FXArray.cpp" />
     <ClCompile Include="..\..\lib\FXArrowButton.cpp" />
     <ClCompile Include="..\..\lib\fxascii.cpp" />
-    <ClCompile Include="..\..\lib\FXAtomic.cpp" />
     <ClCompile Include="..\..\lib\FXAutoThreadStorageKey.cpp" />
     <ClCompile Include="..\..\lib\FXBarrier.cpp" />
     <ClCompile Include="..\..\lib\fxbase64.cpp" />
@@ -648,6 +650,7 @@ $(OutputPath)reswrap.exe -nc -h -n FX -o icons.h  arrownext.gif arrowprev.gif bi
     <ClCompile Include="..\..\lib\FXCP869Codec.cpp" />
     <ClCompile Include="..\..\lib\FXCP874Codec.cpp" />
     <ClCompile Include="..\..\lib\fxcpuid.cpp" />
+    <ClCompile Include="..\..\lib\fxcrc.cpp" />
     <ClCompile Include="..\..\lib\FXCURCursor.cpp" />
     <ClCompile Include="..\..\lib\FXCursor.cpp" />
     <ClCompile Include="..\..\lib\FXDataTarget.cpp" />
@@ -816,6 +819,9 @@ $(OutputPath)reswrap.exe -nc -h -n FX -o icons.h  arrownext.gif arrowprev.gif bi
     <ClCompile Include="..\..\lib\fxpsio.cpp" />
     <ClCompile Include="..\..\lib\FXPtrList.cpp" />
     <ClCompile Include="..\..\lib\FXPtrQueue.cpp" />
+    <ClCompile Include="..\..\lib\FXQOIFIcon.cpp" />
+    <ClCompile Include="..\..\lib\FXQOIFImage.cpp" />
+    <ClCompile Include="..\..\lib\fxqoifio.cpp" />
     <ClCompile Include="..\..\lib\FXQuatd.cpp" />
     <ClCompile Include="..\..\lib\FXQuatf.cpp" />
     <ClCompile Include="..\..\lib\FXRadioButton.cpp" />

@@ -3,7 +3,7 @@
 *              T h e   P a t h F i n d e r   F i l e   B r o w s e r            *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 1998,2023 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 1998,2024 by Jeroen van der Zijp.   All Rights Reserved.        *
 *********************************************************************************
 * This program is free software: you can redistribute it and/or modify          *
 * it under the terms of the GNU General Public License as published by          *
@@ -28,7 +28,7 @@
 #include "icons.h"
 
 // Support for extra image formats
-#ifdef HAVE_PNG_H
+#ifdef HAVE_ZLIB_H
 #include "FXPNGImage.h"
 #endif
 #ifdef HAVE_JPEG_H
@@ -1367,7 +1367,7 @@ long PathFinderMain::onCmdAbout(FXObject*,FXSelector,void*){
   FXVerticalFrame* side=new FXVerticalFrame(&about,LAYOUT_SIDE_RIGHT|LAYOUT_FILL_X|LAYOUT_FILL_Y,0,0,0,0, 10,10,10,10, 0,0);
   new FXLabel(side,"PathFinder",nullptr,JUSTIFY_LEFT|ICON_BEFORE_TEXT|LAYOUT_FILL_X);
   new FXHorizontalSeparator(side,SEPARATOR_LINE|LAYOUT_FILL_X);
-  new FXLabel(side,FXString::value(tr("\nPathFinder File Manager, version %d.%d.%d.\n\nPathFinder is a simple and speedy file manager with drag and drop support.\n\nUsing The FOX Toolkit (www.fox-toolkit.org), version %d.%d.%d (%s).\nCopyright (C) 2000,2023 Jeroen van der Zijp (jeroen@fox-toolkit.net).\n "),VERSION_MAJOR,VERSION_MINOR,VERSION_PATCH,FOX_MAJOR,FOX_MINOR,FOX_LEVEL,__DATE__),nullptr,JUSTIFY_LEFT|LAYOUT_FILL_X|LAYOUT_FILL_Y);
+  new FXLabel(side,FXString::value(tr("\nPathFinder File Manager, version %d.%d.%d.\n\nPathFinder is a simple and speedy file manager with drag and drop support.\n\nUsing The FOX Toolkit (www.fox-toolkit.org), version %d.%d.%d (%s %s).\nCopyright (C) 2000,2024 Jeroen van der Zijp (jeroen@fox-toolkit.net).\n "),VERSION_MAJOR,VERSION_MINOR,VERSION_PATCH,FOX_MAJOR,FOX_MINOR,FOX_LEVEL,__DATE__,__TIME__),nullptr,JUSTIFY_LEFT|LAYOUT_FILL_X|LAYOUT_FILL_Y);
   FXButton *button=new FXButton(side,tr("&OK"),nullptr,&about,FXDialogBox::ID_ACCEPT,BUTTON_INITIAL|BUTTON_DEFAULT|FRAME_RAISED|FRAME_THICK|LAYOUT_RIGHT,0,0,0,0,32,32,2,2);
   button->setFocus();
   about.execute(PLACEMENT_OWNER);
@@ -2145,7 +2145,10 @@ FXbool PathFinderMain::previewImage(const FXString& filename){
   else if(FXString::comparecase(ext,"dds")==0){
     img=new FXDDSImage(getApp(),nullptr,IMAGE_KEEP|IMAGE_SHMI|IMAGE_SHMP);
     }
-#ifdef HAVE_PNG_H
+  else if(FXString::comparecase(ext,"qoi")==0 || FXString::comparecase(ext,"qoif")==0){
+    img=new FXQOIFImage(getApp(),nullptr,IMAGE_KEEP|IMAGE_SHMI|IMAGE_SHMP);
+    }
+#ifdef HAVE_ZLIB_H
   else if(FXString::comparecase(ext,"png")==0){
     img=new FXPNGImage(getApp(),nullptr,IMAGE_KEEP|IMAGE_SHMI|IMAGE_SHMP);
     }
@@ -2297,7 +2300,7 @@ static void printusage(){
 // Print verson info
 static void printversion(){
   fxmessage("PathFinder file manager version %d.%d.%d.\n",VERSION_MAJOR,VERSION_MINOR,VERSION_PATCH);
-  fxmessage("Copyright (C) 1998,2023 Jeroen van der Zijp.  All Rights Reserved.\n\n");
+  fxmessage("Copyright (C) 1998,2024 Jeroen van der Zijp.  All Rights Reserved.\n\n");
   fxmessage("Please visit: http://www.fox-toolkit.org for further information.\n");
   fxmessage("\n");
   fxmessage("This program is free software: you can redistribute it and/or modify\n");

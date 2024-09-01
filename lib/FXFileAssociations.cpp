@@ -3,7 +3,7 @@
 *                        F i l e   A s s o c i a t i o n s                      *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 1998,2022 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 1998,2024 by Jeroen van der Zijp.   All Rights Reserved.        *
 *********************************************************************************
 * This library is free software; you can redistribute it and/or modify          *
 * it under the terms of the GNU Lesser General Public License as published by   *
@@ -22,16 +22,17 @@
 #include "fxver.h"
 #include "fxdefs.h"
 #include "fxmath.h"
-#include "FXArray.h"
-#include "FXHash.h"
 #include "FXMutex.h"
+#include "FXSize.h"
+#include "FXPoint.h"
+#include "FXRectangle.h"
+#include "FXElement.h"
+#include "FXMetaClass.h"
+#include "FXHash.h"
 #include "FXStream.h"
 #include "FXFile.h"
 #include "FXFileStream.h"
 #include "FXString.h"
-#include "FXSize.h"
-#include "FXPoint.h"
-#include "FXRectangle.h"
 #include "FXDictionary.h"
 #include "FXDictionaryOf.h"
 #include "FXStringDictionary.h"

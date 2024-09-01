@@ -3,7 +3,7 @@
 *                         T o p   W i n d o w   O b j e c t                     *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 1998,2022 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 1998,2024 by Jeroen van der Zijp.   All Rights Reserved.        *
 *********************************************************************************
 * This library is free software; you can redistribute it and/or modify          *
 * it under the terms of the GNU Lesser General Public License as published by   *
@@ -23,14 +23,15 @@
 #include "fxdefs.h"
 #include "fxchar.h"
 #include "fxmath.h"
-#include "FXArray.h"
-#include "FXHash.h"
 #include "FXMutex.h"
-#include "FXStream.h"
-#include "FXString.h"
 #include "FXSize.h"
 #include "FXPoint.h"
 #include "FXRectangle.h"
+#include "FXElement.h"
+#include "FXMetaClass.h"
+#include "FXHash.h"
+#include "FXStream.h"
+#include "FXString.h"
 #include "FXStringDictionary.h"
 #include "FXSettings.h"
 #include "FXRegistry.h"
@@ -101,7 +102,6 @@
 #define DISPLAY(app) ((Display*)((app)->display))
 
 using namespace FX;
-
 
 /*******************************************************************************/
 
@@ -1140,6 +1140,41 @@ FXbool FXTopWindow::isFullScreen() const {
     }
   return result;
   }
+
+
+#if 0
+  XWindowAttributes watts;
+  XGetWindowAttributes(DISPLAY(getApp()),xid,&watts);
+  return (watts.map_state==IsViewable)
+  return (watts.map_state==IsUnMapped)
+  return (watts.map_state==IsUnviewable)
+
+  Window       rootwindow;
+  Window       parentwindow;
+  Window*      childwindow;
+  unsigned int nchildwindows;
+  Window       w;
+
+//  w=xid;
+  w=XDefaultRootWindow(thedisplay);
+
+  if(XQueryTree(thedisplay,w,&rootwindow,&parentwindow,&childwindow,&nchildwindows)){
+    fxmessage("root   = 0x%lx\n",rootwindow);
+    fxmessage("parent = 0x%lx\n",parentwindow);
+    for(int c=0; c<nchildwindows; ++c){
+      fxmessage("child[%d] = 0x%lx\n",c,childwindow[c]);
+      }
+    XFree(childwindow);
+    }
+  fxmessage("self   = 0x%lx\n",xid);
+  fxmessage("\n");
+
+
+Status XQueryTree(Display *display,Window w,Window* root_return,Window* parent_return,Window** children_return,unsigned int * nchildren_return)
+
+The XQueryTree() function returns the root ID, the parent window ID, a pointer to the list of children windows (NULL when there are no children), and the number of children in the list for the specified window. The children are listed in current stacking order, from bottommost (first) to topmost (last). XQueryTree() returns zero if it fails and nonzero if it succeeds. To free a non-NULL children list when it is no longer needed, use XFree().
+#endif
+
 
 
 // Request for toplevel window move

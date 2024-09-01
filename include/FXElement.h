@@ -3,7 +3,7 @@
 *                 G e n e r i c   E l e m e n t   H a n d l i n g               *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 1997,2022 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 1997,2024 by Jeroen van der Zijp.   All Rights Reserved.        *
 *********************************************************************************
 * This library is free software; you can redistribute it and/or modify          *
 * it under the terms of the GNU Lesser General Public License as published by   *
@@ -32,6 +32,13 @@ namespace FX {
 template<typename EType>
 inline EType* construct(EType* ptr){
   ::new ((void*)ptr) EType; return ptr;
+  }
+
+
+// In-situ copy constructor
+template<typename EType>
+inline EType* construct(EType* ptr,const EType& org){
+  ::new ((void*)ptr) EType(org); return ptr;
   }
 
 

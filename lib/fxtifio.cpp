@@ -3,7 +3,7 @@
 *                        T I F F   I n p u t / O u t p u t                      *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 2001,2022 Eric Gillet.   All Rights Reserved.                   *
+* Copyright (C) 2001,2024 Eric Gillet.   All Rights Reserved.                   *
 *********************************************************************************
 * This library is free software; you can redistribute it and/or modify          *
 * it under the terms of the GNU Lesser General Public License as published by   *
@@ -43,6 +43,8 @@
     this causes core dump!
   - ARGB means Alpha(0), Red(1), Green(2), Blue(3) in memory.
 */
+
+#define TOPIC_DETAIL 1015
 
 
 using namespace FX;
@@ -155,7 +157,7 @@ FXbool fxloadTIF(FXStream& store,FXColor*& data,FXint& width,FXint& height,FXush
   s_handle.begin=store.position();
   s_handle.end=store.position();
 
-  FXTRACE((100,"fxloadTIF\n"));
+  FXTRACE((TOPIC_DETAIL,"fxloadTIF\n"));
 
   // Open image
   TIFF* image=TIFFClientOpen("tiff","rm",(thandle_t)&s_handle,tif_read_store,tif_write_store,tif_seek_store,tif_close_store,tif_size_store,nullptr,nullptr);
@@ -166,7 +168,7 @@ FXbool fxloadTIF(FXStream& store,FXColor*& data,FXint& width,FXint& height,FXush
     TIFFGetField(image,TIFFTAG_IMAGELENGTH,&height);
     TIFFGetField(image,TIFFTAG_COMPRESSION,&codec);
 
-    FXTRACE((100,"fxloadTIF: width=%d height=%d codec=%d\n",width,height,codec));
+    FXTRACE((TOPIC_DETAIL,"fxloadTIF: width=%d height=%d codec=%d\n",width,height,codec));
 
     // Make room for data
     size=width*height;
@@ -210,7 +212,7 @@ FXbool fxloadTIF__(FXStream& store,FXColor*& data,FXint& width,FXint& height,FXu
   s_handle.begin=store.position();
   s_handle.end=store.position();
 
-  FXTRACE((100,"fxloadGEOTIF\n"));
+  FXTRACE((TOPIC_DETAIL,"fxloadGEOTIF\n"));
 
   // Open image
   if((image=TIFFClientOpen("tiff","rm",(thandle_t)&s_handle,tif_read_store,tif_write_store,tif_seek_store,tif_close_store,tif_size_store,nullptr,nullptr))!=nullptr){
@@ -234,7 +236,7 @@ FXbool fxloadTIF__(FXStream& store,FXColor*& data,FXint& width,FXint& height,FXu
     scanlinesize=TIFFScanlineSize(image);
 
     // Show image configuration
-    FXTRACE((100,"width=%d height=%d codec=%u samples=%u samplebits=%u format=%u scanlinesize=%u\n",width,height,codec,samples,samplebits,format,scanlinesize));
+    FXTRACE((TOPIC_DETAIL,"width=%d height=%d codec=%u samples=%u samplebits=%u format=%u scanlinesize=%u\n",width,height,codec,samples,samplebits,format,scanlinesize));
 
     // Supported formats
     if((format==SAMPLEFORMAT_UINT || format==SAMPLEFORMAT_INT || format==SAMPLEFORMAT_IEEEFP) && (samples==1 || samples==3)){
@@ -258,9 +260,9 @@ FXbool fxloadTIF__(FXStream& store,FXColor*& data,FXint& width,FXint& height,FXu
     TIFFGetField(image,TIFFTAG_COMPRESSION,&nCompressFlag);
     TIFFGetField(image,TIFFTAG_PHOTOMETRIC,&nPhotometric);
 
-    FXTRACE((100,"nPlanarConfig=%u\n",nPlanarConfig));
-    FXTRACE((100,"nCompressFlag=%u\n",nCompressFlag));
-    FXTRACE((100,"nPhotometric=%u\n",nPhotometric));
+    FXTRACE((TOPIC_DETAIL,"nPlanarConfig=%u\n",nPlanarConfig));
+    FXTRACE((TOPIC_DETAIL,"nCompressFlag=%u\n",nCompressFlag));
+    FXTRACE((TOPIC_DETAIL,"nPhotometric=%u\n",nPhotometric));
 
     switch(nSampleFormat){
       case SAMPLEFORMAT_UINT:
@@ -351,7 +353,7 @@ FXbool fxsaveTIF(FXStream& store,const FXColor* data,FXint width,FXint height,FX
     // write them back as that would require the LZW compression algorithm!
     if(codec==COMPRESSION_LZW) codec=COMPRESSION_PACKBITS;
 
-    FXTRACE((100,"fxsaveTIF: codec=%d\n",codec));
+    FXTRACE((TOPIC_DETAIL,"fxsaveTIF: codec=%d\n",codec));
 
     // Set error/warning handlers
     TIFFSetErrorHandler(nullptr);

@@ -3,7 +3,7 @@
 *                      T A R G A   I n p u t / O u t p u t                      *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 2001,2022 by Janusz Ganczarski.   All Rights Reserved.          *
+* Copyright (C) 2001,2024 by Janusz Ganczarski.   All Rights Reserved.          *
 *********************************************************************************
 * This library is free software; you can redistribute it and/or modify          *
 * it under the terms of the GNU Lesser General Public License as published by   *
@@ -36,6 +36,7 @@
   - Yes, in 16 bit its still 5,5,5 and not 5,6,5.
 */
 
+#define TOPIC_DETAIL 1015
 
 using namespace FX;
 
@@ -763,7 +764,7 @@ FXbool fxloadTGA(FXStream& store,FXColor*& data,FXint& width,FXint& height){
   //      4-pass quadtree-type process.
   store >> ImageType;
 
-  FXTRACE((100,"fxloadTGA IDLength=%d ColorMapType=%d ImageType=%d\n",IDLength,ColorMapType,ImageType));
+  FXTRACE((TOPIC_DETAIL,"fxloadTGA IDLength=%d ColorMapType=%d ImageType=%d\n",IDLength,ColorMapType,ImageType));
 
   // Check for supported image type
   if(ImageType==1 || ImageType==2 || ImageType==3 || ImageType==9 || ImageType==10 || ImageType==11 || ImageType==32 || ImageType==33){
@@ -801,7 +802,7 @@ FXbool fxloadTGA(FXStream& store,FXColor*& data,FXint& width,FXint& height){
     // but other pixel depths could be used.
     store >> PixelDepth;
 
-    FXTRACE((100,"fxloadTGA PixelDepth=%d ColorMapLength=%d ColorMapEntrySize=%d Width=%d Height=%d\n",PixelDepth,ColorMapLength,ColorMapEntrySize,Width,Height));
+    FXTRACE((TOPIC_DETAIL,"fxloadTGA PixelDepth=%d ColorMapLength=%d ColorMapEntrySize=%d Width=%d Height=%d\n",PixelDepth,ColorMapLength,ColorMapEntrySize,Width,Height));
 
     // Sanity check
     if(PixelDepth!=1 && PixelDepth!=8 && PixelDepth!=15 && PixelDepth!=16 && PixelDepth!=24 && PixelDepth!=32) goto x;
@@ -863,7 +864,7 @@ FXbool fxloadTGA(FXStream& store,FXColor*& data,FXint& width,FXint& height){
           }
         }
 
-      FXTRACE((100,"fxloadTARGA: Width=%d Height=%d IDLength=%d ColorMapType=%d ColorMapLength=%d ColorMapEntrySize=%d ImageType=%d PixelDepth=%d ImageDescriptor=%02x\n",Width,Height,IDLength,ColorMapType,ColorMapLength,ColorMapEntrySize,ImageType,PixelDepth,ImageDescriptor));
+      FXTRACE((TOPIC_DETAIL,"fxloadTARGA: Width=%d Height=%d IDLength=%d ColorMapType=%d ColorMapLength=%d ColorMapEntrySize=%d ImageType=%d PixelDepth=%d ImageDescriptor=%02x\n",Width,Height,IDLength,ColorMapType,ColorMapLength,ColorMapEntrySize,ImageType,PixelDepth,ImageDescriptor));
 
       // Load up the image
       if(PixelDepth==32 && (ImageType==2 || ImageType==10)){

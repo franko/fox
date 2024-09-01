@@ -3,7 +3,7 @@
 *          S i n g l e - P r e c i s i o n   C o m p l e x   N u m b e r        *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 2006,2022 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 2006,2024 by Jeroen van der Zijp.   All Rights Reserved.        *
 *********************************************************************************
 * This library is free software; you can redistribute it and/or modify          *
 * it under the terms of the GNU Lesser General Public License as published by   *
@@ -22,10 +22,9 @@
 #include "fxver.h"
 #include "fxdefs.h"
 #include "fxmath.h"
-#include "FXArray.h"
+#include "FXElement.h"
 #include "FXHash.h"
 #include "FXStream.h"
-#include "FXObject.h"
 #include "FXComplexf.h"
 
 

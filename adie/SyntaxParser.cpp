@@ -3,7 +3,7 @@
 *                         S y n t a x   P a r s e r                             *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 1998,2023 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 1998,2024 by Jeroen van der Zijp.   All Rights Reserved.        *
 *********************************************************************************
 * This program is free software: you can redistribute it and/or modify          *
 * it under the terms of the GNU General Public License as published by          *
@@ -66,6 +66,7 @@
                      |     "tabwidth"      Number
                      |     "wordwrap"      YesNo
                      |     "expandtabs"    YesNo
+                     |     "stripspaces"   YesNo
                      |     "group"         String
                      |     { Rule }*
 
@@ -345,6 +346,7 @@ FXbool SyntaxParser::parseLanguage(SyntaxList& syntaxes){
   FXint tabwidth=-1;
   FXint wrapmode=-1;
   FXint tabmode=-1;
+  FXint strip=-1;
   FXRex::Error error;
   Syntax *syntax;
 
@@ -465,6 +467,15 @@ FXbool SyntaxParser::parseLanguage(SyntaxList& syntaxes){
           tabmode=(token==TK_YES);
           token=gettok();
           continue;
+        case TK_STRIPSPACES:            // Strip trailing spaces
+          token=gettok();
+          if(token!=TK_YES && token!=TK_NO){
+            fxwarning("%s:%d: error: expected 'stripspaces' to be followed by 'yes' or 'no'.\n",from,line);
+            return false;
+            }
+          strip=(token==TK_YES);
+          token=gettok();
+          continue;
         case TK_GROUP:                  // Style group
           token=gettok();
           if(token!=TK_STRING){
@@ -491,6 +502,7 @@ FXbool SyntaxParser::parseLanguage(SyntaxList& syntaxes){
     syntax->setTabWidth(tabwidth);
     syntax->setWrapMode(wrapmode);
     syntax->setTabMode(tabmode);
+    syntax->setStripSpaces(strip);
 
     FXTRACE((11,"name=%s\n",name.text()));
     FXTRACE((11,"group=%s\n",group.text()));
@@ -504,6 +516,7 @@ FXbool SyntaxParser::parseLanguage(SyntaxList& syntaxes){
     FXTRACE((11,"tabwidth=%d\n",tabwidth));
     FXTRACE((11,"wrapmode=%d\n",wrapmode));
     FXTRACE((11,"tabmode=%d\n",tabmode));
+    FXTRACE((11,"strip=%d\n",strip));
 
     // Add new syntax to list
     syntaxes.append(syntax);

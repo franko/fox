@@ -3,7 +3,7 @@
 *            S i n g l e - P r e c i s i o n   3 x 3   M a t r i x              *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 2003,2022 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 2003,2024 by Jeroen van der Zijp.   All Rights Reserved.        *
 *********************************************************************************
 * This library is free software; you can redistribute it and/or modify          *
 * it under the terms of the GNU Lesser General Public License as published by   *
@@ -159,6 +159,9 @@ public:
   FXMat3f& scale(FXfloat sx,FXfloat sy,FXfloat sz);
   FXMat3f& scale(const FXVec3f& v);
   FXMat3f& scale(FXfloat s);
+
+  /// Mirror-matrix with plane normal n
+  FXMat3f& mirror(const FXVec3f& n);
 
   /// Determinant
   FXfloat det() const;

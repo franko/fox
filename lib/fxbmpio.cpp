@@ -3,7 +3,7 @@
 *                          B M P   I n p u t / O u t p u t                      *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 1998,2022 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 1998,2024 by Jeroen van der Zijp.   All Rights Reserved.        *
 *********************************************************************************
 * This library is free software; you can redistribute it and/or modify          *
 * it under the terms of the GNU Lesser General Public License as published by   *
@@ -23,9 +23,8 @@
 #include "fxdefs.h"
 #include "fxmath.h"
 #include "fxendian.h"
-#include "FXArray.h"
-#include "FXHash.h"
 #include "FXElement.h"
+#include "FXHash.h"
 #include "FXStream.h"
 
 /*

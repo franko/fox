@@ -3,7 +3,7 @@
 *                        P r i n t   J o b   D i a l o g                        *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 1999,2022 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 1999,2024 by Jeroen van der Zijp.   All Rights Reserved.        *
 *********************************************************************************
 * This library is free software; you can redistribute it and/or modify          *
 * it under the terms of the GNU Lesser General Public License as published by   *
@@ -22,11 +22,12 @@
 #include "fxver.h"
 #include "fxdefs.h"
 #include "fxmath.h"
+#include "FXElement.h"
 #include "FXArray.h"
+#include "FXMetaClass.h"
 #include "FXHash.h"
 #include "fxascii.h"
 #include "FXMutex.h"
-#include "FXElement.h"
 #include "FXStream.h"
 #include "FXString.h"
 #include "FXIO.h"

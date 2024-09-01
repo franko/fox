@@ -233,6 +233,7 @@ FXPacker.h \
 FXParallel.h \
 FXParseBuffer.h \
 FXPath.h \
+FXPerformance.h \
 FXPicker.h \
 FXPipe.h \
 FXPoint.h \
@@ -243,6 +244,8 @@ FXProgressBar.h \
 FXProgressDialog.h \
 FXPtrList.h \
 FXPtrQueue.h \
+FXQOIFIcon.h \
+FXQOIFImage.h \
 FXQuatd.h \
 FXQuatf.h \
 FXRASIcon.h \
@@ -357,6 +360,7 @@ fx3d.h \
 fxascii.h \
 fxchar.h \
 fxcpuid.h \
+fxcrc.h \
 fxdefs.h \
 fxmath.h \
 fxendian.h \

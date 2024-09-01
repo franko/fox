@@ -3,7 +3,7 @@
 *                    F i n d   P a t t e r n   I n   F i l e s                  *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 1998,2023 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 1998,2024 by Jeroen van der Zijp.   All Rights Reserved.        *
 *********************************************************************************
 * This program is free software: you can redistribute it and/or modify          *
 * it under the terms of the GNU General Public License as published by          *
@@ -576,7 +576,7 @@ long FindInFiles::onCmdSearch(FXObject*,FXSelector,void*){
   FXint rexmode=FXRex::Capture;
   FXint limit=1000;
   if(getSearchMode()&SearchCaseFold) rexmode|=FXRex::IgnoreCase;                // Case insensitivity
-  if(getSearchMode()&SearchWords) rexmode|=FXRex::Words;                         // Whole Words
+  if(getSearchMode()&SearchWords) rexmode|=FXRex::Words;                        // Whole Words
   if(!(getSearchMode()&SearchRegex)) rexmode|=FXRex::Verbatim;                  // Verbatim match
   if(getSearchMode()&SeachHidden) opts|=FXDir::HiddenFiles|FXDir::HiddenDirs;   // Visit hidden files and directories
   if(!(getSearchMode()&SearchRecurse)) limit=2;                                 // Don't recurse

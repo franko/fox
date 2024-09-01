@@ -3,7 +3,7 @@
 *                         Q u e u e   O f   P o i n t e r s                     *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 2006,2022 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 2006,2024 by Jeroen van der Zijp.   All Rights Reserved.        *
 *********************************************************************************
 * This library is free software; you can redistribute it and/or modify          *
 * it under the terms of the GNU Lesser General Public License as published by   *
@@ -22,6 +22,8 @@
 #include "fxdefs.h"
 #include "fxmath.h"
 #include "FXElement.h"
+#include "FXArray.h"
+#include "FXMetaClass.h"
 #include "FXPtrList.h"
 #include "FXPtrQueue.h"
 

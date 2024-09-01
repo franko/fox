@@ -3,7 +3,7 @@
 *                 S h u t t e r   C o n t a i n e r   W i d g e t               *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 1998,2022 by Charles W. Warren.   All Rights Reserved.          *
+* Copyright (C) 1998,2024 by Charles W. Warren.   All Rights Reserved.          *
 *********************************************************************************
 * This library is free software; you can redistribute it and/or modify          *
 * it under the terms of the GNU Lesser General Public License as published by   *
@@ -22,9 +22,11 @@
 #include "fxver.h"
 #include "fxdefs.h"
 #include "fxmath.h"
+#include "FXElement.h"
 #include "FXArray.h"
-#include "FXHash.h"
+#include "FXMetaClass.h"
 #include "FXMutex.h"
+#include "FXHash.h"
 #include "FXStream.h"
 #include "FXString.h"
 #include "FXSize.h"

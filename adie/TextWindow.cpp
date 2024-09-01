@@ -3,7 +3,7 @@
 *                     T h e   A d i e   T e x t   E d i t o r                   *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 1998,2023 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 1998,2024 by Jeroen van der Zijp.   All Rights Reserved.        *
 *********************************************************************************
 * This program is free software: you can redistribute it and/or modify          *
 * it under the terms of the GNU General Public License as published by          *
@@ -84,6 +84,7 @@
 */
 
 #define CLOCKTIMER      1000000000      // Blink rate for corner clock
+#define CHECKTIMER      1000000000      // Blink rate for corner clock
 #define RESTYLEJUMP     80              // Restyling back-off
 #define MAXFILESIZE     1000000000      // Limit files to this when loading
 
@@ -92,14 +93,15 @@
 // Map
 FXDEFMAP(TextWindow) TextWindowMap[]={
   FXMAPFUNC(SEL_UPDATE,0,TextWindow::onUpdate),
-  FXMAPFUNC(SEL_FOCUSIN,0,TextWindow::onFocusIn),
   FXMAPFUNC(SEL_TIMEOUT,TextWindow::ID_CLOCKTIME,TextWindow::onClock),
+  FXMAPFUNC(SEL_TIMEOUT,TextWindow::ID_CHECKCHANGE,TextWindow::onCheckChange),
   FXMAPFUNC(SEL_FOCUSIN,TextWindow::ID_TEXT,TextWindow::onTextFocus),
   FXMAPFUNC(SEL_INSERTED,TextWindow::ID_TEXT,TextWindow::onTextInserted),
   FXMAPFUNC(SEL_REPLACED,TextWindow::ID_TEXT,TextWindow::onTextReplaced),
   FXMAPFUNC(SEL_DELETED,TextWindow::ID_TEXT,TextWindow::onTextDeleted),
   FXMAPFUNC(SEL_DND_DROP,TextWindow::ID_TEXT,TextWindow::onTextDNDDrop),
   FXMAPFUNC(SEL_DND_MOTION,TextWindow::ID_TEXT,TextWindow::onTextDNDMotion),
+  FXMAPFUNC(SEL_CHANGED,TextWindow::ID_TEXT,TextWindow::onTextChanged),
   FXMAPFUNC(SEL_QUERY_TIP,TextWindow::ID_TEXT,TextWindow::onQueryTextTip),
   FXMAPFUNC(SEL_RIGHTBUTTONRELEASE,TextWindow::ID_TEXT,TextWindow::onTextRightMouse),
   FXMAPFUNC(SEL_RIGHTBUTTONRELEASE,TextWindow::ID_LOGGER,TextWindow::onLoggerRightMouse),
@@ -195,6 +197,10 @@ FXDEFMAP(TextWindow) TextWindowMap[]={
   FXMAPFUNC(SEL_UPDATE,TextWindow::ID_TABCOLUMNS,TextWindow::onUpdTabColumns),
   FXMAPFUNC(SEL_COMMAND,TextWindow::ID_DELIMITERS,TextWindow::onCmdDelimiters),
   FXMAPFUNC(SEL_UPDATE,TextWindow::ID_DELIMITERS,TextWindow::onUpdDelimiters),
+  FXMAPFUNC(SEL_COMMAND,TextWindow::ID_UNDOMAXSIZE,TextWindow::onCmdUndoMaxSize),
+  FXMAPFUNC(SEL_UPDATE,TextWindow::ID_UNDOMAXSIZE,TextWindow::onUpdUndoMaxSize),
+  FXMAPFUNC(SEL_COMMAND,TextWindow::ID_UNDOKEEPSIZE,TextWindow::onCmdUndoKeepSize),
+  FXMAPFUNC(SEL_UPDATE,TextWindow::ID_UNDOKEEPSIZE,TextWindow::onUpdUndoKeepSize),
   FXMAPFUNC(SEL_COMMAND,TextWindow::ID_WRAPCOLUMNS,TextWindow::onCmdWrapColumns),
   FXMAPFUNC(SEL_UPDATE,TextWindow::ID_WRAPCOLUMNS,TextWindow::onUpdWrapColumns),
   FXMAPFUNC(SEL_COMMAND,TextWindow::ID_MODELINE,TextWindow::onCmdModeline),
@@ -429,14 +435,14 @@ TextWindow::TextWindow(Adie* a):FXMainWindow(a,"Adie",nullptr,nullptr,DECOR_ALL,
   // Create search bar
   createSearchbar();
 
-  // Initialize bookmarks
-  clearBookmarks();
-
   // Set status
   setStatusMessage(tr("Ready."));
 
   // Initial setting
   syntax=nullptr;
+
+  // Empty window is "clean"
+  undolist.mark();
 
   // Recent files
   mrufiles.setTarget(this);
@@ -448,6 +454,9 @@ TextWindow::TextWindow(Adie* a):FXMainWindow(a,"Adie",nullptr,nullptr,DECOR_ALL,
   filenameset=false;
   filetime=0;
 
+  // Initialize bookmarks
+  clearBookmarks();
+
   // Update insert point
   insertpoint=0;
 
@@ -458,15 +467,26 @@ TextWindow::TextWindow(Adie* a):FXMainWindow(a,"Adie",nullptr,nullptr,DECOR_ALL,
   shellCommand=nullptr;
   initialwidth=640;
   initialheight=480;
+  initialsize=true;
   isearchReplace=false;
   isearchIndex=-1;
   isearchpos=-1;
   searchflags=SEARCH_FORWARD;
   searching=false;
   showsearchbar=false;
+  modeline=false;
+  autoindent=false;
+  wrapcols=0;
+  wrapping=false;
+  fixedwrap=false;
+  tabcols=8;
+  hardtabs=false;
+  barcols=0;
+  cursormoved=0;
+  undoMaxSize=2000000;
+  undoKeepSize=1000000;
   mergeundos=true;
   showlogger=false;
-  initialsize=true;
   colorize=false;
   stripcr=true;
   stripsp=false;
@@ -475,8 +495,6 @@ TextWindow::TextWindow(Adie* a):FXMainWindow(a,"Adie",nullptr,nullptr,DECOR_ALL,
   saveviews=false;
   savemarks=false;
   warnchanged=false;
-  modeline=false;
-  undolist.mark();
   }
 
 
@@ -710,7 +728,7 @@ void TextWindow::createMenubar(){
 
   // Help Menu entries
   new FXMenuCommand(helpmenu,tr("&Help...\t\tDisplay help information."),getApp()->helpicon,this,ID_HELP,0);
-#if 1 //defined(DEBUG)
+#if defined(DEBUG)
   new FXMenuCommand(helpmenu,tr("&Dump Widgets...\t\tDump widget tree."),nullptr,getApp(),Adie::ID_DUMP);
   new FXMenuCommand(helpmenu,tr("&Dump Maps...\t\tDump message maps."),nullptr,getApp(),Adie::ID_MAPS);
   new FXMenuCommand(helpmenu,tr("&Dump Undo...\t\tDump message maps."),nullptr,&undolist,FXUndoList::ID_DUMP_STATS);
@@ -899,6 +917,7 @@ void TextWindow::create(){
   helpmenu->create();
   if(!urilistType){urilistType=getApp()->registerDragType(urilistTypeName);}
   getApp()->addTimeout(this,ID_CLOCKTIME,CLOCKTIMER);
+  getApp()->addTimeout(this,ID_CHECKCHANGE,CHECKTIMER);
   editor->setFocus();
   }
 
@@ -1045,6 +1064,14 @@ FXbool TextWindow::loadBuffer(const FXString& file,FXString& buffer,FXuint bits)
     if(size<=MAXFILESIZE){
       if(buffer.length(size)){
         if(textfile.readBlock(buffer.text(),buffer.length())==buffer.length()){
+          if(bits&CRLF){
+            dosToUnix(buffer);
+            }
+          if(bits&LINE){
+            if(buffer.tail()!='\n'){
+              buffer.append('\n');
+              }
+            }
           if(bits&TRIM){
             FXint i=0,j=0,k=0,c;
             while(j<buffer.length()){
@@ -1060,14 +1087,6 @@ FXbool TextWindow::loadBuffer(const FXString& file,FXString& buffer,FXuint bits)
               j++;
               }
             buffer.trunc(i);
-            }
-          if(bits&LINE){
-            if(buffer.tail()!='\n'){
-              buffer.append('\n');
-              }
-            }
-          if(bits&CRLF){
-            dosToUnix(buffer);
             }
           return true;
           }
@@ -1439,6 +1458,10 @@ void TextWindow::readRegistry(){
   // Space for line numbers
   barcols=getApp()->reg().readIntEntry("SETTINGS","barcols",0);
 
+  // Undo buffer sizes
+  undoMaxSize=getApp()->reg().readUIntEntry("SETTINGS","undomaxsize",5000000);
+  undoKeepSize=getApp()->reg().readUIntEntry("SETTINGS","undokeepsize",1000000);
+
   // Various flags
   mergeundos=getApp()->reg().readBoolEntry("SETTINGS","mergeundos",true);
   alternatehistory=getApp()->reg().readBoolEntry("SETTINGS","alternatehistory",true);
@@ -1530,7 +1553,6 @@ void TextWindow::readRegistry(){
 
   // Undo alternate history
   undolist.setAlternateHistory(alternatehistory);
-
 
   // Search history
   loadSearchHistory();
@@ -1643,6 +1665,10 @@ void TextWindow::writeRegistry(){
   // Bar columns
   getApp()->reg().writeIntEntry("SETTINGS","barcols",editor->getBarColumns());
 
+  // Undo buffer sizes
+  getApp()->reg().writeUIntEntry("SETTINGS","undomaxsize",undoMaxSize);
+  getApp()->reg().writeUIntEntry("SETTINGS","undokeepsize",undoKeepSize);
+
   // Strip returns
   getApp()->reg().writeBoolEntry("SETTINGS","mergeundos",mergeundos);
   getApp()->reg().writeBoolEntry("SETTINGS","alternatehistory",alternatehistory);
@@ -1706,6 +1732,7 @@ void TextWindow::detach(){
 TextWindow::~TextWindow(){
   getApp()->removeWindow(this);
   getApp()->removeTimeout(this,ID_CLOCKTIME);
+  getApp()->removeTimeout(this,ID_CHECKCHANGE);
   delete shellCommand;
   delete font;
   delete dragshell1;
@@ -1734,7 +1761,7 @@ long TextWindow::onCmdAbout(FXObject*,FXSelector,void*){
   FXVerticalFrame* side=new FXVerticalFrame(&about,LAYOUT_SIDE_RIGHT|LAYOUT_FILL_X|LAYOUT_FILL_Y,0,0,0,0, 10,10,10,10, 0,0);
   new FXLabel(side,"A . d . i . e",nullptr,JUSTIFY_LEFT|ICON_BEFORE_TEXT|LAYOUT_FILL_X);
   new FXHorizontalSeparator(side,SEPARATOR_LINE|LAYOUT_FILL_X);
-  new FXLabel(side,FXString::value(tr("\nThe Adie ADvanced Interactive Editor, version %d.%d.%d (%s).\n\nAdie is a fast and convenient programming text editor and file\nviewer with an integrated directory browser.\nUsing The FOX Toolkit (www.fox-toolkit.org), version %d.%d.%d.\nCopyright (C) 2000,2023 Jeroen van der Zijp (jeroen@fox-toolkit.net).\n "),VERSION_MAJOR,VERSION_MINOR,VERSION_PATCH,__DATE__,FOX_MAJOR,FOX_MINOR,FOX_LEVEL),nullptr,JUSTIFY_LEFT|LAYOUT_FILL_X|LAYOUT_FILL_Y);
+  new FXLabel(side,FXString::value(tr("\nThe Adie ADvanced Interactive Editor, version %d.%d.%d (%s %s).\n\nAdie is a fast and convenient programming text editor and file\nviewer with an integrated directory browser.\nUsing The FOX Toolkit (www.fox-toolkit.org), version %d.%d.%d.\nCopyright (C) 2000,2024 Jeroen van der Zijp (jeroen@fox-toolkit.net).\n "),VERSION_MAJOR,VERSION_MINOR,VERSION_PATCH,__DATE__,__TIME__,FOX_MAJOR,FOX_MINOR,FOX_LEVEL),nullptr,JUSTIFY_LEFT|LAYOUT_FILL_X|LAYOUT_FILL_Y);
   FXButton *button=new FXButton(side,tr("&OK"),nullptr,&about,FXDialogBox::ID_ACCEPT,BUTTON_INITIAL|BUTTON_DEFAULT|FRAME_RAISED|FRAME_THICK|LAYOUT_RIGHT,0,0,0,0,32,32,2,2);
   button->setFocus();
   about.execute(PLACEMENT_OWNER);
@@ -1796,91 +1823,42 @@ long TextWindow::onUpdHasSelection(FXObject* sender,FXSelector,void*){
 
 /*******************************************************************************/
 
-// Check for external changes
-// Check to see if the disk file was changed or removed. If it was changed,
-// we may not want to lose the changes on the disk, so optionally reload them.
-// If it was removed, the text buffer may contain the only copy of the file
-// and we will want prompt the user to save it before it is lost.
-FXbool TextWindow::checkChanges(){
-  if(isFilenameSet() && 1<getFiletime()){
-    FXStat info;
-
-    // Check file on disk
-    if(FXStat::statFile(getFilename(),info)){
-
-      // Not changed, all is OK.
-      if(getFiletime()==info.modified()) return true;
-
-      // Don't ask again unless it changes again
-      setFiletime(info.modified());
-
-      // File was changed; we can cancel, reload file from disk,
-      // or proceed as is
-      if(FXMessageBox::warning(this,MBOX_YES_NO,tr("File Was Changed On Disk"),tr("Reload file: %s back from disk?"),getFilename().text())==MBOX_CLICKED_YES){
-        if(!reloadDoc()) return false;
-        }
-      }
-
-    // File is M.I.A.
-    else{
-
-      // Set the file time to 1, preventing repeated warnings.
-      // When calling saveChanges, we will get one more chance
-      // to save it, however.
-      setFiletime(1);
-
-      // File was deleted; we can cancel, save the buffer back to disk,
-      if(FXMessageBox::warning(this,MBOX_YES_NO,tr("File Was Removed From Disk"),tr("Save file: %s back to disk?"),getFilename().text())==MBOX_CLICKED_YES){
-        if(!saveDoc()) return false;
-        }
-      }
-    }
-  return true;
-  }
-
-
-// Check if file on disk changed by another program.
-// If we have a filename, and its not a new file (filetime!=0),
-// check the filetime recorded on disk; if different, then the
-// file may have been changed by another program.  If the file
-// no longer exists on disk, then it may have been removed and
-// we may have the last surviving copy of it in the buffer.
-FXint TextWindow::changedExternally(){
-  if(isFilenameSet() && 0<getFiletime()){
-    FXStat info;
-    if(FXStat::statFile(getFilename(),info)){
-      return (getFiletime()!=info.modified());
-      }
-    return 2;
-    }
-  return 0;
-  }
-
-
-// Before switching to another file or closing the window, check to see
-// if the file was edited, or if the copy on disk was changed or removed.
-// We then prompt the user to save the data (back) to disk.
-// If we decide to save, and the filename was set, proceed to save to that
-// filename.  Otherwise, prompt the user for the path and filename to save
-// the file to.
-// If we don't save, but still proceed to switch to another file or close
-// the window, try to save the bookmarks and current view on the file, if
-// we know the filename to use.
+// Before switching to another file or closing the window, check to
+// see if the text buffer may need to be saved:
+//
+//  - The file on the disk was removed, making the text buffer the
+//    last remaining copy of the file.  If we haven't asked before,
+//    ask the user to save it back to disk.
+//
+//  - The text buffer was modified. Ask the user if he wants to save
+//    the text buffer to disk.
+//
+// If filename was already set, save the bookmarks and view on the
+// file even if the buffer was not modified, as they may have changed.
 FXbool TextWindow::saveChanges(){
-  if(isModified() || changedExternally()){
-    FXuint answer=FXMessageBox::warning(this,MBOX_YES_NO_CANCEL,tr("File Has Unsaved Changes"),tr("Save file: %s to disk?"),getFilename().text());
-    if(answer==MBOX_CLICKED_CANCEL) return false;
-    if(answer==MBOX_CLICKED_YES){
-      if(isFilenameSet()){
-        return saveDoc();
-        }
-      return saveDocAs();
-      }
-    return true;
-    }
+  FXuint answer;
   if(isFilenameSet()){
+    if(1<getFiletime() && !FXStat::exists(getFilename())){
+      answer=FXMessageBox::warning(this,MBOX_YES_NO_CANCEL,tr("File Was Removed From Disk"),tr("Save file: %s back to disk?"),getFilename().text());
+      if(answer==MBOX_CLICKED_CANCEL) return false;
+      if(answer==MBOX_CLICKED_NO) return true;
+      return saveDoc();
+      }
+    if(isModified()){
+      answer=FXMessageBox::warning(this,MBOX_YES_NO_CANCEL,tr("File Has Unsaved Changes"),tr("Save file: %s to disk?"),getFilename().text());
+      if(answer==MBOX_CLICKED_CANCEL) return false;
+      if(answer==MBOX_CLICKED_NO) return true;
+      return saveDoc();
+      }
     writeBookmarks(getFilename());
     writeView(getFilename());
+    return true;
+    }
+  if(isModified()){
+    answer=FXMessageBox::warning(this,MBOX_YES_NO_CANCEL,tr("File Has Unsaved Changes"),tr("Save file: %s to disk?"),getFilename().text());
+    if(answer==MBOX_CLICKED_CANCEL) return false;
+    if(answer==MBOX_CLICKED_NO) return true;
+    return saveDocAs();
     }
   return true;
   }
@@ -1944,11 +1922,12 @@ FXbool TextWindow::createDoc(const FXString& file){
   }
 
 
-// Save document
-// If file was modified externally, prompt before overwriting
+// Save document back to disk
+// Avoid overwriting file if it was changed by another program
 FXbool TextWindow::saveDoc(){
   if(isFilenameSet()){
-    if(changedExternally()==1){
+    FXTime disktime=FXStat::modified(getFilename());
+    if(disktime!=0 && disktime!=getFiletime()){
       FXuint answer=FXMessageBox::warning(this,MBOX_YES_NO_CANCEL,tr("File Was Changed On Disk"),tr("Overwrite file: %s?"),getFilename().text());
       if(answer==MBOX_CLICKED_CANCEL) return false;
       if(answer==MBOX_CLICKED_NO) return true;
@@ -1965,8 +1944,8 @@ FXbool TextWindow::saveDoc(){
   }
 
 
-// Save document under another name
-// If file exist, prompt before overwriting
+// Save document under another filename
+// Avoid overwriting filename if it exists already
 FXbool TextWindow::saveDocAs(){
   FXFileDialog savedialog(this,tr("Save File As"));
   FXString file=getFilename();
@@ -2227,7 +2206,6 @@ FXbool TextWindow::openSelDoc(){
     }
   return false;
   }
-
 
 
 // Insert text from file
@@ -2526,6 +2504,16 @@ long TextWindow::onUpdToggleHidden(FXObject* sender,FXSelector,void*){
   return 1;
   }
 
+
+// Update clock on status line
+long TextWindow::onClock(FXObject*,FXSelector,void*){
+  FXTime current=FXThread::time();
+  clock->setText(FXSystem::localTime(current,tr("%H:%M:%S")));
+  clock->setTipText(FXSystem::localTime(current,tr("%A %B %d %Y")));
+  getApp()->addTimeout(this,ID_CLOCKTIME,CLOCKTIMER);
+  return 0;
+  }
+
 /*******************************************************************************/
 
 // Save settings
@@ -2694,20 +2682,6 @@ long TextWindow::onUpdStripReturns(FXObject* sender,FXSelector,void*){
   }
 
 
-// Enable warning if file changed externally
-long TextWindow::onCmdWarnChanged(FXObject*,FXSelector,void* ptr){
-  warnchanged=!!ptr;
-  return 1;
-  }
-
-
-// Update check button for warning
-long TextWindow::onUpdWarnChanged(FXObject* sender,FXSelector,void*){
-  sender->handle(this,warnchanged ? FXSEL(SEL_COMMAND,ID_CHECK) : FXSEL(SEL_COMMAND,ID_UNCHECK),nullptr);
-  return 1;
-  }
-
-
 // Set initial size flag
 long TextWindow::onCmdUseInitialSize(FXObject*,FXSelector,void* ptr){
   initialsize=!!ptr;
@@ -2869,6 +2843,32 @@ long TextWindow::onCmdDelimiters(FXObject* sender,FXSelector,void*){
 // Update word delimiters
 long TextWindow::onUpdDelimiters(FXObject* sender,FXSelector,void*){
   sender->handle(this,FXSEL(SEL_COMMAND,ID_SETSTRINGVALUE),(void*)&delimiters);
+  return 1;
+  }
+
+
+// Change maximum undo buffer size
+long TextWindow::onCmdUndoMaxSize(FXObject* sender,FXSelector,void*){
+  sender->handle(this,FXSEL(SEL_COMMAND,ID_GETINTVALUE),(void*)&undoMaxSize);
+  return 1;
+  }
+
+// Update maximum undo buffer size
+long TextWindow::onUpdUndoMaxSize(FXObject* sender,FXSelector,void*){
+  sender->handle(this,FXSEL(SEL_COMMAND,ID_SETINTVALUE),(void*)&undoMaxSize);
+  return 1;
+  }
+
+
+// Change undo buffer size to keep around
+long TextWindow::onCmdUndoKeepSize(FXObject* sender,FXSelector,void*){
+  sender->handle(this,FXSEL(SEL_COMMAND,ID_GETINTVALUE),(void*)&undoKeepSize);
+  return 1;
+  }
+
+// Update undo buffer size to keep around
+long TextWindow::onUpdUndoKeepSize(FXObject* sender,FXSelector,void*){
+  sender->handle(this,FXSEL(SEL_COMMAND,ID_SETINTVALUE),(void*)&undoKeepSize);
   return 1;
   }
 
@@ -3290,6 +3290,8 @@ FXString TextWindow::makeCommandline(const FXString& cmd) const {
   result.append(&cmd[s],q-s);
   return result;
   }
+
+
 
 // FIXME editable flag should be off while running...
 
@@ -4406,11 +4408,13 @@ long TextWindow::onTextInserted(FXObject*,FXSelector,void* ptr){
 
   FXTRACE((140,"Inserted: pos=%d ndel=%d nins=%d\n",change->pos,change->ndel,change->nins));
 
-  // Log undo record
+  // Log undo record, optionally merging with previously recorded
+  // undo record.  Do not merge undos if merging is off, or if cursor
+  // has moved since previous text change.
   if(!undolist.busy()){
-    undolist.add(new FXTextInsert(editor,change->pos,change->nins,change->ins),false,mergeundos);
-    if(undolist.size()>MAXUNDOSIZE) undolist.trimSize(KEEPUNDOSIZE);
-//undolist.trimCount(100);
+    FXbool merge=(cursormoved<=1) && mergeundos;
+    undolist.add(new FXTextInsert(editor,change->pos,change->nins,change->ins),false,merge);
+    if(undolist.size()>undoMaxSize) undolist.trimSize(undoKeepSize);
     }
 
   // Update bookmark locations
@@ -4421,6 +4425,9 @@ long TextWindow::onTextInserted(FXObject*,FXSelector,void* ptr){
 
   // Update insert point
   insertpoint=change->pos+change->nins;
+
+  // Reset cursor move counter
+  cursormoved=0;
   return 1;
   }
 
@@ -4431,11 +4438,13 @@ long TextWindow::onTextReplaced(FXObject*,FXSelector,void* ptr){
 
   FXTRACE((140,"Replaced: pos=%d ndel=%d nins=%d\n",change->pos,change->ndel,change->nins));
 
-  // Log undo record
+  // Log undo record, optionally merging with previously recorded
+  // undo record.  Do not merge undos if merging is off, or if cursor
+  // has moved since previous text change.
   if(!undolist.busy()){
-    undolist.add(new FXTextReplace(editor,change->pos,change->ndel,change->nins,change->del,change->ins),false,mergeundos);
-    if(undolist.size()>MAXUNDOSIZE) undolist.trimSize(KEEPUNDOSIZE);
-//undolist.trimCount(100);
+    FXbool merge=(cursormoved<=1) && mergeundos;
+    undolist.add(new FXTextReplace(editor,change->pos,change->ndel,change->nins,change->del,change->ins),false,merge);
+    if(undolist.size()>undoMaxSize) undolist.trimSize(undoKeepSize);
     }
 
   // Update bookmark locations
@@ -4447,6 +4456,8 @@ long TextWindow::onTextReplaced(FXObject*,FXSelector,void* ptr){
   // Update insert point
   insertpoint=change->pos+change->nins;
 
+  // Reset cursor move counter
+  cursormoved=0;
   return 1;
   }
 
@@ -4457,11 +4468,13 @@ long TextWindow::onTextDeleted(FXObject*,FXSelector,void* ptr){
 
   FXTRACE((140,"Deleted: pos=%d ndel=%d nins=%d\n",change->pos,change->ndel,change->nins));
 
-  // Log undo record
+  // Log undo record, optionally merging with previously recorded
+  // undo record.  Do not merge undos if merging is off, or if cursor
+  // has moved since previous text change.
   if(!undolist.busy()){
-    undolist.add(new FXTextDelete(editor,change->pos,change->ndel,change->del),false,mergeundos);
-    if(undolist.size()>MAXUNDOSIZE) undolist.trimSize(KEEPUNDOSIZE);
-//undolist.trimCount(100);
+    FXbool merge=(cursormoved<=1) && mergeundos;
+    undolist.add(new FXTextDelete(editor,change->pos,change->ndel,change->del),false,merge);
+    if(undolist.size()>undoMaxSize) undolist.trimSize(undoKeepSize);
     }
 
   // Update bookmark locations
@@ -4473,9 +4486,20 @@ long TextWindow::onTextDeleted(FXObject*,FXSelector,void* ptr){
   // Update insert point
   insertpoint=change->pos+change->nins;
 
+  // Reset cursor move counter
+  cursormoved=0;
   return 1;
   }
 
+/*******************************************************************************/
+
+// Cursor moved
+long TextWindow::onTextChanged(FXObject*,FXSelector,void*){
+  cursormoved++;
+  return 1;
+  }
+
+/*******************************************************************************/
 
 // Released right button in text
 long TextWindow::onTextRightMouse(FXObject*,FXSelector,void* ptr){
@@ -4552,26 +4576,65 @@ long TextWindow::onLoggerRightMouse(FXObject*,FXSelector,void* ptr){
 
 /*******************************************************************************/
 
-
-// Check file when focus moves in
-long TextWindow::onFocusIn(FXObject* sender,FXSelector sel,void* ptr){
-  FXMainWindow::onFocusIn(sender,sel,ptr);
-  if(warnchanged){
-    checkChanges();
-    }
+// Enable warning if file changed externally
+long TextWindow::onCmdWarnChanged(FXObject*,FXSelector,void* ptr){
+  warnchanged=!!ptr;
   return 1;
   }
 
 
-// Update clock
-long TextWindow::onClock(FXObject*,FXSelector,void*){
-  FXTime current=FXThread::time();
-  clock->setText(FXSystem::localTime(current,tr("%H:%M:%S")));
-  clock->setTipText(FXSystem::localTime(current,tr("%A %B %d %Y")));
-  getApp()->addTimeout(this,ID_CLOCKTIME,CLOCKTIMER);
-  return 0;
+// Update check button for warning
+long TextWindow::onUpdWarnChanged(FXObject* sender,FXSelector,void*){
+  sender->handle(this,warnchanged ? FXSEL(SEL_COMMAND,ID_CHECK) : FXSEL(SEL_COMMAND,ID_UNCHECK),nullptr);
+  return 1;
   }
 
+
+// If warnings are ON, and this window is the currently active on,
+// i.e. has the keyboard focus, check to see if the file being edited
+// was changed on disk or has been removed.
+// If its a new file, no disk version of it exists yet, which is indicated
+// by filetime=0. If the filetime=1, then a disk version existed in the past
+// but no longer does; thus, we only check if the filetime>1.
+long TextWindow::onCheckChange(FXObject*,FXSelector,void*){
+  if(warnchanged){
+    if(getApp()->getActiveWindow()==this){
+      if(isFilenameSet() && 1<getFiletime()){
+        FXStat info;
+
+        // Check file on disk still exists, or has changed
+        if(FXStat::statFile(getFilename(),info)){
+          if(getFiletime()!=info.modified()){
+
+            // Don't warn again unless there's another change
+            setFiletime(info.modified());
+
+            // Warn user file was changed on the disk
+            FXuint answer=FXMessageBox::warning(this,MBOX_YES_NO,tr("File Was Changed On Disk"),tr("Reload file: %s back from disk?"),getFilename().text());
+            if(answer==MBOX_CLICKED_YES){
+              reloadDoc();
+              }
+            }
+          }
+
+        // File was removed
+        else{
+
+          // Don't warn again; no need to check again
+          setFiletime(1);
+
+          // Warn user file was removed from disk
+          FXuint answer=FXMessageBox::warning(this,MBOX_YES_NO,tr("File Was Removed From Disk"),tr("Save file: %s back to disk?"),getFilename().text());
+          if(answer==MBOX_CLICKED_YES){
+            saveDoc();
+            }
+          }
+        }
+      }
+    }
+  getApp()->addTimeout(this,ID_CHECKCHANGE,CHECKTIMER);
+  return 1;
+  }
 
 /*******************************************************************************/
 
@@ -4845,13 +4908,15 @@ long TextWindow::onUpdSaveViews(FXObject* sender,FXSelector,void*){
 
 // Read view of the file
 void TextWindow::readView(const FXString& file){
-  editor->setTopLine(getApp()->reg().readIntEntry("VIEW",FXPath::name(file),0));
+  if(saveviews){
+    editor->setTopLine(getApp()->reg().readIntEntry("VIEW",FXPath::name(file),0));
+    }
   }
 
 
 // Write current view of the file
 void TextWindow::writeView(const FXString& file){
-  if(saveviews && editor->getTopLine()){
+  if(saveviews){
     getApp()->reg().writeIntEntry("VIEW",FXPath::name(file),editor->getTopLine());
     }
   }
@@ -4902,6 +4967,11 @@ void TextWindow::parseModeline(){
     if(modes.getWrapMode()==1) modebits|=(TEXT_WORDWRAP|TEXT_FIXEDWRAP);
     if(modes.getTabMode()==0) modebits&=~TEXT_NO_TABS;
     if(modes.getTabMode()==1) modebits|=TEXT_NO_TABS;
+    if(modes.getStripSpaces()==0) setStripSpaces(false);
+    if(modes.getStripSpaces()==1) setStripSpaces(true);
+
+    if(syntax->getStripSpaces()==0) setStripSpaces(false);
+    if(syntax->getStripSpaces()==1) setStripSpaces(true);
 
     // Tab and wrap widths
     if(modes.getTabWidth()>0) tabwidth=modes.getTabWidth();
@@ -5189,6 +5259,10 @@ void TextWindow::setSyntax(Syntax* syn){
     // Tab and wrap widths
     if(syntax->getTabWidth()>0) tabwidth=syntax->getTabWidth();
     if(syntax->getWrapWidth()>0) wrapwidth=syntax->getWrapWidth();
+
+    // Strip trailing spaces
+    if(syntax->getStripSpaces()==0) setStripSpaces(false);
+    if(syntax->getStripSpaces()==1) setStripSpaces(true);
 
     // Put back (modified) parameters
     editor->setTextStyle(modebits);

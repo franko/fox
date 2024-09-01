@@ -3,7 +3,7 @@
 *                      M a p p e d   F i l e   C l a s s                        *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 2023 by Jeroen van der Zijp.   All Rights Reserved.             *
+* Copyright (C) 2023,2024 by Jeroen van der Zijp.   All Rights Reserved.        *
 *********************************************************************************
 * This library is free software; you can redistribute it and/or modify          *
 * it under the terms of the GNU Lesser General Public License as published by   *
@@ -57,7 +57,7 @@ public:
   FXptr data() const { return mempointer; }
 
   /// Obtain length of the map
-  FXival length() const { return memlength; }
+  FXival length() const { return (FXival)memlength; }
 
   /// Obtain offset of the map
   FXlong offset() const { return memoffset; }

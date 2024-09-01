@@ -3,7 +3,7 @@
 *                   A c c e l e r a t o r   T a b l e   C l a s s               *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 1998,2022 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 1998,2024 by Jeroen van der Zijp.   All Rights Reserved.        *
 *********************************************************************************
 * This library is free software; you can redistribute it and/or modify          *
 * it under the terms of the GNU Lesser General Public License as published by   *
@@ -26,16 +26,15 @@
 #include "fxmath.h"
 #include "fxascii.h"
 #include "fxunicode.h"
-#include "FXArray.h"
-#include "FXHash.h"
 #include "FXMutex.h"
-#include "FXStream.h"
-#include "FXString.h"
-#include "FXElement.h"
 #include "FXSize.h"
 #include "FXPoint.h"
 #include "FXRectangle.h"
-#include "FXObject.h"
+#include "FXElement.h"
+#include "FXHash.h"
+#include "FXMetaClass.h"
+#include "FXString.h"
+#include "FXStream.h"
 #include "FXStringDictionary.h"
 #include "FXSettings.h"
 #include "FXRegistry.h"

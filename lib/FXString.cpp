@@ -3,7 +3,7 @@
 *                           S t r i n g   O b j e c t                           *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 1997,2022 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 1997,2024 by Jeroen van der Zijp.   All Rights Reserved.        *
 *********************************************************************************
 * This library is free software; you can redistribute it and/or modify          *
 * it under the terms of the GNU Lesser General Public License as published by   *
@@ -1785,19 +1785,24 @@ FXString& FXString::fromULong(FXulong number,FXint base){
 
 
 // Formatting for reals
-static const char conversionformat[8][8]={"%.*lF","%.*lE","%.*lG","%.*lA","%'.*lF","%'.*lE","%'.*lG","%.*lA"};
+static const char conversionformat[16][8]={
+    "%.*lF",  "%.*lE",  "%.*lG", "%.*lA",
+   "%'.*lF", "%'.*lE", "%'.*lG", "%.*lA",
+   "%#.*lF", "%#.*lE", "%#.*lG","%#.*lA",
+  "%#'.*lF","%#'.*lE","%#'.*lG","%#.*lA"
+  };
 
 
 // Convert from float
 FXString& FXString::fromFloat(FXfloat number,FXint prec,FXint fmt){
-  format(conversionformat[fmt&7],prec,(FXdouble)number);
+  format(conversionformat[fmt&15],prec,(FXdouble)number);
   return *this;
   }
 
 
 // Convert from double
 FXString& FXString::fromDouble(FXdouble number,FXint prec,FXint fmt){
-  format(conversionformat[fmt&7],prec,number);
+  format(conversionformat[fmt&15],prec,number);
   return *this;
   }
 
@@ -2668,10 +2673,10 @@ hex2:   result[q++]='\\';                       // Escape as \xHH
           }
         result[q++]='\\';                       // Escape as \uHHHH
         result[q++]='u';
-        result[q++]=Ascii::valueDigit((v>>12)&15);
-        result[q++]=Ascii::valueDigit((v>>8)&15);
-        result[q++]=Ascii::valueDigit((v>>4)&15);
-        result[q++]=Ascii::valueDigit(v&15);
+        result[q++]=Ascii::valueDigit((w>>12)&15);
+        result[q++]=Ascii::valueDigit((w>>8)&15);
+        result[q++]=Ascii::valueDigit((w>>4)&15);
+        result[q++]=Ascii::valueDigit(w&15);
         p++;
         continue;
       default:

@@ -1,7 +1,7 @@
 # Version of the code
 m4_define([fox_major], [1])
 m4_define([fox_minor], [7])
-m4_define([fox_level], [84])
+m4_define([fox_level], [85])
 m4_define([fox_version],[fox_major.fox_minor.fox_level])
 
 # Init
@@ -123,6 +123,7 @@ AC_CHECK_FUNCS(inotify_init1)
 # Add copious amounts of debugging with gcc
 if test "${GXX}" = "yes" ; then
   CXXFLAGS="${CXXFLAGS} -Wall -Wextra -Woverloaded-virtual -Wshadow -Wstrict-overflow -Wstrict-aliasing -Wdouble-promotion -Wno-implicit-fallthrough"
+#  CXXFLAGS="${CXXFLAGS} -Wall -Wextra -Woverloaded-virtual -Wshadow -Wstrict-overflow -Wstrict-aliasing -Wdouble-promotion -Wno-implicit-fallthrough -Wconversion"
 #  CXXFLAGS="${CXXFLAGS} -std=c++11"
 #  LDFLAGS="-rdynamic ${LDFLAGS}"
 fi
@@ -141,7 +142,7 @@ AC_MSG_CHECKING(for release build)
 AC_ARG_ENABLE(release,[  --enable-release        compile for release])
 AC_MSG_RESULT([$enable_release])
 if test "x$enable_release" = "xyes" ; then
-  CXXFLAGS="${CXXFLAGS} -O3 -DNDEBUG"
+  CXXFLAGS="${CXXFLAGS} -O2 -DNDEBUG"
   if test "${GXX}" = "yes" ; then
     CXXFLAGS="${CXXFLAGS} -ffast-math -fstrict-overflow -fstrict-aliasing -finline-functions -fomit-frame-pointer -fcf-protection=none -fno-stack-protector"
     LDFLAGS="-s ${LDFLAGS}"
@@ -170,6 +171,16 @@ CXXFLAGS="${CXXFLAGS} -p"
 elif test "x$with_profiling" = "xgprof" ; then
 CXXFLAGS="${CXXFLAGS} -pg"
 fi
+
+
+# Performance logging
+AC_MSG_CHECKING(for performance logging)
+AC_ARG_ENABLE(performance_logging,[  --enable-performance-logging        choices are yes or no])
+AC_MSG_RESULT([$enable_performance_logging])
+if test "x$enable_performance_logging" = "xyes" ; then
+CXXFLAGS="${CXXFLAGS} -DPERFORMANCE_LOGGING=1"
+fi
+
 
 # Check for common headers
 AC_CHECK_HEADERS([sys/select.h])
@@ -204,14 +215,6 @@ AC_ARG_ENABLE(jp2,[  --disable-jp2          compile without JPEG 2000 image supp
 if test "x$enable_jp2" = "xyes"; then
 AC_CHECK_HEADER(openjpeg.h,CXXFLAGS="${CXXFLAGS} -DHAVE_JP2_H=1")
 AC_CHECK_LIB(openjpeg,opj_create_decompress,LIBS="${LIBS} ${LIBJP2:=-lopenjpeg}")
-fi
-
-
-# Check for PNG Image support; note zlib is needed for PNG
-AC_ARG_ENABLE(png,[  --disable-png           compile without PNG image support])
-if test "x$enable_png" != "xno"; then
-AC_CHECK_HEADERS(png.h,CXXFLAGS="${CXXFLAGS} -DHAVE_PNG_H=1")
-AC_CHECK_LIB(png,png_create_read_struct,LIBS="${LIBS} ${LIBPNG:=-lpng}")
 fi
 
 

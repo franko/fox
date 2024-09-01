@@ -3,7 +3,7 @@
 *                     A p p l i c a t i o n   O b j e c t                       *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 1997,2023 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 1997,2024 by Jeroen van der Zijp.   All Rights Reserved.        *
 *********************************************************************************
 * This library is free software; you can redistribute it and/or modify          *
 * it under the terms of the GNU Lesser General Public License as published by   *
@@ -25,20 +25,19 @@
 #include "fxchar.h"
 #include "fxkeys.h"
 #include "fxascii.h"
-#include "FXArray.h"
-#include "FXHash.h"
 #include "FXMutex.h"
-#include "FXAutoThreadStorageKey.h"
 #include "FXRunnable.h"
+#include "FXAutoThreadStorageKey.h"
 #include "FXThread.h"
-#include "FXStream.h"
-#include "FXString.h"
-#include "FXColors.h"
 #include "FXSize.h"
 #include "FXPoint.h"
 #include "FXRectangle.h"
+#include "FXColors.h"
 #include "FXElement.h"
-#include "FXObject.h"
+#include "FXMetaClass.h"
+#include "FXHash.h"
+#include "FXStream.h"
+#include "FXString.h"
 #include "FXStringDictionary.h"
 #include "FXSettings.h"
 #include "FXRegistry.h"
@@ -337,7 +336,7 @@ FXApp* FXApp::app=nullptr;
 
 
 // Copyright information
-const FXuchar FXApp::copyright[]="Copyright (C) 1997,2023 Jeroen van der Zijp. All Rights Reserved.";
+const FXuchar FXApp::copyright[]="Copyright (C) 1997,2024 Jeroen van der Zijp. All Rights Reserved.";
 
 
 // Conversion
@@ -633,6 +632,7 @@ FXApp::FXApp(const FXString& name,const FXString& vendor):registry(name,vendor){
   wmNetBelowOthers=0;
   wmNetAboveOthers=0;
   wmNetNeedAttention=0;
+  wmNetActiveWindow=0;
   wmNetMoveResize=0;
   wmNetRestack=0;
   wmNetPing=0;
@@ -824,23 +824,22 @@ FXWindow *FXApp::getFocusWindow() const {
   return result;
   }
 
-
 #if 0
+// Get foreground window
 FXWindow* FXApp::getForegroundWindow() const {
-  FXWindow *win=nullptr;
 #ifdef WIN32
+  return findWindowWithId((FXID)GetForegroundWindow());
+#else
   unsigned long n,i; Atom type; unsigned char *prop; int format;
+  FXWindow *win=nullptr;
   if(Success==XGetWindowProperty((Display*)display,XDefaultRootWindow((Display*)display),wmNetActiveWindow,0,1,false,XA_WINDOW,&type,&format,&n,&i,&prop)){
     if(type==XA_WINDOW && format==32){ win=findWindowWithId(*((Window*)prop)); }
     XFree(prop);
     }
-#else
-  FXWindow *win=findWindowWithId((FXID)GetForegroundWindow());
-#endif
   return win;
+#endif
   }
 #endif
-
 
 // Find window from id
 FXWindow* FXApp::findWindowWithId(FXID xid) const {
@@ -1660,7 +1659,7 @@ FXbool FXApp::openDisplay(const FXchar* dpy){
     wmNetBelowOthers=XInternAtom((Display*)display,"_NET_WM_STATE_BELOW",0);
     wmNetAboveOthers=XInternAtom((Display*)display,"_NET_WM_STATE_ABOVE",0);
     wmNetNeedAttention=XInternAtom((Display*)display,"_NET_WM_STATE_DEMANDS_ATTENTION",0);
-    //wmNetActiveWindow=XInternAtom((Display*)display,"_NET_ACTIVE_WINDOW",0);
+    wmNetActiveWindow=XInternAtom((Display*)display,"_NET_ACTIVE_WINDOW",0);
 
     wmNetMoveResize=XInternAtom((Display*)display,"_NET_WM_MOVERESIZE",0);
     wmNetRestack=XInternAtom((Display*)display,"_NET_RESTACK_WINDOW",0);
@@ -1885,7 +1884,7 @@ a:t->data=ptr;
   t->target=tgt;
   t->message=sel;
   t->due=due;
-  for(tt=&timers; *tt && ((*tt)->due < t->due); tt=&(*tt)->next){}
+  for(tt=&timers; *tt!=nullptr && ((*tt)->due < t->due); tt=&(*tt)->next){}
   t->next=*tt;
   *tt=t;
   return result;
@@ -4732,7 +4731,7 @@ FXival CALLBACK FXApp::wndproc(FXID hwnd,FXuint iMsg,FXuval wParam,FXival lParam
 FXString translateKeyEvent(FXuint,FXuval wParam,FXival lParam){
   FXnchar buffer[20]; BYTE keystate[256]; int n;
   GetKeyboardState(keystate);
-  n=ToUnicodeEx(wParam,HIWORD(lParam)&(KF_EXTENDED|KF_UP|0xFF),keystate,buffer,20,0,GetKeyboardLayout(0));
+  n=ToUnicodeEx((FXuint)wParam,HIWORD(lParam)&(KF_EXTENDED|KF_UP|0xFF),keystate,buffer,20,0,GetKeyboardLayout(0));
   if(n<=0) n=0;
   return FXString(buffer,n);
   }

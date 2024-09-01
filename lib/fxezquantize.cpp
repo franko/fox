@@ -3,7 +3,7 @@
 *                   E Z   C o l o r   Q u a n t i z a t i o n                   *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 1999,2022 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 1999,2024 by Jeroen van der Zijp.   All Rights Reserved.        *
 *********************************************************************************
 * This library is free software; you can redistribute it and/or modify          *
 * it under the terms of the GNU Lesser General Public License as published by   *
@@ -22,15 +22,39 @@
 #include "fxver.h"
 #include "fxdefs.h"
 #include "fxmath.h"
+#include "fxendian.h"
+#include "FXElement.h"
 
 
 /*
   Notes:
 
-  - Use fxezquantize for a quick test to see if the image contains
-    less than 256 colors; for example loading then saving back out
-    an 8-bit GIF image.  This ensures that the original set of
-    colors is maintained.
+  - Build 8-bit colormapped image from full 24 (plus alpha) source image.
+
+  - Algorithm: for each pixel in source image, check hash table of colors to
+    see if this color has been encountered already.
+
+    If it is a new color, and there are still unused slots in the colormap,
+    assign the color a new index and add it to the hash table.
+
+    If color already has been assigned a colormap index, write this index
+    to the output image.
+
+  - Process will fail if the source image has too many colors to fit the
+    available colormap maximum (up to 256).
+
+  - If successful, the entire image can be losslessly represented as an
+    colormapped image, and the colormap and corresponding image will be
+    returned.
+
+  - Updated version assigned indexes to colors in one pass, as it hashes
+    colors into table.  However, if too many colors are seen as the image
+    is being processed, not all output pixels will have been assigned.
+
+  - FIXME this may be added as an option: pixels with 0 alpha, i.e. fully
+    transparant pixels, can be optionally mapped to a single colormap entry,
+    by squashing such pixels to one particular value (0 in the current
+    version).
 */
 
 
@@ -45,71 +69,71 @@ namespace FX {
 extern FXbool fxezquantize(FXuchar* dst,const FXColor* src,FXColor* colormap,FXint& actualcolors,FXint w,FXint h,FXint maxcolors);
 
 
+// Simple but quite fast "hash" function
+static inline FXuint HashColor(FXColor clr){
+  return clr*0x9E3779B1;
+  }
+
+
 // EZ quantization may be used if w*h<=maxcolors, or if the actual colors
 // used is less than maxcolors; using fxezquantize assures that no
 // loss of data occurs repeatedly loading and saving the same file!
 FXbool fxezquantize(FXuchar* dst,const FXColor* src,FXColor* colormap,FXint& actualcolors,FXint w,FXint h,FXint maxcolors){
-  FXint   npixels=w*h;
-  FXint   ncolors=0;
-  FXColor color;
-  FXint   i,p,x;
-  FXColor  colortable[337];             // Colors encountered in image
-  FXushort mapindex[337];               // Map index assigned to color
+  const FXColor ALPHA=FXRGBA(0,0,0,255);        // Mask alpha channel
+  if(maxcolors<=256){
+    FXColor colortable[512];                    // Colors encountered in image
+    FXshort indextable[512];                    // Map index assigned to color
+    FXuint  npixels=w*h;
+    FXuint  i,p,b,x;
+    FXint   ncolors=0;
+    FXColor color;
 
-  FXASSERT(maxcolors<=256);
+    // Clear map index
+    fillElms(indextable,-1,ARRAYNUMBER(indextable));
 
-  // Clear map index
-  memset(mapindex,0xff,sizeof(mapindex));
+    // Hash all colors from image
+    for(i=0; i<npixels; i++){
 
-  // Hash all colors from image
-  for(i=0; i<npixels; i++){
+      // Get pixel
+      color=src[i];
 
-    // Get pixel
-    color=src[i];
+#if 0
+      // Squash fully transparant colors to
+      // special alpha color value
+      if((color&ALPHA)==0) color=0;
+#endif
 
-    // Find position in table
-    p=color%337;
-    x=color%331+1;
-    while(mapindex[p]!=0xffff){         // Empty slot
-      if(colortable[p]==color) goto nxt;
-      p=(p+x)%337;
+      // Find color's position in table
+      p=b=HashColor(color);
+      while(__likely(0<=indextable[x=p&511])){
+        if(__likely(colortable[x]==color)) goto ass;
+        p=(p<<2)+p+b+1;
+        b>>=5;
+        }
+
+      // Not fitting
+      if(__unlikely(ncolors>=maxcolors)) goto x;
+
+      // Map color to index
+      FXASSERT(x<512);
+      colortable[x]=color;
+      indextable[x]=ncolors;
+
+      // New color
+      FXASSERT(ncolors<maxcolors);
+      colormap[ncolors++]=color;
+
+      // Assign output pixel
+ass:  dst[i]=(FXuchar)indextable[x];
       }
 
-    // If no more room in colormap, we failed
-    if(ncolors>=maxcolors) return false;
+    // Actual number of colors used
+    FXASSERT(ncolors<=maxcolors);
+    actualcolors=ncolors;
 
-    // Add new color
-    colortable[p]=color;                // Add color to color hash table
-    colormap[ncolors]=color;            // Add color to color map
-    mapindex[p]=ncolors;                // Remember map index of this color
-    ncolors++;
-
-    // Next pixel
-nxt:continue;
+    return true;
     }
-
-  // Now loop through image, assigning map indices; all colors
-  // must be in the map, so each lookup will be successful.
-  for(i=0; i<npixels; i++){
-
-    // Get pixel
-    color=src[i];
-
-    // Find position in table
-    p=color%337;
-    x=color%331+1;
-    while(colortable[p]!=color){
-      p=(p+x)%337;
-      }
-
-    // Output map index
-    dst[i]=(FXuchar)mapindex[p];
-    }
-
-  // Actual number of colors used
-  actualcolors=ncolors;
-
-  return true;
+x:return false;
   }
 
 }

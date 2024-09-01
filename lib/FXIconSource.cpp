@@ -3,7 +3,7 @@
 *                            I c o n   S o u r c e                              *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 2005,2022 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 2005,2024 by Jeroen van der Zijp.   All Rights Reserved.        *
 *********************************************************************************
 * This library is free software; you can redistribute it and/or modify          *
 * it under the terms of the GNU Lesser General Public License as published by   *
@@ -22,7 +22,8 @@
 #include "fxver.h"
 #include "fxdefs.h"
 #include "fxmath.h"
-#include "FXArray.h"
+#include "FXElement.h"
+#include "FXMetaClass.h"
 #include "FXHash.h"
 #include "FXStream.h"
 #include "FXFile.h"
@@ -33,21 +34,6 @@
 #include "FXIcon.h"
 #include "FXImage.h"
 #include "FXIconSource.h"
-
-// Built-in icon formats
-#include "FXBMPIcon.h"
-#include "FXGIFIcon.h"
-#include "FXICOIcon.h"
-#include "FXIFFIcon.h"
-#include "FXPCXIcon.h"
-#include "FXPPMIcon.h"
-#include "FXRASIcon.h"
-#include "FXRGBIcon.h"
-#include "FXTGAIcon.h"
-#include "FXXBMIcon.h"
-#include "FXXPMIcon.h"
-#include "FXDDSIcon.h"
-#include "FXEXEIcon.h"
 
 // Built-in image formats
 #include "FXBMPImage.h"
@@ -63,29 +49,46 @@
 #include "FXXPMImage.h"
 #include "FXDDSImage.h"
 #include "FXEXEImage.h"
+#include "FXQOIFImage.h"
+
+// Built-in icon formats
+#include "FXBMPIcon.h"
+#include "FXGIFIcon.h"
+#include "FXICOIcon.h"
+#include "FXIFFIcon.h"
+#include "FXPCXIcon.h"
+#include "FXPPMIcon.h"
+#include "FXRASIcon.h"
+#include "FXRGBIcon.h"
+#include "FXTGAIcon.h"
+#include "FXXBMIcon.h"
+#include "FXXPMIcon.h"
+#include "FXDDSIcon.h"
+#include "FXEXEIcon.h"
+#include "FXQOIFIcon.h"
 
 // Formats requiring external libraries
 #ifndef CORE_IMAGE_FORMATS
 #ifdef HAVE_JPEG_H
-#include "FXJPGIcon.h"
 #include "FXJPGImage.h"
+#include "FXJPGIcon.h"
 #endif
-#ifdef HAVE_PNG_H
-#include "FXPNGIcon.h"
+#ifdef HAVE_ZLIB_H
 #include "FXPNGImage.h"
+#include "FXPNGIcon.h"
 #endif
 #ifdef HAVE_TIFF_H
-#include "FXTIFIcon.h"
 #include "FXTIFImage.h"
+#include "FXTIFIcon.h"
 #endif
 #endif
 #ifdef HAVE_JP2_H
-#include "FXJP2Icon.h"
 #include "FXJP2Image.h"
+#include "FXJP2Icon.h"
 #endif
 #ifdef HAVE_WEBP_H
-#include "FXWEBPIcon.h"
 #include "FXWEBPImage.h"
+#include "FXWEBPIcon.h"
 #endif
 
 /*
@@ -168,13 +171,16 @@ FXIcon *FXIconSource::iconFromType(FXApp* app,const FXString& type) const {
   if(FXString::comparecase(FXEXEIcon::fileExt,type)==0){
     return new FXEXEIcon(app);
     }
+  if(FXString::comparecase(FXQOIFIcon::fileExt,type)==0){
+    return new FXQOIFIcon(app);
+    }
 #ifndef CORE_IMAGE_FORMATS
 #ifdef HAVE_JPEG_H
   if(FXString::comparecase(FXJPGIcon::fileExt,type)==0 || FXString::comparecase("jpeg",type)==0){
     return new FXJPGIcon(app);
     }
 #endif
-#ifdef HAVE_PNG_H
+#ifdef HAVE_ZLIB_H
   if(FXString::comparecase(FXPNGIcon::fileExt,type)==0){
     return new FXPNGIcon(app);
     }
@@ -240,13 +246,16 @@ FXImage *FXIconSource::imageFromType(FXApp* app,const FXString& type) const {
   if(FXString::comparecase(FXEXEImage::fileExt,type)==0){
     return new FXEXEImage(app);
     }
+  if(FXString::comparecase(FXQOIFImage::fileExt,type)==0){
+    return new FXQOIFImage(app);
+    }
 #ifndef CORE_IMAGE_FORMATS
 #ifdef HAVE_JPEG_H
   if(FXString::comparecase(FXJPGImage::fileExt,type)==0 || FXString::comparecase("jpeg",type)==0){
     return new FXJPGImage(app);
     }
 #endif
-#ifdef HAVE_PNG_H
+#ifdef HAVE_ZLIB_H
   if(FXString::comparecase(FXPNGImage::fileExt,type)==0){
     return new FXPNGImage(app);
     }
@@ -300,13 +309,16 @@ FXIcon *FXIconSource::iconFromStream(FXApp* app,FXStream& store) const {
   if(fxcheckEXE(store)){
     return new FXEXEIcon(app);
     }
+  if(fxcheckQOIF(store)){
+    return new FXQOIFIcon(app);
+    }
 #ifndef CORE_IMAGE_FORMATS
 #ifdef HAVE_JPEG_H
   if(fxcheckJPG(store)){
     return new FXJPGIcon(app);
     }
 #endif
-#ifdef HAVE_PNG_H
+#ifdef HAVE_ZLIB_H
   if(fxcheckPNG(store)){
     return new FXPNGIcon(app);
     }
@@ -372,13 +384,16 @@ FXImage *FXIconSource::imageFromStream(FXApp* app,FXStream& store) const {
   if(fxcheckEXE(store)){
     return new FXEXEImage(app);
     }
+  if(fxcheckQOIF(store)){
+    return new FXQOIFImage(app);
+    }
 #ifndef CORE_IMAGE_FORMATS
 #ifdef HAVE_JPEG_H
   if(fxcheckJPG(store)){
     return new FXJPGImage(app);
     }
 #endif
-#ifdef HAVE_PNG_H
+#ifdef HAVE_ZLIB_H
   if(fxcheckPNG(store)){
     return new FXPNGImage(app);
     }

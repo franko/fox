@@ -3,7 +3,7 @@
 *                         M e t a C l a s s   O b j e c t                       *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 1997,2022 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 1997,2024 by Jeroen van der Zijp.   All Rights Reserved.        *
 *********************************************************************************
 * This library is free software; you can redistribute it and/or modify          *
 * it under the terms of the GNU Lesser General Public License as published by   *
@@ -23,7 +23,6 @@
 #include "fxdefs.h"
 #include "fxmath.h"
 #include "FXElement.h"
-#include "FXArray.h"
 #include "FXString.h"
 #include "FXMetaClass.h"
 #include "FXObject.h"
@@ -280,7 +279,7 @@ void FXMetaClass::dumpMessageMap(const FXMetaClass* m){
 
 
 void FXMetaClass::dumpMetaClasses(){
-  for(FXint m=0; m<metaClassCount; ++m){
+  for(FXuint m=0; m<metaClassCount; ++m){
     if(metaClassTable[m]==nullptr || metaClassTable[m]==EMPTY) continue;
     dumpMessageMap(metaClassTable[m]);
     }

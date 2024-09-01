@@ -3,7 +3,7 @@
 *                  F O X   D e s k t o p   C a l c u l a t o r                  *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 2001,2023 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 2001,2024 by Jeroen van der Zijp.   All Rights Reserved.        *
 *********************************************************************************
 * This program is free software: you can redistribute it and/or modify          *
 * it under the terms of the GNU General Public License as published by          *
@@ -50,6 +50,9 @@ int main(int argc,char *argv[]){
 
   // Handle interrupt to save stuff nicely
   application.addSignal(SIGINT,calculator,Calculator::ID_CLOSE);
+
+  // Make a tool tip
+  new FXToolTip(&application,0);
 
   // Create app
   application.create();

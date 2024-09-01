@@ -3,7 +3,7 @@
 *                  V a r a r g s   P r i n t f   R o u t i n e s                *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 2002,2022 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 2002,2024 by Jeroen van der Zijp.   All Rights Reserved.        *
 *********************************************************************************
 * This library is free software; you can redistribute it and/or modify          *
 * it under the terms of the GNU Lesser General Public License as published by   *
@@ -232,7 +232,7 @@ static FXulong tenToThe[20]={
   };
 
 
-// Convert number to MAXFLTDIGS decimal digits in buffer.
+// Convert number to MAXDECDIGS decimal digits in buffer.
 // Return pointer to the converted string and the value of the leading digit.
 // For example, decimal=5 means the value of a leading digit d is d * 10^5.
 // Two extra bytes are reserved for the NUL and possible carry when rounding.
@@ -346,7 +346,7 @@ static FXchar* cvtdec(FXchar digits[],FXdouble value,FXint& decimal){
       ++decex;
       }
 
-    // Convert to string at end of buffer
+    // Finally, do the conversion!
     num=(FXulong)z.f;
 
     // Unsigned long x < 18446744073709551616
@@ -357,7 +357,7 @@ static FXchar* cvtdec(FXchar digits[],FXdouble value,FXint& decimal){
     decimal=decex-decor;
 
     // Generate digits at end of buffer
-    while(digits+1<ptr){
+    while(1<(ptr-digits)){
       n=num/10;
       *--ptr='0'+(num-n*10);
       num=n;
@@ -369,7 +369,7 @@ static FXchar* cvtdec(FXchar digits[],FXdouble value,FXint& decimal){
     decimal=0;
 
     // Generate digits at end of buffer
-    while(digits+1<ptr){
+    while(1<(ptr-digits)){
       *--ptr='0';
       }
     }

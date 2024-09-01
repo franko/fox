@@ -1,9 +1,7 @@
 #include "xincs.h"
 #include "fxver.h"
 #include "fxdefs.h"
-#include "FXArray.h"
-#include "FXHash.h"
-#include "FXStream.h"
+#include "FXMetaClass.h"
 #include "FXTextCodec.h"
 #include "FXCP874Codec.h"
 

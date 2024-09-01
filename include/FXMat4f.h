@@ -3,7 +3,7 @@
 *            S i n g l e - P r e c i s i o n   4 x 4   M a t r i x              *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 1994,2022 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 1994,2024 by Jeroen van der Zijp.   All Rights Reserved.        *
 *********************************************************************************
 * This library is free software; you can redistribute it and/or modify          *
 * it under the terms of the GNU Lesser General Public License as published by   *
@@ -184,6 +184,9 @@ public:
   FXMat4f& scale(FXfloat sx,FXfloat sy,FXfloat sz);
   FXMat4f& scale(const FXVec3f& v);
   FXMat4f& scale(FXfloat s);
+
+  /// Mirror-matrix with plane normal n
+  FXMat4f& mirror(const FXVec3f& n);
 
   /// Determinant
   FXfloat det() const;

@@ -3,7 +3,7 @@
 *                        P r e f e r e n c e s   D i a l o g                    *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 1998,2023 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 1998,2024 by Jeroen van der Zijp.   All Rights Reserved.        *
 *********************************************************************************
 * This program is free software: you can redistribute it and/or modify          *
 * it under the terms of the GNU General Public License as published by          *
@@ -61,28 +61,28 @@ Preferences::Preferences(TextWindow *own):FXDialogBox(own,"Adie Preferences",DEC
   new FXHorizontalSeparator(editorpane,SEPARATOR_LINE|LAYOUT_FILL_X);
   FXMatrix *matrix2=new FXMatrix(editorpane,11,MATRIX_BY_ROWS|PACK_UNIFORM_HEIGHT|LAYOUT_FILL_X|LAYOUT_FILL_Y,0,0,0,0, 4,4,4,4, 4, 2);
 
-  new FXLabel(matrix2,tr("Word wrapping:"),nullptr,JUSTIFY_LEFT|LAYOUT_CENTER_Y|LAYOUT_FILL_X|LAYOUT_FILL_ROW);
-  new FXLabel(matrix2,tr("Auto indent:\tAutomatically indent new line same as previous line\tAutomatically indent new line same as previous line."),nullptr,JUSTIFY_LEFT|LAYOUT_CENTER_Y|LAYOUT_FILL_X|LAYOUT_FILL_ROW);
+  new FXLabel(matrix2,tr("Word wrapping:\tWrap words past right border\tWrap words at right border or wrap margin."),nullptr,JUSTIFY_LEFT|LAYOUT_CENTER_Y|LAYOUT_FILL_X|LAYOUT_FILL_ROW);
   new FXLabel(matrix2,tr("Fixed wrap margin:\tWrap words at fixed margin instead of width of window\tWrap words at fixed margin instead of width of window."),nullptr,JUSTIFY_LEFT|LAYOUT_CENTER_Y|LAYOUT_FILL_X|LAYOUT_FILL_ROW);
+  new FXLabel(matrix2,tr("Auto indent:\tAutomatically indent new line same as previous line\tAutomatically indent new line same as previous line."),nullptr,JUSTIFY_LEFT|LAYOUT_CENTER_Y|LAYOUT_FILL_X|LAYOUT_FILL_ROW);
   new FXLabel(matrix2,tr("Strip carriage returns:\tStrip carriage returns when loading files\tStrip carriage returns when loading files."),nullptr,JUSTIFY_LEFT|LAYOUT_CENTER_Y|LAYOUT_FILL_X|LAYOUT_FILL_ROW);
   new FXLabel(matrix2,tr("Append carriage returns:\tAppend carriage returns when saving files\tAppend carriage returns when saving files."),nullptr,JUSTIFY_LEFT|LAYOUT_CENTER_Y|LAYOUT_FILL_X|LAYOUT_FILL_ROW);
   new FXLabel(matrix2,tr("Strip trailing spaces:\tStrip useless spaces from ends of lines when saving files\tStrip useless spaces from ends of lines when saving files."),nullptr,JUSTIFY_LEFT|LAYOUT_CENTER_Y|LAYOUT_FILL_X|LAYOUT_FILL_ROW);
   new FXLabel(matrix2,tr("Append newline at end of file:\tAppend a newline at the end of the file if needed\tEnsure file ends with a newline when saved."),nullptr,JUSTIFY_LEFT|LAYOUT_CENTER_Y|LAYOUT_FILL_X|LAYOUT_FILL_ROW);
-  new FXLabel(matrix2,tr("Insert tab characters:"),nullptr,JUSTIFY_LEFT|LAYOUT_CENTER_Y|LAYOUT_FILL_X|LAYOUT_FILL_ROW);
-  new FXLabel(matrix2,tr("Brace matching:\tHighlight matching braces, parentheses, or brackets\tHighlight matching braces, parentheses, or brackets."),nullptr,JUSTIFY_LEFT|LAYOUT_CENTER_Y|LAYOUT_FILL_X|LAYOUT_FILL_ROW);
-  new FXLabel(matrix2,tr("Modeline parsing support:\tParse adie, emacs, or vim modelines\tParse adie, emacs, or vim modelines to set language and other attributes."),nullptr,JUSTIFY_LEFT|LAYOUT_CENTER_Y|LAYOUT_FILL_X|LAYOUT_FILL_ROW);
+  new FXLabel(matrix2,tr("Insert tab characters:\tInsert hard tabs\tInsert hard tabs instead of emulating tabs with spaces."),nullptr,JUSTIFY_LEFT|LAYOUT_CENTER_Y|LAYOUT_FILL_X|LAYOUT_FILL_ROW);
+  new FXLabel(matrix2,tr("Save view of file:\tSave and restore file view\tPermanently remember view for each file."),nullptr,JUSTIFY_LEFT|LAYOUT_CENTER_Y|LAYOUT_FILL_X|LAYOUT_FILL_ROW);
+  new FXLabel(matrix2,tr("Save bookmarks:\tSave and restore bookmarks\tPermanently remember bookmark positions for each file."),nullptr,JUSTIFY_LEFT|LAYOUT_CENTER_Y|LAYOUT_FILL_X|LAYOUT_FILL_ROW);
   new FXLabel(matrix2,tr("Warn if changed externally:\tWarn if another program changed the file\tWarn if another program changed the file being edited."),nullptr,JUSTIFY_LEFT|LAYOUT_CENTER_Y|LAYOUT_FILL_X|LAYOUT_FILL_ROW);
 
   new FXCheckButton(matrix2,FXString::null,own,TextWindow::ID_TOGGLE_WRAP,LAYOUT_LEFT|LAYOUT_CENTER_Y|LAYOUT_FILL_ROW,0,0,0,0, 0,0,0,0);
-  new FXCheckButton(matrix2,FXString::null,own,TextWindow::ID_AUTOINDENT,LAYOUT_LEFT|LAYOUT_CENTER_Y|LAYOUT_FILL_ROW,0,0,0,0, 0,0,0,0);
   new FXCheckButton(matrix2,FXString::null,own,TextWindow::ID_FIXED_WRAP,LAYOUT_LEFT|LAYOUT_CENTER_Y|LAYOUT_FILL_ROW,0,0,0,0, 0,0,0,0);
+  new FXCheckButton(matrix2,FXString::null,own,TextWindow::ID_AUTOINDENT,LAYOUT_LEFT|LAYOUT_CENTER_Y|LAYOUT_FILL_ROW,0,0,0,0, 0,0,0,0);
   new FXCheckButton(matrix2,FXString::null,own,TextWindow::ID_STRIP_CR,LAYOUT_LEFT|LAYOUT_CENTER_Y|LAYOUT_FILL_ROW,0,0,0,0, 0,0,0,0);
   new FXCheckButton(matrix2,FXString::null,own,TextWindow::ID_APPEND_CR,LAYOUT_LEFT|LAYOUT_CENTER_Y|LAYOUT_FILL_ROW,0,0,0,0, 0,0,0,0);
   new FXCheckButton(matrix2,FXString::null,own,TextWindow::ID_STRIP_SP,LAYOUT_LEFT|LAYOUT_CENTER_Y|LAYOUT_FILL_ROW,0,0,0,0, 0,0,0,0);
   new FXCheckButton(matrix2,FXString::null,own,TextWindow::ID_APPEND_NL,LAYOUT_LEFT|LAYOUT_CENTER_Y|LAYOUT_FILL_ROW,0,0,0,0, 0,0,0,0);
   new FXCheckButton(matrix2,FXString::null,own,TextWindow::ID_INSERTTABS,LAYOUT_LEFT|LAYOUT_CENTER_Y|LAYOUT_FILL_ROW,0,0,0,0, 0,0,0,0);
-  new FXCheckButton(matrix2,FXString::null,own,TextWindow::ID_BRACEMATCH,LAYOUT_LEFT|LAYOUT_CENTER_Y|LAYOUT_FILL_ROW,0,0,0,0, 0,0,0,0);
-  new FXCheckButton(matrix2,FXString::null,own,TextWindow::ID_MODELINE,LAYOUT_LEFT|LAYOUT_CENTER_Y|LAYOUT_FILL_ROW,0,0,0,0, 0,0,0,0);
+  new FXCheckButton(matrix2,FXString::null,own,TextWindow::ID_SAVEVIEWS,LAYOUT_LEFT|LAYOUT_CENTER_Y|LAYOUT_FILL_ROW,0,0,0,0, 0,0,0,0);
+  new FXCheckButton(matrix2,FXString::null,own,TextWindow::ID_SAVEMARKS,LAYOUT_LEFT|LAYOUT_CENTER_Y|LAYOUT_FILL_ROW,0,0,0,0, 0,0,0,0);
   new FXCheckButton(matrix2,FXString::null,own,TextWindow::ID_WARNCHANGED,LAYOUT_LEFT|LAYOUT_CENTER_Y|LAYOUT_FILL_ROW,0,0,0,0, 0,0,0,0);
 
   new FXFrame(matrix2,LAYOUT_FILL_COLUMN|LAYOUT_FILL_ROW);
@@ -97,14 +97,14 @@ Preferences::Preferences(TextWindow *own):FXDialogBox(own,"Adie Preferences",DEC
   new FXFrame(matrix2,LAYOUT_FILL_COLUMN|LAYOUT_FILL_ROW);
   new FXFrame(matrix2,LAYOUT_FILL_COLUMN|LAYOUT_FILL_ROW);
 
-  new FXLabel(matrix2,tr("Wrap margin:"),nullptr,JUSTIFY_LEFT|LAYOUT_CENTER_Y|LAYOUT_FILL_X|LAYOUT_FILL_ROW);
-  new FXLabel(matrix2,tr("Tab columns:"),nullptr,JUSTIFY_LEFT|LAYOUT_CENTER_Y|LAYOUT_FILL_X|LAYOUT_FILL_ROW);
-  new FXLabel(matrix2,tr("Mouse wheel lines:"),nullptr,JUSTIFY_LEFT|LAYOUT_CENTER_Y|LAYOUT_FILL_X|LAYOUT_FILL_ROW);
-  new FXLabel(matrix2,tr("Line number space:"),nullptr,JUSTIFY_LEFT|LAYOUT_CENTER_Y|LAYOUT_FILL_X|LAYOUT_FILL_ROW);
-  new FXLabel(matrix2,tr("Brace match time (ms):"),nullptr,JUSTIFY_LEFT|LAYOUT_CENTER_Y|LAYOUT_FILL_X|LAYOUT_FILL_ROW);
-  new FXLabel(matrix2,tr("Brace match stays:\tMatching brace stays highlighted\tMatching brace stays highlighted until cursor moves."),nullptr,JUSTIFY_LEFT|LAYOUT_CENTER_Y|LAYOUT_FILL_X|LAYOUT_FILL_ROW);
-  new FXLabel(matrix2,tr("Save view of file:\tSave and restore file view\tPermanently remember view for each file."),nullptr,JUSTIFY_LEFT|LAYOUT_CENTER_Y|LAYOUT_FILL_X|LAYOUT_FILL_ROW);
-  new FXLabel(matrix2,tr("Save bookmarks:\tSave and restore bookmarks\tPermanently remember bookmark positions for each file."),nullptr,JUSTIFY_LEFT|LAYOUT_CENTER_Y|LAYOUT_FILL_X|LAYOUT_FILL_ROW);
+  new FXLabel(matrix2,tr("Wrap margin:\tWrap text at column in fixed wrap mode\tWrap text at column in fixed wrap mode."),nullptr,JUSTIFY_LEFT|LAYOUT_CENTER_Y|LAYOUT_FILL_X|LAYOUT_FILL_ROW);
+  new FXLabel(matrix2,tr("Tab columns:\tIndent amount for each tab character\tIndent amount each tab character."),nullptr,JUSTIFY_LEFT|LAYOUT_CENTER_Y|LAYOUT_FILL_X|LAYOUT_FILL_ROW);
+  new FXLabel(matrix2,tr("Mouse wheel lines:\tMouse wheel scroll lines\tMouse wheel scroll lines."),nullptr,JUSTIFY_LEFT|LAYOUT_CENTER_Y|LAYOUT_FILL_X|LAYOUT_FILL_ROW);
+  new FXLabel(matrix2,tr("Line number space:\tNumber of columns for line numbers\tNumber of columns for line numbers."),nullptr,JUSTIFY_LEFT|LAYOUT_CENTER_Y|LAYOUT_FILL_X|LAYOUT_FILL_ROW);
+  new FXLabel(matrix2,tr("Brace match time (ms):\tHighlight matching braces for number of milliseconds\tHighlight matching braces for number of milliseconds."),nullptr,JUSTIFY_LEFT|LAYOUT_CENTER_Y|LAYOUT_FILL_X|LAYOUT_FILL_ROW);
+  new FXLabel(matrix2,tr("Brace match stays:\tMatching braces stays highlighted forever\tMatching braces stays highlighted forever until cursor moves."),nullptr,JUSTIFY_LEFT|LAYOUT_CENTER_Y|LAYOUT_FILL_X|LAYOUT_FILL_ROW);
+  new FXLabel(matrix2,tr("Brace matching:\tHighlight matching braces, parentheses, or brackets\tHighlight matching braces, parentheses, or brackets."),nullptr,JUSTIFY_LEFT|LAYOUT_CENTER_Y|LAYOUT_FILL_X|LAYOUT_FILL_ROW);
+  new FXLabel(matrix2,tr("Modeline parsing support:\tParse Adie, Emacs, or Vim modelines\tParse Adie, Emacs, or Vim modelines to set text buffer attributes."),nullptr,JUSTIFY_LEFT|LAYOUT_CENTER_Y|LAYOUT_FILL_X|LAYOUT_FILL_ROW);
   new FXLabel(matrix2,tr("Merge undos:\tMerge undo commands\tMerge contiguous insertions or deletions."),nullptr,JUSTIFY_LEFT|LAYOUT_CENTER_Y|LAYOUT_FILL_X|LAYOUT_FILL_ROW);
   new FXLabel(matrix2,tr("Alternate history:\tAlternate history undo\tKeep alternate history for undo."),nullptr,JUSTIFY_LEFT|LAYOUT_CENTER_Y|LAYOUT_FILL_X|LAYOUT_FILL_ROW);
   new FXFrame(matrix2,LAYOUT_FILL_COLUMN|LAYOUT_FILL_ROW);
@@ -117,8 +117,8 @@ Preferences::Preferences(TextWindow *own):FXDialogBox(own,"Adie Preferences",DEC
   spinner1->setRange(0,8);
   new FXTextField(matrix2,6,own,TextWindow::ID_BRACEMATCHTIME,JUSTIFY_RIGHT|FRAME_SUNKEN|FRAME_THICK|LAYOUT_CENTER_Y|LAYOUT_FILL_X|LAYOUT_FILL_ROW,0,0,0,0, 2,2,1,1);
   new FXCheckButton(matrix2,FXString::null,own,TextWindow::ID_BRACEMATCHSTAY,LAYOUT_LEFT|LAYOUT_CENTER_Y|LAYOUT_FILL_ROW,0,0,0,0, 0,0,0,0);
-  new FXCheckButton(matrix2,FXString::null,own,TextWindow::ID_SAVEVIEWS,LAYOUT_LEFT|LAYOUT_CENTER_Y|LAYOUT_FILL_ROW,0,0,0,0, 0,0,0,0);
-  new FXCheckButton(matrix2,FXString::null,own,TextWindow::ID_SAVEMARKS,LAYOUT_LEFT|LAYOUT_CENTER_Y|LAYOUT_FILL_ROW,0,0,0,0, 0,0,0,0);
+  new FXCheckButton(matrix2,FXString::null,own,TextWindow::ID_BRACEMATCH,LAYOUT_LEFT|LAYOUT_CENTER_Y|LAYOUT_FILL_ROW,0,0,0,0, 0,0,0,0);
+  new FXCheckButton(matrix2,FXString::null,own,TextWindow::ID_MODELINE,LAYOUT_LEFT|LAYOUT_CENTER_Y|LAYOUT_FILL_ROW,0,0,0,0, 0,0,0,0);
   new FXCheckButton(matrix2,FXString::null,own,TextWindow::ID_MERGEUNDOS,LAYOUT_LEFT|LAYOUT_CENTER_Y|LAYOUT_FILL_ROW,0,0,0,0, 0,0,0,0);
   new FXCheckButton(matrix2,FXString::null,&own->undolist,FXUndoList::ID_ALT_HISTORY,LAYOUT_LEFT|LAYOUT_CENTER_Y|LAYOUT_FILL_ROW,0,0,0,0, 0,0,0,0);
 
@@ -231,6 +231,15 @@ Preferences::Preferences(TextWindow *own):FXDialogBox(own,"Adie Preferences",DEC
   new FXLabel(matrix3,tr("Word delimiters:"),nullptr,JUSTIFY_LEFT|LAYOUT_CENTER_Y);
   new FXTextField(matrix3,10,own,TextWindow::ID_DELIMITERS,FRAME_SUNKEN|FRAME_THICK|LAYOUT_CENTER_Y|LAYOUT_FILL_X|LAYOUT_FILL_COLUMN,0,0,0,0, 2,2,1,1);
 
+  new FXLabel(matrix3,tr("Undo trim size:"),nullptr,JUSTIFY_LEFT|LAYOUT_CENTER_Y);
+  undotrimtext=new FXTextField(matrix3,10,own,TextWindow::ID_UNDOMAXSIZE,FRAME_SUNKEN|FRAME_THICK|LAYOUT_CENTER_Y|LAYOUT_FILL_X|LAYOUT_FILL_COLUMN,0,0,0,0, 2,2,1,1);
+  undotrimtext->setTipText(tr("Undo-buffer trim down trigger-size."));
+  undotrimtext->setHelpText(tr("Size above which undo buffer will be trimmed down."));
+
+  new FXLabel(matrix3,tr("Undo keep size:"),nullptr,JUSTIFY_LEFT|LAYOUT_CENTER_Y);
+  undokeeptext=new FXTextField(matrix3,10,own,TextWindow::ID_UNDOKEEPSIZE,FRAME_SUNKEN|FRAME_THICK|LAYOUT_CENTER_Y|LAYOUT_FILL_X|LAYOUT_FILL_COLUMN,0,0,0,0, 2,2,1,1);
+  undokeeptext->setTipText(tr("Undo-buffer trim down keep-size."));
+  undokeeptext->setHelpText(tr("Size of undo buffer data to keep around after trim."));
 
   //// File pattern settings button
   new FXButton(buttons,tr("Misc\tMiscellaneous\tMiscellaneous settings."),mis,switcher,FXSwitcher::ID_OPEN_FIFTH,FRAME_RAISED|ICON_ABOVE_TEXT|LAYOUT_FILL_Y);

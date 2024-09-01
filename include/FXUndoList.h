@@ -3,7 +3,7 @@
 *                  U n d o / R e d o - a b l e   C o m m a n d                  *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 2000,2022 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 2000,2024 by Jeroen van der Zijp.   All Rights Reserved.        *
 *********************************************************************************
 * This library is free software; you can redistribute it and/or modify          *
 * it under the terms of the GNU Lesser General Public License as published by   *
@@ -33,13 +33,13 @@ class FXUndoList;
 
 
 /**
-* Base class for undoable commands.  Each undo records all the
-* information necessary to undo as well as redo a given operation.
+* Base class for undoable commands records.  Each undo records all
+* the information necessary to undo, as well as redo, a given operation.
 * Since commands are derived from FXObject, subclassed commands
 * may be able to implement their behaviour by sending messages
 * (like ID_SETINTVALUE, etc) as well as simple API calls to
 * objects to be modified.
-* Small, incremental unto commands may sometimes be consolidated
+* Small, incremental undo commands may sometimes be consolidated
 * into larger ones, by merging consecutive commands.  A merge
 * is effected by calling the mergeWith() API after first establishing
 * that merging is possible with canMerge().
@@ -116,9 +116,9 @@ public:
   * Called by the undo system to try and merge the new incoming command
   * with this command.  When overriding this API, return:
   *
-  *   0  if command could not be merged to this one,
-  *   1  if command could be merged with this one,
-  *   2  if command completely cancels effect of this one.
+  *   0  if incoming command could not be merged into this command,
+  *   1  if incoming command could be merged into this command,
+  *   2  if incoming command completely cancels effect of this command.
   *
   * The default implementation returns 0.
   */

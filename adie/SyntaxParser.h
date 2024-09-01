@@ -3,7 +3,7 @@
 *                         S y n t a x   P a r s e r                             *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 1998,2023 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 1998,2024 by Jeroen van der Zijp.   All Rights Reserved.        *
 *********************************************************************************
 * This program is free software: you can redistribute it and/or modify          *
 * it under the terms of the GNU General Public License as published by          *
@@ -61,6 +61,7 @@ protected:
     TK_TABWIDTH=3437041073U,
     TK_WORDWRAP=2976955066U,
     TK_EXPANDTABS=2659402850U,
+    TK_STRIPSPACES=2925548155U,
     TK_NO=3649U,
     TK_YES=134927U,
     TK_END=113327U

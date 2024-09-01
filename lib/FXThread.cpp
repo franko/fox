@@ -3,7 +3,7 @@
 *                          T h r e a d   S u p p o r t                          *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 2004,2022 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 2004,2024 by Jeroen van der Zijp.   All Rights Reserved.        *
 *********************************************************************************
 * This library is free software; you can redistribute it and/or modify          *
 * it under the terms of the GNU Lesser General Public License as published by   *
@@ -312,7 +312,7 @@ FXTime FXThread::time(){
 #elif (_POSIX_C_SOURCE >= 199309L)
   const FXTime seconds=1000000000;
   struct timespec ts;
-  clock_gettime(CLOCK_REALTIME,&ts);
+  clock_gettime(CLOCK_REALTIME,&ts);            // Wallclock time!
   return ts.tv_sec*seconds+ts.tv_nsec;
 #else
   const FXTime seconds=1000000000;
@@ -331,14 +331,14 @@ FXTime FXThread::steadytime(){
   LARGE_INTEGER frq,clk;
   ::QueryPerformanceFrequency(&frq);
   ::QueryPerformanceCounter(&clk);
-  FXASSERT(frq.QuadPart<FXLONG(9223372036));       // Overflow possible if CPU speed exceeds 9.2GHz
+  FXASSERT(frq.QuadPart<FXLONG(9223372036));    // Overflow possible if CPU speed exceeds 9.2GHz
   FXTime s=clk.QuadPart/frq.QuadPart;
   FXTime f=clk.QuadPart%frq.QuadPart;
   return seconds*s+(seconds*f)/frq.QuadPart;
 #elif (_POSIX_C_SOURCE >= 199309L)
   const FXTime seconds=1000000000;
   struct timespec ts;
-  clock_gettime(CLOCK_MONOTONIC,&ts);
+  clock_gettime(CLOCK_MONOTONIC,&ts);           // Monotonic: no jumps!
   return ts.tv_sec*seconds+ts.tv_nsec;
 #else
   const FXTime seconds=1000000000;
@@ -350,99 +350,55 @@ FXTime FXThread::steadytime(){
   }
 
 
-#if defined(WIN32) && defined(_MSC_VER) && (defined(_M_IX86) || defined(_M_X64))
-
 // Return time in processor ticks.
 FXTime FXThread::ticks(){
-  FXTime value=__rdtsc();
-  return value;
-  }
-
-#elif defined(WIN32)
-
-// Return time in processor ticks.
-FXTime FXThread::ticks(){
+#if defined(WIN32) && defined(_MSC_VER)
+#if defined(_M_IX86) || defined(_M_X64)
+  return __rdtsc();
+#else
   FXTime value;
-  FXASSERT(sizeof(FXTime)==sizeof(LARGE_INTEGER));
+  FXASSERT_STATIC(sizeof(FXTime)==sizeof(LARGE_INTEGER));
   QueryPerformanceCounter((LARGE_INTEGER*)&value);
   return value;
-  }
-
+#endif
 #elif (defined(__GNUC__) || defined(__INTEL_COMPILER)) && defined(__i386__)
-
-// Return time in processor ticks.
-FXTime FXThread::ticks(){
   FXTime value;
-  __asm__ __volatile__ ( "rdtsc" : "=A" (value));
+  __asm__ __volatile__ ( "rdtsc" : "=A" (value) : : "memory");
   return value;
-  }
-
 #elif (defined(__GNUC__) || defined(__INTEL_COMPILER)) && defined(__x86_64__)
-
-// Return time in processor ticks.
-FXTime FXThread::ticks(){
   FXTime value;
   __asm__ __volatile__ ( "rdtsc              \n\t"
                          "salq	$32, %%rdx   \n\t"
-                         "orq	%%rdx, %%rax \n\t" : "=q" (value));
+                         "orq	%%rdx, %%rax \n\t" : "=q"(value) : : "memory");
   return value;
-  }
-
-/*
 #elif (defined(__GNUC__) && defined(__aarch64__))
-
-// Return time in processor ticks.
-FXTime FXThread::ticks(){
-   NSTime value;
-   __asm__ __volatile__("isb; mrs %0, cntvct_el0" : "=r"(value));
+   FXTime value;
+   __asm__ __volatile__("mrs %0, cntvct_el0" : "=r"(value) : : "memory");
    return value;
-   }
-*/
-
 #elif defined(__GNUC__) && (defined(__powerpc64__) || defined(__ppc64__))
-
-// Return time in processor ticks.
-FXTime FXThread::ticks(){
   FXTime value;
-  asm volatile("mfspr %0, 268" : "=r"(value));
+  __asm__ __volatile__("mfspr %0, 268" : "=r"(value) : : "memory");
   return value;
-  }
-
 #elif defined(__GNUC__) && (defined(__powerpc__) || defined(__ppc__))
-
-// Return time in processor ticks.
-FXTime FXThread::ticks(){
   FXuint tbl,tbu0,tbu1;
-  asm volatile("mftbu %0 \n\t"
-               "mftb  %1 \n\t"
-               "mftbu %2 \n\t" : "=r"(tbu0), "=r"(tbl), "=r"(tbu1));
+  __asm__ __volatile__( "mftbu %0 \n\t"
+                        "mftb  %1 \n\t"
+                        "mftbu %2 \n\t" : "=r"(tbu0), "=r"(tbl), "=r"(tbu1) : : "memory");
   tbl&=-(FXint)(tbu0==tbu1);
-  return (static_cast<uint64_t>(tbu1) << 32) | tbl;
   return (((FXTime)tbu1) << 32) | tbl;
-  }
-
 #elif (_POSIX_C_SOURCE >= 199309L)
-
-// Return time in processor ticks.
-FXTime FXThread::ticks(){
-  const FXTime seconds=1000000000;
+  const NSTime seconds=1000000000;
   struct timespec ts;
   clock_gettime(CLOCK_MONOTONIC,&ts);   // Monotonic: no jumps!
   return ts.tv_sec*seconds+ts.tv_nsec;
-  }
-
 #else
-
-// Return time in processor ticks.
-FXTime FXThread::ticks(){
-  const FXTime seconds=1000000000;
-  const FXTime microseconds=1000;
+  const NSTime seconds=1000000000;
+  const NSTime microseconds=1000;
   struct timeval tv;
   gettimeofday(&tv,nullptr);
   return tv.tv_sec*seconds+tv.tv_usec*microseconds;
-  }
-
 #endif
+  }
 
 
 // We want to use NtDelayExecution() because it allows for both absolute as well as

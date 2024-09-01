@@ -3,7 +3,7 @@
 *                     S h e l l   W i n d o w   O b j e c t                     *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 1997,2022 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 1997,2024 by Jeroen van der Zijp.   All Rights Reserved.        *
 *********************************************************************************
 * This library is free software; you can redistribute it and/or modify          *
 * it under the terms of the GNU Lesser General Public License as published by   *
@@ -23,7 +23,9 @@
 #include "fxdefs.h"
 #include "fxmath.h"
 #include "fxkeys.h"
+#include "FXElement.h"
 #include "FXArray.h"
+#include "FXMetaClass.h"
 #include "FXHash.h"
 #include "FXMutex.h"
 #include "FXStream.h"
@@ -48,6 +50,8 @@
   - Note that Shell is base class for transient ``popup'' override-redirect windows.
     For top level windows, we should use size hints rather than force the size.
 */
+
+#define TOPIC_CONFIGURE 1002
 
 using namespace FX;
 
@@ -128,7 +132,7 @@ long FXShell::onLayout(FXObject*,FXSelector,void*){
 long FXShell::onConfigure(FXObject* sender,FXSelector sel,void* ptr){
   FXEvent *ev=(FXEvent*)ptr;
   FXComposite::onConfigure(sender,sel,ptr);
-  FXTRACE((100,"%s::onConfigure x=%d y=%d w=%d h=%d\n",getClassName(),ev->rect.x,ev->rect.y,ev->rect.w,ev->rect.h));
+  FXTRACE((TOPIC_CONFIGURE,"%s::onConfigure x=%d y=%d w=%d h=%d\n",getClassName(),ev->rect.x,ev->rect.y,ev->rect.w,ev->rect.h));
   xpos=ev->rect.x;
   ypos=ev->rect.y;
   if((ev->rect.w!=width) || (ev->rect.h!=height)){

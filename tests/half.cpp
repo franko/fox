@@ -56,7 +56,7 @@ int main(int argc,char* argv[]){
   // Now check it
   for(i=0; i<65536; ++i){
     c.f=converted[i];
-    printf("i=%-5d [0x%04x] FLOAT=%+22.15lf [0x%08x] %s EXP=%-+4d MAN=0x%08x",i,i,c.f,c.u,((c.u>>31)&1)?"NEG":"POS",((c.u>>23)&255)-127,c.u&0x007fffff);
+    printf("i=%-5d [0x%04x] FLOAT=%+22.15lf [0x%08x] %s EXP=%-+4d MAN=0x%08x",i,i,(FXdouble)c.f,c.u,((c.u>>31)&1)?"NEG":"POS",((c.u>>23)&255)-127,c.u&0x007fffff);
     if((i&HALFABS)<HALFMIN){
       printf(" DEN");
       }

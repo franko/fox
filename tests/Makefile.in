@@ -91,17 +91,18 @@ host_triplet = @host@
 noinst_PROGRAMS = bitmapviewer$(EXEEXT) button$(EXEEXT) \
 	calendar$(EXEEXT) codecs$(EXEEXT) console$(EXEEXT) \
 	datatarget$(EXEEXT) dctest$(EXEEXT) dialog$(EXEEXT) \
-	dirlist$(EXEEXT) expression$(EXEEXT) format$(EXEEXT) \
-	foursplit$(EXEEXT) gaugetest$(EXEEXT) groupbox$(EXEEXT) \
-	half$(EXEEXT) header$(EXEEXT) hello$(EXEEXT) hello2$(EXEEXT) \
-	iconlist$(EXEEXT) image$(EXEEXT) imageviewer$(EXEEXT) \
-	layout$(EXEEXT) match$(EXEEXT) math$(EXEEXT) mditest$(EXEEXT) \
-	memmap$(EXEEXT) minheritance$(EXEEXT) parallel$(EXEEXT) \
-	process$(EXEEXT) ratio$(EXEEXT) rex$(EXEEXT) scan$(EXEEXT) \
-	scribble$(EXEEXT) shutter$(EXEEXT) splitter$(EXEEXT) \
-	switcher$(EXEEXT) tabbook$(EXEEXT) table$(EXEEXT) \
-	thread$(EXEEXT) timefmt$(EXEEXT) unicode$(EXEEXT) \
-	variant$(EXEEXT) wizard$(EXEEXT) xml$(EXEEXT) gltest$(EXEEXT)
+	dirlist$(EXEEXT) dictest$(EXEEXT) expression$(EXEEXT) \
+	format$(EXEEXT) foursplit$(EXEEXT) gaugetest$(EXEEXT) \
+	groupbox$(EXEEXT) half$(EXEEXT) header$(EXEEXT) hello$(EXEEXT) \
+	hello2$(EXEEXT) iconlist$(EXEEXT) image$(EXEEXT) \
+	imageviewer$(EXEEXT) layout$(EXEEXT) match$(EXEEXT) \
+	math$(EXEEXT) mditest$(EXEEXT) memmap$(EXEEXT) \
+	minheritance$(EXEEXT) parallel$(EXEEXT) process$(EXEEXT) \
+	ratio$(EXEEXT) rex$(EXEEXT) scan$(EXEEXT) scribble$(EXEEXT) \
+	shutter$(EXEEXT) splitter$(EXEEXT) switcher$(EXEEXT) \
+	tabbook$(EXEEXT) table$(EXEEXT) thread$(EXEEXT) \
+	timefmt$(EXEEXT) unicode$(EXEEXT) variant$(EXEEXT) \
+	wizard$(EXEEXT) xml$(EXEEXT) gltest$(EXEEXT)
 subdir = tests
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/configure.ac
@@ -148,6 +149,10 @@ am_dialog_OBJECTS = dialog.$(OBJEXT)
 dialog_OBJECTS = $(am_dialog_OBJECTS)
 dialog_LDADD = $(LDADD)
 dialog_DEPENDENCIES = $(top_builddir)/lib/libFOX-1.7.la
+am_dictest_OBJECTS = dictest.$(OBJEXT)
+dictest_OBJECTS = $(am_dictest_OBJECTS)
+dictest_LDADD = $(LDADD)
+dictest_DEPENDENCIES = $(top_builddir)/lib/libFOX-1.7.la
 am_dirlist_OBJECTS = dirlist.$(OBJEXT)
 dirlist_OBJECTS = $(am_dirlist_OBJECTS)
 dirlist_LDADD = $(LDADD)
@@ -350,35 +355,35 @@ am__v_CCLD_1 =
 SOURCES = $(bitmapviewer_SOURCES) $(button_SOURCES) \
 	$(calendar_SOURCES) $(codecs_SOURCES) $(console_SOURCES) \
 	$(datatarget_SOURCES) $(dctest_SOURCES) $(dialog_SOURCES) \
-	$(dirlist_SOURCES) $(expression_SOURCES) $(format_SOURCES) \
-	$(foursplit_SOURCES) $(gaugetest_SOURCES) $(gltest_SOURCES) \
-	$(groupbox_SOURCES) $(half_SOURCES) $(header_SOURCES) \
-	$(hello_SOURCES) $(hello2_SOURCES) $(iconlist_SOURCES) \
-	$(image_SOURCES) $(imageviewer_SOURCES) $(layout_SOURCES) \
-	$(match_SOURCES) $(math_SOURCES) $(mditest_SOURCES) \
-	$(memmap_SOURCES) $(minheritance_SOURCES) $(parallel_SOURCES) \
-	$(process_SOURCES) $(ratio_SOURCES) $(rex_SOURCES) \
-	$(scan_SOURCES) $(scribble_SOURCES) $(shutter_SOURCES) \
-	$(splitter_SOURCES) $(switcher_SOURCES) $(tabbook_SOURCES) \
-	$(table_SOURCES) $(thread_SOURCES) $(timefmt_SOURCES) \
-	$(unicode_SOURCES) $(variant_SOURCES) $(wizard_SOURCES) \
-	$(xml_SOURCES)
+	$(dictest_SOURCES) $(dirlist_SOURCES) $(expression_SOURCES) \
+	$(format_SOURCES) $(foursplit_SOURCES) $(gaugetest_SOURCES) \
+	$(gltest_SOURCES) $(groupbox_SOURCES) $(half_SOURCES) \
+	$(header_SOURCES) $(hello_SOURCES) $(hello2_SOURCES) \
+	$(iconlist_SOURCES) $(image_SOURCES) $(imageviewer_SOURCES) \
+	$(layout_SOURCES) $(match_SOURCES) $(math_SOURCES) \
+	$(mditest_SOURCES) $(memmap_SOURCES) $(minheritance_SOURCES) \
+	$(parallel_SOURCES) $(process_SOURCES) $(ratio_SOURCES) \
+	$(rex_SOURCES) $(scan_SOURCES) $(scribble_SOURCES) \
+	$(shutter_SOURCES) $(splitter_SOURCES) $(switcher_SOURCES) \
+	$(tabbook_SOURCES) $(table_SOURCES) $(thread_SOURCES) \
+	$(timefmt_SOURCES) $(unicode_SOURCES) $(variant_SOURCES) \
+	$(wizard_SOURCES) $(xml_SOURCES)
 DIST_SOURCES = $(bitmapviewer_SOURCES) $(button_SOURCES) \
 	$(calendar_SOURCES) $(codecs_SOURCES) $(console_SOURCES) \
 	$(datatarget_SOURCES) $(dctest_SOURCES) $(dialog_SOURCES) \
-	$(dirlist_SOURCES) $(expression_SOURCES) $(format_SOURCES) \
-	$(foursplit_SOURCES) $(gaugetest_SOURCES) $(gltest_SOURCES) \
-	$(groupbox_SOURCES) $(half_SOURCES) $(header_SOURCES) \
-	$(hello_SOURCES) $(hello2_SOURCES) $(iconlist_SOURCES) \
-	$(image_SOURCES) $(imageviewer_SOURCES) $(layout_SOURCES) \
-	$(match_SOURCES) $(math_SOURCES) $(mditest_SOURCES) \
-	$(memmap_SOURCES) $(minheritance_SOURCES) $(parallel_SOURCES) \
-	$(process_SOURCES) $(ratio_SOURCES) $(rex_SOURCES) \
-	$(scan_SOURCES) $(scribble_SOURCES) $(shutter_SOURCES) \
-	$(splitter_SOURCES) $(switcher_SOURCES) $(tabbook_SOURCES) \
-	$(table_SOURCES) $(thread_SOURCES) $(timefmt_SOURCES) \
-	$(unicode_SOURCES) $(variant_SOURCES) $(wizard_SOURCES) \
-	$(xml_SOURCES)
+	$(dictest_SOURCES) $(dirlist_SOURCES) $(expression_SOURCES) \
+	$(format_SOURCES) $(foursplit_SOURCES) $(gaugetest_SOURCES) \
+	$(gltest_SOURCES) $(groupbox_SOURCES) $(half_SOURCES) \
+	$(header_SOURCES) $(hello_SOURCES) $(hello2_SOURCES) \
+	$(iconlist_SOURCES) $(image_SOURCES) $(imageviewer_SOURCES) \
+	$(layout_SOURCES) $(match_SOURCES) $(math_SOURCES) \
+	$(mditest_SOURCES) $(memmap_SOURCES) $(minheritance_SOURCES) \
+	$(parallel_SOURCES) $(process_SOURCES) $(ratio_SOURCES) \
+	$(rex_SOURCES) $(scan_SOURCES) $(scribble_SOURCES) \
+	$(shutter_SOURCES) $(splitter_SOURCES) $(switcher_SOURCES) \
+	$(tabbook_SOURCES) $(table_SOURCES) $(thread_SOURCES) \
+	$(timefmt_SOURCES) $(unicode_SOURCES) $(variant_SOURCES) \
+	$(wizard_SOURCES) $(xml_SOURCES)
 am__can_run_installinfo = \
   case $$AM_UPDATE_INFO_DIR in \
     n|no|NO) false;; \
@@ -592,6 +597,7 @@ parallel_SOURCES = parallel.cpp
 variant_SOURCES = variant.cpp
 math_SOURCES = math.cpp
 xml_SOURCES = xml.cpp
+dictest_SOURCES = dictest.cpp
 EXTRA_DIST = xmltests.json
 all: all-am
 
@@ -667,6 +673,10 @@ dctest$(EXEEXT): $(dctest_OBJECTS) $(dctest_DEPENDENCIES) $(EXTRA_dctest_DEPENDE
 dialog$(EXEEXT): $(dialog_OBJECTS) $(dialog_DEPENDENCIES) $(EXTRA_dialog_DEPENDENCIES) 
 	@rm -f dialog$(EXEEXT)
 	$(AM_V_CXXLD)$(CXXLINK) $(dialog_OBJECTS) $(dialog_LDADD) $(LIBS)
+
+dictest$(EXEEXT): $(dictest_OBJECTS) $(dictest_DEPENDENCIES) $(EXTRA_dictest_DEPENDENCIES) 
+	@rm -f dictest$(EXEEXT)
+	$(AM_V_CXXLD)$(CXXLINK) $(dictest_OBJECTS) $(dictest_LDADD) $(LIBS)
 
 dirlist$(EXEEXT): $(dirlist_OBJECTS) $(dirlist_DEPENDENCIES) $(EXTRA_dirlist_DEPENDENCIES) 
 	@rm -f dirlist$(EXEEXT)
@@ -830,6 +840,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/datatarget.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dctest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dialog.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dictest.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dirlist.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/expression.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/format.Po@am__quote@

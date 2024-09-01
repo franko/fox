@@ -3,7 +3,7 @@
 *                      I N I   R e a d e r  &  W r i t e r                      *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 2022 by Jeroen van der Zijp.   All Rights Reserved.             *
+* Copyright (C) 2022,2024 by Jeroen van der Zijp.   All Rights Reserved.        *
 *********************************************************************************
 * This library is free software; you can redistribute it and/or modify          *
 * it under the terms of the GNU Lesser General Public License as published by   *
@@ -42,8 +42,9 @@ namespace FX {
 *     aforementioned types will be serialized to the .INI file.
 *
 * When saving, numeric values are printed with configurable precision;
-* (default=15 digits which results in minimal information loss for real
-* numbers).
+* (default=15 digits which results in minimal information loss for
+* real numbers).
+*
 * Values may be arbitrary strings, and this includes any legal UTF8-
 * encoded value. When saving, strings may be escaped to ensure the
 * information may be read back in unchanged.  The following applies
@@ -51,9 +52,9 @@ namespace FX {
 *
 *   - Escape mode 0: UTF8 characters are passed unescaped.
 *   - Escape mode 1: UTF8 characters are escaped as \xXX.
-*   - Escape mode 2: UTF8 will be escaed using Unicode escape sequences of
-*     the for \uXXXX or \uXXXX\uXXXX (two surrogate-pairs  escape codes
-*     for code points exceeding 16 bits).
+*   - Escape mode 2: UTF8 will be escaped using Unicode escape
+*     sequences of the for \uXXXX or \uXXXX\uXXXX (two surrogate-
+*     pairs escape codes for code points exceeding 16 bits).
 *
 * The default setting is to allow UTF8 characters in the output.
 */
@@ -151,8 +152,8 @@ public:
   * This controls the number of significant digits written to
   * the output.  The default is 15.
   */
-  void setNumericPrecision(FXint p){ prec=p; }
-  FXint getNumericPrecision() const { return prec; }
+  void setNumericPrecision(FXuchar p){ prec=p; }
+  FXuchar getNumericPrecision() const { return prec; }
 
   /**
   * Floating point output format control.
@@ -164,8 +165,8 @@ public:
   *
   * The default mode is 2.
   */
-  void setNumericFormat(FXint f){ fmt=f; }
-  FXint getNumericFormat() const { return fmt; }
+  void setNumericFormat(FXuchar f){ fmt=f; }
+  FXuchar getNumericFormat() const { return fmt; }
 
   /**
   * Change string escape mode; 0=don't escape unicode in strings;
@@ -173,8 +174,8 @@ public:
   * as \uXXXX or \uXXXX\uXXXX.
   * Default is to escape control characters only.
   */
-  void setEscapeMode(FXint e){ esc=e; }
-  FXint getEscapeMode() const { return esc; }
+  void setEscapeMode(FXuchar e){ esc=e; }
+  FXuchar getEscapeMode() const { return esc; }
 
   /**
   * Close INI parser.

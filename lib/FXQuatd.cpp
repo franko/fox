@@ -3,7 +3,7 @@
 *              D o u b l e - P r e c i s i o n  Q u a t e r n i o n             *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 1994,2022 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 1994,2024 by Jeroen van der Zijp.   All Rights Reserved.        *
 *********************************************************************************
 * This library is free software; you can redistribute it and/or modify          *
 * it under the terms of the GNU Lesser General Public License as published by   *
@@ -22,10 +22,11 @@
 #include "fxver.h"
 #include "fxdefs.h"
 #include "fxmath.h"
+#include "FXElement.h"
 #include "FXArray.h"
+#include "FXMetaClass.h"
 #include "FXHash.h"
 #include "FXStream.h"
-#include "FXObject.h"
 #include "FXVec2d.h"
 #include "FXVec3d.h"
 #include "FXVec4d.h"
@@ -520,22 +521,6 @@ FXQuatd& FXQuatd::adjust(){
   return *this;
   }
 
-
-// Normalize quaternion such that |Q|==1
-FXQuatd normalize(const FXQuatd& q){
-  FXdouble s(q.length());
-  if(__likely(s)){
-    return q/s;
-    }
-  return q;
-  }
-
-
-// Normalize quaternion incrementally; assume |Q| approximately 1 already
-FXQuatd fastnormalize(const FXQuatd& q){
-  FXdouble s((3.0-q.w*q.w-q.z*q.z-q.y*q.y-q.x*q.x)*0.5);
-  return q*s;
-  }
 
 /*******************************************************************************/
 

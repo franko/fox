@@ -3,7 +3,7 @@
 *                         M e n u R a d i o   W i d g e t                       *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 2002,2022 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 2002,2024 by Jeroen van der Zijp.   All Rights Reserved.        *
 *********************************************************************************
 * This library is free software; you can redistribute it and/or modify          *
 * it under the terms of the GNU Lesser General Public License as published by   *
@@ -24,14 +24,15 @@
 #include "fxchar.h"
 #include "fxmath.h"
 #include "fxkeys.h"
-#include "FXArray.h"
-#include "FXHash.h"
 #include "FXMutex.h"
-#include "FXStream.h"
-#include "FXString.h"
 #include "FXSize.h"
 #include "FXPoint.h"
 #include "FXRectangle.h"
+#include "FXElement.h"
+#include "FXMetaClass.h"
+#include "FXHash.h"
+#include "FXStream.h"
+#include "FXString.h"
 #include "FXStringDictionary.h"
 #include "FXSettings.h"
 #include "FXRegistry.h"
@@ -226,7 +227,7 @@ long FXMenuRadio::onKeyRelease(FXObject*,FXSelector,void* ptr){
 
 // Hot key combination pressed
 long FXMenuRadio::onHotKeyPress(FXObject*,FXSelector,void* ptr){
-  FXTRACE((200,"%s::onHotKeyPress %p\n",getClassName(),this));
+  FXTRACE((TOPIC_KEYBOARD,"%s::onHotKeyPress %p\n",getClassName(),this));
   handle(this,FXSEL(SEL_FOCUS_SELF,0),ptr);
   if(isEnabled() && !(flags&FLAG_PRESSED)){
     flags|=FLAG_PRESSED;
@@ -237,7 +238,7 @@ long FXMenuRadio::onHotKeyPress(FXObject*,FXSelector,void* ptr){
 
 // Hot key combination released
 long FXMenuRadio::onHotKeyRelease(FXObject*,FXSelector,void*){
-  FXTRACE((200,"%s::onHotKeyRelease %p\n",getClassName(),this));
+  FXTRACE((TOPIC_KEYBOARD,"%s::onHotKeyRelease %p\n",getClassName(),this));
   if(isEnabled() && (flags&FLAG_PRESSED)){
     flags&=~FLAG_PRESSED;
     setCheck(true);

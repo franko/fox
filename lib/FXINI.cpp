@@ -3,7 +3,7 @@
 *                      I N I   R e a d e r  &  W r i t e r                      *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 2022 by Jeroen van der Zijp.   All Rights Reserved.             *
+* Copyright (C) 2022,2024 by Jeroen van der Zijp.   All Rights Reserved.        *
 *********************************************************************************
 * This library is free software; you can redistribute it and/or modify          *
 * it under the terms of the GNU Lesser General Public License as published by   *
@@ -25,6 +25,7 @@
 #include "fxascii.h"
 #include "FXElement.h"
 #include "FXArray.h"
+#include "FXMetaClass.h"
 #include "FXString.h"
 #include "FXIO.h"
 #include "FXIODevice.h"
@@ -106,6 +107,13 @@
          hexdigit    : '0'...'9' | 'a'...'f' | 'A'...'F'
                      ;
 
+         octaldigits : octaldigit
+                     | octaldigit octaldigits
+                     ;
+
+         octaldigit  : '0'...'7'
+                     ;
+
          newline     : '\n'
                      | '\r\n'
                      | '\r'
@@ -115,6 +123,9 @@
 #define TOPIC_CONSTRUCT 1000
 #define TOPIC_DETAIL    1001
 #define TOPIC_DEBUG     1002
+
+// Line termination length
+#define ENDLINELENGTH (sizeof(ENDLINE)-1)
 
 using namespace FX;
 
@@ -149,6 +160,7 @@ enum {
   ST_VAL = 16,
   ST_STR = 32
   };
+
 
 // Error messages
 const FXchar *const FXINI::errors[]={
@@ -505,7 +517,7 @@ FXINI::Error FXINI::loadVariant(FXVariant& var){
     if(token!=TK_SECTION) return ErrToken;
 
     // Get section key
-    sectionkey=FXString::unescape(rptr,sptr-rptr,'[',']');
+    sectionkey=FXString::unescape(rptr,(FXint)(sptr-rptr),'[',']');
 
     // Empty section key
     if(sectionkey.empty()) return ErrToken;
@@ -519,7 +531,7 @@ FXINI::Error FXINI::loadVariant(FXVariant& var){
     while(token==TK_KEY){
 
       // Get entry key
-      entrykey.assign(rptr,sptr-rptr);
+      entrykey.assign(rptr,(FXint)(sptr-rptr));
 
       // Empty entry key
       if(entrykey.empty()) return ErrToken;
@@ -533,7 +545,7 @@ FXINI::Error FXINI::loadVariant(FXVariant& var){
       if(token!=TK_VALUE) return ErrToken;
 
       // Get entry value
-      entryvalue=FXString::unescape(rptr,sptr-rptr,'"','"');
+      entryvalue=FXString::unescape(rptr,(FXint)(sptr-rptr),'"','"');
 
       FXTRACE((TOPIC_DEBUG,"entryvalue=\"%s\"\n",entryvalue.text()));
 
@@ -681,8 +693,8 @@ FXINI::Error FXINI::saveVariant(const FXVariant& section){
             if(saveSection(sectionkey)!=ErrOK) return ErrSave;
 
             // New line for the entry
-            if(!emit(ENDLINE,strlen(ENDLINE))) return ErrSave;
-            offset+=strlen(ENDLINE);
+            if(!emit(ENDLINE,ENDLINELENGTH)) return ErrSave;
+            offset+=ENDLINELENGTH;
             column=0;
             line++;
 
@@ -704,16 +716,16 @@ FXINI::Error FXINI::saveVariant(const FXVariant& section){
           if(saveEntry(entrydata)!=ErrOK) return ErrSave;
 
           // End the line
-          if(!emit(ENDLINE,strlen(ENDLINE))) return ErrSave;
-          offset+=strlen(ENDLINE);
+          if(!emit(ENDLINE,ENDLINELENGTH)) return ErrSave;
+          offset+=ENDLINELENGTH;
           column=0;
           line++;
           }
 
         // Extra blank line if non-empty section
         if(sectionsaved){
-          if(!emit(ENDLINE,strlen(ENDLINE))) return ErrSave;
-          offset+=strlen(ENDLINE);
+          if(!emit(ENDLINE,ENDLINELENGTH)) return ErrSave;
+          offset+=ENDLINELENGTH;
           column=0;
           line++;
           }

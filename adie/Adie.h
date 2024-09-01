@@ -3,7 +3,7 @@
 *                     T h e   A d i e   T e x t   E d i t o r                   *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 1998,2023 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 1998,2024 by Jeroen van der Zijp.   All Rights Reserved.        *
 *********************************************************************************
 * This program is free software: you can redistribute it and/or modify          *
 * it under the terms of the GNU General Public License as published by          *
@@ -23,8 +23,8 @@
 
 
 // Version
-#define VERSION_MAJOR 3
-#define VERSION_MINOR 6
+#define VERSION_MAJOR 4
+#define VERSION_MINOR 0
 #define VERSION_PATCH 0
 
 

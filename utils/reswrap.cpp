@@ -3,7 +3,7 @@
 *                R e s o u r c e   W r a p p i n g   U t i l i t y              *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 1997,2023 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 1997,2024 by Jeroen van der Zijp.   All Rights Reserved.        *
 *********************************************************************************
 * This program is free software: you can redistribute it and/or modify          *
 * it under the terms of the GNU General Public License as published by          *
@@ -150,7 +150,7 @@ static void printusage(){
 /* Print version information */
 static void printversion(){
   printf("reswrap %s\n\n",version);
-  printf("Copyright (C) 1997,2022 Jeroen van der Zijp. All Rights Reserved.\n");
+  printf("Copyright (C) 1997,2024 Jeroen van der Zijp. All Rights Reserved.\n");
   printf("Please visit: http://www.fox-toolkit.org for further information.\n");
   printf("\n");
   printf("This program is free software: you can redistribute it and/or modify\n");
@@ -262,7 +262,7 @@ static int processresourcefile(const char* filename,const char* name,OPTIONS* op
 
     /* Get the size */
     fseek(file,0,SEEK_END);
-    ressize=ftell(file);
+    ressize=(int)ftell(file);
     fseek(file,0,SEEK_SET);
 
     /* Add one if text mode, for end of string */

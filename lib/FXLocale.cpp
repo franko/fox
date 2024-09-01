@@ -3,7 +3,7 @@
 *                           L o c a l e   C l a s s                             *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 2007,2022 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 2007,2024 by Jeroen van der Zijp.   All Rights Reserved.        *
 *********************************************************************************
 * This library is free software; you can redistribute it and/or modify          *
 * it under the terms of the GNU Lesser General Public License as published by   *
@@ -23,7 +23,9 @@
 #include "fxdefs.h"
 #include "fxmath.h"
 #include "fxascii.h"
+#include "FXElement.h"
 #include "FXArray.h"
+#include "FXMetaClass.h"
 #include "FXHash.h"
 #include "FXStream.h"
 #include "FXString.h"

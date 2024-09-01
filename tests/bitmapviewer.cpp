@@ -185,7 +185,7 @@ const FXchar patterns[]=
   "\nRGB Image  (*.rgb)"
   "\nXBM Image  (*.xbm)"
   "\nTARGA Image  (*.tga)"
-#ifdef HAVE_PNG_H
+#ifdef HAVE_ZLIB_H
   "\nPNG Image  (*.png)"
 #endif
 #ifdef HAVE_JPEG_H

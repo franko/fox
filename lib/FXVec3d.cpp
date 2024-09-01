@@ -3,7 +3,7 @@
 *       D o u b l e - P r e c i s i o n   3 - E l e m e n t   V e c t o r       *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 1994,2022 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 1994,2024 by Jeroen van der Zijp.   All Rights Reserved.        *
 *********************************************************************************
 * This library is free software; you can redistribute it and/or modify          *
 * it under the terms of the GNU Lesser General Public License as published by   *
@@ -22,10 +22,9 @@
 #include "fxver.h"
 #include "fxdefs.h"
 #include "fxmath.h"
-#include "FXArray.h"
+#include "FXElement.h"
 #include "FXHash.h"
 #include "FXStream.h"
-#include "FXObject.h"
 #include "FXVec2d.h"
 #include "FXVec3d.h"
 #include "FXVec4d.h"
@@ -52,7 +51,7 @@ FXColor colorFromVec3d(const FXVec3d& vec){
   __m128i uuuu=_mm256_cvtpd_epi32(_mm256_mul_pd(_mm256_maskload_pd(&vec[0],MMM),_mm256_set1_pd(255.0)));
 
   // Shuffle to lower 4 bytes:          RRRRRRRR RRRRRRRR RRRRRRRR 00RRGGBB
-  __m128i bbbb=_mm_shuffle_epi8(uuuu,_mm_set_epi8(0,0,0,0, 0,0,0,0, 0,0,0,0, 12,0,4,8));
+  __m128i bbbb=_mm_shuffle_epi8(uuuu,_mm_set_epi8(-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,12,0,4,8));
 
   // Assign to output
   res=_mm_cvtsi128_si32(bbbb);
@@ -68,7 +67,7 @@ FXVec3d colorToVec3d(FXColor clr){
   FXVec3d res;
 
   // Shuffle into place, zero the rest: 000000AA 000000BB 000000GG 000000RR
-  __m128i uuuu=_mm_shuffle_epi8(_mm_cvtsi32_si128(clr),_mm_set_epi8(8,8,8,3, 8,8,8,0, 8,8,8,1, 8,8,8,2));
+  __m128i uuuu=_mm_shuffle_epi8(_mm_cvtsi32_si128(clr),_mm_set_epi8(-1,-1,-1,3,-1,-1,-1,0,-1,-1,-1,1,-1,-1,-1,2));
 
   // Convert to double and scale:       AAAAAAAA BBBBBBBB GGGGGGGG RRRRRRRR
   __m256d dddd=_mm256_mul_pd(_mm256_cvtepi32_pd(uuuu),_mm256_set1_pd(0.003921568627));
@@ -96,8 +95,8 @@ FXVec3d colorToVec3d(FXColor clr){
 
 // Normalize vector
 FXVec3d normalize(const FXVec3d& v){
-  FXdouble m=v.length();
-  if(__likely(m)){ return v/m; }
+  FXdouble m=v.length2();
+  if(__likely(m)){ return v*Math::rsqrt(m); }
   return v;
   }
 
@@ -156,6 +155,14 @@ FXVec3d rotate(const FXVec3d& vec,const FXVec3d& axis,FXdouble ca,FXdouble sa){
 // Rotate vector vec by unit-length axis about angle ang
 FXVec3d rotate(const FXVec3d& vec,const FXVec3d& axis,FXdouble ang){
   return rotate(vec,axis,Math::cos(ang),Math::sin(ang));
+  }
+
+
+// Compute distance of point pnt from ray from org along direction dir
+FXdouble distFromRay(const FXVec3d& org,const FXVec3d& dir,const FXVec3d& pnt){
+  FXVec3d u(pnt-org);
+  FXVec3d v(u-(u*dir)*dir);
+  return v.length();
   }
 
 

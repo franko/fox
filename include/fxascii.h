@@ -3,7 +3,7 @@
 *                    A S C I I   C h a r a c t e r   I n f o                    *
 *                                                                               *
 *********************************************************************************
-* Copyright (C) 2005,2023 by Jeroen van der Zijp.   All Rights Reserved.        *
+* Copyright (C) 2005,2024 by Jeroen van der Zijp.   All Rights Reserved.        *
 *********************************************************************************
 * This library is free software; you can redistribute it and/or modify          *
 * it under the terms of the GNU Lesser General Public License as published by   *
@@ -194,19 +194,19 @@ static inline FXbool isDelim(FXchar asc){
 
 // Convert to upper case
 static inline FXchar toUpper(FXchar asc){
-  return asc+((((96-(FXint)asc)&((FXint)asc-123))>>31)&-32);
+  return (FXchar)(asc+((((96-(FXint)asc)&((FXint)asc-123))>>31)&-32));
   }
 
 
 // Convert to lower case
 static inline FXchar toLower(FXchar asc){
-  return asc+((((64-(FXint)asc)&((FXint)asc-91))>>31)&32);
+  return (FXchar)(asc+((((64-(FXint)asc)&((FXint)asc-91))>>31)&32));
   }
 
 
 // Convert to title case
 static inline FXchar toTitle(FXchar asc){
-  return asc+((((96-(FXint)asc)&((FXint)asc-123))>>31)&-32);
+  return (FXchar)(asc+((((96-(FXint)asc)&((FXint)asc-123))>>31)&-32));
   }
 
 }
