@@ -44,6 +44,7 @@ test_apps = [
   ['variant', 'variant.cpp'],
   ['math', 'math.cpp'],
   ['xml', 'xml.cpp'],
+  ['dictest', 'dictest.cpp'],
 ]
 
 

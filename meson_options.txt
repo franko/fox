@@ -1,9 +1,10 @@
 option('opengl', type : 'boolean', value : false, description: 'enable OpenGL support')
 option('jpeg', type : 'boolean', value : false, description: 'JPEG image support')
-option('png', type : 'boolean', value : false, description: 'PNG image support')
 option('zlib', type : 'boolean', value : false, description: 'zlib support')
 option('bzlib', type : 'boolean', value : false, description: 'bzlib support')
 option('xft', type : 'boolean', value : true, description: 'enable Xft support')
 option('cups', type : 'boolean', value : false, description: 'enable CUPS support')
 option('tests', type : 'boolean', value : false, description: 'Build and run test programs')
 option('apps', type : 'boolean', value : true, description: 'Build FOX apps')
+# there is an additional option for performance logging but for the moment it is
+# not configured in the meson build.

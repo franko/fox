@@ -1,4 +1,4 @@
-project('fox', 'cpp', version : '1.7.84', default_options : 'cpp_std=c++11')
+project('fox', 'cpp', version : '1.7.85', default_options : 'cpp_std=c++11')
 
 pkg = import('pkgconfig')
 
@@ -118,14 +118,6 @@ if get_option('jpeg')
     if libjpeg.found()
         fox_defines += '-DHAVE_JPEG_H'
         fox_deps += libjpeg
-    endif
-endif
-
-if get_option('png')
-    libpng = dependency('libpng', required : false)
-    if libpng.found()
-        fox_defines += '-DHAVE_PNG_H'
-        fox_deps += libpng
     endif
 endif
 
