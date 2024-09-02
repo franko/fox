@@ -148,39 +148,61 @@ FXMutex::~FXMutex(){
 
 #ifdef __APPLE__
 
+// the following changes in the semaphore implementation have been backported from fox 1.7,
+// thanks to https://yamaimo.hatenablog.jp/entry/2019/02/24/200000
 
 // Initialize semaphore
 FXSemaphore::FXSemaphore(FXint initial){
-  // If this fails on your machine, determine what value
-  // of sizeof(MPSemaphoreID*) is supposed to be on your
-  // machine and mail it to: jeroen@fox-toolkit.org!!
-  //FXTRACE((150,"sizeof(MPSemaphoreID*)=%d\n",sizeof(MPSemaphoreID*)));
-  FXASSERT(sizeof(data)>=sizeof(MPSemaphoreID*));
-  MPCreateSemaphore(2147483647,initial,(MPSemaphoreID*)data);
+  // If this fails on your machine, determine what value of
+  // sizeof(pthread_cond_t) and sizeof(pthread_mutex_t) is
+  // supposed to be and mail it to: jeroen@fox-toolkit.net!!
+  //FXTRACE((150,"sizeof(pthread_cond_t)=%d\n",sizeof(pthread_cond_t)));
+  //FXTRACE((150,"sizeof(pthread_mutex_t)=%d\n",sizeof(pthread_mutex_t)));
+  FXASSERT(sizeof(FXuval)*9 >= sizeof(pthread_cond_t));
+  FXASSERT(sizeof(FXuval)*11 >= sizeof(pthread_mutex_t));
+  data[0]=initial;
+  pthread_cond_init((pthread_cond_t*)&data[1],nullptr);
+  pthread_mutex_init((pthread_mutex_t*)&data[10],nullptr);
   }
 
 
 // Decrement semaphore
 void FXSemaphore::wait(){
-  MPWaitOnSemaphore(*((MPSemaphoreID*)data),kDurationForever);
+  pthread_mutex_lock((pthread_mutex_t*)&data[10]);
+  while(data[0]==0){
+    pthread_cond_wait((pthread_cond_t*)&data[1],(pthread_mutex_t*)&data[10]);
+    }
+  data[0]-=1;
+  pthread_mutex_unlock((pthread_mutex_t*)&data[10]);
   }
 
 
 // Decrement semaphore but don't block
 FXbool FXSemaphore::trywait(){
-  return MPWaitOnSemaphore(*((MPSemaphoreID*)data),kDurationImmediate)==noErr;
+  pthread_mutex_lock((pthread_mutex_t*)&data[10]);
+  if(data[0]==0){
+    pthread_mutex_unlock((pthread_mutex_t*)&data[10]);
+    return false;
+    }
+  data[0]-=1;
+  pthread_mutex_unlock((pthread_mutex_t*)&data[10]);
+  return true;
   }
 
 
 // Increment semaphore
 void FXSemaphore::post(){
-  MPSignalSemaphore(*((MPSemaphoreID*)data));
+  pthread_mutex_lock((pthread_mutex_t*)&data[10]);
+  data[0]+=1;
+  pthread_cond_signal((pthread_cond_t*)&data[1]);
+  pthread_mutex_unlock((pthread_mutex_t*)&data[10]);
   }
 
 
 // Delete semaphore
 FXSemaphore::~FXSemaphore(){
-  MPDeleteSemaphore(*((MPSemaphoreID*)data));
+  pthread_mutex_destroy((pthread_mutex_t*)&data[10]);
+  pthread_cond_destroy((pthread_cond_t*)&data[1]);
   }
 
 #else
