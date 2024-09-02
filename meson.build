@@ -14,7 +14,7 @@ endif
 cc = meson.get_compiler('cpp')
 host_system = host_machine.system()
 
-supported_host_systems = ['windows', 'cygwin', 'linux', 'netbsd', 'freebsd', 'gnu']
+supported_host_systems = ['windows', 'cygwin', 'linux', 'netbsd', 'freebsd', 'openbsd', 'dragonfly']
 
 if host_system not in supported_host_systems
     error('Host system \'' + host_system + '\' is not supported.')
